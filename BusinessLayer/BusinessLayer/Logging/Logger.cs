@@ -76,23 +76,23 @@ namespace BL.Logic.Logging
                     }
                     if (!String.IsNullOrEmpty(filter.LoginLogInfo))
                     {
-                        var filterContains = PredicateBuilder.False<FrontSystemSession>();
+                        var filterContains = PredicateBuilder.New<FrontSystemSession>(false);
                         filterContains = CommonFilterUtilites.GetWhereExpressions(filter.LoginLogInfo)
                                     .Aggregate(filterContains, (current, value) => current.Or(e => e.LoginLogInfo.Contains(value)).Expand());
                         qry = qry.Where(filterContains);
                     }
                     if (!String.IsNullOrEmpty(filter.ExecutorAgentName))
                     {
-                        var filterContains = PredicateBuilder.False<FrontSystemSession>();
+                        var filterContains = PredicateBuilder.New<FrontSystemSession>(false);
                         filterContains = CommonFilterUtilites.GetWhereExpressions(filter.ExecutorAgentName)
                                     .Aggregate(filterContains, (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
                         qry = qry.Where(filterContains);
                     }
                     if (!String.IsNullOrEmpty(filter.FullTextSearchString))
                     {
-                        var filterContains = PredicateBuilder.True<FrontSystemSession>();
+                        var filterContains = PredicateBuilder.New<FrontSystemSession>(true);
                         filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullTextSearchString)
-                                    .Aggregate(filterContains, (current, value) => current.And(e => (e.LoginLogInfo +" "+ e.Name).Contains(value)).Expand());
+                                    .Aggregate(filterContains, (current, value) => current.And(e => (e.LoginLogInfo + " " + e.Name).Contains(value)).Expand());
                         qry = qry.Where(filterContains);
                     }
                     qry = qry.OrderByDescending(x => x.CreateDate);

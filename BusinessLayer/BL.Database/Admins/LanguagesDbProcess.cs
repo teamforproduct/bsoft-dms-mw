@@ -53,7 +53,7 @@ namespace BL.Database.Admins
 
             if (filter.IDs?.Count > 0)
             {
-                var filterContains = PredicateBuilder.False<AdminLanguages>();
+                var filterContains = PredicateBuilder.New<AdminLanguages>(false);
                 filterContains = filter.IDs.Aggregate(filterContains,
                     (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -188,7 +188,7 @@ namespace BL.Database.Admins
 
             if (filter.LanguageValueId?.Count > 0)
             {
-                var filterContains = PredicateBuilder.False<AdminLanguageValues>();
+                var filterContains = PredicateBuilder.New<AdminLanguageValues>(false);
                 filterContains = filter.LanguageValueId.Aggregate(filterContains,
                     (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -214,7 +214,7 @@ namespace BL.Database.Admins
 
             if (filter.Labels?.Count > 0)
             {
-                var filterContains = PredicateBuilder.False<AdminLanguageValues>();
+                var filterContains = PredicateBuilder.New<AdminLanguageValues>(false);
                 filterContains = filter.Labels.Aggregate(filterContains,
                     (current, value) => current.Or(e => e.Label == value).Expand());
 

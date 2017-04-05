@@ -770,7 +770,7 @@ namespace BL.Logic.DictionaryCore
 
                 // Удаляю настройку сенд лист ????
                 //#region [+] StandartSendListContents ...
-                //var filterStandartSendListContents = PredicateBuilder.False<DictionaryStandartSendListContents>();
+                //var filterStandartSendListContents = PredicateBuilder.New<DictionaryStandartSendListContents>(false);
                 //filterStandartSendListContents = list.Aggregate(filterStandartSendListContents,
                 //    (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
 
@@ -781,7 +781,7 @@ namespace BL.Logic.DictionaryCore
                 _adminDb.DeleteRegistrationJournalPositions(context, new FilterAdminRegistrationJournalPosition { PositionIDs = list });
 
                 // Удаляю руководителей подразделений
-                //var filterDepartments = PredicateBuilder.False<DictionaryDepartments>();
+                //var filterDepartments = PredicateBuilder.New<DictionaryDepartments>(false);
                 //filterDepartments = list.Aggregate(filterDepartments,
                 //    (current, value) => current.Or(e => e.ChiefPositionId == value).Expand());
 

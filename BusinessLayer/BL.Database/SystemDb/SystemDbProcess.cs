@@ -478,56 +478,56 @@ namespace BL.Database.SystemDb
             {
                 if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<SystemLogs>();
+                    var filterContains = PredicateBuilder.New<SystemLogs>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
                     qry = qry.Where(filterContains);
                 }
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<SystemLogs>();
+                    var filterContains = PredicateBuilder.New<SystemLogs>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
                     qry = qry.Where(filterContains);
                 }
                 if (filter.ObjectIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<SystemLogs>();
+                    var filterContains = PredicateBuilder.New<SystemLogs>(false);
                     filterContains = filter.ObjectIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ObjectId == value).Expand());
                     qry = qry.Where(filterContains);
                 }
                 if (filter.ActionIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<SystemLogs>();
+                    var filterContains = PredicateBuilder.New<SystemLogs>(false);
                     filterContains = filter.ActionIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ActionId == value).Expand());
                     qry = qry.Where(filterContains);
                 }
                 if (filter.ExecutorAgentIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<SystemLogs>();
+                    var filterContains = PredicateBuilder.New<SystemLogs>(false);
                     filterContains = filter.ExecutorAgentIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ExecutorAgentId == value).Expand());
                     qry = qry.Where(filterContains);
                 }
                 if (!String.IsNullOrEmpty(filter.ExecutorAgentName))
                 {
-                    var filterContains = PredicateBuilder.False<SystemLogs>();
+                    var filterContains = PredicateBuilder.New<SystemLogs>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.ExecutorAgentName)
                                 .Aggregate(filterContains, (current, value) => current.Or(e => e.Agent.Name.Contains(value)).Expand());
                     qry = qry.Where(filterContains);
                 }
                 if (filter.RecordIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<SystemLogs>();
+                    var filterContains = PredicateBuilder.New<SystemLogs>(false);
                     filterContains = filter.RecordIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.RecordId == value).Expand());
                     qry = qry.Where(filterContains);
                 }
                 if (filter.LogLevels?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<SystemLogs>();
+                    var filterContains = PredicateBuilder.New<SystemLogs>(false);
                     filterContains = filter.LogLevels.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.LogLevel == value).Expand());
                     qry = qry.Where(filterContains);
@@ -543,7 +543,7 @@ namespace BL.Database.SystemDb
                 }
                 if (!String.IsNullOrEmpty(filter.FullTextSearchString))
                 {
-                    var filterContains = PredicateBuilder.True<SystemLogs>();
+                    var filterContains = PredicateBuilder.New<SystemLogs>(true);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullTextSearchString)
                                 .Aggregate(filterContains, (current, value) => current.And(e => (e.Message + " " + e.Agent.Name).Contains(value)).Expand());
                     qry = qry.Where(filterContains);
@@ -551,28 +551,28 @@ namespace BL.Database.SystemDb
 
                 if (!String.IsNullOrEmpty(filter.Message))
                 {
-                    var filterContains = PredicateBuilder.False<SystemLogs>();
+                    var filterContains = PredicateBuilder.New<SystemLogs>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Message)
                                 .Aggregate(filterContains, (current, value) => current.Or(e => e.Message.Contains(value)).Expand());
                     qry = qry.Where(filterContains);
                 }
                 if (!String.IsNullOrEmpty(filter.LogTrace))
                 {
-                    var filterContains = PredicateBuilder.False<SystemLogs>();
+                    var filterContains = PredicateBuilder.New<SystemLogs>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.LogTrace)
                                 .Aggregate(filterContains, (current, value) => current.Or(e => e.LogTrace.Contains(value)).Expand());
                     qry = qry.Where(filterContains);
                 }
                 if (!String.IsNullOrEmpty(filter.ObjectLog))
                 {
-                    var filterContains = PredicateBuilder.False<SystemLogs>();
+                    var filterContains = PredicateBuilder.New<SystemLogs>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.ObjectLog)
                                 .Aggregate(filterContains, (current, value) => current.Or(e => e.ObjectLog.Contains(value)).Expand());
                     qry = qry.Where(filterContains);
                 }
                 if (!String.IsNullOrEmpty(filter.LogException))
                 {
-                    var filterContains = PredicateBuilder.False<SystemLogs>();
+                    var filterContains = PredicateBuilder.New<SystemLogs>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.LogException)
                                 .Aggregate(filterContains, (current, value) => current.Or(e => e.LogException.Contains(value)).Expand());
                     qry = qry.Where(filterContains);
@@ -796,7 +796,7 @@ namespace BL.Database.SystemDb
 
                 if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<SystemSettings>();
+                    var filterContains = PredicateBuilder.New<SystemSettings>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
                     qry = qry.Where(filterContains);
@@ -911,7 +911,7 @@ namespace BL.Database.SystemDb
         //    {
         //        var qry = GetSystemObjectsQuery(ctx, dbContext, filterObject);
 
-        //        var filterContains = PredicateBuilder.False<SystemActions>();
+        //        var filterContains = PredicateBuilder.New<SystemActions>(false);
 
         //        //filterContains = GetWhereSystemActions(x.Actions, filterAction);
 
@@ -959,7 +959,7 @@ namespace BL.Database.SystemDb
             {
                 if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<SystemObjects>();
+                    var filterContains = PredicateBuilder.New<SystemObjects>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
                     qry = qry.Where(filterContains);
@@ -967,7 +967,7 @@ namespace BL.Database.SystemDb
 
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<SystemObjects>();
+                    var filterContains = PredicateBuilder.New<SystemObjects>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
                     qry = qry.Where(filterContains);
@@ -975,7 +975,7 @@ namespace BL.Database.SystemDb
 
                 if (!string.IsNullOrEmpty(filter.Description))
                 {
-                    var filterContains = PredicateBuilder.False<SystemObjects>();
+                    var filterContains = PredicateBuilder.New<SystemObjects>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Description).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Description.Contains(value)).Expand());
 
@@ -1112,7 +1112,7 @@ namespace BL.Database.SystemDb
 
                 if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<SystemActions>();
+                    var filterContains = PredicateBuilder.New<SystemActions>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1120,7 +1120,7 @@ namespace BL.Database.SystemDb
                 }
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<SystemActions>();
+                    var filterContains = PredicateBuilder.New<SystemActions>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -1128,7 +1128,7 @@ namespace BL.Database.SystemDb
                 }
                 if (filter.ObjectIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<SystemActions>();
+                    var filterContains = PredicateBuilder.New<SystemActions>(false);
                     filterContains = filter.ObjectIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ObjectId == value).Expand());
 
@@ -1137,7 +1137,7 @@ namespace BL.Database.SystemDb
 
                 if (!string.IsNullOrEmpty(filter.Description))
                 {
-                    var filterContains = PredicateBuilder.False<SystemActions>();
+                    var filterContains = PredicateBuilder.New<SystemActions>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Description).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Description.Contains(value)).Expand());
 
@@ -1183,7 +1183,7 @@ namespace BL.Database.SystemDb
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<SystemPermissions>();
+                    var filterContains = PredicateBuilder.New<SystemPermissions>(false);
 
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
@@ -1194,7 +1194,7 @@ namespace BL.Database.SystemDb
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<SystemPermissions>();
+                    var filterContains = PredicateBuilder.New<SystemPermissions>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -1203,7 +1203,7 @@ namespace BL.Database.SystemDb
 
                 if (filter.ModuleIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<SystemPermissions>();
+                    var filterContains = PredicateBuilder.New<SystemPermissions>(false);
 
                     filterContains = filter.ModuleIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ModuleId == value).Expand());
@@ -1213,7 +1213,7 @@ namespace BL.Database.SystemDb
 
                 if (filter.FeatureIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<SystemPermissions>();
+                    var filterContains = PredicateBuilder.New<SystemPermissions>(false);
 
                     filterContains = filter.FeatureIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.FeatureId == value).Expand());
@@ -1223,7 +1223,7 @@ namespace BL.Database.SystemDb
 
                 if (filter.AccessTypeIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<SystemPermissions>();
+                    var filterContains = PredicateBuilder.New<SystemPermissions>(false);
 
                     filterContains = filter.AccessTypeIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.AccessTypeId == value).Expand());
@@ -1315,7 +1315,7 @@ namespace BL.Database.SystemDb
 
                 if (filter.PropertyLinkId != null)
                 {
-                    var filterContains = PredicateBuilder.False<PropertyLinks>();
+                    var filterContains = PredicateBuilder.New<PropertyLinks>(false);
                     filterContains = filter.PropertyLinkId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1358,7 +1358,7 @@ namespace BL.Database.SystemDb
             {
                 if (filter.PropertyId?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<Properties>();
+                    var filterContains = PredicateBuilder.New<Properties>(false);
                     filterContains = filter.PropertyId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1503,7 +1503,7 @@ namespace BL.Database.SystemDb
             {
                 if (filter.PropertyLinkId?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<PropertyLinks>();
+                    var filterContains = PredicateBuilder.New<PropertyLinks>(false);
                     filterContains = filter.PropertyLinkId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1512,7 +1512,7 @@ namespace BL.Database.SystemDb
 
                 if (filter.Object?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<PropertyLinks>();
+                    var filterContains = PredicateBuilder.New<PropertyLinks>(false);
                     filterContains = filter.Object.Aggregate(filterContains,
                         (current, value) => current.Or(e => (EnumObjects)e.ObjectId == value).Expand());
 

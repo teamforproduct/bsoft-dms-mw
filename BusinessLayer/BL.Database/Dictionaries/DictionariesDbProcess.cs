@@ -148,24 +148,6 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        //TODO Как можно упроцедурить PredicateBuilder??? Нужно value передавать в func
-        private void SetWhereExpressionIN(List<int> list, ref IQueryable<IItem> qry)
-        {
-            if (list?.Count > 100)
-            {
-                qry = qry.Where(x => list.Contains(x.Id));
-            }
-            else if (list?.Count > 0)
-            {
-                var filterContains = PredicateBuilder.False<IItem>();
-                filterContains = list.Aggregate(filterContains,
-                    (current, value) => current.Or(x => x.Id == value).Expand());
-
-                qry = qry.Where(filterContains);
-            }
-        }
-
-
         public IEnumerable<AutocompleteItem> GetAgentExternalList(IContext ctx, UIPaging paging)
         {
             var dbContext = ctx.DbContext as DmsContext;
@@ -221,7 +203,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgents>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgents>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -231,7 +213,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryAgents>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgents>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -247,7 +229,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgents>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgents>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
@@ -647,7 +629,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentPersons>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentPersons>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -657,7 +639,7 @@ namespace BL.Database.Dictionaries
                 // Список AgentCompanyId
                 if (filter.CompanyIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentPersons>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentPersons>(false);
                     filterContains = filter.CompanyIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.AgentCompanyId == value).Expand());
 
@@ -667,7 +649,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryAgentPersons>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentPersons>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -683,7 +665,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по полному наименованию
                 if (!string.IsNullOrEmpty(filter.FullName))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentPersons>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentPersons>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullName).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Agent.AgentPeople.FullName.Contains(value)).Expand());
 
@@ -693,7 +675,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentPersons>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentPersons>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Agent.Name.Contains(value)).Expand());
 
@@ -718,7 +700,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по паспортным данным
                 if (!string.IsNullOrEmpty(filter.Passport))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentPersons>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentPersons>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Passport).Aggregate(filterContains,
                         (current, value) => current.Or(e => (e.Agent.AgentPeople.PassportSerial + "-" + e.Agent.AgentPeople.PassportNumber + " " + e.Agent.AgentPeople.PassportDate.ToString() + " " + e.Agent.AgentPeople.PassportText) == value).Expand());
 
@@ -729,7 +711,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по ИНН
                 if (!string.IsNullOrEmpty(filter.TaxCode))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentPersons>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentPersons>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.TaxCode).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Agent.AgentPeople.TaxCode.Contains(value)).Expand());
 
@@ -1014,7 +996,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentEmployees>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentEmployees>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1026,7 +1008,7 @@ namespace BL.Database.Dictionaries
                 if (filter.AddressIDs?.Count > 0)
                 {
                     // pss Нужно найти решение: просто отказаться от переменных привязки - плохо!
-                    var filterContains = PredicateBuilder.False<DictionaryAgentAddresses>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentAddresses>(false);
                     filterContains = filter.AddressIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1038,7 +1020,7 @@ namespace BL.Database.Dictionaries
                 if (filter.ContactIDs?.Count > 0)
                 {
                     // pss Нужно найти решение: просто отказаться от переменных привязки - плохо!
-                    var filterContains = PredicateBuilder.False<DictionaryAgentContacts>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentContacts>(false);
                     filterContains = filter.ContactIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1050,7 +1032,7 @@ namespace BL.Database.Dictionaries
                 if (filter.PositionIDs?.Count > 0)
                 {
                     // pss Нужно найти решение: просто отказаться от переменных привязки - плохо!
-                    var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();
+                    var filterContains = PredicateBuilder.New<DictionaryPositionExecutors>(false);
                     filterContains = filter.PositionIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.PositionId == value).Expand());
 
@@ -1061,7 +1043,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryAgentEmployees>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentEmployees>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -1077,7 +1059,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по полному наименованию
                 if (!string.IsNullOrEmpty(filter.FullName))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentEmployees>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentEmployees>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullName).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Agent.AgentPeople.FullName.Contains(value)).Expand());
 
@@ -1087,7 +1069,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentEmployees>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentEmployees>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Agent.Name.Contains(value)).Expand());
 
@@ -1116,7 +1098,7 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.Passport))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentEmployees>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentEmployees>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Passport).Aggregate(filterContains,
                         (current, value) => current.Or(e => (e.Agent.AgentPeople.PassportSerial + "-" + e.Agent.AgentPeople.PassportNumber + " " +
                                           e.Agent.AgentPeople.PassportDate.ToString() + " " +
@@ -1127,7 +1109,7 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.TaxCode))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentEmployees>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentEmployees>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.TaxCode).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Agent.AgentPeople.TaxCode.Contains(value)).Expand());
 
@@ -1168,7 +1150,7 @@ namespace BL.Database.Dictionaries
 
                 if (filter.RoleIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<AdminUserRoles>();
+                    var filterContains = PredicateBuilder.New<AdminUserRoles>(false);
                     filterContains = filter.RoleIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.RoleId == value).Expand());
 
@@ -1463,7 +1445,7 @@ namespace BL.Database.Dictionaries
                 // Список первичных ключей
                 if (filter.AgentIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentAddresses>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentAddresses>(false);
                     filterContains = filter.AgentIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.AgentId == value).Expand());
 
@@ -1477,7 +1459,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentAddresses>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentAddresses>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1487,7 +1469,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryAgentAddresses>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentAddresses>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -1502,7 +1484,7 @@ namespace BL.Database.Dictionaries
 
                 if (filter.AddressTypeIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentAddresses>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentAddresses>(false);
                     filterContains = filter.AddressTypeIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.AdressTypeId == value).Expand());
 
@@ -1511,7 +1493,7 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.PostCode))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentAddresses>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentAddresses>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.PostCode).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.PostCode.Contains(value)).Expand());
 
@@ -1534,7 +1516,7 @@ namespace BL.Database.Dictionaries
 
                 if (!String.IsNullOrEmpty(filter.Address))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentAddresses>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentAddresses>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Address).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Address.Contains(value)).Expand());
 
@@ -1707,7 +1689,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAddressTypes>();
+                    var filterContains = PredicateBuilder.New<DictionaryAddressTypes>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1717,7 +1699,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryAddressTypes>();
+                    var filterContains = PredicateBuilder.New<DictionaryAddressTypes>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -1733,7 +1715,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAddressTypes>();
+                    var filterContains = PredicateBuilder.New<DictionaryAddressTypes>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
@@ -1749,7 +1731,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Code))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAddressTypes>();
+                    var filterContains = PredicateBuilder.New<DictionaryAddressTypes>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Code.Contains(value)).Expand());
 
@@ -1766,7 +1748,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.CodeName))
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryAddressTypes>();
+                    var filterContains = PredicateBuilder.New<DictionaryAddressTypes>(true);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.CodeName).Aggregate(filterContains,
                         (current, value) => current.And(e => (e.Code + " " + e.Name).Contains(value)).Expand());
 
@@ -2060,7 +2042,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryCompanies>();
+                    var filterContains = PredicateBuilder.New<DictionaryCompanies>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -2070,7 +2052,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryCompanies>();
+                    var filterContains = PredicateBuilder.New<DictionaryCompanies>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -2085,7 +2067,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.DepartmentIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryDepartments>();
+                    var filterContains = PredicateBuilder.New<DictionaryDepartments>(false);
                     filterContains = filter.DepartmentIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -2102,7 +2084,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryCompanies>();
+                    var filterContains = PredicateBuilder.New<DictionaryCompanies>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Agent.Name.Contains(value)).Expand());
 
@@ -2112,7 +2094,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.FullName))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryCompanies>();
+                    var filterContains = PredicateBuilder.New<DictionaryCompanies>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullName).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.FullName.Contains(value)).Expand());
 
@@ -2326,7 +2308,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentCompanies>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentCompanies>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -2336,7 +2318,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryAgentCompanies>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentCompanies>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -2352,7 +2334,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentCompanies>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentCompanies>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Agent.Name.Contains(value)).Expand());
 
@@ -2361,7 +2343,7 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.FullName))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentCompanies>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentCompanies>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullName).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.FullName.Contains(value)).Expand());
 
@@ -2370,7 +2352,7 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.TaxCode))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentCompanies>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentCompanies>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.TaxCode).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.TaxCode.Contains(value)).Expand());
 
@@ -2378,7 +2360,7 @@ namespace BL.Database.Dictionaries
                 }
                 if (!string.IsNullOrEmpty(filter.OKPOCode))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentCompanies>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentCompanies>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.OKPOCode).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.OKPOCode.Contains(value)).Expand());
 
@@ -2386,7 +2368,7 @@ namespace BL.Database.Dictionaries
                 }
                 if (!string.IsNullOrEmpty(filter.VATCode))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentCompanies>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentCompanies>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.VATCode).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.VATCode == value).Expand());
 
@@ -2597,7 +2579,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentBanks>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentBanks>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -2607,7 +2589,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryAgentBanks>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentBanks>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -2623,7 +2605,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentBanks>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentBanks>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Agent.Name.Contains(value)).Expand());
 
@@ -2637,7 +2619,7 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.MFOCode))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentBanks>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentBanks>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.MFOCode).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.MFOCode.Contains(value)).Expand());
 
@@ -2803,7 +2785,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentAccounts>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentAccounts>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -2813,7 +2795,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryAgentAccounts>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentAccounts>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -2822,7 +2804,7 @@ namespace BL.Database.Dictionaries
 
                 if (filter.AgentIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentAccounts>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentAccounts>(false);
                     filterContains = filter.AgentIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.AgentId == value).Expand());
 
@@ -2831,7 +2813,7 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentAccounts>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentAccounts>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
@@ -2840,7 +2822,7 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.AccountNumber))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentAccounts>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentAccounts>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.AccountNumber).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.AccountNumber == value).Expand());
 
@@ -3031,7 +3013,7 @@ namespace BL.Database.Dictionaries
                 // Список первичных ключей
                 if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryContactTypes>();
+                    var filterContains = PredicateBuilder.New<DictionaryContactTypes>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -3041,7 +3023,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryContactTypes>();
+                    var filterContains = PredicateBuilder.New<DictionaryContactTypes>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -3057,7 +3039,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryContactTypes>();
+                    var filterContains = PredicateBuilder.New<DictionaryContactTypes>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
@@ -3071,7 +3053,7 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.Code))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryContactTypes>();
+                    var filterContains = PredicateBuilder.New<DictionaryContactTypes>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Code.Contains(value)).Expand());
 
@@ -3085,7 +3067,7 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.CodeName))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryContactTypes>();
+                    var filterContains = PredicateBuilder.New<DictionaryContactTypes>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.CodeName).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Code.Contains(value) || e.Name.Contains(value)).Expand());
 
@@ -3219,7 +3201,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentContacts>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentContacts>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -3228,7 +3210,7 @@ namespace BL.Database.Dictionaries
 
                 if (filter.AgentIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentContacts>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentContacts>(false);
                     filterContains = filter.AgentIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.AgentId == value).Expand());
 
@@ -3237,7 +3219,7 @@ namespace BL.Database.Dictionaries
 
                 if (filter.NotContainsAgentIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryAgentContacts>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentContacts>(true);
                     filterContains = filter.NotContainsAgentIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.AgentId != value).Expand());
 
@@ -3246,7 +3228,7 @@ namespace BL.Database.Dictionaries
 
                 if (filter.ContactTypeIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentContacts>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentContacts>(false);
                     filterContains = filter.ContactTypeIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ContactTypeId == value).Expand());
 
@@ -3258,7 +3240,7 @@ namespace BL.Database.Dictionaries
                 {
                     string searchExpression = filter.Contact.Replace('-', ' ').Replace('(', ' ').Replace(')', ' ');
 
-                    var filterContains = PredicateBuilder.False<DictionaryAgentContacts>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentContacts>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(searchExpression).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Contact.Contains(value)).Expand());
 
@@ -3284,7 +3266,7 @@ namespace BL.Database.Dictionaries
 
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryAgentContacts>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentContacts>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -3304,7 +3286,7 @@ namespace BL.Database.Dictionaries
 
                 if (contacts.Any())
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentContacts>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentContacts>(false);
                     filterContains = contacts.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -3767,7 +3749,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryDepartments>();
+                    var filterContains = PredicateBuilder.New<DictionaryDepartments>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -3777,7 +3759,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryDepartments>();
+                    var filterContains = PredicateBuilder.New<DictionaryDepartments>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -3787,7 +3769,7 @@ namespace BL.Database.Dictionaries
                 // Отбор по родительским элементам
                 if (filter.ParentIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryDepartments>();
+                    var filterContains = PredicateBuilder.New<DictionaryDepartments>(false);
                     filterContains = filter.ParentIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ParentId == value).Expand());
 
@@ -3803,7 +3785,7 @@ namespace BL.Database.Dictionaries
                 // Условие по Name
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryDepartments>();
+                    var filterContains = PredicateBuilder.New<DictionaryDepartments>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
@@ -3818,7 +3800,7 @@ namespace BL.Database.Dictionaries
                 // Условие по FullName
                 if (!string.IsNullOrEmpty(filter.FullName))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryDepartments>();
+                    var filterContains = PredicateBuilder.New<DictionaryDepartments>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullName).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.FullName.Contains(value)).Expand());
 
@@ -3828,7 +3810,7 @@ namespace BL.Database.Dictionaries
                 // Условие по Code
                 if (!string.IsNullOrEmpty(filter.Code))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryDepartments>();
+                    var filterContains = PredicateBuilder.New<DictionaryDepartments>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Code.Contains(value)).Expand());
 
@@ -3838,7 +3820,7 @@ namespace BL.Database.Dictionaries
                 // Условие по CompanyId
                 if (filter.CompanyIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryDepartments>();
+                    var filterContains = PredicateBuilder.New<DictionaryDepartments>(false);
                     filterContains = filter.CompanyIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.CompanyId == value).Expand());
 
@@ -3852,7 +3834,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.JournalIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryRegistrationJournals>();
+                    var filterContains = PredicateBuilder.New<DictionaryRegistrationJournals>(false);
                     filterContains = filter.JournalIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -3916,7 +3898,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryDocumentDirections>();
+                    var filterContains = PredicateBuilder.New<DictionaryDocumentDirections>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -3926,7 +3908,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryDocumentDirections>();
+                    var filterContains = PredicateBuilder.New<DictionaryDocumentDirections>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -3936,7 +3918,7 @@ namespace BL.Database.Dictionaries
                 // Условие по Name
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryDocumentDirections>();
+                    var filterContains = PredicateBuilder.New<DictionaryDocumentDirections>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
@@ -3951,7 +3933,7 @@ namespace BL.Database.Dictionaries
                 // Условие по Code
                 if (!string.IsNullOrEmpty(filter.Code))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryDocumentDirections>();
+                    var filterContains = PredicateBuilder.New<DictionaryDocumentDirections>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Code.Contains(value)).Expand());
 
@@ -4108,7 +4090,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryDocumentTypes>();
+                    var filterContains = PredicateBuilder.New<DictionaryDocumentTypes>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -4118,7 +4100,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryDocumentTypes>();
+                    var filterContains = PredicateBuilder.New<DictionaryDocumentTypes>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -4134,7 +4116,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryDocumentTypes>();
+                    var filterContains = PredicateBuilder.New<DictionaryDocumentTypes>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
@@ -4167,7 +4149,7 @@ namespace BL.Database.Dictionaries
                     }
                     else if (filter.IDs?.Count > 0)
                     {
-                        var filterContains = PredicateBuilder.False<DictionaryEventTypes>();
+                        var filterContains = PredicateBuilder.New<DictionaryEventTypes>(false);
                         filterContains = filter.IDs.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -4177,7 +4159,7 @@ namespace BL.Database.Dictionaries
                     // Исключение списка первичных ключей
                     if (filter.NotContainsIDs?.Count > 0)
                     {
-                        var filterContains = PredicateBuilder.True<DictionaryEventTypes>();
+                        var filterContains = PredicateBuilder.New<DictionaryEventTypes>(true);
                         filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                             (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -4187,7 +4169,7 @@ namespace BL.Database.Dictionaries
                     // Поиск по наименованию
                     if (!string.IsNullOrEmpty(filter.Name))
                     {
-                        var filterContains = PredicateBuilder.False<DictionaryEventTypes>();
+                        var filterContains = PredicateBuilder.New<DictionaryEventTypes>(false);
                         filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                             (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
@@ -4196,7 +4178,7 @@ namespace BL.Database.Dictionaries
 
                     if (filter.ImportanceEventTypeIDs?.Count > 0)
                     {
-                        var filterContains = PredicateBuilder.False<DictionaryEventTypes>();
+                        var filterContains = PredicateBuilder.New<DictionaryEventTypes>(false);
                         filterContains = filter.ImportanceEventTypeIDs.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.ImportanceEventTypeId == value).Expand());
 
@@ -4205,7 +4187,7 @@ namespace BL.Database.Dictionaries
 
                     if (filter.DocumentIDs?.Count > 0)
                     {
-                        var filterContains = PredicateBuilder.False<DBModel.Document.DocumentEvents>();
+                        var filterContains = PredicateBuilder.New<DBModel.Document.DocumentEvents>(false);
                         filterContains = filter.DocumentIDs.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
@@ -4247,7 +4229,7 @@ namespace BL.Database.Dictionaries
                     }
                     else if (filter.IDs?.Count > 0)
                     {
-                        var filterContains = PredicateBuilder.False<DictionaryImportanceEventTypes>();
+                        var filterContains = PredicateBuilder.New<DictionaryImportanceEventTypes>(false);
                         filterContains = filter.IDs.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -4257,7 +4239,7 @@ namespace BL.Database.Dictionaries
                     // Исключение списка первичных ключей
                     if (filter.NotContainsIDs?.Count > 0)
                     {
-                        var filterContains = PredicateBuilder.True<DictionaryImportanceEventTypes>();
+                        var filterContains = PredicateBuilder.New<DictionaryImportanceEventTypes>(true);
                         filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                             (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -4267,7 +4249,7 @@ namespace BL.Database.Dictionaries
                     // Поиск по наименованию
                     if (!string.IsNullOrEmpty(filter.Name))
                     {
-                        var filterContains = PredicateBuilder.False<DictionaryImportanceEventTypes>();
+                        var filterContains = PredicateBuilder.New<DictionaryImportanceEventTypes>(false);
                         filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                             (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
@@ -4276,7 +4258,7 @@ namespace BL.Database.Dictionaries
 
                     if (filter.DocumentIDs?.Count > 0)
                     {
-                        var filterContains = PredicateBuilder.False<DBModel.Document.DocumentEvents>();
+                        var filterContains = PredicateBuilder.New<DBModel.Document.DocumentEvents>(false);
                         filterContains = filter.DocumentIDs.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
@@ -4317,7 +4299,7 @@ namespace BL.Database.Dictionaries
                     }
                     else if (filter.IDs?.Count > 0)
                     {
-                        var filterContains = PredicateBuilder.False<DictionaryLinkTypes>();
+                        var filterContains = PredicateBuilder.New<DictionaryLinkTypes>(false);
                         filterContains = filter.IDs.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -4327,7 +4309,7 @@ namespace BL.Database.Dictionaries
                     // Исключение списка первичных ключей
                     if (filter.NotContainsIDs?.Count > 0)
                     {
-                        var filterContains = PredicateBuilder.True<DictionaryLinkTypes>();
+                        var filterContains = PredicateBuilder.New<DictionaryLinkTypes>(true);
                         filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                             (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -4343,7 +4325,7 @@ namespace BL.Database.Dictionaries
                     // Поиск по наименованию
                     if (!string.IsNullOrEmpty(filter.Name))
                     {
-                        var filterContains = PredicateBuilder.False<DictionaryLinkTypes>();
+                        var filterContains = PredicateBuilder.New<DictionaryLinkTypes>(false);
                         filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                             (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
@@ -4593,7 +4575,7 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.OrderBy(x => x.DepartmentId).ThenBy(x => x.Order).ThenBy(x => x.Name);
 
-                var filterMaxSubordinationTypeContains = PredicateBuilder.False<DBModel.Admin.AdminSubordinations>();
+                var filterMaxSubordinationTypeContains = PredicateBuilder.New<DBModel.Admin.AdminSubordinations>(false);
                 if (filter.SubordinatedPositions?.Count() > 0)
                 {
                     filterMaxSubordinationTypeContains = filter.SubordinatedPositions.Aggregate(filterMaxSubordinationTypeContains,
@@ -4949,7 +4931,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryPositions>();
+                    var filterContains = PredicateBuilder.New<DictionaryPositions>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -4959,7 +4941,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryPositions>();
+                    var filterContains = PredicateBuilder.New<DictionaryPositions>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -4969,7 +4951,7 @@ namespace BL.Database.Dictionaries
                 // по вышестоящим отделам
                 if (filter.ParentIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryPositions>();
+                    var filterContains = PredicateBuilder.New<DictionaryPositions>(false);
                     filterContains = filter.ParentIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ParentId == value).Expand());
 
@@ -4979,7 +4961,7 @@ namespace BL.Database.Dictionaries
                 // по отделам
                 if (filter.DepartmentIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryPositions>();
+                    var filterContains = PredicateBuilder.New<DictionaryPositions>(false);
                     filterContains = filter.DepartmentIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DepartmentId == value).Expand());
 
@@ -4995,7 +4977,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryPositions>();
+                    var filterContains = PredicateBuilder.New<DictionaryPositions>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                         (current, value) => current.And(e => e.Name.Contains(value)).Expand());
 
@@ -5005,7 +4987,7 @@ namespace BL.Database.Dictionaries
                 // Условие по полному имени
                 if (!string.IsNullOrEmpty(filter.FullName))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryPositions>();
+                    var filterContains = PredicateBuilder.New<DictionaryPositions>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullName).Aggregate(filterContains,
                         (current, value) => current.And(e => e.FullName.Contains(value)).Expand());
 
@@ -5015,7 +4997,7 @@ namespace BL.Database.Dictionaries
                 // Условие по полному имени
                 if (!string.IsNullOrEmpty(filter.NameDepartmentExecutor))
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryPositions>();
+                    var filterContains = PredicateBuilder.New<DictionaryPositions>(true);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.NameDepartmentExecutor).Aggregate(filterContains,
                         (current, value) => current.And(e => (e.Name + " " + e.Department.Name + " " + e.ExecutorAgent.Name).Contains(value)).Expand());
 
@@ -5025,7 +5007,7 @@ namespace BL.Database.Dictionaries
 
                 if (filter.DocumentIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DBModel.Document.DocumentEvents>();
+                    var filterContains = PredicateBuilder.New<DBModel.Document.DocumentEvents>(false);
                     filterContains = filter.DocumentIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
@@ -5056,7 +5038,7 @@ namespace BL.Database.Dictionaries
                 // по отделам
                 if (filter.Orders?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryPositions>();
+                    var filterContains = PredicateBuilder.New<DictionaryPositions>(false);
                     filterContains = filter.Orders.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Order == value).Expand());
 
@@ -5119,7 +5101,7 @@ namespace BL.Database.Dictionaries
 
         //        if (filter.DocumentIDs?.Count > 0)
         //        {
-        //            var filterContains = PredicateBuilder.False<DocumentEvents>();
+        //            var filterContains = PredicateBuilder.New<DocumentEvents>(false);
         //            filterContains = filter.DocumentIDs.Aggregate(filterContains,
         //                (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
@@ -5134,7 +5116,7 @@ namespace BL.Database.Dictionaries
 
         //        if (filter.SubordinatedPositions?.Count > 0)
         //        {
-        //            var filterContains = PredicateBuilder.False<DBModel.Admin.AdminSubordinations>();
+        //            var filterContains = PredicateBuilder.false<DBModel.Admin.AdminSubordinations>();
         //            filterContains = filter.SubordinatedPositions.Aggregate(filterContains,
         //                (current, value) => current.Or(e => e.SourcePositionId == value).Expand());
 
@@ -5410,7 +5392,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();
+                    var filterContains = PredicateBuilder.New<DictionaryPositionExecutors>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -5420,7 +5402,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryPositionExecutors>();
+                    var filterContains = PredicateBuilder.New<DictionaryPositionExecutors>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -5429,7 +5411,7 @@ namespace BL.Database.Dictionaries
 
                 if (filter.PositionIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();
+                    var filterContains = PredicateBuilder.New<DictionaryPositionExecutors>(false);
                     filterContains = filter.PositionIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.PositionId == value).Expand());
 
@@ -5443,7 +5425,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.AgentIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();
+                    var filterContains = PredicateBuilder.New<DictionaryPositionExecutors>(false);
                     filterContains = filter.AgentIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.AgentId == value).Expand());
 
@@ -5453,7 +5435,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка сотрудников
                 if (filter.NotContainsAgentIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryPositionExecutors>();
+                    var filterContains = PredicateBuilder.New<DictionaryPositionExecutors>(true);
                     filterContains = filter.NotContainsAgentIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.AgentId != value).Expand());
 
@@ -5463,7 +5445,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка должностей
                 if (filter.NotContainsPositionIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryPositionExecutors>();
+                    var filterContains = PredicateBuilder.New<DictionaryPositionExecutors>(true);
                     filterContains = filter.NotContainsPositionIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.PositionId != value).Expand());
 
@@ -5473,7 +5455,7 @@ namespace BL.Database.Dictionaries
 
                 if (filter.PositionExecutorTypeIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();
+                    var filterContains = PredicateBuilder.New<DictionaryPositionExecutors>(false);
                     filterContains = filter.PositionExecutorTypeIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.PositionExecutorTypeId == (int)value).Expand());
 
@@ -5509,7 +5491,7 @@ namespace BL.Database.Dictionaries
 
                 if (filter.AccessLevelIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryPositionExecutors>();
+                    var filterContains = PredicateBuilder.New<DictionaryPositionExecutors>(false);
                     filterContains = filter.AccessLevelIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.AccessLevelId == (int)value).Expand());
 
@@ -5592,7 +5574,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryPositionExecutorTypes>();
+                    var filterContains = PredicateBuilder.New<DictionaryPositionExecutorTypes>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -5602,7 +5584,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryPositionExecutorTypes>();
+                    var filterContains = PredicateBuilder.New<DictionaryPositionExecutorTypes>(true);
 
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
@@ -5619,7 +5601,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryPositionExecutorTypes>();
+                    var filterContains = PredicateBuilder.New<DictionaryPositionExecutorTypes>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
@@ -5629,7 +5611,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Code))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryPositionExecutorTypes>();
+                    var filterContains = PredicateBuilder.New<DictionaryPositionExecutorTypes>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Code.Contains(value)).Expand());
 
@@ -5912,7 +5894,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryRegistrationJournals>();
+                    var filterContains = PredicateBuilder.New<DictionaryRegistrationJournals>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -5922,7 +5904,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryRegistrationJournals>();
+                    var filterContains = PredicateBuilder.New<DictionaryRegistrationJournals>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -5938,7 +5920,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryRegistrationJournals>();
+                    var filterContains = PredicateBuilder.New<DictionaryRegistrationJournals>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
@@ -5953,7 +5935,7 @@ namespace BL.Database.Dictionaries
                 // Условие по Index
                 if (!string.IsNullOrEmpty(filter.Index))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryRegistrationJournals>();
+                    var filterContains = PredicateBuilder.New<DictionaryRegistrationJournals>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Index).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Index == value).Expand());
 
@@ -5968,7 +5950,7 @@ namespace BL.Database.Dictionaries
                 // Условие по DepartmentIDs
                 if (filter.DepartmentIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryRegistrationJournals>();
+                    var filterContains = PredicateBuilder.New<DictionaryRegistrationJournals>(false);
                     filterContains = filter.DepartmentIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DepartmentId == value).Expand());
 
@@ -5977,7 +5959,7 @@ namespace BL.Database.Dictionaries
 
                 if (filter.CompanyIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryRegistrationJournals>();
+                    var filterContains = PredicateBuilder.New<DictionaryRegistrationJournals>(false);
                     filterContains = filter.CompanyIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Department.CompanyId == value).Expand());
 
@@ -5987,7 +5969,7 @@ namespace BL.Database.Dictionaries
                 // журналы отдела в котором работает должность
                 if (filter.DepartmentByPositionIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryPositions>();
+                    var filterContains = PredicateBuilder.New<DictionaryPositions>(false);
                     filterContains = filter.DepartmentByPositionIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -6019,7 +6001,7 @@ namespace BL.Database.Dictionaries
 
                 if (filter.PositionIdsAccessForRegistration?.Count > 0)
                 {
-                    var filterPositionsIdList = PredicateBuilder.False<AdminRegistrationJournalPositions>();
+                    var filterPositionsIdList = PredicateBuilder.New<AdminRegistrationJournalPositions>(false);
                     filterPositionsIdList = filter.PositionIdsAccessForRegistration.Aggregate(filterPositionsIdList, (current, value) => current.Or(e => e.PositionId == value).Expand());
                     qry = qry.Where(x => dbContext.AdminRegistrationJournalPositionsSet
                                                 .Where(filterPositionsIdList).Where(y => y.RegJournalAccessTypeId == (int)EnumRegistrationJournalAccessTypes.Registration)
@@ -6050,7 +6032,7 @@ namespace BL.Database.Dictionaries
                     }
                     else if (filter.IDs?.Count > 0)
                     {
-                        var filterContains = PredicateBuilder.False<DictionaryResultTypes>();
+                        var filterContains = PredicateBuilder.New<DictionaryResultTypes>(false);
                         filterContains = filter.IDs.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -6064,7 +6046,7 @@ namespace BL.Database.Dictionaries
                     // Исключение списка первичных ключей
                     if (filter.NotContainsIDs?.Count > 0)
                     {
-                        var filterContains = PredicateBuilder.True<DictionaryResultTypes>();
+                        var filterContains = PredicateBuilder.New<DictionaryResultTypes>(true);
                         filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                             (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -6080,7 +6062,7 @@ namespace BL.Database.Dictionaries
                     // Поиск по наименованию
                     if (!string.IsNullOrEmpty(filter.Name))
                     {
-                        var filterContains = PredicateBuilder.False<DictionaryResultTypes>();
+                        var filterContains = PredicateBuilder.New<DictionaryResultTypes>(false);
                         filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                             (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
@@ -6122,7 +6104,7 @@ namespace BL.Database.Dictionaries
                     }
                     else if (filter.IDs?.Count > 0)
                     {
-                        var filterContains = PredicateBuilder.False<DictionarySendTypes>();
+                        var filterContains = PredicateBuilder.New<DictionarySendTypes>(false);
                         filterContains = filter.IDs.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -6132,7 +6114,7 @@ namespace BL.Database.Dictionaries
                     // Исключение списка первичных ключей
                     if (filter.NotContainsIDs?.Count > 0)
                     {
-                        var filterContains = PredicateBuilder.True<DictionarySendTypes>();
+                        var filterContains = PredicateBuilder.New<DictionarySendTypes>(true);
                         filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                             (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -6142,7 +6124,7 @@ namespace BL.Database.Dictionaries
                     // Поиск по наименованию
                     if (!string.IsNullOrEmpty(filter.Name))
                     {
-                        var filterContains = PredicateBuilder.False<DictionarySendTypes>();
+                        var filterContains = PredicateBuilder.New<DictionarySendTypes>(false);
                         filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                             (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
@@ -6151,7 +6133,7 @@ namespace BL.Database.Dictionaries
 
                     if (filter.Codes?.Count > 0)
                     {
-                        var filterContains = PredicateBuilder.False<DictionarySendTypes>();
+                        var filterContains = PredicateBuilder.New<DictionarySendTypes>(false);
                         filterContains = filter.Codes.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.Code == value).Expand());
 
@@ -6194,7 +6176,7 @@ namespace BL.Database.Dictionaries
                     }
                     else if (filter.IDs?.Count > 0)
                     {
-                        var filterContains = PredicateBuilder.False<DictionaryStageTypes>();
+                        var filterContains = PredicateBuilder.New<DictionaryStageTypes>(false);
                         filterContains = filter.IDs.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -6204,7 +6186,7 @@ namespace BL.Database.Dictionaries
                     // Исключение списка первичных ключей
                     if (filter.NotContainsIDs?.Count > 0)
                     {
-                        var filterContains = PredicateBuilder.True<DictionaryStageTypes>();
+                        var filterContains = PredicateBuilder.New<DictionaryStageTypes>(true);
                         filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                             (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -6214,7 +6196,7 @@ namespace BL.Database.Dictionaries
                     // Поиск по наименованию
                     if (!string.IsNullOrEmpty(filter.Name))
                     {
-                        var filterContains = PredicateBuilder.False<DictionaryStageTypes>();
+                        var filterContains = PredicateBuilder.New<DictionaryStageTypes>(false);
                         filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                             (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
@@ -6252,7 +6234,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryStandartSendListContents>();
+                    var filterContains = PredicateBuilder.New<DictionaryStandartSendListContents>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -6262,7 +6244,7 @@ namespace BL.Database.Dictionaries
                 // Список первичных ключей
                 if (filter.StandartSendListId?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryStandartSendListContents>();
+                    var filterContains = PredicateBuilder.New<DictionaryStandartSendListContents>(false);
                     filterContains = filter.StandartSendListId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.StandartSendListId == value).Expand());
 
@@ -6272,7 +6254,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryStandartSendListContents>();
+                    var filterContains = PredicateBuilder.New<DictionaryStandartSendListContents>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -6281,7 +6263,7 @@ namespace BL.Database.Dictionaries
 
                 if (filter.SendTypeId?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryStandartSendListContents>();
+                    var filterContains = PredicateBuilder.New<DictionaryStandartSendListContents>(false);
                     filterContains = filter.SendTypeId.Aggregate(filterContains,
                         (current, value) => current.Or(e => (EnumSendTypes)e.SendTypeId == value).Expand());
 
@@ -6312,7 +6294,7 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.SendTypeName))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryStandartSendListContents>();
+                    var filterContains = PredicateBuilder.New<DictionaryStandartSendListContents>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.SendTypeName).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.SendType.Name.Contains(value)).Expand());
 
@@ -6321,7 +6303,7 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.TargetPositionName))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryStandartSendListContents>();
+                    var filterContains = PredicateBuilder.New<DictionaryStandartSendListContents>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.TargetPositionName).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.TargetPosition.Name.Contains(value)).Expand());
 
@@ -6330,7 +6312,7 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.TargetAgentName))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryStandartSendListContents>();
+                    var filterContains = PredicateBuilder.New<DictionaryStandartSendListContents>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.TargetAgentName).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.TargetAgent.Name.Contains(value)).Expand());
 
@@ -6443,7 +6425,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryStandartSendLists>();
+                    var filterContains = PredicateBuilder.New<DictionaryStandartSendLists>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -6453,7 +6435,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryStandartSendLists>();
+                    var filterContains = PredicateBuilder.New<DictionaryStandartSendLists>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -6463,7 +6445,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по наименованию
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryStandartSendLists>();
+                    var filterContains = PredicateBuilder.New<DictionaryStandartSendLists>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
@@ -6483,7 +6465,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.PositionIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryStandartSendLists>();
+                    var filterContains = PredicateBuilder.New<DictionaryStandartSendLists>(false);
                     filterContains = filter.PositionIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.PositionId == value).Expand());
 
@@ -6634,7 +6616,7 @@ namespace BL.Database.Dictionaries
                     }
                     else if (filter.IDs?.Count > 0)
                     {
-                        var filterContains = PredicateBuilder.False<DictionarySubordinationTypes>();
+                        var filterContains = PredicateBuilder.New<DictionarySubordinationTypes>(false);
                         filterContains = filter.IDs.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -6644,7 +6626,7 @@ namespace BL.Database.Dictionaries
                     // Исключение списка первичных ключей
                     if (filter.NotContainsIDs?.Count > 0)
                     {
-                        var filterContains = PredicateBuilder.True<DictionarySubordinationTypes>();
+                        var filterContains = PredicateBuilder.New<DictionarySubordinationTypes>(true);
                         filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                             (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -6654,7 +6636,7 @@ namespace BL.Database.Dictionaries
                     // Поиск по наименованию
                     if (!string.IsNullOrEmpty(filter.Name))
                     {
-                        var filterContains = PredicateBuilder.False<DictionarySubordinationTypes>();
+                        var filterContains = PredicateBuilder.New<DictionarySubordinationTypes>(false);
                         filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                             (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
@@ -6686,7 +6668,7 @@ namespace BL.Database.Dictionaries
             {
                 if (!ctx.IsAdmin)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryTags>();
+                    var filterContains = PredicateBuilder.New<DictionaryTags>(false);
                     filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.PositionId == value || !e.PositionId.HasValue).Expand());
 
@@ -6700,7 +6682,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryTags>();
+                    var filterContains = PredicateBuilder.New<DictionaryTags>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -6709,7 +6691,7 @@ namespace BL.Database.Dictionaries
 
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryTags>();
+                    var filterContains = PredicateBuilder.New<DictionaryTags>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -6931,7 +6913,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<AdminAccessLevels>();
+                    var filterContains = PredicateBuilder.New<AdminAccessLevels>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -6942,7 +6924,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<AdminAccessLevels>();
+                    var filterContains = PredicateBuilder.New<AdminAccessLevels>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -6953,7 +6935,7 @@ namespace BL.Database.Dictionaries
                 // Поиск но Code
                 if (!string.IsNullOrEmpty(filter.Code))
                 {
-                    var filterContains = PredicateBuilder.False<AdminAccessLevels>();
+                    var filterContains = PredicateBuilder.New<AdminAccessLevels>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Code.Contains(value)).Expand());
 
@@ -6967,7 +6949,7 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    var filterContains = PredicateBuilder.False<AdminAccessLevels>();
+                    var filterContains = PredicateBuilder.New<AdminAccessLevels>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
@@ -7132,7 +7114,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<CustomDictionaryTypes>();
+                    var filterContains = PredicateBuilder.New<CustomDictionaryTypes>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -7142,7 +7124,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<CustomDictionaryTypes>();
+                    var filterContains = PredicateBuilder.New<CustomDictionaryTypes>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -7153,7 +7135,7 @@ namespace BL.Database.Dictionaries
                 // Поиск но Code
                 if (!string.IsNullOrEmpty(filter.Code))
                 {
-                    var filterContains = PredicateBuilder.False<CustomDictionaryTypes>();
+                    var filterContains = PredicateBuilder.New<CustomDictionaryTypes>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Code.Contains(value)).Expand());
 
@@ -7167,7 +7149,7 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    var filterContains = PredicateBuilder.False<CustomDictionaryTypes>();
+                    var filterContains = PredicateBuilder.New<CustomDictionaryTypes>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
@@ -7309,7 +7291,7 @@ namespace BL.Database.Dictionaries
                 }
                 else if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<CustomDictionaries>();
+                    var filterContains = PredicateBuilder.New<CustomDictionaries>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -7318,7 +7300,7 @@ namespace BL.Database.Dictionaries
 
                 if (filter.TypeId.HasValue)
                 {
-                    //var filterContains = PredicateBuilder.False<CustomDictionaries>();
+                    //var filterContains = PredicateBuilder.New<CustomDictionaries>(false);
                     //filterContains = filter.TypeIDs.Aggregate(filterContains,
                     //    (current, value) => current.Or(e => e.DictionaryTypeId == value).Expand());
 
@@ -7330,7 +7312,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<CustomDictionaries>();
+                    var filterContains = PredicateBuilder.New<CustomDictionaries>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -7346,7 +7328,7 @@ namespace BL.Database.Dictionaries
                 // Поиск по Code
                 if (!string.IsNullOrEmpty(filter.Code))
                 {
-                    var filterContains = PredicateBuilder.False<CustomDictionaries>();
+                    var filterContains = PredicateBuilder.New<CustomDictionaries>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Code.Contains(value)).Expand());
 
@@ -7355,7 +7337,7 @@ namespace BL.Database.Dictionaries
 
                 if (!string.IsNullOrEmpty(filter.Name))
                 {
-                    var filterContains = PredicateBuilder.False<CustomDictionaries>();
+                    var filterContains = PredicateBuilder.New<CustomDictionaries>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
@@ -7463,7 +7445,7 @@ namespace BL.Database.Dictionaries
             {
                 if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentFavorites>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentFavorites>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -7473,7 +7455,7 @@ namespace BL.Database.Dictionaries
                 // Исключение списка первичных ключей
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DictionaryAgentFavorites>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentFavorites>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -7482,7 +7464,7 @@ namespace BL.Database.Dictionaries
 
                 if (filter.AgentIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentFavorites>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentFavorites>(false);
                     filterContains = filter.AgentIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.AgentId == value).Expand());
 
@@ -7490,7 +7472,7 @@ namespace BL.Database.Dictionaries
                 }
                 if (filter.ObjectIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DictionaryAgentFavorites>();
+                    var filterContains = PredicateBuilder.New<DictionaryAgentFavorites>(false);
                     filterContains = filter.ObjectIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ObjectId == value).Expand());
 

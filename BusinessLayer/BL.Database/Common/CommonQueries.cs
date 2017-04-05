@@ -49,7 +49,7 @@ namespace BL.Database.Common
             {
                 if (userAccesses == null)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                    var filterContains = PredicateBuilder.New<DocumentAccesses>(false);
                     filterContains = isVerifyAccessLevel
                         ? ctx.CurrentPositionsAccessLevel.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand())
                         : ctx.CurrentPositionsIdList.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
@@ -66,14 +66,14 @@ namespace BL.Database.Common
 
                 //if (isVerifyExecutorPosition)
                 //{
-                //    var filterExecutorPositionContains = PredicateBuilder.False<DBModel.Document.Documents>();
+                //    var filterExecutorPositionContains = PredicateBuilder.New<DBModel.Document.Documents>(false);
                 //    filterExecutorPositionContains = ctx.CurrentPositionsIdList.Aggregate(filterExecutorPositionContains, (current, value) => current.Or(e => e.ExecutorPositionId == value).Expand());
                 //    qry = qry.Where(filterExecutorPositionContains);
                 //}
                 //else 
                 if (!isVerifyExecutorPosition.HasValue && userAccesses == null)  //доступ к журналам проверяем, если нет ограничений на Accesses
                 {
-                    var filterPositionsIdList = PredicateBuilder.False<AdminRegistrationJournalPositions>();
+                    var filterPositionsIdList = PredicateBuilder.New<AdminRegistrationJournalPositions>(false);
                     filterPositionsIdList = ctx.CurrentPositionsIdList.Aggregate(filterPositionsIdList, (current, value) => current.Or(e => e.PositionId == value).Expand());
                     if (dbContext.AdminRegistrationJournalPositionsSet
                         .Where(filterPositionsIdList).Where(x => x.RegJournalAccessTypeId == (int)EnumRegistrationJournalAccessTypes.View)
@@ -129,7 +129,7 @@ namespace BL.Database.Common
 
                 if (filter.DocumentId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
+                    var filterContains = PredicateBuilder.New<DBModel.Document.Documents>(false);
                     filterContains = filter.DocumentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -139,7 +139,7 @@ namespace BL.Database.Common
                 // Исключение списка первичных ключей
                 if (filter.NotContainsDocumentId?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DBModel.Document.Documents>();
+                    var filterContains = PredicateBuilder.New<DBModel.Document.Documents>(true);
                     filterContains = filter.NotContainsDocumentId.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -148,7 +148,7 @@ namespace BL.Database.Common
                 // Исключение списка ИД процессов
                 if (filter.NotContainsLinkId?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<DBModel.Document.Documents>();
+                    var filterContains = PredicateBuilder.New<DBModel.Document.Documents>(true);
                     filterContains = filter.NotContainsLinkId.Aggregate(filterContains,
                         (current, value) => current.And(e => e.LinkId != value).Expand());
                     qry = qry.Where(filterContains);
@@ -218,7 +218,7 @@ namespace BL.Database.Common
 
                 if (filter.SenderAgentPersonId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
+                    var filterContains = PredicateBuilder.New<DBModel.Document.Documents>(false);
                     filterContains = filter.SenderAgentPersonId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.SenderAgentPersonId == value).Expand());
 
@@ -232,7 +232,7 @@ namespace BL.Database.Common
 
                 if (filter.DocumentTypeId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
+                    var filterContains = PredicateBuilder.New<DBModel.Document.Documents>(false);
                     filterContains = filter.DocumentTypeId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentTypeId == value).Expand());
 
@@ -241,7 +241,7 @@ namespace BL.Database.Common
 
                 if (filter.TemplateDocumentId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
+                    var filterContains = PredicateBuilder.New<DBModel.Document.Documents>(false);
                     filterContains = filter.TemplateDocumentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.TemplateDocumentId == value).Expand());
 
@@ -250,7 +250,7 @@ namespace BL.Database.Common
 
                 if (filter.DocumentDirectionId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
+                    var filterContains = PredicateBuilder.New<DBModel.Document.Documents>(false);
                     filterContains = filter.DocumentDirectionId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentDirectionId == value).Expand());
 
@@ -263,7 +263,7 @@ namespace BL.Database.Common
 
                 if (filter.RegistrationJournalId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
+                    var filterContains = PredicateBuilder.New<DBModel.Document.Documents>(false);
                     filterContains = filter.RegistrationJournalId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.RegistrationJournalId == value).Expand());
 
@@ -272,7 +272,7 @@ namespace BL.Database.Common
 
                 if (filter.ExecutorPositionId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
+                    var filterContains = PredicateBuilder.New<DBModel.Document.Documents>(false);
                     filterContains = filter.ExecutorPositionId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ExecutorPositionId == value).Expand());
 
@@ -281,7 +281,7 @@ namespace BL.Database.Common
 
                 if (filter.ExecutorPositionExecutorAgentId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
+                    var filterContains = PredicateBuilder.New<DBModel.Document.Documents>(false);
                     filterContains = filter.ExecutorPositionExecutorAgentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ExecutorPositionExecutorAgentId == value).Expand());
 
@@ -290,7 +290,7 @@ namespace BL.Database.Common
 
                 if (filter.ExecutorDepartmentId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
+                    var filterContains = PredicateBuilder.New<DBModel.Document.Documents>(false);
                     filterContains = filter.ExecutorDepartmentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ExecutorPosition.DepartmentId == value).Expand());
 
@@ -300,7 +300,7 @@ namespace BL.Database.Common
 
                 if (filter.SenderAgentId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
+                    var filterContains = PredicateBuilder.New<DBModel.Document.Documents>(false);
                     filterContains = filter.SenderAgentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.SenderAgentId == value).Expand());
 
@@ -314,7 +314,7 @@ namespace BL.Database.Common
 
                 if (filter.IsInMyControl ?? false)
                 {
-                    var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
+                    var filterContains = PredicateBuilder.New<DBModel.Document.Documents>(false);
                     filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ExecutorPositionId == value).Expand());
 
@@ -335,14 +335,14 @@ namespace BL.Database.Common
                     (filter.SubscriptionPositionExecutorAgentId?.Count() > 0) ||
                     (filter.SubscriptionDepartmentId?.Count() > 0))
                 {
-                    var filterContains = PredicateBuilder.False<DocumentSubscriptions>();
+                    var filterContains = PredicateBuilder.New<DocumentSubscriptions>(false);
                     filterContains = new List<int> { (int)EnumSubscriptionStates.Sign, (int)EnumSubscriptionStates.Visa, (int)EnumSubscriptionStates.Аgreement, (int)EnumSubscriptionStates.Аpproval }
                         .Aggregate(filterContains,
                         (current, value) => current.Or(e => e.SubscriptionStateId == value).Expand());
 
                     if (filter.SubscriptionPositionId?.Count() > 0)
                     {
-                        var filterContainsSubscriptionPositionId = PredicateBuilder.False<DocumentSubscriptions>();
+                        var filterContainsSubscriptionPositionId = PredicateBuilder.New<DocumentSubscriptions>(false);
                         filterContainsSubscriptionPositionId = filter.SubscriptionPositionId.Aggregate(filterContainsSubscriptionPositionId,
                             (current, value) => current.Or(e => e.DoneEvent.SourcePositionId == value).Expand());
 
@@ -353,7 +353,7 @@ namespace BL.Database.Common
 
                     if (filter.SubscriptionPositionExecutorAgentId?.Count() > 0)
                     {
-                        var filterContainsSubscriptionPositionExecutorAgentId = PredicateBuilder.False<DocumentSubscriptions>();
+                        var filterContainsSubscriptionPositionExecutorAgentId = PredicateBuilder.New<DocumentSubscriptions>(false);
                         filterContainsSubscriptionPositionExecutorAgentId = filter.SubscriptionPositionExecutorAgentId.Aggregate(filterContainsSubscriptionPositionExecutorAgentId,
                             (current, value) => current.Or(e => e.DoneEvent.SourcePositionExecutorAgentId == value).Expand());
 
@@ -364,7 +364,7 @@ namespace BL.Database.Common
 
                     if (filter.SubscriptionDepartmentId?.Count() > 0)
                     {
-                        var filterContainsSubscriptionDepartmentId = PredicateBuilder.False<DocumentSubscriptions>();
+                        var filterContainsSubscriptionDepartmentId = PredicateBuilder.New<DocumentSubscriptions>(false);
                         filterContainsSubscriptionDepartmentId = filter.SubscriptionDepartmentId.Aggregate(filterContainsSubscriptionDepartmentId,
                             (current, value) => current.Or(e => e.DoneEvent.SourcePosition.DepartmentId == value).Expand());
 
@@ -380,7 +380,7 @@ namespace BL.Database.Common
                 //TODO Должно соответсвовать всем или хотябы одному
                 if (filter.TaskId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentTasks>();
+                    var filterContains = PredicateBuilder.New<DocumentTasks>(false);
                     filterContains = filter.TaskId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -397,13 +397,13 @@ namespace BL.Database.Common
                 if ((filter.TagId?.Count() > 0) ||
                     !string.IsNullOrEmpty(filter.TagDescription))
                 {
-                    //var filterContainsPosition = PredicateBuilder.False<DocumentTags>();
+                    //var filterContainsPosition = PredicateBuilder.New<DocumentTags>(false);
                     //filterContainsPosition = ctx.CurrentPositionsIdList.Aggregate(filterContainsPosition,
                     //    (current, value) => current.Or(e => !e.Tag.PositionId.HasValue || e.Tag.PositionId == value).Expand());
 
                     if (filter.TagId?.Count() > 0)
                     {
-                        //var filterContains = PredicateBuilder.True<DocumentTags>();
+                        //var filterContains = PredicateBuilder.New<DocumentTags>(true);
                         //filterContains = filter.TagId.Aggregate(filterContains,
                         //    (current, value) => current.And(e => e.Tag.Id == value).Expand());
                         //qry = qry.Where(x => x.Tags.AsQueryable()
@@ -507,7 +507,7 @@ namespace BL.Database.Common
 
             if (filter.SourcePositionIDs?.Count() > 0)
             {
-                var filterContains = PredicateBuilder.False<DocumentEvents>();
+                var filterContains = PredicateBuilder.New<DocumentEvents>(false);
                 filterContains = filter.SourcePositionIDs.Aggregate(filterContains,
                     (current, value) => current.Or(e => e.SourcePositionId == value).Expand());
                 qry = qry.Where(filterContains);
@@ -515,7 +515,7 @@ namespace BL.Database.Common
 
             if (filter.SourcePositionExecutorAgentIDs?.Count() > 0)
             {
-                var filterContains = PredicateBuilder.False<DocumentEvents>();
+                var filterContains = PredicateBuilder.New<DocumentEvents>(false);
                 filterContains = filter.SourcePositionExecutorAgentIDs.Aggregate(filterContains,
                     (current, value) => current.Or(e => e.SourcePositionExecutorAgentId == value).Expand());
 
@@ -524,7 +524,7 @@ namespace BL.Database.Common
 
             if (filter.SourceAgentIDs?.Count() > 0)
             {
-                var filterContains = PredicateBuilder.False<DocumentEvents>();
+                var filterContains = PredicateBuilder.New<DocumentEvents>(false);
                 filterContains = filter.SourceAgentIDs.Aggregate(filterContains,
                     (current, value) => current.Or(e => e.SourceAgentId == value).Expand());
 
@@ -533,7 +533,7 @@ namespace BL.Database.Common
 
             if (filter.TargetPositionIDs?.Count() > 0)
             {
-                var filterContains = PredicateBuilder.False<DocumentEvents>();
+                var filterContains = PredicateBuilder.New<DocumentEvents>(false);
                 filterContains = filter.TargetPositionIDs.Aggregate(filterContains,
                     (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
                 qry = qry.Where(filterContains);
@@ -541,7 +541,7 @@ namespace BL.Database.Common
 
             if (filter.TargetPositionExecutorAgentIDs?.Count() > 0)
             {
-                var filterContains = PredicateBuilder.False<DocumentEvents>();
+                var filterContains = PredicateBuilder.New<DocumentEvents>(false);
                 filterContains = filter.TargetPositionExecutorAgentIDs.Aggregate(filterContains,
                     (current, value) => current.Or(e => e.TargetPositionExecutorAgentId == value).Expand());
 
@@ -550,7 +550,7 @@ namespace BL.Database.Common
 
             if (filter.ReadAgentIDs?.Count() > 0)
             {
-                var filterContains = PredicateBuilder.False<DocumentEvents>();
+                var filterContains = PredicateBuilder.New<DocumentEvents>(false);
                 filterContains = filter.ReadAgentIDs.Aggregate(filterContains,
                     (current, value) => current.Or(e => e.ReadAgentId == value).Expand());
 
@@ -572,7 +572,7 @@ namespace BL.Database.Common
             {
                 if (filter.EventId?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    var filterContains = PredicateBuilder.New<DocumentEvents>(false);
                     filterContains = filter.EventId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -586,7 +586,7 @@ namespace BL.Database.Common
 
                 if (filter.DocumentId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    var filterContains = PredicateBuilder.New<DocumentEvents>(false);
                     filterContains = filter.DocumentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
@@ -597,9 +597,9 @@ namespace BL.Database.Common
                 {
                     if (filter.IsNew.Value)
                     {
-                        var filteTargetPositionIdContains = PredicateBuilder.False<DocumentEvents>();
-                        filteTargetPositionIdContains = ctx.CurrentPositionsAccessLevel.Aggregate(filteTargetPositionIdContains, 
-                            (current, value) => current.Or(e => e.TargetPositionId == value.Key && e.Document.Accesses.Any(x=>x.PositionId == value.Key && x.AccessLevelId >= value.Value)).Expand());
+                        var filteTargetPositionIdContains = PredicateBuilder.New<DocumentEvents>(false);
+                        filteTargetPositionIdContains = ctx.CurrentPositionsAccessLevel.Aggregate(filteTargetPositionIdContains,
+                            (current, value) => current.Or(e => e.TargetPositionId == value.Key && e.Document.Accesses.Any(x => x.PositionId == value.Key && x.AccessLevelId >= value.Value)).Expand());
                         qry = qry.Where(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId).Where(filteTargetPositionIdContains);
                     }
                     //else
@@ -631,7 +631,7 @@ namespace BL.Database.Common
 
                 if (filter.TypeId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    var filterContains = PredicateBuilder.New<DocumentEvents>(false);
                     filterContains = filter.TypeId.Select(x => (int)x).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.EventTypeId == value).Expand());
 
@@ -640,7 +640,7 @@ namespace BL.Database.Common
 
                 if (filter.ImportanceEventTypeId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    var filterContains = PredicateBuilder.New<DocumentEvents>(false);
                     filterContains = filter.ImportanceEventTypeId.Select(x => (int)x).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.EventType.ImportanceEventTypeId == value).Expand());
 
@@ -654,7 +654,7 @@ namespace BL.Database.Common
 
                 if (filter.PositionId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    var filterContains = PredicateBuilder.New<DocumentEvents>(false);
                     filterContains = filter.PositionId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.SourcePositionId == value || e.TargetPositionId == value).Expand());
                     qry = qry.Where(filterContains);
@@ -662,7 +662,7 @@ namespace BL.Database.Common
 
                 if (filter.SourcePositionId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    var filterContains = PredicateBuilder.New<DocumentEvents>(false);
                     filterContains = filter.SourcePositionId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.SourcePositionId == value).Expand());
                     qry = qry.Where(filterContains);
@@ -670,7 +670,7 @@ namespace BL.Database.Common
 
                 if (filter.TargetPositionId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    var filterContains = PredicateBuilder.New<DocumentEvents>(false);
                     filterContains = filter.TargetPositionId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
                     qry = qry.Where(filterContains);
@@ -678,7 +678,7 @@ namespace BL.Database.Common
 
                 if (filter.PositionExecutorAgentId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    var filterContains = PredicateBuilder.New<DocumentEvents>(false);
                     filterContains = filter.PositionExecutorAgentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.SourcePositionExecutorAgentId == value || e.TargetPositionExecutorAgentId == value).Expand());
 
@@ -687,7 +687,7 @@ namespace BL.Database.Common
 
                 if (filter.SourcePositionExecutorAgentId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    var filterContains = PredicateBuilder.New<DocumentEvents>(false);
                     filterContains = filter.SourcePositionExecutorAgentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.SourcePositionExecutorAgentId == value).Expand());
 
@@ -696,7 +696,7 @@ namespace BL.Database.Common
 
                 if (filter.TargetPositionExecutorAgentId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    var filterContains = PredicateBuilder.New<DocumentEvents>(false);
                     filterContains = filter.TargetPositionExecutorAgentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.TargetPositionExecutorAgentId == value).Expand());
 
@@ -705,7 +705,7 @@ namespace BL.Database.Common
 
                 if (filter.TargetAgentId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    var filterContains = PredicateBuilder.New<DocumentEvents>(false);
                     filterContains = filter.TargetAgentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.TargetAgentId == value || e.TargetPositionExecutorAgentId == value).Expand());
 
@@ -713,7 +713,7 @@ namespace BL.Database.Common
                 }
                 if (filter.SourceAgentId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    var filterContains = PredicateBuilder.New<DocumentEvents>(false);
                     filterContains = filter.SourceAgentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.SourceAgentId == value || e.SourcePositionExecutorAgentId == value).Expand());
 
@@ -721,7 +721,7 @@ namespace BL.Database.Common
                 }
                 if (filter.AgentId?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    var filterContains = PredicateBuilder.New<DocumentEvents>(false);
                     filterContains = filter.AgentId.Aggregate(filterContains,
                         (current, value) => current.Or(e =>
                             e.TargetAgentId == value
@@ -737,7 +737,7 @@ namespace BL.Database.Common
 
                 if (filter.DepartmentId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    var filterContains = PredicateBuilder.New<DocumentEvents>(false);
                     filterContains = filter.DepartmentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.SourcePosition.DepartmentId == value || e.TargetPosition.DepartmentId == value).Expand());
 
@@ -746,7 +746,7 @@ namespace BL.Database.Common
 
                 if (filter.SourceDepartmentId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    var filterContains = PredicateBuilder.New<DocumentEvents>(false);
                     filterContains = filter.SourceDepartmentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.SourcePosition.DepartmentId == value).Expand());
 
@@ -755,7 +755,7 @@ namespace BL.Database.Common
 
                 if (filter.TargetDepartmentId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    var filterContains = PredicateBuilder.New<DocumentEvents>(false);
                     filterContains = filter.DepartmentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.TargetPosition.DepartmentId == value).Expand());
 
@@ -768,18 +768,18 @@ namespace BL.Database.Common
 
             if (!ctx.IsAdmin)
             {
-                //var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                //var filterContains = PredicateBuilder.New<DocumentAccesses>(false);
                 //filterContains = isVerifyAccessLevel
                 //    ? ctx.CurrentPositionsAccessLevel.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand())
                 //    : ctx.CurrentPositionsIdList.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
                 //qry = qry.Where(x => x.Document.Accesses.AsQueryable().Any(filterContains));
 
-                var filterPositionContains = PredicateBuilder.False<DocumentEvents>();
+                var filterPositionContains = PredicateBuilder.New<DocumentEvents>(false);
                 filterPositionContains = ctx.CurrentPositionsAccessLevel.Aggregate(filterPositionContains,
                     (current, value) => current.Or(e => (e.TargetPositionId == value.Key || e.SourcePositionId == value.Key)
                     && e.Document.Accesses.Any(x => x.PositionId == value.Key && x.AccessLevelId >= value.Value)).Expand());
 
-                //var filterTaskAccessesContains = PredicateBuilder.False<DocumentTaskAccesses>();
+                //var filterTaskAccessesContains = PredicateBuilder.New<DocumentTaskAccesses>(false);
                 //filterTaskAccessesContains = ctx.CurrentPositionsIdList.Aggregate(filterTaskAccessesContains,
                 //    (current, value) => current.Or(e => e.PositionId == value).Expand());
 
@@ -833,7 +833,7 @@ namespace BL.Database.Common
             {
                 if (paging.IsOnlyCounter ?? true)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentEvents>();
+                    var filterContains = PredicateBuilder.New<DocumentEvents>(false);
                     filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
 
@@ -995,7 +995,7 @@ namespace BL.Database.Common
 
             if (!ctx.IsAdmin)
             {
-                var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                var filterContains = PredicateBuilder.New<DocumentAccesses>(false);
                 filterContains = isVerifyAccessLevel
                     ? ctx.CurrentPositionsAccessLevel.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand())
                     : ctx.CurrentPositionsIdList.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
@@ -1006,7 +1006,7 @@ namespace BL.Database.Common
             {
                 if (filter.FileId?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentFiles>();
+                    var filterContains = PredicateBuilder.New<DocumentFiles>(false);
                     filterContains = filter.FileId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1020,7 +1020,7 @@ namespace BL.Database.Common
 
                 if (filter.DocumentId?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentFiles>();
+                    var filterContains = PredicateBuilder.New<DocumentFiles>(false);
                     filterContains = filter.DocumentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
@@ -1029,7 +1029,7 @@ namespace BL.Database.Common
 
                 if (filter.OrderInDocument?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentFiles>();
+                    var filterContains = PredicateBuilder.New<DocumentFiles>(false);
                     filterContains = filter.OrderInDocument.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.OrderNumber == value).Expand());
 
@@ -1038,7 +1038,7 @@ namespace BL.Database.Common
 
                 if (filter.Types?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentFiles>();
+                    var filterContains = PredicateBuilder.New<DocumentFiles>(false);
                     filterContains = filter.Types.Cast<int>().Aggregate(filterContains,
                         (current, value) => current.Or(e => e.TypeId == value).Expand());
 
@@ -1094,7 +1094,7 @@ namespace BL.Database.Common
                 }
                 if (filter.AgentId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentFiles>();
+                    var filterContains = PredicateBuilder.New<DocumentFiles>(false);
                     filterContains = filter.AgentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.LastChangeUserId == value).Expand());
 
@@ -1102,7 +1102,7 @@ namespace BL.Database.Common
                 }
                 if (filter.IsMyFiles ?? false)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentFiles>();
+                    var filterContains = PredicateBuilder.New<DocumentFiles>(false);
                     filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ExecutorPositionId == value).Expand());
                     qry = qry.Where(filterContains);
@@ -1210,7 +1210,7 @@ namespace BL.Database.Common
 
             if (res.Any(x => x.IsMainVersion))
             {
-                var filterContains = PredicateBuilder.False<DocumentFiles>();
+                var filterContains = PredicateBuilder.New<DocumentFiles>(false);
                 filterContains = res.Where(x => x.IsMainVersion).Select(x => new { x.DocumentId, x.OrderInDocument }).ToList()
                                     .Aggregate(filterContains,
                     (current, value) => current.Or(e => e.DocumentId == value.DocumentId && e.OrderNumber == value.OrderInDocument).Expand());
@@ -1299,7 +1299,7 @@ namespace BL.Database.Common
 
                 if (filter.DocumentId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentWaits>();
+                    var filterContains = PredicateBuilder.New<DocumentWaits>(false);
                     filterContains = filter.DocumentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
@@ -1308,7 +1308,7 @@ namespace BL.Database.Common
 
                 if (filter.OnEventId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentWaits>();
+                    var filterContains = PredicateBuilder.New<DocumentWaits>(false);
                     filterContains = filter.OnEventId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.OnEventId == value).Expand());
 
@@ -1317,7 +1317,7 @@ namespace BL.Database.Common
 
                 if (filter.OffEventId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentWaits>();
+                    var filterContains = PredicateBuilder.New<DocumentWaits>(false);
                     filterContains = filter.OffEventId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.OffEventId == value).Expand());
 
@@ -1375,7 +1375,7 @@ namespace BL.Database.Common
                     || (filter.ControlToMeDepartmentId?.Count() > 0))
                 {
                     {
-                        var filterContains = PredicateBuilder.False<DocumentWaits>();
+                        var filterContains = PredicateBuilder.New<DocumentWaits>(false);
                         filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value && e.OnEvent.SourcePositionId != value).Expand());
 
@@ -1385,7 +1385,7 @@ namespace BL.Database.Common
 
                     if (filter.ControlToMePositionId?.Count() > 0)
                     {
-                        var filterContains = PredicateBuilder.False<DocumentWaits>();
+                        var filterContains = PredicateBuilder.New<DocumentWaits>(false);
                         filterContains = filter.ControlToMePositionId.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.OnEvent.SourcePositionId == value).Expand());
 
@@ -1394,7 +1394,7 @@ namespace BL.Database.Common
 
                     if (filter.ControlToMePositionExecutorAgentId?.Count() > 0)
                     {
-                        var filterContains = PredicateBuilder.False<DocumentWaits>();
+                        var filterContains = PredicateBuilder.New<DocumentWaits>(false);
                         filterContains = filter.ControlToMePositionExecutorAgentId.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.OnEvent.SourcePositionExecutorAgentId == value).Expand());
 
@@ -1403,7 +1403,7 @@ namespace BL.Database.Common
 
                     if (filter.ControlToMeDepartmentId?.Count() > 0)
                     {
-                        var filterContains = PredicateBuilder.False<DocumentWaits>();
+                        var filterContains = PredicateBuilder.New<DocumentWaits>(false);
                         filterContains = filter.ControlToMeDepartmentId.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.OnEvent.SourcePosition.DepartmentId == value).Expand());
 
@@ -1420,7 +1420,7 @@ namespace BL.Database.Common
                     || (filter.ControlFromMeAgentId?.Count() > 0))
                 {
                     {
-                        var filterContains = PredicateBuilder.False<DocumentWaits>();
+                        var filterContains = PredicateBuilder.New<DocumentWaits>(false);
                         filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.OnEvent.TargetPositionId != value && e.OnEvent.SourcePositionId == value).Expand());
 
@@ -1430,7 +1430,7 @@ namespace BL.Database.Common
 
                     if (filter.ControlFromMePositionId?.Count() > 0)
                     {
-                        var filterContains = PredicateBuilder.False<DocumentWaits>();
+                        var filterContains = PredicateBuilder.New<DocumentWaits>(false);
                         filterContains = filter.ControlFromMePositionId.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value).Expand());
 
@@ -1439,7 +1439,7 @@ namespace BL.Database.Common
 
                     if (filter.ControlFromMePositionExecutorAgentId?.Count() > 0)
                     {
-                        var filterContains = PredicateBuilder.False<DocumentWaits>();
+                        var filterContains = PredicateBuilder.New<DocumentWaits>(false);
                         filterContains = filter.ControlFromMePositionExecutorAgentId.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.OnEvent.TargetPositionExecutorAgentId == value).Expand());
 
@@ -1448,7 +1448,7 @@ namespace BL.Database.Common
 
                     if (filter.ControlFromMeDepartmentId?.Count() > 0)
                     {
-                        var filterContains = PredicateBuilder.False<DocumentWaits>();
+                        var filterContains = PredicateBuilder.New<DocumentWaits>(false);
                         filterContains = filter.ControlFromMeDepartmentId.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.OnEvent.TargetPosition.DepartmentId == value).Expand());
 
@@ -1457,7 +1457,7 @@ namespace BL.Database.Common
 
                     if (filter.ControlFromMeAgentId?.Count() > 0)
                     {
-                        var filterContains = PredicateBuilder.False<DocumentWaits>();
+                        var filterContains = PredicateBuilder.New<DocumentWaits>(false);
                         filterContains = filter.ControlFromMeAgentId.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.OnEvent.TargetAgentId == value).Expand());
 
@@ -1470,7 +1470,7 @@ namespace BL.Database.Common
 
                 if (filter.IsSelfControl ?? false)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentWaits>();
+                    var filterContains = PredicateBuilder.New<DocumentWaits>(false);
                     filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value && e.OnEvent.SourcePositionId == value).Expand());
 
@@ -1482,7 +1482,7 @@ namespace BL.Database.Common
                 #region Поступившие на визирование SendForVisaing, SendForАgreement, SendForАpproval, SendForSigning
                 if (filter.IsVisaingToMe ?? false)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentWaits>();
+                    var filterContains = PredicateBuilder.New<DocumentWaits>(false);
                     filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value
                                             && e.OnEvent.SourcePositionId != value).Expand());
@@ -1499,7 +1499,7 @@ namespace BL.Database.Common
                 #region Отправленные на визирование SendForVisaing, SendForАgreement, SendForАpproval, SendForSigning
                 if (filter.IsVisaingFromMe ?? false)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentWaits>();
+                    var filterContains = PredicateBuilder.New<DocumentWaits>(false);
                     filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.OnEvent.TargetPositionId != value
                                             && e.OnEvent.SourcePositionId == value).Expand());
@@ -1528,13 +1528,13 @@ namespace BL.Database.Common
 
             if (ctx != null && !ctx.IsAdmin)
             {
-                //var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                //var filterContains = PredicateBuilder.New<DocumentAccesses>(false);
                 //filterContains = isVerifyAccessLevel
                 //    ? ctx.CurrentPositionsAccessLevel.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand())
                 //    : ctx.CurrentPositionsIdList.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
                 //qry = qry.Where(x => x.Document.Accesses.AsQueryable().Any(filterContains));
 
-                var filterOnEventPositionsContains = PredicateBuilder.False<DocumentWaits>();
+                var filterOnEventPositionsContains = PredicateBuilder.New<DocumentWaits>(false);
                 filterOnEventPositionsContains = ctx.CurrentPositionsAccessLevel.Aggregate(filterOnEventPositionsContains,
                     (current, value) => current.Or(e => (e.OnEvent.TargetPositionId == value.Key || e.OnEvent.SourcePositionId == value.Key)
                                                 && e.Document.Accesses.Any(x => x.PositionId == value.Key && x.AccessLevelId >= value.Value)).Expand());
@@ -1545,7 +1545,7 @@ namespace BL.Database.Common
                 }
                 else
                 {
-                    var filterOnEventTaskAccessesContains = PredicateBuilder.False<DocumentTaskAccesses>();
+                    var filterOnEventTaskAccessesContains = PredicateBuilder.New<DocumentTaskAccesses>(false);
                     filterOnEventTaskAccessesContains = ctx.CurrentPositionsIdList.Aggregate(filterOnEventTaskAccessesContains,
                         (current, value) => current.Or(e => e.PositionId == value).Expand());
                     res.Add(qry./*Where(x => !x.OnEvent.IsAvailableWithinTask).*/Where(filterOnEventPositionsContains));
@@ -1777,7 +1777,7 @@ namespace BL.Database.Common
             }
             if (!isAll && !ctx.IsAdmin)
             {
-                var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                var filterContains = PredicateBuilder.New<DocumentAccesses>(false);
                 filterContains = isVerifyAccessLevel
                     ? ctx.CurrentPositionsAccessLevel.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand())
                     : ctx.CurrentPositionsIdList.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
@@ -1787,7 +1787,7 @@ namespace BL.Database.Common
             {
                 if (filter.DocumentId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                    var filterContains = PredicateBuilder.New<DocumentAccesses>(false);
                     filterContains = filter.DocumentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
                     qry = qry.Where(filterContains);
@@ -1795,7 +1795,7 @@ namespace BL.Database.Common
 
                 if (filter.AccessLevelId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                    var filterContains = PredicateBuilder.New<DocumentAccesses>(false);
                     filterContains = filter.AccessLevelId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.AccessLevelId == value).Expand());
 
@@ -1812,7 +1812,7 @@ namespace BL.Database.Common
                 }
                 if (filter.AccessPositionId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                    var filterContains = PredicateBuilder.New<DocumentAccesses>(false);
                     filterContains = filter.AccessPositionId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.PositionId == value).Expand());
                     qry = qry.Where(filterContains);
@@ -1833,7 +1833,7 @@ namespace BL.Database.Common
             var qry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.DocumentId == documentId);
             if (ctx != null && !ctx.IsAdmin)
             {
-                var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                var filterContains = PredicateBuilder.New<DocumentAccesses>(false);
                 filterContains = isVerifyAccessLevel
                     ? ctx.CurrentPositionsAccessLevel.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand())
                     : ctx.CurrentPositionsIdList.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
@@ -1868,7 +1868,7 @@ namespace BL.Database.Common
         #region Positions
         public static IEnumerable<InternalPositionInfo> GetInternalPositionsInfo(DmsContext dbContext, IContext context, List<int> positionIds)
         {
-            var filterContains = PredicateBuilder.False<DictionaryPositions>();
+            var filterContains = PredicateBuilder.New<DictionaryPositions>(false);
             filterContains = positionIds.Aggregate(filterContains,
                 (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1890,7 +1890,7 @@ namespace BL.Database.Common
 
             if (!ctx.IsAdmin)
             {
-                var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                var filterContains = PredicateBuilder.New<DocumentAccesses>(false);
                 filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
                     (current, value) => current.Or(e => e.PositionId == value).Expand());
 
@@ -1901,7 +1901,7 @@ namespace BL.Database.Common
             {
                 if (filter?.DocumentId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentTasks>();
+                    var filterContains = PredicateBuilder.New<DocumentTasks>(false);
                     filterContains = filter.DocumentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
@@ -1909,7 +1909,7 @@ namespace BL.Database.Common
                 }
                 if (filter?.Id?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentTasks>();
+                    var filterContains = PredicateBuilder.New<DocumentTasks>(false);
                     filterContains = filter.Id.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1992,7 +1992,7 @@ namespace BL.Database.Common
                 //PlanResponsibleExecutorPositionExecutorAgentName = x.Event.TargetPositionExecutorAgent.Name,
             }).ToList();
 
-            var eventFilterContains = PredicateBuilder.False<DocumentEvents>();
+            var eventFilterContains = PredicateBuilder.New<DocumentEvents>(false);
             eventFilterContains = tasks.Select(x => x.Id).Aggregate(eventFilterContains, (current, value) => current.Or(e => e.TaskId == value).Expand());
 
             var taskFactRespEx = dbContext.DocumentEventsSet.Where(eventFilterContains).Where(x => x.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution || x.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecutionChange)
@@ -2019,7 +2019,7 @@ namespace BL.Database.Common
                 }).ToList();
 
 
-            var sendListFilterContains = PredicateBuilder.False<DocumentSendLists>();
+            var sendListFilterContains = PredicateBuilder.New<DocumentSendLists>(false);
             sendListFilterContains = tasks.Select(x => x.Id).Aggregate(sendListFilterContains, (current, value) => current.Or(e => e.TaskId == value).Expand());
 
             var taskPlanRespEx = dbContext.DocumentSendListsSet.Where(sendListFilterContains).Where(x => x.SendTypeId == (int)EnumSendTypes.SendForResponsibleExecution)
@@ -2073,7 +2073,7 @@ namespace BL.Database.Common
             var subscriptionsDb = dbContext.DocumentSubscriptionsSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
             if (!ctx.IsAdmin)
             {
-                var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                var filterContains = PredicateBuilder.New<DocumentAccesses>(false);
                 filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
                     (current, value) => current.Or(e => e.PositionId == value).Expand());
 
@@ -2084,7 +2084,7 @@ namespace BL.Database.Common
             {
                 if (filter.DocumentId?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentSubscriptions>();
+                    var filterContains = PredicateBuilder.New<DocumentSubscriptions>(false);
                     filterContains = filter.DocumentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
@@ -2092,7 +2092,7 @@ namespace BL.Database.Common
                 }
                 if (filter.SubscriptionStates?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentSubscriptions>();
+                    var filterContains = PredicateBuilder.New<DocumentSubscriptions>(false);
                     filterContains = filter.SubscriptionStates.Aggregate(filterContains,
                         (current, value) => current.Or(e => (EnumSubscriptionStates)e.SubscriptionStateId == value).Expand());
 
@@ -2238,7 +2238,7 @@ namespace BL.Database.Common
             {
                 if (filter.DocumentId.Any())
                 {
-                    var filterContains = PredicateBuilder.False<DocumentSubscriptions>();
+                    var filterContains = PredicateBuilder.New<DocumentSubscriptions>(false);
                     filterContains = filter.DocumentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
@@ -2246,7 +2246,7 @@ namespace BL.Database.Common
                 }
                 if (filter.SubscriptionStates?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentSubscriptions>();
+                    var filterContains = PredicateBuilder.New<DocumentSubscriptions>(false);
                     filterContains = filter.SubscriptionStates.Aggregate(filterContains,
                         (current, value) => current.Or(e => (EnumSubscriptionStates)e.SubscriptionStateId == value).Expand());
 
@@ -2284,7 +2284,7 @@ namespace BL.Database.Common
             {
                 if (filter.DocumentId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentTags>();
+                    var filterContains = PredicateBuilder.New<DocumentTags>(false);
                     filterContains = filter.DocumentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
@@ -2293,7 +2293,7 @@ namespace BL.Database.Common
 
                 if (filter.CurrentPositionsId?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentTags>();
+                    var filterContains = PredicateBuilder.New<DocumentTags>(false);
                     filterContains = filter.CurrentPositionsId.Aggregate(filterContains,
                         (current, value) => current.Or(e => !e.Tag.PositionId.HasValue || e.Tag.PositionId == value).Expand());
 
@@ -2328,7 +2328,7 @@ namespace BL.Database.Common
             {
                 if (filter.Object?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<PropertyValues>();
+                    var filterContains = PredicateBuilder.New<PropertyValues>(false);
                     filterContains = filter.Object.Select(x => (int)x).Aggregate(filterContains,
                         (current, value) => current.Or(e => e.PropertyLink.ObjectId == value).Expand());
 
@@ -2337,7 +2337,7 @@ namespace BL.Database.Common
 
                 if (filter.RecordId?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<PropertyValues>();
+                    var filterContains = PredicateBuilder.New<PropertyValues>(false);
                     filterContains = filter.RecordId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.RecordId == value).Expand());
 
@@ -2538,7 +2538,7 @@ namespace BL.Database.Common
             {
                 if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                    var filterContains = PredicateBuilder.New<DocumentAccesses>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.PositionId == value).Expand());
 
@@ -2547,7 +2547,7 @@ namespace BL.Database.Common
 
                 if (filter.DocumentIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                    var filterContains = PredicateBuilder.New<DocumentAccesses>(false);
                     filterContains = filter.DocumentIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
@@ -2572,7 +2572,7 @@ namespace BL.Database.Common
         public static IEnumerable<FrontDocument> GetLinkedDocuments(IContext context, DmsContext dbContext, int linkId)
         {
             //var acc = CommonQueries.GetDocumentAccesses(context, dbContext, true);
-            var filterAccessPositionContains = PredicateBuilder.False<DocumentAccesses>();
+            var filterAccessPositionContains = PredicateBuilder.New<DocumentAccesses>(false);
             filterAccessPositionContains = context.CurrentPositionsAccessLevel.Aggregate(filterAccessPositionContains,
                 (current, value) => current.Or(e => (e.PositionId == value.Key && e.AccessLevelId >= value.Value)).Expand());
 
@@ -2597,8 +2597,8 @@ namespace BL.Database.Common
                             ExecutorPositionExecutorAgentId = y.ExecutorPositionExecutorAgentId,
                             ExecutorPositionExecutorAgentName = y.ExecutorPositionExecutorAgent.Name + (y.ExecutorPositionExecutorType.Suffix != null ? " (" + y.ExecutorPositionExecutorType.Suffix + ")" : null),
                             Links = y.LinksDocuments
-                                    .Where(z=>z.Document.Accesses.AsQueryable().Any(filterAccessPositionContains))
-                                    .Where(z =>z.ParentDocument.Accesses.AsQueryable().Any(filterAccessPositionContains))
+                                    .Where(z => z.Document.Accesses.AsQueryable().Any(filterAccessPositionContains))
+                                    .Where(z => z.ParentDocument.Accesses.AsQueryable().Any(filterAccessPositionContains))
                                     .OrderBy(z => z.LastChangeDate)
                                     .Select(z => new FrontDocumentLink
                                     {
@@ -2671,7 +2671,7 @@ namespace BL.Database.Common
             {
                 if (filter?.DocumentId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentSendLists>();
+                    var filterContains = PredicateBuilder.New<DocumentSendLists>(false);
                     filterContains = filter.DocumentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
@@ -2679,7 +2679,7 @@ namespace BL.Database.Common
                 }
                 if (filter?.Id?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentSendLists>();
+                    var filterContains = PredicateBuilder.New<DocumentSendLists>(false);
                     filterContains = filter.Id.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -2786,7 +2786,7 @@ namespace BL.Database.Common
             {
                 if (filter?.DocumentId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentSendLists>();
+                    var filterContains = PredicateBuilder.New<DocumentSendLists>(false);
                     filterContains = filter.DocumentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
@@ -2794,7 +2794,7 @@ namespace BL.Database.Common
                 }
                 if (filter?.Id?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentSendLists>();
+                    var filterContains = PredicateBuilder.New<DocumentSendLists>(false);
                     filterContains = filter.Id.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -2828,7 +2828,7 @@ namespace BL.Database.Common
             {
                 if (filter?.DocumentId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentRestrictedSendLists>();
+                    var filterContains = PredicateBuilder.New<DocumentRestrictedSendLists>(false);
                     filterContains = filter.DocumentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
@@ -2836,7 +2836,7 @@ namespace BL.Database.Common
                 }
                 if (filter?.Id?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentRestrictedSendLists>();
+                    var filterContains = PredicateBuilder.New<DocumentRestrictedSendLists>(false);
                     filterContains = filter.Id.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -2891,7 +2891,7 @@ namespace BL.Database.Common
 
             if (!ctx.IsAdmin)
             {
-                var filterContains = PredicateBuilder.False<DocumentAccesses>();
+                var filterContains = PredicateBuilder.New<DocumentAccesses>(false);
                 filterContains = ctx.CurrentPositionsIdList.Aggregate(filterContains,
                     (current, value) => current.Or(e => e.PositionId == value).Expand());
 
@@ -2902,7 +2902,7 @@ namespace BL.Database.Common
             {
                 if (filter?.DocumentId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentPapers>();
+                    var filterContains = PredicateBuilder.New<DocumentPapers>(false);
                     filterContains = filter.DocumentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
@@ -2910,7 +2910,7 @@ namespace BL.Database.Common
                 }
                 if (filter?.Id?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentPapers>();
+                    var filterContains = PredicateBuilder.New<DocumentPapers>(false);
                     filterContains = filter.Id.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -2996,7 +2996,7 @@ namespace BL.Database.Common
             {
                 if (filter?.PaperListId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<DocumentPaperLists>();
+                    var filterContains = PredicateBuilder.New<DocumentPaperLists>(false);
                     filterContains = filter.PaperListId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -3594,11 +3594,11 @@ namespace BL.Database.Common
         #region Actions
         public static List<InternalDictionaryPositionWithActions> GetBlankPositionWithActions(IContext ctx, DmsContext dbContext, List<int> positionAccesses)
         {
-            var filterCurrentPositionsContains = PredicateBuilder.False<DictionaryPositions>();
+            var filterCurrentPositionsContains = PredicateBuilder.New<DictionaryPositions>(false);
             filterCurrentPositionsContains = ctx.CurrentPositionsIdList.Aggregate(filterCurrentPositionsContains,
                 (current, value) => current.Or(e => e.Id == value).Expand());
 
-            var filterPositionAccessesContains = PredicateBuilder.False<DictionaryPositions>();
+            var filterPositionAccessesContains = PredicateBuilder.New<DictionaryPositions>(false);
             filterPositionAccessesContains = positionAccesses.Aggregate(filterPositionAccessesContains,
                 (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -3618,7 +3618,7 @@ namespace BL.Database.Common
 
         public static Dictionary<int, List<InternalSystemActionForDocument>> GetActionsListForCurrentPositionsList(IContext context, DmsContext dbContext, IEnumerable<EnumObjects> objects, List<int> positionAccesses)
         {
-            var filterObjectsContains = PredicateBuilder.False<SystemActions>();
+            var filterObjectsContains = PredicateBuilder.New<SystemActions>(false);
             filterObjectsContains = objects.Aggregate(filterObjectsContains,
                 (current, value) => current.Or(e => (EnumObjects)e.ObjectId == value).Expand());
 
@@ -3686,7 +3686,7 @@ namespace BL.Database.Common
                 , (ta1, ta2) => new { ta1, ta2 }).Where(x => x.ta2.Count() == 0).Select(x => x.ta1).ToList();
 
             {
-                var filterContains = PredicateBuilder.False<DocumentTaskAccesses>();
+                var filterContains = PredicateBuilder.New<DocumentTaskAccesses>(false);
                 filterContains = delId.Aggregate(filterContains,
                     (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -3699,7 +3699,7 @@ namespace BL.Database.Common
 
         public static List<int> GetEventsSourceTarget(InternalDocumentEvent events)
         {
-            return events != null ? GetEventsSourceTarget(new List<InternalDocumentEvent> { events }): null;
+            return events != null ? GetEventsSourceTarget(new List<InternalDocumentEvent> { events }) : null;
         }
         public static List<int> GetEventsSourceTarget(List<InternalDocumentEvent> events)
         {
@@ -3721,7 +3721,7 @@ namespace BL.Database.Common
             }
             if (positionId?.Count() > 0)
             {
-                var filterAccessPositionContains = PredicateBuilder.False<DocumentAccesses>();
+                var filterAccessPositionContains = PredicateBuilder.New<DocumentAccesses>(false);
                 filterAccessPositionContains = positionId.Aggregate(filterAccessPositionContains,
                     (current, value) => current.Or(e => e.PositionId == value).Expand());
                 qry = qry.Where(filterAccessPositionContains);
@@ -3777,7 +3777,7 @@ namespace BL.Database.Common
             {
                 if (filter.CertificateId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<EncryptionCertificates>();
+                    var filterContains = PredicateBuilder.New<EncryptionCertificates>(false);
                     filterContains = filter.CertificateId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -3786,7 +3786,7 @@ namespace BL.Database.Common
 
                 if (filter.AgentId?.Count() > 0 && ctx.IsAdmin)
                 {
-                    var filterContains = PredicateBuilder.False<EncryptionCertificates>();
+                    var filterContains = PredicateBuilder.New<EncryptionCertificates>(false);
                     filterContains = filter.AgentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.AgentId == value).Expand());
 

@@ -45,7 +45,7 @@ namespace DMS_WebAPI.Utilities
             {
                 if (filter.ClientIds?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<AspNetClientServers>();
+                    var filterContains = PredicateBuilder.New<AspNetClientServers>(false);
                     filterContains = filter.ClientIds.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ClientId == value).Expand());
 
@@ -54,7 +54,7 @@ namespace DMS_WebAPI.Utilities
 
                 if (filter.ServerIds?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<AdminServers>();
+                    var filterContains = PredicateBuilder.New<AdminServers>(false);
                     filterContains = filter.ServerIds.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -63,7 +63,7 @@ namespace DMS_WebAPI.Utilities
 
                 if (filter.ServerTypes?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<AdminServers>();
+                    var filterContains = PredicateBuilder.New<AdminServers>(false);
                     filterContains = filter.ServerTypes.Select(x => x.ToString()).ToList().Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ServerType == value).Expand());
 
@@ -335,7 +335,7 @@ namespace DMS_WebAPI.Utilities
             {
                 if (filter.ClientLicenceIds?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<AspNetClientLicences>();
+                    var filterContains = PredicateBuilder.New<AspNetClientLicences>(false);
                     filterContains = filter.ClientLicenceIds.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -344,7 +344,7 @@ namespace DMS_WebAPI.Utilities
 
                 if (filter.ClientIds?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<AspNetClientLicences>();
+                    var filterContains = PredicateBuilder.New<AspNetClientLicences>(false);
                     filterContains = filter.ClientIds.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ClientId == value).Expand());
 
@@ -549,7 +549,7 @@ namespace DMS_WebAPI.Utilities
             {
                 if (filter.ClientIds?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<AspNetClients>();
+                    var filterContains = PredicateBuilder.New<AspNetClients>(false);
                     filterContains = filter.ClientIds.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -762,7 +762,7 @@ namespace DMS_WebAPI.Utilities
             {
                 if (filter.ClientServerIds?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<AspNetClientServers>();
+                    var filterContains = PredicateBuilder.New<AspNetClientServers>(false);
                     filterContains = filter.ClientServerIds.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -771,7 +771,7 @@ namespace DMS_WebAPI.Utilities
 
                 if (filter.ClientIds?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<AspNetClientServers>();
+                    var filterContains = PredicateBuilder.New<AspNetClientServers>(false);
                     filterContains = filter.ClientIds.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ClientId == value).Expand());
 
@@ -779,7 +779,7 @@ namespace DMS_WebAPI.Utilities
                 }
                 if (filter.ServerIds?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<AspNetClientServers>();
+                    var filterContains = PredicateBuilder.New<AspNetClientServers>(false);
                     filterContains = filter.ServerIds.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ServerId == value).Expand());
 
@@ -890,7 +890,7 @@ namespace DMS_WebAPI.Utilities
             {
                 if (filter.LicenceIds?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<AspNetLicences>();
+                    var filterContains = PredicateBuilder.New<AspNetLicences>(false);
                     filterContains = filter.LicenceIds.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1039,7 +1039,7 @@ namespace DMS_WebAPI.Utilities
             {
                 if (filter.UserClientIds?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<AspNetUserClients>();
+                    var filterContains = PredicateBuilder.New<AspNetUserClients>(false);
                     filterContains = filter.UserClientIds.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1048,7 +1048,7 @@ namespace DMS_WebAPI.Utilities
 
                 if (filter.ClientIds?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<AspNetUserClients>();
+                    var filterContains = PredicateBuilder.New<AspNetUserClients>(false);
                     filterContains = filter.ClientIds.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ClientId == value).Expand());
 
@@ -1057,7 +1057,7 @@ namespace DMS_WebAPI.Utilities
 
                 if (filter.UserIds?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<AspNetUserClients>();
+                    var filterContains = PredicateBuilder.New<AspNetUserClients>(false);
                     filterContains = filter.UserIds.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.UserId == value).Expand());
 
@@ -1194,7 +1194,7 @@ namespace DMS_WebAPI.Utilities
             {
                 if (filter.UserServerIds?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<AspNetUserServers>();
+                    var filterContains = PredicateBuilder.New<AspNetUserServers>(false);
                     filterContains = filter.UserServerIds.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1202,7 +1202,7 @@ namespace DMS_WebAPI.Utilities
                 }
                 if (filter.ClientIds?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<AspNetUserServers>();
+                    var filterContains = PredicateBuilder.New<AspNetUserServers>(false);
                     filterContains = filter.ClientIds.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ClientId == value).Expand());
 
@@ -1210,7 +1210,7 @@ namespace DMS_WebAPI.Utilities
                 }
                 if (filter.UserIds?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<AspNetUserServers>();
+                    var filterContains = PredicateBuilder.New<AspNetUserServers>(false);
                     filterContains = filter.UserIds.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.UserId == value).Expand());
 
@@ -1218,7 +1218,7 @@ namespace DMS_WebAPI.Utilities
                 }
                 if (filter.ServerIds?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<AspNetUserServers>();
+                    var filterContains = PredicateBuilder.New<AspNetUserServers>(false);
                     filterContains = filter.ServerIds.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ServerId == value).Expand());
 
@@ -1331,7 +1331,7 @@ namespace DMS_WebAPI.Utilities
 
                 if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<AspNetUserFingerprints>();
+                    var filterContains = PredicateBuilder.New<AspNetUserFingerprints>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1340,7 +1340,7 @@ namespace DMS_WebAPI.Utilities
 
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<AspNetUserFingerprints>();
+                    var filterContains = PredicateBuilder.New<AspNetUserFingerprints>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id != value).Expand());
 
@@ -1349,7 +1349,7 @@ namespace DMS_WebAPI.Utilities
 
                 if (filter.UserIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<AspNetUserFingerprints>();
+                    var filterContains = PredicateBuilder.New<AspNetUserFingerprints>(false);
                     filterContains = filter.UserIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.UserId == value).Expand());
 
@@ -1491,7 +1491,7 @@ namespace DMS_WebAPI.Utilities
 
                 if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<AspNetUserContexts>();
+                    var filterContains = PredicateBuilder.New<AspNetUserContexts>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1500,7 +1500,7 @@ namespace DMS_WebAPI.Utilities
 
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<AspNetUserContexts>();
+                    var filterContains = PredicateBuilder.New<AspNetUserContexts>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id != value).Expand());
 
@@ -1509,7 +1509,7 @@ namespace DMS_WebAPI.Utilities
 
                 if (filter.UserIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<AspNetUserContexts>();
+                    var filterContains = PredicateBuilder.New<AspNetUserContexts>(false);
                     filterContains = filter.UserIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.UserId == value).Expand());
 
@@ -1575,11 +1575,11 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public void DeleteUserContext(string  token)
+        public void DeleteUserContext(string token)
         {
             using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                dbContext.AspNetUserContextsSet.Where(x=>x.Token == token).Delete();
+                dbContext.AspNetUserContextsSet.Where(x => x.Token == token).Delete();
                 transaction.Complete();
             }
         }

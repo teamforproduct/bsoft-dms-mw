@@ -34,21 +34,21 @@ namespace BL.Database.Documents
             {
                 if (filter.IDs?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                    var filterContains = PredicateBuilder.New<TemplateDocuments>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
                     qry = qry.Where(filterContains);
                 }
                 if (filter.DocumentDirectionId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                    var filterContains = PredicateBuilder.New<TemplateDocuments>(false);
                     filterContains = filter.DocumentDirectionId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentDirectionId == value).Expand());
                     qry = qry.Where(filterContains);
                 }
                 if (filter.DocumentTypeId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                    var filterContains = PredicateBuilder.New<TemplateDocuments>(false);
                     filterContains = filter.DocumentTypeId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentTypeId == value).Expand());
                     qry = qry.Where(filterContains);
@@ -59,14 +59,14 @@ namespace BL.Database.Documents
                 }
                 if (filter.RegistrationJournalId?.Count() > 0)
                 {
-                    var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                    var filterContains = PredicateBuilder.New<TemplateDocuments>(false);
                     filterContains = filter.RegistrationJournalId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.RegistrationJournalId == value).Expand());
                     qry = qry.Where(filterContains);
                 }
                 if (!String.IsNullOrEmpty(filter.Name))
                 {
-                    var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                    var filterContains = PredicateBuilder.New<TemplateDocuments>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name)
                                 .Aggregate(filterContains, (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
                     qry = qry.Where(filterContains);
@@ -77,7 +77,7 @@ namespace BL.Database.Documents
                 }
                 if (!String.IsNullOrEmpty(filter.Description))
                 {
-                    var filterContains = PredicateBuilder.False<TemplateDocuments>();
+                    var filterContains = PredicateBuilder.New<TemplateDocuments>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Description)
                                 .Aggregate(filterContains, (current, value) => current.Or(e => e.Description.Contains(value)).Expand());
                     qry = qry.Where(filterContains);
@@ -467,7 +467,7 @@ namespace BL.Database.Documents
                 {
                     if (filter.IDs?.Count > 0)
                     {
-                        var filterContains = PredicateBuilder.False<TemplateDocumentSendLists>();
+                        var filterContains = PredicateBuilder.New<TemplateDocumentSendLists>(false);
                         filterContains = filter.IDs.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -645,7 +645,7 @@ namespace BL.Database.Documents
             {
                 if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<TemplateDocumentRestrictedSendLists>();
+                    var filterContains = PredicateBuilder.New<TemplateDocumentRestrictedSendLists>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -653,7 +653,7 @@ namespace BL.Database.Documents
                 }
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<TemplateDocumentRestrictedSendLists>();
+                    var filterContains = PredicateBuilder.New<TemplateDocumentRestrictedSendLists>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -799,7 +799,7 @@ namespace BL.Database.Documents
             {
                 if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<TemplateDocumentAccesses>();
+                    var filterContains = PredicateBuilder.New<TemplateDocumentAccesses>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -807,7 +807,7 @@ namespace BL.Database.Documents
                 }
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<TemplateDocumentAccesses>();
+                    var filterContains = PredicateBuilder.New<TemplateDocumentAccesses>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
 
@@ -949,7 +949,7 @@ namespace BL.Database.Documents
                 {
                     if (filter.IDs?.Count > 0)
                     {
-                        var filterContains = PredicateBuilder.False<TemplateDocumentTasks>();
+                        var filterContains = PredicateBuilder.New<TemplateDocumentTasks>(false);
                         filterContains = filter.IDs.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1066,14 +1066,14 @@ namespace BL.Database.Documents
             {
                 if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<TemplateDocumentPapers>();
+                    var filterContains = PredicateBuilder.New<TemplateDocumentPapers>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
                     qry = qry.Where(filterContains);
                 }
                 if (filter.NotContainsIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.True<TemplateDocumentPapers>();
+                    var filterContains = PredicateBuilder.New<TemplateDocumentPapers>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
                     qry = qry.Where(filterContains);
@@ -1243,7 +1243,7 @@ namespace BL.Database.Documents
             {
                 if (filter.IDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.False<TemplateDocumentFiles>();
+                    var filterContains = PredicateBuilder.New<TemplateDocumentFiles>(false);
                     filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 

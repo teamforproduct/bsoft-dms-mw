@@ -109,7 +109,7 @@ namespace BL.Database.Documents
 
                 #region Position filters for counters preparing
 
-                var filterAccessPositionsContains = PredicateBuilder.False<DocumentAccesses>();
+                var filterAccessPositionsContains = PredicateBuilder.New<DocumentAccesses>(false);
                 filterAccessPositionsContains = ctx.CurrentPositionsAccessLevel.Aggregate(
                     filterAccessPositionsContains,
                     (current, value) =>
@@ -154,7 +154,7 @@ namespace BL.Database.Documents
 
                         if (docIds.Count > 0)
                         {
-                            var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
+                            var filterContains = PredicateBuilder.New<DBModel.Document.Documents>(false);
                             filterContains = docIds.Aggregate(filterContains,
                                 (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -296,7 +296,7 @@ namespace BL.Database.Documents
 
                             if (docIds.Count > 0)
                             {
-                                var filterContains = PredicateBuilder.False<DBModel.Document.Documents>();
+                                var filterContains = PredicateBuilder.New<DBModel.Document.Documents>(false);
                                 filterContains = docIds.Aggregate(filterContains,
                                     (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -500,7 +500,7 @@ namespace BL.Database.Documents
 
                     if (docs.Any(x => x.LinkId.HasValue))
                     {
-                        var filterLinkIdContains = PredicateBuilder.False<DBModel.Document.Documents>();
+                        var filterLinkIdContains = PredicateBuilder.New<DBModel.Document.Documents>(false);
                         filterLinkIdContains =
                             docs.GroupBy(x => x.LinkId)
                                 .Where(x => x.Key.HasValue)
