@@ -6159,7 +6159,7 @@ namespace BL.Database.Dictionaries
                     }
 
                 }
-                qry = qry.OrderBy(x => x.Code);
+
                 var res = qry.Select(x => new FrontDictionarySendType
                 {
                     Id = x.Id,
