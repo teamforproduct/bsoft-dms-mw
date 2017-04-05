@@ -56,12 +56,14 @@ namespace BL.Database.Documents
                     IsLaunchPlan = x.IsLaunchPlan,
                     ExecutorPositionId = x.ExecutorPositionId,
                     LinkId = x.LinkId,
+                    DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
                     AccessesCount = x.Accesses.Count(),
                 }).FirstOrDefault();
 
                 if (res.Document != null)
                 {
                     documentId = res.Document.Id;
+                    var strDocumentDirection = ((int)res.Document.DocumentDirection).ToString();
                     res.Document.Accesses = CommonQueries.GetDocumentAccessesesQry(dbContext, res.Document.Id, ctx, true)
                         .Select(x => new InternalDocumentAccess
                         {
@@ -72,6 +74,12 @@ namespace BL.Database.Documents
                             IsInWork = x.IsInWork,
                             IsFavourite = x.IsFavourite,
                             CountWaits = x.CountWaits,
+                            IsCanRegisterDoc = dbContext.AdminRegistrationJournalPositionsSet
+                                .Any(y=>    y.PositionId == x.PositionId &&
+                                            y.RegJournalAccessTypeId == (int)EnumRegistrationJournalAccessTypes.Registration &&
+                                            y.RegistrationJournal.DirectionCodes.Contains(strDocumentDirection) &&
+                                            y.RegistrationJournal.ClientId == ctx.CurrentClientId
+                                    )
                         }
                         ).ToList();
                     res.Document.IsInWork = res.Document.Accesses.Any(x => x.IsInWork);
