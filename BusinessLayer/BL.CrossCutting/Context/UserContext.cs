@@ -72,6 +72,7 @@ namespace BL.CrossCutting.Context
                 IsFormed = ctx.IsFormed;
                 LoginLogId = ctx.LoginLogId;
                 LoginLogInfo = ctx.LoginLogInfo;
+                UserName = ctx.UserName;
 
                 DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
 
@@ -230,5 +231,7 @@ namespace BL.CrossCutting.Context
 
         public string LoginLogInfo { get; set; }
         public IDmsDatabaseContext DbContext { get; set; }
+
+        public string UserName { get; set; }
     }
 }

@@ -26,6 +26,6 @@ namespace BL.CrossCutting.Interfaces
         string LoginLogInfo { get; set; }
         IDmsDatabaseContext DbContext { get; set; }
 
-        string UserLogin { get; set; }
+        string UserName { get; set; }
     }
 }

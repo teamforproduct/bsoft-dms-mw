@@ -103,11 +103,12 @@ namespace DMS_WebAPI.Utilities
         /// </summary>
         /// <param name="token"></param>
         /// <param name="userId">Id Web-пользователя</param>
+        /// <param name="userName">Id Web-пользователя</param>
         /// <param name="clientCode">доменное имя клиента</param>
         /// <param name="IsChangePasswordRequired">доменное имя клиента</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public IContext Set(string token, string userId, string clientCode, bool IsChangePasswordRequired)
+        public IContext Set(string token, string userId, string userName, bool IsChangePasswordRequired, string clientCode)
         {
             token = token.ToLower();
 
@@ -125,6 +126,7 @@ namespace DMS_WebAPI.Utilities
             };
 
             context.IsChangePasswordRequired = IsChangePasswordRequired;
+            context.UserName = userName;
 
             Save(token, context);
             return context;
@@ -528,11 +530,12 @@ namespace DMS_WebAPI.Utilities
             foreach (var item in list)
             {
                 var clientCode = webService.GetClientCode(item.ClientId);
+                var user = webService.GetUserById(item.UserId);
                 if (string.IsNullOrEmpty( clientCode)) continue;
                 var server = webService.GetServerByUser(item.UserId, new SetUserServer { ClientId = item.ClientId, ServerId = -1 });
                 if (server == null) continue;
 
-                Set(item.Token, item.UserId, clientCode, item.IsChangePasswordRequired);
+                Set(item.Token, item.UserId, user.UserName, user.IsChangePasswordRequired, clientCode);
                 Set(item.Token, server, item.ClientId);
                 Set(item.Token, item.LoginLogId, item.LoginLogInfo);
                 SetUserPositions(item.Token, item.CurrentPositionsIdList.Split(',').Select(n => Convert.ToInt32(n)).ToList());

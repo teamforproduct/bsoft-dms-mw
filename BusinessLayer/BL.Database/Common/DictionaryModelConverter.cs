@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using BL.Model.DictionaryCore.InternalModel;
+﻿using BL.CrossCutting.Interfaces;
 using BL.Database.DBModel.Dictionary;
+using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
-using BL.CrossCutting.Interfaces;
 using System;
+using System.Collections.Generic;
 
 namespace BL.Database.Common
 {
