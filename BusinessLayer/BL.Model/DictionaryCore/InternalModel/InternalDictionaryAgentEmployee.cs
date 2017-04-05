@@ -68,6 +68,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Дополнительная информация
         /// </summary>
         public string Description { get; set; }
+        
         /// <summary>
         /// Признак активности
         /// </summary>

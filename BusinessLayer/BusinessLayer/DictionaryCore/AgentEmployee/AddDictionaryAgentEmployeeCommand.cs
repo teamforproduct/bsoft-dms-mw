@@ -3,6 +3,7 @@ using BL.Logic.Common;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
+using System.Linq;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -17,7 +18,7 @@ namespace BL.Logic.DictionaryCore
                 var item = new InternalDictionaryAgentEmployee(Model);
 
                 CommonDocumentUtilities.SetLastChange(_context, item);
-                int agent =_dictDb.AddAgentEmployee(_context, item);
+                int agent = _dictDb.AddAgentEmployee(_context, item);
 
                 if ((item.UserEmail ?? string.Empty) != string.Empty)
                 {

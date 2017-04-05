@@ -1,6 +1,7 @@
 ﻿using System;
 using BL.Model.Common;
 using BL.Model.DictionaryCore.IncomingModel;
+using System.Linq;
 
 namespace BL.Model.DictionaryCore.InternalModel
 {
@@ -46,7 +47,6 @@ namespace BL.Model.DictionaryCore.InternalModel
 
         private void SetInternalDictionaryAgentPerson(AddAgentPeople model)
         {
-            Name = model.Name;
             FirstName = model.FirstName;
             LastName = model.LastName;
             MiddleName = model.MiddleName;
@@ -71,6 +71,11 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Отчество
         /// </summary>
         public string MiddleName { get; set; }
+
+        /// <summary>
+        /// Полное имя
+        /// </summary>
+        public string FullName { get; set; }
 
         /// <summary>
         /// Дата рождения

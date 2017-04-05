@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.Serialization;
+﻿using BL.Model.Extensions;
+using System;
 using System.ComponentModel.DataAnnotations;
-using BL.Model.Extensions;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
@@ -14,6 +10,13 @@ namespace BL.Model.DictionaryCore.IncomingModel
     /// </summary>
     public class AddAgentPeople : AddAgent
     {
+        /// <summary>
+        /// Имя
+        /// </summary>
+        // Решено с фронта не передавать краткое имя сотрудника и формировать его на миддле
+        [IgnoreDataMember]
+        public new string Name { get; set; }
+
         /// <summary>
         /// Имя
         /// </summary>

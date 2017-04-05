@@ -267,6 +267,15 @@ namespace BL.Database.Dictionaries
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
+                var F = people.FirstName?.Trim().First().ToString(); ;
+                var M = people.MiddleName?.Trim().First().ToString();
+
+                people.Name = people.LastName?.Trim();
+                people.Name += string.IsNullOrEmpty(F) ? "" : F + ".";
+                people.Name += string.IsNullOrEmpty(F + M) ? "" : M + ".";
+
+                people.FullName = (people.LastName?.Trim() + " " + people.FirstName?.Trim() + " " + people.MiddleName?.Trim())?.Trim();
+
                 people.Id = AddAgent(ctx, people);
 
                 var dbModel = DictionaryModelConverter.GetDbAgentPeople(ctx, people);
