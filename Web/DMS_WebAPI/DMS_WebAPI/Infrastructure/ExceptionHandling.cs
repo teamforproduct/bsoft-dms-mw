@@ -132,7 +132,8 @@ namespace DMS_WebAPI.Infrastructure
             bool fromGlobalAsax = context == null;
 
             var user = string.Empty;
-            var url = string.Empty;
+            var browser = string.Empty;
+            var method = string.Empty;
             var body = string.Empty;
             var request = string.Empty;
 
@@ -154,7 +155,10 @@ namespace DMS_WebAPI.Infrastructure
                 request = $"{context.Request}";
             }
 
-            try { url = httpContext.Request.HttpMethod + " " + httpContext.Request.Url.ToString(); } catch { }
+            try {
+                method = httpContext.Request.HttpMethod + " " + httpContext.Request.Url.ToString();
+                browser = httpContext.Request.Browser.Browser + " " + httpContext.Request.UserLanguages.ToString();
+            } catch { }
 
             try
             {
@@ -197,25 +201,23 @@ namespace DMS_WebAPI.Infrastructure
                 string errorMessage = string.Empty;
                 errorMessage += "ERROR!!! - " + DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC\r\n";
 
-                // TODO - USER
+                // TODO - USER + BROWSER + BR.LANG-S 
                 errorMessage += $"User: {user}\r\n";
-                errorMessage += $"URL: {url}\r\n";
+                errorMessage += $"Method: {method}\r\n";
                 errorMessage += $"Request Body: {body}\r\n";
                 errorMessage += logExpression;
+                errorMessage += $"Browser: {browser}\r\n";
 
 
 
                 // Этот иф мне не понятен. Почему StackTrace нужно пытаться брать из InnerException
-                if (exception.InnerException != null)
-                    exc = exception.InnerException;
-                else
-                    exc = exception;
+                //if (exception.InnerException != null)
+                //    exc = exception.InnerException;
+                //else
+                //    exc = exception;
 
                 //errorMessage += $"StackTrace:\r\n{exc.StackTrace}\r\n";
-
-                errorMessage += $"Request:\r\n{request}\r\n";
-
-                
+                //errorMessage += $"Request:\r\n{request}\r\n";
 
                 FileLogger.AppendTextToFile(errorMessage, HttpContext.Current.Server.MapPath("~/SiteErrors.txt"));
             }
