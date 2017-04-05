@@ -32,6 +32,7 @@ namespace BL.Database.Common
                     IsRegistered = document.IsRegistered,
                     IsLaunchPlan = document.IsLaunchPlan,
                     LinkId = document.LinkId,
+                    NumerationPrefixFormula = document.NumerationPrefixFormula,
                     RegistrationJournalId = document.RegistrationJournalId,
                     RegistrationNumberSuffix = document.RegistrationNumberSuffix,
                     RegistrationNumberPrefix = document.RegistrationNumberPrefix,
