@@ -39,8 +39,6 @@ namespace DMS_WebAPI.Infrastructure
                     || exception is UserNotExecuteCheckPosition
                     ) res = HttpStatusCode.Unauthorized;
             }
-
-
             return res;
         }
 
