@@ -158,7 +158,7 @@ namespace DMS_WebAPI.Infrastructure
             try
             {
                 method = httpContext.Request.HttpMethod + " " + httpContext.Request.Url.ToString();
-                browser = httpContext.Request.Browser.Browser + " v.:" + httpContext.Request.Browser.Version + " " + string.Join(", ", httpContext.Request.UserLanguages);
+                browser = httpContext.Request.Browser.Browser + " v" + httpContext.Request.Browser.Version + " Languages: " + string.Join(" / ", httpContext.Request.UserLanguages);
             }
             catch { }
 
