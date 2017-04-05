@@ -155,10 +155,12 @@ namespace DMS_WebAPI.Infrastructure
                 request = $"{context.Request}";
             }
 
-            try {
+            try
+            {
                 method = httpContext.Request.HttpMethod + " " + httpContext.Request.Url.ToString();
-                browser = httpContext.Request.Browser.Browser + " " + httpContext.Request.UserLanguages.ToString();
-            } catch { }
+                browser = httpContext.Request.Browser.Browser + " v.:" + httpContext.Request.Browser.Version + " " + string.Join(", ", httpContext.Request.UserLanguages);
+            }
+            catch { }
 
             try
             {
