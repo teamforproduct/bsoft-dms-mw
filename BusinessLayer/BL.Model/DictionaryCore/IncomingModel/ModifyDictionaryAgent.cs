@@ -1,6 +1,5 @@
-﻿using System.Runtime.Serialization;
-using System.ComponentModel.DataAnnotations;
-using System.Web;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {

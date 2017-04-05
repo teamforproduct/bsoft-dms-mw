@@ -1,21 +1,14 @@
 ﻿using BL.Model.Extensions;
 using System;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
     /// <summary>
     /// Человек
     /// </summary>
-    public class AddAgentPeople : AddAgent
+    public class AddAgentPeople 
     {
-        /// <summary>
-        /// Имя
-        /// </summary>
-        // Решено с фронта не передавать краткое имя сотрудника и формировать его на миддле
-        [IgnoreDataMember]
-        public new string Name { get; set; }
 
         /// <summary>
         /// Имя

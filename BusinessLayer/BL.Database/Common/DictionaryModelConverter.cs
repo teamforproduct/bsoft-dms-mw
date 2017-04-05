@@ -29,21 +29,6 @@ namespace BL.Database.Common
             };
         }
 
-        public static DictionaryDocumentSubjects GetDbDocumentSubject(IContext context, InternalDictionaryDocumentSubject item)
-        {
-            return item == null ? null : new DictionaryDocumentSubjects
-            {
-                ClientId = context.CurrentClientId,
-
-                Id = item.Id,
-                ParentId = item.ParentId,
-                LastChangeDate = item.LastChangeDate,
-                LastChangeUserId = item.LastChangeUserId,
-                IsActive = item.IsActive,
-                Name = item.Name
-            };
-        }
-
         public static DictionaryRegistrationJournals GetDbRegistrationJournal(IContext context, InternalDictionaryRegistrationJournal item)
         {
             return item == null ? null : new DictionaryRegistrationJournals

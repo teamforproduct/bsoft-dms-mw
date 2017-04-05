@@ -266,7 +266,6 @@
     <Compile Include="DictionaryCore\FrontModel\Positions\FrontDictionaryPosition.cs" />
     <Compile Include="DictionaryCore\FrontModel\Journals\FrontDictionaryRegistrationJournal.cs" />
     <Compile Include="DictionaryCore\FrontModel\Employees\FrontMainAgentEmployee.cs" />
-    <Compile Include="DictionaryCore\FrontModel\FrontDictionaryDocumentSubject.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgent.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryAgentAddress.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryContact.cs" />
@@ -277,7 +276,6 @@
     <Compile Include="DictionaryCore\FrontModel\SendLists\FrontDictionaryStandartSendList.cs" />
     <Compile Include="DictionaryCore\FrontModel\Tags\FrontMainTag.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentPeoplePassport.cs" />
-    <Compile Include="DictionaryCore\IncomingModel\AddAgent.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentContactPerson.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentClientCompany.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentCompany.cs" />
@@ -302,7 +300,6 @@
     <Compile Include="DictionaryCore\IncomingModel\AddPosition.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddDocumentType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddRegistrationJournal.cs" />
-    <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryDocumentSubject.cs" />
     <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgent.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddStandartSendList.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddStandartSendListContent.cs" />
@@ -375,7 +372,6 @@
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryPosition.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryDepartment.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryRegistrationJournal.cs" />
-    <Compile Include="DictionaryCore\InternalModel\InternalDictionaryDocumentSubject.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgent.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentAddress.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalDictionaryAgentPerson.cs" />

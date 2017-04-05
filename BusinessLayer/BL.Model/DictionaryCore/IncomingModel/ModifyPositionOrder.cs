@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
-using System.Web;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {

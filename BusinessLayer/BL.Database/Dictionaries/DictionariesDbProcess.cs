@@ -267,14 +267,7 @@ namespace BL.Database.Dictionaries
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var F = people.FirstName?.Trim().First().ToString(); ;
-                var M = people.MiddleName?.Trim().First().ToString();
-
-                people.Name = people.LastName?.Trim();
-                people.Name += string.IsNullOrEmpty(F) ? "" : F + ".";
-                people.Name += string.IsNullOrEmpty(F + M) ? "" : M + ".";
-
-                people.FullName = (people.LastName?.Trim() + " " + people.FirstName?.Trim() + " " + people.MiddleName?.Trim())?.Trim();
+                FormAgentPeopleName(people);
 
                 people.Id = AddAgent(ctx, people);
 
@@ -294,6 +287,8 @@ namespace BL.Database.Dictionaries
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
+                FormAgentPeopleName(people);
+
                 UpdateAgentName(ctx, people.Id, people);
 
                 var dbModel = DictionaryModelConverter.GetDbAgentPeople(ctx, people);
@@ -314,6 +309,18 @@ namespace BL.Database.Dictionaries
 
                 transaction.Complete();
             }
+        }
+
+        private void FormAgentPeopleName(InternalDictionaryAgentPeople people)
+        {
+            var F = people.FirstName?.Trim().First().ToString(); ;
+            var M = people.MiddleName?.Trim().First().ToString();
+
+            people.Name = people.LastName?.Trim();
+            people.Name += string.IsNullOrEmpty(F) ? "" : F + ".";
+            people.Name += string.IsNullOrEmpty(F + M) ? "" : M + ".";
+
+            people.FullName = (people.LastName?.Trim() + " " + people.FirstName?.Trim() + " " + people.MiddleName?.Trim())?.Trim();
         }
 
         public void UpdateAgentPeoplePassport(IContext ctx, InternalDictionaryAgentPeople people)
