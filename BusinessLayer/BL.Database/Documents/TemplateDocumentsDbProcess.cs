@@ -88,7 +88,8 @@ namespace BL.Database.Documents
 
         public bool ExistsTemplateDocuments(IContext ctx, FilterTemplateDocument filter)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var res = GetTemplateDocumentQuery(ctx, dbContext, filter).Any();
 
@@ -297,7 +298,8 @@ namespace BL.Database.Documents
         }
         public InternalTemplateDocument CopyTemplatePrepare(IContext ctx, int id)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var doc = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId)
                     .Where(x => x.Id == id)
@@ -385,7 +387,8 @@ namespace BL.Database.Documents
         }
         public InternalTemplateDocument DeleteTemplatePrepare(IContext ctx, int id)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var doc = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId)
                     .Where(x => x.Id == id)
@@ -400,7 +403,8 @@ namespace BL.Database.Documents
         }
         public void DeleteTemplate(IContext ctx, int id)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var ddt = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId).FirstOrDefault(x => x.Id == id);
                 if (ddt == null) return;
@@ -1145,7 +1149,8 @@ namespace BL.Database.Documents
         public IEnumerable<int> AddTemplateDocumentPapers(IContext ctx, IEnumerable<InternalTemplateDocumentPaper> papers)
         {
             List<int> res = new List<int>();
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 if (papers != null && papers.Any())
                 {
@@ -1166,7 +1171,8 @@ namespace BL.Database.Documents
 
         public void ModifyTemplatePaper(IContext ctx, InternalTemplateDocumentPaper item)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var itemDb = ModelConverter.GetDbTemplateDocumentPaper(item);
                 dbContext.TemplateDocumentPapersSet.Attach(itemDb);
@@ -1188,7 +1194,8 @@ namespace BL.Database.Documents
 
         public InternalTemplateDocument ModifyTemplatePaperPrepare(IContext ctx, int? id, AddTemplateDocumentPaper model)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var doc = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId)
                     .Where(x => x.Id == model.DocumentId)
@@ -1388,7 +1395,8 @@ namespace BL.Database.Documents
         }
         public InternalTemplateAttachedFile UpdateFilePrepare(IContext ctx, int id)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var file = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == ctx.CurrentClientId)
                         .Where(x => x.Id == id)
@@ -1453,7 +1461,8 @@ namespace BL.Database.Documents
 
         public InternalTemplateAttachedFile DeleteTemplateAttachedFilePrepare(IContext ctx, int id)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
                 var file = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == ctx.CurrentClientId)
                         .Where(x => x.Id == id)

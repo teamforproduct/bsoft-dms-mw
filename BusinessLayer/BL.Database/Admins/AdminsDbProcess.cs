@@ -1564,48 +1564,6 @@ namespace BL.Database.Admins
             }
         }
 
-
-        //public IEnumerable<FrontAdminRegistrationJournalPosition> GetRegistrationJournalPositions(IContext ctx, FilterAdminRegistrationJournalPosition filter)
-        //{
-        //    using (var dbContext = new DmsContext(ctx))
-        //    //using (var transaction = Transactions.GetTransaction())
-        //    {
-        //        var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
-
-        //        qry = GetWhereRegistrationJournalPosition(qry, filter);
-
-        //        //qry = qry.OrderBy(x => x.Name);
-
-        //        return qry.Select(x => new FrontAdminRegistrationJournalPosition
-        //        {
-        //            Id = x.Id,
-        //            SourcePositionId = x.SourcePositionId,
-        //            SourcePositionName = x.SourcePosition.Name,
-        //            TargetPositionId = x.TargetPositionId,
-        //            TargetPositionName = x.TargetPosition.Name,
-        //            RegistrationJournalPositionTypeId = (EnumRegistrationJournalPositionTypes)x.RegistrationJournalPositionTypeId,
-        //            RegistrationJournalPositionTypeName = x.RegistrationJournalPositionType.Name
-        //        }).ToList();
-        //    }
-        //}
-
-
-
-        //public List<int> GetRegistrationJournalPositionTargetIDs(IContext ctx, FilterAdminRegistrationJournalPosition filter)
-        //{
-        //    using (var dbContext = new DmsContext(ctx))
-        //    //using (var transaction = Transactions.GetTransaction())
-        //    {
-        //        var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
-
-        //        qry = GetWhereRegistrationJournalPosition(qry, filter);
-
-        //        //qry = qry.OrderBy(x => x.Name);
-
-        //        return qry.Select(x => x.TargetPositionId).ToList();
-        //    }
-        //}
-
         public bool ExistsRegistrationJournalPosition(IContext ctx, FilterAdminRegistrationJournalPosition filter)
         {
             var dbContext = ctx.DbContext as DmsContext;

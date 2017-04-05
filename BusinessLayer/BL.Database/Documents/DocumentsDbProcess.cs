@@ -911,7 +911,7 @@ namespace BL.Database.Documents
 
         //public InternalDocument ReportTransmissionDocumentPaperEventPrepare(IContext ctx, int documentId)
         //{
-        //    using (var dbContext = new DmsContext(ctx))
+        //    var dbContext = ctx.DbContext as DmsContext;
         //    {
         //        var qry = CommonQueries.GetDocumentQuery(dbContext, ctx).Where(x => x.Doc.Id == documentId);
 
@@ -1003,7 +1003,7 @@ namespace BL.Database.Documents
 
         public InternalDocument AddDocumentPrepare(IContext ctx, int templateDocumentId)
         {
-            using (var dbContext = new DmsContext(ctx))
+            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
 
@@ -1495,7 +1495,7 @@ namespace BL.Database.Documents
 
         public InternalDocument RegisterDocumentPrepare(IContext ctx, RegisterDocumentBase model)
         {
-            using (var dbContext = new DmsContext(ctx))
+            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, false, true, true)
@@ -1572,7 +1572,7 @@ namespace BL.Database.Documents
 
         public InternalDocumnRegistration RegisterModelDocumentPrepare(IContext ctx, RegisterDocumentBase model)
         {
-            using (var dbContext = new DmsContext(ctx))
+            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var doc = dbContext.DocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId)

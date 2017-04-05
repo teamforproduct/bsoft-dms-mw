@@ -167,7 +167,7 @@ namespace BL.Logic.SystemCore
 
             foreach (var act in systemImportActions)
             {
-                var i = systemDbActions.Where(x => x.Id == act.Id).FirstOrDefault();
+                var i = systemDbActions.FirstOrDefault(x => x.Id == act.Id);
 
                 if (i == null)
                 {

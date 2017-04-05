@@ -854,7 +854,8 @@ namespace BL.Database.SystemDb
 
         public void AddSystemObject(IContext ctx, SystemObjects item)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = dbContext.Database.BeginTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = dbContext.Database.BeginTransaction())
             {
                 dbContext.Database.ExecuteSqlCommand("SET IDENTITY_INSERT [DMS].[SystemObjects] ON");
 
@@ -904,40 +905,6 @@ namespace BL.Database.SystemDb
             }
         }
 
-        //public IEnumerable<FrontSystemObject> GetSystemObjectsWithActions(IContext ctx, FilterSystemObject filterObject, FilterSystemAction filterAction)
-        //{
-        //    using (var dbContext = new DmsContext(ctx))
-        //    using (var transaction = Transactions.GetTransaction())
-        //    {
-        //        var qry = GetSystemObjectsQuery(ctx, dbContext, filterObject);
-
-        //        var filterContains = PredicateBuilder.New<SystemActions>(false);
-
-        //        //filterContains = GetWhereSystemActions(x.Actions, filterAction);
-
-        //        //CommonFilterUtilites.GetWhereExpressions(filter.Description).Aggregate(filterContains,
-        //        //    (current, value) => current.Or(e => e.Description.Contains(value)).Expand());
-
-        //        //qry = qry.Where(filterContains);
-
-        //        return qry.Select(x => new FrontSystemObject
-        //        {
-        //            Id = x.Id,
-        //            Code = x.Code,
-        //            Description = x.Description,
-        //            Actions = x.Actions.AsQueryable()
-        //            .Where(filterContains)
-        //            .Select(y => new FrontSystemAction()
-        //            {
-        //                Id = y.Id,
-        //                Code = y.Code,
-        //                Description = y.Description
-        //            }
-        //            ).ToList(),
-
-        //        }).ToList();
-        //    }
-        //}
         public IEnumerable<int> GetObjectsByActions(IContext ctx, FilterSystemAction filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
@@ -1016,7 +983,8 @@ namespace BL.Database.SystemDb
 
         public void AddSystemAction(IContext ctx, SystemActions item)
         {
-            using (var dbContext = new DmsContext(ctx)) using (var transaction = dbContext.Database.BeginTransaction())
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = dbContext.Database.BeginTransaction())
             {
                 dbContext.Database.ExecuteSqlCommand("SET IDENTITY_INSERT [DMS].[SystemActions] ON");
 

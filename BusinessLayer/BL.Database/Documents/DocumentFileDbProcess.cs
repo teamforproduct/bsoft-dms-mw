@@ -67,18 +67,20 @@ namespace BL.Database.Documents
 
         public InternalDocumentAttachedFile GetInternalAttachedFile(IContext ctx, int fileId)
         {
-            using (var dbContext = new DmsContext(ctx))
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
             {
-                return
-                    dbContext.DocumentFilesSet.Where(x => x.Id == fileId)
-                        .Select(x => new InternalDocumentAttachedFile
-                        {
-                            Id = x.Id,
-                            ClientId = x.ClientId,
-                            EntityTypeId = x.EntityTypeId,
-                            PdfCreated = x.IsPdfCreated ?? false,
-                            LastPdfAccess = x.LastPdfAccessDate//??DateTime.MinValue
-                        }).FirstOrDefault();
+                var res = dbContext.DocumentFilesSet.Where(x => x.Id == fileId)
+                    .Select(x => new InternalDocumentAttachedFile
+                    {
+                        Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
+                        PdfCreated = x.IsPdfCreated ?? false,
+                        LastPdfAccess = x.LastPdfAccessDate //??DateTime.MinValue
+                    }).FirstOrDefault();
+                transaction.Complete();
+                return res;
             }
         }
 
