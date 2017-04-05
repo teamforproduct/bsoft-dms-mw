@@ -3240,7 +3240,7 @@ namespace BL.Database.Common
                 }
             }
             //TODO is certificate sign
-            if ((isUseCertificateSign && (newSubscription?.SigningType == EnumSigningTypes.CertificateSign && isAddSubscription)) || IsVioalted)
+            if ((isUseCertificateSign && (newSubscription?.SigningType == EnumSigningTypes.CertificateSign && isAddSubscription)) && !IsVioalted)
             {
                 subscriptions = subscriptions.Where(x => subscriptionStates.Contains(x.SubscriptionStates)).ToList();
                 if (isAddSubscription)
@@ -3260,7 +3260,7 @@ namespace BL.Database.Common
                 document.CertificateSignPdfFileIdentity = CommonQueries.GetDocumentCertificateSignPdf(dbContext, ctx, document, newSubscription?.CertificateId, newSubscription?.CertificatePassword, serverMapPath);
             }
 
-            if (IsFilesIncorrect)
+            if (IsFilesIncorrect && isAddSubscription)
             {
                 throw new DocumentFileWasChangedExternally();
             }
