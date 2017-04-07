@@ -647,6 +647,10 @@
     <Compile Include="Migrations\201704041744456_DictionarySendType_AddOrder.Designer.cs">
       <DependentUpon>201704041744456_DictionarySendType_AddOrder.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201704070526011_AgentPeoples_NullableIsMale.cs" />
+    <Compile Include="Migrations\201704070526011_AgentPeoples_NullableIsMale.Designer.cs">
+      <DependentUpon>201704070526011_AgentPeoples_NullableIsMale.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
@@ -995,6 +999,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201704041744456_DictionarySendType_AddOrder.resx">
       <DependentUpon>201704041744456_DictionarySendType_AddOrder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704070526011_AgentPeoples_NullableIsMale.resx">
+      <DependentUpon>201704070526011_AgentPeoples_NullableIsMale.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

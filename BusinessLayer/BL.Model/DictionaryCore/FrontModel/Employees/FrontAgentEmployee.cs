@@ -1,11 +1,5 @@
 ﻿using BL.Model.DictionaryCore.IncomingModel;
-using BL.Model.Extensions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BL.Model.DictionaryCore.FrontModel
 {
@@ -14,6 +8,10 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// </summary>
     public class FrontAgentEmployee: ModifyAgentEmployee
     {
+        /// <summary>
+        /// Имя
+        /// </summary>
+        public string Name { get; set; }
 
         /// <summary>
         /// Полное имя

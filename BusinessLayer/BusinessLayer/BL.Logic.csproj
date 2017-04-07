@@ -191,7 +191,6 @@
     <Compile Include="Common\BasePropertCommand.cs" />
     <Compile Include="Common\BaseDictionaryCommand.cs" />
     <Compile Include="Common\BaseDocumentCommand.cs" />
-    <Compile Include="Common\CommonDictionaryUtilities.cs" />
     <Compile Include="Common\CommonDocumentUtilities.cs" />
     <Compile Include="Common\CommonSystemUtilities.cs" />
     <Compile Include="DependencyInjection\LogicModule.cs" />

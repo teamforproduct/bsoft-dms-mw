@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
@@ -27,5 +28,12 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// </summary>
         [Required]
         public bool IsActive { get; set; }
+
+        /// <summary>
+        /// Имя
+        /// </summary>
+        [IgnoreDataMember]
+        public new string Name { get; set; }
+
     }
 }

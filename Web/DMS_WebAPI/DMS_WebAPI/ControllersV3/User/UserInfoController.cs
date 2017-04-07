@@ -107,7 +107,6 @@ namespace DMS_WebAPI.ControllersV3.User
             employee.ImageId = model.ImageId;
             employee.LanguageId = model.LanguageId;
 
-            employee.Name = model.Name;
             employee.FirstName = model.FirstName;
             employee.MiddleName = model.MiddleName;
             employee.LastName = model.LastName;

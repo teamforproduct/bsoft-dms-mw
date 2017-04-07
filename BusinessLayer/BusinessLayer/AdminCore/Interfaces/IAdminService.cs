@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.Interfaces;
+using BL.Database.DBModel.Admin;
 using BL.Model.AdminCore;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.FrontModel;
@@ -44,7 +45,7 @@ namespace BL.Logic.AdminCore.Interfaces
 
         #region [+] Roles ...
         //FrontAdminRole GetAdminRole(IContext context, int id);
-        int AddNamedRole(IContext context, string code, string name, IEnumerable<InternalAdminRolePermission> roleActions);
+        int AddNamedRole(IContext context, Roles role);
         FrontAdminRole GetAdminRole(IContext context, int id);
         IEnumerable<ListItem> GetListRoles(IContext context, FilterAdminRole filter, UIPaging paging);
         IEnumerable<FrontAdminRole> GetAdminRoles(IContext context, FilterAdminRole filter);

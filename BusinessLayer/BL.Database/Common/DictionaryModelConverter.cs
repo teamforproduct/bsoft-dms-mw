@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using BL.Model.DictionaryCore.InternalModel;
+﻿using BL.CrossCutting.Interfaces;
 using BL.Database.DBModel.Dictionary;
+using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
-using BL.CrossCutting.Interfaces;
 using System;
+using System.Collections.Generic;
 
 namespace BL.Database.Common
 {
@@ -26,21 +25,6 @@ namespace BL.Database.Common
                 Code = item.Index,
                 FullPath = item.Code,
                 ChiefPositionId = item.ChiefPositionId
-            };
-        }
-
-        public static DictionaryDocumentSubjects GetDbDocumentSubject(IContext context, InternalDictionaryDocumentSubject item)
-        {
-            return item == null ? null : new DictionaryDocumentSubjects
-            {
-                ClientId = context.CurrentClientId,
-
-                Id = item.Id,
-                ParentId = item.ParentId,
-                LastChangeDate = item.LastChangeDate,
-                LastChangeUserId = item.LastChangeUserId,
-                IsActive = item.IsActive,
-                Name = item.Name
             };
         }
 
@@ -292,7 +276,7 @@ namespace BL.Database.Common
                 FirstName = item.FirstName,
                 LastName = item.LastName,
                 MiddleName = item.MiddleName,
-                FullName = item.LastName?.Trim() + " " + item.FirstName?.Trim() + " " + item.MiddleName?.Trim(),
+                FullName = item.FullName,
                 
                 IsMale = item.IsMale,
                 BirthDate = item.BirthDate,

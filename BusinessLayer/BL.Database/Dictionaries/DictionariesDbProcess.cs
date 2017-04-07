@@ -27,7 +27,7 @@ using System.Linq;
 
 namespace BL.Database.Dictionaries
 {
-    public class DictionariesDbProcess : CoreDb.CoreDb//, IDictionariesDbProcess
+    public class DictionariesDbProcess : CoreDb.CoreDb
     {
         private readonly ICacheService _cacheService;
         public DictionariesDbProcess(ICacheService casheService)
@@ -267,6 +267,8 @@ namespace BL.Database.Dictionaries
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
+                FormAgentPeopleName(people);
+
                 people.Id = AddAgent(ctx, people);
 
                 var dbModel = DictionaryModelConverter.GetDbAgentPeople(ctx, people);
@@ -285,6 +287,8 @@ namespace BL.Database.Dictionaries
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
+                FormAgentPeopleName(people);
+
                 UpdateAgentName(ctx, people.Id, people);
 
                 var dbModel = DictionaryModelConverter.GetDbAgentPeople(ctx, people);
@@ -305,6 +309,18 @@ namespace BL.Database.Dictionaries
 
                 transaction.Complete();
             }
+        }
+
+        private void FormAgentPeopleName(InternalDictionaryAgentPeople people)
+        {
+            var F = people.FirstName?.Trim().First().ToString(); ;
+            var M = people.MiddleName?.Trim().First().ToString();
+
+            people.Name = people.LastName?.Trim();
+            people.Name += string.IsNullOrEmpty(F) ? "" : " " + F + ".";
+            people.Name += string.IsNullOrEmpty(F + M) ? "" : M + ".";
+
+            people.FullName = (people.LastName?.Trim() + " " + people.FirstName?.Trim() + " " + people.MiddleName?.Trim())?.Trim();
         }
 
         public void UpdateAgentPeoplePassport(IContext ctx, InternalDictionaryAgentPeople people)
@@ -5009,7 +5025,7 @@ namespace BL.Database.Dictionaries
                 {
                     var filterContains = PredicateBuilder.New<DictionaryPositions>(true);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.NameDepartmentExecutor).Aggregate(filterContains,
-                        (current, value) => current.And(e => (e.Name + " " + e.Department.Name + " " + e.ExecutorAgent.Name).Contains(value)).Expand());
+                        (current, value) => current.And(e => (e.Name + " " + e.Department.FullPath + " " + e.Department.Name + " " + e.ExecutorAgent.Name).Contains(value)).Expand());
 
                     qry = qry.Where(filterContains);
                 }

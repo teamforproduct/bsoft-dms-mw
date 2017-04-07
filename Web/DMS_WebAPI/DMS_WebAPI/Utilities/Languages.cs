@@ -122,7 +122,7 @@ namespace DMS_WebAPI.Utilities
             return Regex.IsMatch(text, _PATTERN);
         }
 
-        public string ReplaceLanguageLabel(int languageId, string text)
+        public string GetTranslation(int languageId, string text)
         {
             string errorMessage = text;
 
@@ -177,13 +177,13 @@ namespace DMS_WebAPI.Utilities
         /// <param name="languageCode"></param>
         /// <param name="text">json с множеством лейблов для перевода</param>
         /// <returns></returns>
-        public string ReplaceLanguageLabel(string languageCode, string text)
+        public string GetTranslation(string languageCode, string text)
         {
             if (!ExistsLabels(text)) return text;
 
             if (string.IsNullOrEmpty(languageCode)) languageCode = string.Empty;
 
-            return ReplaceLanguageLabel(GetLanguageIdByCode(languageCode), text);
+            return GetTranslation(GetLanguageIdByCode(languageCode), text);
         }
 
         public int GetLanguageIdByCode(string languageCode)
@@ -239,9 +239,9 @@ namespace DMS_WebAPI.Utilities
 
         }
 
-        public string ReplaceLanguageLabel(IContext context, string text)
+        public string GetTranslation(IContext context, string text)
         {
-            return ReplaceLanguageLabel(context.CurrentEmployee.LanguageId, text);
+            return GetTranslation(context.CurrentEmployee.LanguageId, text);
         }
 
         public void RefreshLanguageValues()
@@ -266,7 +266,7 @@ namespace DMS_WebAPI.Utilities
             catch
             { }
 
-            return defContext == null ? ReplaceLanguageLabel(currLang, text) : ReplaceLanguageLabel(defContext, text);
+            return defContext == null ? GetTranslation(currLang, text) : GetTranslation(defContext, text);
         }
 
         #endregion

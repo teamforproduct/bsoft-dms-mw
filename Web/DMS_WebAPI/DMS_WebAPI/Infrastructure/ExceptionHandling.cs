@@ -39,8 +39,6 @@ namespace DMS_WebAPI.Infrastructure
                     || exception is UserNotExecuteCheckPosition
                     ) res = HttpStatusCode.Unauthorized;
             }
-
-
             return res;
         }
 
@@ -128,17 +126,12 @@ namespace DMS_WebAPI.Infrastructure
 
         public static void ReturnExceptionResponse(Exception exception, HttpActionExecutedContext context = null)
         {
-
-            bool fromGlobalAsax = context == null;
-
             var user = string.Empty;
             var browser = string.Empty;
             var method = string.Empty;
             var body = string.Empty;
-            var request = string.Empty;
 
             HttpStatusCode statusCode = HttpStatusCode.OK;
-            var exc = exception;
             var logExpression = string.Empty;
             var responceDescription = string.Empty;
             var responceExpression = GetExceptionText(exception, out logExpression, out responceDescription);
@@ -149,11 +142,6 @@ namespace DMS_WebAPI.Infrastructure
             #region [+] Получение параметров текущего HttpContext ...
 
             var httpContext = HttpContext.Current;
-
-            if (context != null)
-            {
-                request = $"{context.Request}";
-            }
 
             try
             {
@@ -186,7 +174,7 @@ namespace DMS_WebAPI.Infrastructure
                 // есть проблема: ошибки брошенные в момент получения токена они же отловленные в GlobalAsax не могут формировать Responce с HttpStatusCode.Unauthorized
                 // в Responce приходит стандартный html вместо нашего текста ошибки
                 // Чтоыбы отображать наш текст ошибки, отловленной в GlobalAsax, возвращаю со статусом OK
-                httpContext.Response.StatusCode = fromGlobalAsax ? (int)HttpStatusCode.OK : (int)statusCode;
+                httpContext.Response.StatusCode = context == null ? (int)HttpStatusCode.OK : (int)statusCode;
 
 
                 httpContext.Response.Write(json);
@@ -204,22 +192,7 @@ namespace DMS_WebAPI.Infrastructure
                 errorMessage += "ERROR!!! - " + DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC\r\n";
 
                 // TODO - USER + BROWSER + BR.LANG-S 
-                errorMessage += $"User: {user}\r\n";
-                errorMessage += $"Method: {method}\r\n";
-                errorMessage += $"Request Body: {body}\r\n";
-                errorMessage += logExpression;
-                errorMessage += $"Browser: {browser}\r\n";
-
-
-
-                // Этот иф мне не понятен. Почему StackTrace нужно пытаться брать из InnerException
-                //if (exception.InnerException != null)
-                //    exc = exception.InnerException;
-                //else
-                //    exc = exception;
-
-                //errorMessage += $"StackTrace:\r\n{exc.StackTrace}\r\n";
-                //errorMessage += $"Request:\r\n{request}\r\n";
+                errorMessage += $"User: {user}\r\nMethod: {method}\r\nRequest Body: {body}\r\n{logExpression}Browser: {browser}\r\n";
 
                 FileLogger.AppendTextToFile(errorMessage, HttpContext.Current.Server.MapPath("~/SiteErrors.txt"));
             }

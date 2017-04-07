@@ -17,9 +17,6 @@ namespace BL.Logic.DictionaryCore
         {
             _adminService.VerifyAccess(_context, CommandType, false);
 
-            if (string.IsNullOrEmpty(Model.Name)) throw new NameRequired();
-
-            Model.Name?.Trim();
             Model.TaxCode?.Trim();
 
             // вычисляю табельный номер. если не передан

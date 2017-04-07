@@ -432,12 +432,7 @@ namespace DMS_WebAPI.Utilities
             var server = _webDb.GetServers(new FilterAdminServers()).FirstOrDefault();
             if (server == null) throw new ServerIsNotFound();
 
-            // Если не указан язык, беру язык по умолчанию 
-            if (model.LanguageId == null)
-            {
-                var languages = DmsResolver.Current.Get<BL.Logic.AdminCore.Interfaces.ILanguages>();
-                model.LanguageId = languages.GetLanguageIdByHttpContext();
-            }
+
 
             if (string.IsNullOrEmpty(model.Password)) model.Password = "admin_" + model.ClientCode;
 
@@ -471,11 +466,37 @@ namespace DMS_WebAPI.Utilities
             }
 
             var ctx = new AdminContext(server);
-            var clientService = DmsResolver.Current.Get<IClientService>();
 
+            //!!!!!!!!!!!! ClientId
+            ctx.CurrentClientId = model.ClientId;
+
+            var languages = DmsResolver.Current.Get<ILanguages>();
+
+            // Если не указан язык, беру язык по умолчанию 
+            if (string.IsNullOrEmpty(model.Language))
+            {
+                ctx.CurrentEmployee.LanguageId = languages.GetLanguageIdByHttpContext();
+            }
+            else
+            {
+                ctx.CurrentEmployee.LanguageId = languages.GetLanguageIdByCode(model.Language);
+            }
+
+            var clientService = DmsResolver.Current.Get<IClientService>();
             clientService.AddNewClient(ctx, model);
 
-
+            // !!! посмотреть отправку писем
+            AddUserEmployee(ctx, new AddAgentEmployeeUser
+            {
+                FirstName = model.Name,
+                LastName = model.LastName,
+                //MiddleName = model.MiddleName,
+                LanguageId = ctx.CurrentEmployee.LanguageId,
+                IsActive = true,
+                //IsMale = model.IsMale,
+                Phone = model.PhoneNumber,
+                Login = model.Email,
+            });
             //UserManager.AddLogin(userId, new UserLoginInfo {    })
 
 
@@ -936,8 +957,10 @@ namespace DMS_WebAPI.Utilities
                 DatabaseId = context.CurrentDB.Id,
                 IsChangePasswordRequired = context.IsChangePasswordRequired,
                 UserId = context.CurrentEmployee.UserId,
+                UserName = context.UserName,
                 LoginLogId = context.LoginLogId,
-                LoginLogInfo = context.LoginLogInfo
+                LoginLogInfo = context.LoginLogInfo,
+                LastChangeDate = DateTime.UtcNow,
             };
 
 
@@ -967,7 +990,7 @@ namespace DMS_WebAPI.Utilities
         public string GetClientCode(int clientId)
         {
             return _webDb.GetClientCode(clientId);
-            
+
         }
 
         public DatabaseModel GetServerByUser(string userId, SetUserServer setUserServer)

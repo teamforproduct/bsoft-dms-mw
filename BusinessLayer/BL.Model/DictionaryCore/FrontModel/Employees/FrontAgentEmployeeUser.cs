@@ -9,6 +9,11 @@ namespace BL.Model.DictionaryCore.FrontModel
     public class FrontAgentEmployeeUser: FrontAgentEmployee
     {
         /// <summary>
+        /// Имя
+        /// </summary>
+        public string Name { get; set; }
+
+        /// <summary>
         /// Логин
         /// </summary>
         public string Login { get; set; }
