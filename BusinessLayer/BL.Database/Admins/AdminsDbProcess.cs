@@ -1764,26 +1764,26 @@ namespace BL.Database.Admins
         private void VerifyAdminSecurityCash(IContext ctx)
         {
             var admCtx = new AdminContext(ctx);
+            var dbCtx = admCtx.DbContext as DmsContext;
             if (!_cacheService.Exists(ctx, SettingConstants.PERMISSION_CASHE_KEY))
             {
                 _cacheService.AddOrUpdateCasheData(ctx, SettingConstants.PERMISSION_CASHE_KEY, () =>
                 {
-                    using (var dbCtx = new DmsContext(admCtx))
+
+                    return dbCtx.SystemPermissionsSet.Select(x => new InternalSystemPermission
                     {
-                        return dbCtx.SystemPermissionsSet.Select(x => new InternalSystemPermission
-                        {
-                            Id = x.Id,
-                            AccessTypeId = x.AccessTypeId,
-                            FeatureCode = x.Feature.Code,
-                            FeatureId = x.FeatureId,
-                            FeatureOrder = x.Feature.Order,
-                            ModuleCode = x.Module.Code,
-                            ModuleId = x.ModuleId,
-                            ModuleOrder = x.Module.Order,
-                            AccessTypeCode = x.AccessType.Code,
-                            AccessTypeOrder = x.AccessType.Order
-                        }).ToList();
-                    }
+                        Id = x.Id,
+                        AccessTypeId = x.AccessTypeId,
+                        FeatureCode = x.Feature.Code,
+                        FeatureId = x.FeatureId,
+                        FeatureOrder = x.Feature.Order,
+                        ModuleCode = x.Module.Code,
+                        ModuleId = x.ModuleId,
+                        ModuleOrder = x.Module.Order,
+                        AccessTypeCode = x.AccessType.Code,
+                        AccessTypeOrder = x.AccessType.Order
+                    }).ToList();
+
                 });
             }
 
@@ -1791,24 +1791,22 @@ namespace BL.Database.Admins
             {
                 _cacheService.AddOrUpdateCasheData(ctx, SettingConstants.ACTION_CASHE_KEY, () =>
                 {
-                    using (var dbCtx = new DmsContext(admCtx))
+
+                    return dbCtx.SystemActionsSet.Select(x => new InternalSystemAction
                     {
-                        return dbCtx.SystemActionsSet.Select(x => new InternalSystemAction
-                        {
-                            Id = x.Id,
-                            Description = x.Description,
-                            PermissionId = x.PermissionId,
-                            Code = x.Code,
-                            API = x.API,
-                            Category = x.Category,
-                            GrantId = x.GrantId,
-                            IsVisible = x.IsVisible,
-                            IsGrantable = x.IsGrantable,
-                            IsGrantableByRecordId = x.IsGrantableByRecordId,
-                            IsVisibleInMenu = x.IsVisibleInMenu,
-                            ObjectId = (EnumObjects)x.ObjectId
-                        }).ToList();
-                    }
+                        Id = x.Id,
+                        Description = x.Description,
+                        PermissionId = x.PermissionId,
+                        Code = x.Code,
+                        API = x.API,
+                        Category = x.Category,
+                        GrantId = x.GrantId,
+                        IsVisible = x.IsVisible,
+                        IsGrantable = x.IsGrantable,
+                        IsGrantableByRecordId = x.IsGrantableByRecordId,
+                        IsVisibleInMenu = x.IsVisibleInMenu,
+                        ObjectId = (EnumObjects) x.ObjectId
+                    }).ToList();
                 });
             }
 
@@ -1816,17 +1814,16 @@ namespace BL.Database.Admins
             {
                 _cacheService.AddOrUpdateCasheData(ctx, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY, () =>
                 {
-                    using (var dbCtx = new DmsContext(admCtx))
+
+                    return dbCtx.AdminRolePermissionsSet.Select(x => new InternalAdminRolePermission
                     {
-                        return dbCtx.AdminRolePermissionsSet.Select(x => new InternalAdminRolePermission
-                        {
-                            Id = x.Id,
-                            RoleId = x.RoleId,
-                            PermissionId = x.PermissionId,
-                            LastChangeDate = x.LastChangeDate,
-                            LastChangeUserId = x.LastChangeUserId
-                        }).ToList();
-                    }
+                        Id = x.Id,
+                        RoleId = x.RoleId,
+                        PermissionId = x.PermissionId,
+                        LastChangeDate = x.LastChangeDate,
+                        LastChangeUserId = x.LastChangeUserId
+                    }).ToList();
+
                 });
             }
 
@@ -1834,54 +1831,51 @@ namespace BL.Database.Admins
             {
                 _cacheService.AddOrUpdateCasheData(ctx, SettingConstants.ADMIN_ROLE_CASHE_KEY, () =>
                 {
-                    using (var dbCtx = new DmsContext(admCtx))
+
+                    return dbCtx.AdminRolesSet.Select(x => new InternalAdminRole
                     {
-                        return dbCtx.AdminRolesSet.Select(x => new InternalAdminRole
-                        {
-                            Id = x.Id,
-                            LastChangeDate = x.LastChangeDate,
-                            LastChangeUserId = x.LastChangeUserId,
-                            Name = x.Name,
-                            Description = x.Description,
-                            RoleTypeId = x.RoleTypeId
-                        }).ToList();
-                    }
+                        Id = x.Id,
+                        LastChangeDate = x.LastChangeDate,
+                        LastChangeUserId = x.LastChangeUserId,
+                        Name = x.Name,
+                        Description = x.Description,
+                        RoleTypeId = x.RoleTypeId
+                    }).ToList();
+
                 });
             }
             if (!_cacheService.Exists(ctx, SettingConstants.USER_ROLE_CASHE_KEY))
             {
                 _cacheService.AddOrUpdateCasheData(ctx, SettingConstants.USER_ROLE_CASHE_KEY, () =>
                 {
-                    using (var dbCtx = new DmsContext(admCtx))
+
+                    return dbCtx.AdminUserRolesSet.Select(x => new InternalAdminUserRole
                     {
-                        return dbCtx.AdminUserRolesSet.Select(x => new InternalAdminUserRole
-                        {
-                            Id = x.Id,
-                            RoleId = x.RoleId,
-                            PositionExecutorId = x.PositionExecutorId
-                        }).ToList();
-                    }
+                        Id = x.Id,
+                        RoleId = x.RoleId,
+                        PositionExecutorId = x.PositionExecutorId
+                    }).ToList();
+
                 });
             }
             if (!_cacheService.Exists(ctx, SettingConstants.DICT_POSITION_EXECUTOR_CASHE_KEY))
             {
                 _cacheService.AddOrUpdateCasheData(ctx, SettingConstants.DICT_POSITION_EXECUTOR_CASHE_KEY, () =>
                 {
-                    using (var dbCtx = new DmsContext(admCtx))
+
+                    return dbCtx.DictionaryPositionExecutorsSet.Select(x => new InternalDictionaryPositionExecutor
                     {
-                        return dbCtx.DictionaryPositionExecutorsSet.Select(x => new InternalDictionaryPositionExecutor
-                        {
-                            Id = x.Id,
-                            Description = x.Description,
-                            AccessLevelId = x.AccessLevelId,
-                            EndDate = x.EndDate,
-                            AgentId = x.AgentId,
-                            PositionId = x.PositionId,
-                            IsActive = x.IsActive,
-                            StartDate = x.StartDate,
-                            PositionExecutorTypeId = x.PositionExecutorTypeId
-                        }).ToList();
-                    }
+                        Id = x.Id,
+                        Description = x.Description,
+                        AccessLevelId = x.AccessLevelId,
+                        EndDate = x.EndDate,
+                        AgentId = x.AgentId,
+                        PositionId = x.PositionId,
+                        IsActive = x.IsActive,
+                        StartDate = x.StartDate,
+                        PositionExecutorTypeId = x.PositionExecutorTypeId
+                    }).ToList();
+
                 });
             }
         }
