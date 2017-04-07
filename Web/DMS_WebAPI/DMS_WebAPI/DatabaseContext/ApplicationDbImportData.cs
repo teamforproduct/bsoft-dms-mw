@@ -169,12 +169,12 @@ namespace DMS_WebAPI.Models
         private static List<string> GetLabelsFromExceptions()
         {
             var list = new List<string>();
-            list.AddRange(GetListExeptions());
+            list.AddRange(GetListExceptions());
             return list;
 
         }
 
-        private static List<string> GetListExeptions()
+        private static List<string> GetListExceptions()
         {
             var qry = from t in System.Reflection.Assembly.GetAssembly(typeof(BL.Model.Exception.AccessIsDenied)).GetTypes()
                       where t.IsClass && t.Namespace == "BL.Model.Exception"

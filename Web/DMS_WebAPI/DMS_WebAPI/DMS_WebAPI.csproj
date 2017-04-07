@@ -38,7 +38,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\OutRelease\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -469,6 +469,14 @@
     <Compile Include="Migrations\201703301041021_UserFingerPrintIndexOff.Designer.cs">
       <DependentUpon>201703301041021_UserFingerPrintIndexOff.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201704070550425_UserContexts.cs" />
+    <Compile Include="Migrations\201704070550425_UserContexts.Designer.cs">
+      <DependentUpon>201704070550425_UserContexts.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704070558303_UserContexts1.cs" />
+    <Compile Include="Migrations\201704070558303_UserContexts1.Designer.cs">
+      <DependentUpon>201704070558303_UserContexts1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -675,6 +683,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703301041021_UserFingerPrintIndexOff.resx">
       <DependentUpon>201703301041021_UserFingerPrintIndexOff.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704070550425_UserContexts.resx">
+      <DependentUpon>201704070550425_UserContexts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704070558303_UserContexts1.resx">
+      <DependentUpon>201704070558303_UserContexts1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

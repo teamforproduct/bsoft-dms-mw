@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.Serialization;
+﻿using BL.Model.Extensions;
+using System;
 using System.ComponentModel.DataAnnotations;
-using BL.Model.Extensions;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
     /// <summary>
     /// Человек
     /// </summary>
-    public class AddAgentPeople : AddAgent
+    public class AddAgentPeople 
     {
+
         /// <summary>
         /// Имя
         /// </summary>
@@ -35,7 +31,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Пол (true - мужской)
         /// </summary>
-        public bool IsMale { get; set; }
+        public bool? IsMale { get; set; }
         
         /// <summary>
         /// Дата рождения

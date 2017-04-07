@@ -1663,13 +1663,13 @@ namespace BL.Database.Admins
             return res;
         }
 
-        public void AddRolePermissions(IContext ctx, IEnumerable<InternalAdminRolePermission> models)
+        public void AddRolePermissions(IContext ctx, IEnumerable<AdminRolePermissions> models)
         {
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var dbModels = AdminModelConverter.GetDbRolePermissions(ctx, models);
-                dbContext.AdminRolePermissionsSet.AddRange(dbModels);
+                //var dbModels = AdminModelConverter.GetDbRolePermissions(ctx, models);
+                dbContext.AdminRolePermissionsSet.AddRange(models);
                 dbContext.SaveChanges();
                 transaction.Complete();
             }

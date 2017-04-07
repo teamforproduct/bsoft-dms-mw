@@ -1,11 +1,5 @@
-﻿using System;
+﻿using BL.Model.DictionaryCore.IncomingModel;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using BL.Model.Enums;
-using System.Runtime.Serialization;
-using BL.Model.DictionaryCore.IncomingModel;
 
 namespace BL.Model.DictionaryCore.FrontModel
 {
@@ -15,6 +9,10 @@ namespace BL.Model.DictionaryCore.FrontModel
     /// </summary>
     public class FrontContactPersons : ModifyAgentContactPerson
     {
+        /// <summary>
+        /// Краткое название/имя (отображается в интерфейсе как основное)
+        /// </summary>
+        public string Name { get; set; }
 
         /// <summary>
         /// Список контактов контрагента

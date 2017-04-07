@@ -48,7 +48,6 @@ namespace BL.Model.DictionaryCore.InternalModel
 
         private void SetInternalDictionaryAgentEmployee(AddAgentEmployee model)
         {
-            Name = model.Name;
             FirstName = model.FirstName;
             LastName = model.LastName;
             MiddleName = model.MiddleName;
@@ -68,6 +67,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Дополнительная информация
         /// </summary>
         public string Description { get; set; }
+        
         /// <summary>
         /// Признак активности
         /// </summary>

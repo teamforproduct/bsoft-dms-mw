@@ -131,5 +131,7 @@ namespace BL.CrossCutting.Context
 
         public string LoginLogInfo { get; set; }
         public IDmsDatabaseContext DbContext { get; set; }
+
+        public string UserName { get; set; }
     }
 }

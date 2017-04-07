@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
@@ -8,8 +7,14 @@ namespace BL.Model.DictionaryCore.IncomingModel
     /// </summary>
     // В модели перечислены поля, на значения которых можно повлиять из интерфейса. Например поля таблицы LastChangeUserId и LastChangeDate в этой модели отсутствуют
     // Если в таблице поля объявлены как Nullable то поля в этом классе нужно объявлять Nullable
-    public class AddAgentClientCompany : AddAgent
+    public class AddAgentClientCompany 
     {
+        /// <summary>
+        /// Краткое название(отображается в интерфейсе как основное)
+        /// </summary>
+        [Required]
+        public string Name { get; set; }
+
         /// <summary>
         /// Полное наименование компании
         /// </summary>

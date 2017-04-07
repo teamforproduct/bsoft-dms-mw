@@ -1,7 +1,10 @@
 ﻿using BL.CrossCutting.Context;
+using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Admins;
+using BL.Database.DatabaseContext;
+using BL.Database.DBModel.Admin;
 using BL.Database.Dictionaries;
 using BL.Database.SystemDb;
 using BL.Logic.AdminCore.Interfaces;
@@ -172,33 +175,31 @@ namespace BL.Logic.AdminCore
             return _adminDb.GetRoles(context, filter);
         }
 
-        public int AddNamedRole(IContext context, string code, string name, IEnumerable<InternalAdminRolePermission> roleActions)
+        public int AddNamedRole(IContext context, Roles roleTypeId)
         {
             int roleId = 0;
 
             using (var transaction = Transactions.GetTransaction())
             {
-                var roleType = new InternalAdminRoleType() { Code = code, Name = name };
-                CommonDocumentUtilities.SetLastChange(context, roleType);
+                var languageService = DmsResolver.Current.Get<ILanguages>();
+                var name = languageService.GetTranslation(context.CurrentEmployee.LanguageId, $"##l@Roles:{roleTypeId.ToString()}@l##");
 
-                // Классификатор роли
-                var roleTypeId = _adminDb.AddRoleType(context, roleType);
-
-                var role = new InternalAdminRole() { RoleTypeId = roleTypeId, Name = name };
+                // предполагаю, что классификатор ролей загружен при инсталяции приложения
+                var role = new InternalAdminRole() { RoleTypeId = (int)roleTypeId, Name = name };
                 CommonDocumentUtilities.SetLastChange(context, role);
 
                 // Новая роль со ссылкой на классификатор ролей.
                 roleId = _adminDb.AddRole(context, role);
 
-                var rp = new List<InternalAdminRolePermission>();
+                DmsDbImportData.InitPermissions();
+
+                var rp = new List<AdminRolePermissions>();
 
                 // Указание ид роли для предложенных действий
-                foreach (var item in roleActions)
+                foreach (var item in DmsDbImportData.GetAdminRolePermissions().Where(x => x.RoleId == (int)roleTypeId))
                 {
-                    rp.Add(new InternalAdminRolePermission() { PermissionId = item.PermissionId, RoleId = roleId });
+                    rp.Add(new AdminRolePermissions() { PermissionId = item.PermissionId, RoleId = roleId, LastChangeDate = DateTime.UtcNow, LastChangeUserId = (int)EnumSystemUsers.AdminUser });
                 }
-
-                CommonDocumentUtilities.SetLastChange(context, rp);
 
                 _adminDb.AddRolePermissions(context, rp);
 

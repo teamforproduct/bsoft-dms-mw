@@ -284,10 +284,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumDocumentActions.RegisterDocument, model,
-                    model.CurrentPositionId);
-                var res = new JsonResult(tmpItem, this);
-                return res;
+                var tmpItem = Action.Execute(context, EnumDocumentActions.RegisterDocument, model, model.CurrentPositionId);
+                return GetById(context, tmpItem);
             });
         }
 

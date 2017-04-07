@@ -31,9 +31,9 @@ namespace DMS_WebAPI.ControllersV3.System
             {
                 var tmpItem = new FrontSystemLicencesInfo
                 {
-                    MessageLevelTypes = EnumMessageLevelTypes.Green,
+                    MessageLevelTypes = EnumMessageLevelTypes.None,
                     MessageLevelTypesName = EnumMessageLevelTypes.Green.ToString(),
-                    Message = "Успех, работаем на V3", //TODO 
+                    Message = "Срок вашей лицензии истекает", //TODO 
                 };
                 var res = new JsonResult(tmpItem, this);
                 return res;

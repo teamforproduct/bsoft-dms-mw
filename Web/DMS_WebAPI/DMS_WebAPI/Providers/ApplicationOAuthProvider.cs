@@ -231,7 +231,7 @@ namespace DMS_WebAPI.Providers
                 var userContexts = DmsResolver.Current.Get<UserContexts>();
 
                 // Создаю пользовательский контекст
-                var ctx = userContexts.Set(token, userId, client.Code, user.IsChangePasswordRequired);
+                var ctx = userContexts.Set(token, userId, user.UserName, user.IsChangePasswordRequired, client.Code);
 
                 // Добавляю в пользовательский контекст сервер
                 userContexts.Set(token, server, client.Id);

@@ -1,10 +1,7 @@
-﻿using BL.Model.DictionaryCore.FrontModel;
-using BL.Model.Enums;
+﻿using BL.Model.Enums;
 using BL.Model.Extensions;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
