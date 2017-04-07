@@ -42,7 +42,6 @@ namespace BL.CrossCutting.Context
             DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
         }
 
-        //TODO DbContext NOT INITIALIZED HERE
         public AdminContext(IContext ctx)
         {
             CurrentDB = new DatabaseModel
@@ -66,8 +65,7 @@ namespace BL.CrossCutting.Context
             };
 
             IsChangePasswordRequired = ctx.IsChangePasswordRequired;
-            DbContext =
-                DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
+            DbContext =DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
             IsFormed = true;
 
         }
