@@ -74,6 +74,63 @@ namespace BL.Database.Common
             return accesses?.Any() ?? false ? accesses.Select(GetDbDocumentAccess) : null;
         }
 
+        public static DocumentEventAccesses GetDbDocumentEventAccess(InternalDocumentEventAccess access)
+        {
+            return access == null ? null :
+                new DocumentEventAccesses
+                {
+                    Id = access.Id,
+                    EntityTypeId = access.EntityTypeId,
+                    ClientId = access.ClientId,
+                    LastChangeDate = access.LastChangeDate,
+                    LastChangeUserId = access.LastChangeUserId,
+                    DocumentId = access.DocumentId,
+                    IsFavourite = access.IsFavourite,
+                    AccessTypeId = (int)access.AccessType,
+                    PositionId = access.PositionId,
+                    AgentId = access.AgentId,
+                    EventId = access.EventId,
+                    IsActive = access.IsActive,
+                    IsAddLater = access.IsAddLater,
+                    ReadAgentId = access.ReadAgentId,
+                    ReadDate = access.ReadDate,
+                    SendDate = access.SendDate,
+                };
+        }
+
+        public static IEnumerable<DocumentEventAccesses> GetDbDocumentEventAccesses(IEnumerable<InternalDocumentEventAccess> accesses)
+        {
+            return accesses?.Any() ?? false ? accesses.Select(GetDbDocumentEventAccess) : null;
+        }
+
+        public static DocumentEventAccessGroups GetDbDocumentEventAccessGroup(InternalDocumentEventAccessGroup access)
+        {
+            return access == null ? null :
+                new DocumentEventAccessGroups
+                {
+                    Id = access.Id,
+                    EntityTypeId = access.EntityTypeId,
+                    ClientId = access.ClientId,
+                    LastChangeDate = access.LastChangeDate,
+                    LastChangeUserId = access.LastChangeUserId,
+                    DocumentId = access.DocumentId,
+                    EventId = access.EventId,
+                    AccessTypeId = (int)access.AccessType,
+                    AccessGroupsTypeId = (int)access.AccessGroupsType,
+                    PositionId = access.PositionId,
+                    AgentId = access.AgentId,
+                    CompanyId = access.CompanyId,
+                    DepartmentId = access.DepartmentId,
+                    IsActive = access.IsActive,
+
+                };
+        }
+
+        public static IEnumerable<DocumentEventAccessGroups> GetDbDocumentEventAccessGroups(IEnumerable<InternalDocumentEventAccessGroup> accesses)
+        {
+            return accesses?.Any() ?? false ? accesses.Select(GetDbDocumentEventAccessGroup) : null;
+        }
+
         public static DocumentEvents GetDbDocumentEvent(InternalDocumentEvent evt)
         {
             return evt == null ? null :
@@ -102,6 +159,7 @@ namespace BL.Database.Common
                     SourcePositionExecutorTypeId = evt.SourcePositionExecutorTypeId,
                     ReadAgentId = evt.ReadAgentId,
                     ReadDate = evt.ReadDate,
+                    EventAccesses = GetDbDocumentEventAccesses(evt.Accesses).ToList(),
 
 
                     PaperId = evt.PaperId,
