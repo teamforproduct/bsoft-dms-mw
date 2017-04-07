@@ -9,12 +9,12 @@ using BL.Model.DocumentCore.InternalModel;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    public class SendMessageDocumentCommand : BaseDocumentCommand
+    public class SendMessageDocumentCommand_OLD : BaseDocumentCommand
     {
         private readonly IDocumentsDbProcess _documentDb;
         private readonly IDocumentOperationsDbProcess _operationDb;
 
-        public SendMessageDocumentCommand(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb)
+        public SendMessageDocumentCommand_OLD(IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb)
         {
             _documentDb = documentDb;
             _operationDb = operationDb;
@@ -56,13 +56,22 @@ namespace BL.Logic.DocumentCore.Commands
         public override object Execute()
         {
             var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task);
-            var ev = CommonDocumentUtilities.GetNewDocumentEvent(   _context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.SendMessage, Model.EventDate, Model.Description, null, taskId, Model.IsAvailableWithinTask, 
-                                                                    accessGroups : Model.AccessGroups, isVeryfyDocumentAccess: true);
-            if (ev.AccessGroups.Count() == 0)
+            var evtToAdd = new List<InternalDocumentEvent>();
+            if (Model?.Positions.Count == 0)
             {
                 throw new NobodyIsChosen();
             }
-            _document.Events = new List<InternalDocumentEvent> { ev };
+            var accList = _operationDb.GetDocumentAccesses(_context, Model.DocumentId);
+            var actuelPosList = Model.Positions.Where(x => accList.Select(s => s.PositionId).Contains(x)).ToList();
+            if (!actuelPosList.Any()) return null;
+
+            var posInfos = _operationDb.GetInternalPositionsInfo(_context, actuelPosList);
+
+            var addDescription = Model.IsAddPositionsInfo ? "##l@General:DirectTo@l##: " + string.Join(", ", posInfos.Select(x => x.PositionName))  : null;
+            evtToAdd.AddRange(actuelPosList.Select(targetPositionId =>
+                CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.SendMessage, Model.EventDate, Model.Description, addDescription, taskId, Model.IsAvailableWithinTask, targetPositionId)
+                                                    ));
+            _document.Events = evtToAdd;
             _operationDb.AddDocumentEvents(_context, _document);
             return null;
         }

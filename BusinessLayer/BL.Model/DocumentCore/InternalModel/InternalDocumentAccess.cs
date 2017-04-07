@@ -11,6 +11,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public int EntityTypeId { get; set; }
         public int DocumentId { get; set; }
         public int? PositionId { get; set; }
+        public int? AgentId { get; set; }
         public EnumDocumentAccesses AccessLevel { get; set; }
         public bool IsInWork { get; set; }
         public bool IsFavourite { get; set; }

@@ -3,7 +3,9 @@ using BL.CrossCutting.Interfaces;
 using BL.Database.Dictionaries;
 using BL.Database.Documents.Interfaces;
 using BL.Database.SystemDb;
+using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.Common;
+using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.Filters;
@@ -188,6 +190,102 @@ namespace BL.Logic.Common
             }
         }
 
+        public static void SetEventAccessess(IContext context, InternalDocumentEvent ev, List<EventAccessGroup> accessGroups, bool isVeryfyDocumentAccess = false)
+        {
+            if (ev != null)
+            {
+                var dict = DmsResolver.Current.Get<IDictionaryService>();
+                var dictDB = DmsResolver.Current.Get<DictionariesDbProcess>();
+                var operationDb = DmsResolver.Current.Get<IDocumentOperationsDbProcess>();
+                var docAccesses = operationDb.GetDocumentAccesses(context, ev.DocumentId);
+                if (accessGroups == null) accessGroups = new List<EventAccessGroup>();
+                if (!accessGroups.Any(x => x.AccessType == EnumEventAccessTypes.Source))
+                    accessGroups.Add(new EventAccessGroup { AccessType = EnumEventAccessTypes.Source, AccessGroupsType = EnumEventAccessGroupsTypes.Position, RecordId = context.CurrentPositionId });
+                ev.AccessGroups = accessGroups.Select(x => new InternalDocumentEventAccessGroup
+                {
+                    ClientId = ev.ClientId,
+                    EntityTypeId = ev.EntityTypeId,
+                    DocumentId = ev.DocumentId,
+                    EventId = ev.Id,
+                    IsActive = true,
+                    AccessType = x.AccessType,
+                    AccessGroupsType = x.AccessGroupsType,
+                    PositionId = x.AccessGroupsType == EnumEventAccessGroupsTypes.Position ? x.RecordId : null,
+                    AgentId = x.AccessGroupsType == EnumEventAccessGroupsTypes.Agent ? x.RecordId : null,
+                    DepartmentId = x.AccessGroupsType == EnumEventAccessGroupsTypes.Department ? x.RecordId : null,
+                    CompanyId = x.AccessGroupsType == EnumEventAccessGroupsTypes.Company ? x.RecordId : null,
+                });
+                SetLastChange(context, ev.AccessGroups);
+                var accesses = new List<InternalDocumentEventAccess>();
+                accessGroups.OrderBy(x => x.AccessType).ToList().ForEach(x =>
+                  {
+                      List<int> positions = new List<int>();
+                      List<int> agents = new List<int>();
+                      if (x.AccessGroupsType == EnumEventAccessGroupsTypes.Position && x.RecordId.HasValue)
+                          positions.Add(x.RecordId.Value);
+                      else if (x.AccessGroupsType == EnumEventAccessGroupsTypes.Agent && x.RecordId.HasValue)
+                          agents.Add(x.RecordId.Value);
+                      else if (x.AccessGroupsType == EnumEventAccessGroupsTypes.Department && x.RecordId.HasValue)
+                          positions.AddRange(dict.GetChildPositions(context, null, x.RecordId.Value));
+                      else if (x.AccessGroupsType == EnumEventAccessGroupsTypes.Company && x.RecordId.HasValue)
+                          positions.AddRange(dict.GetChildPositions(context, null, null, x.RecordId.Value));
+                      else if (x.AccessGroupsType == EnumEventAccessGroupsTypes.SendList && x.RecordId.HasValue)
+                      {
+                          var sendListContent = dictDB.GetInternalStandartSendListContents(context, new FilterDictionaryStandartSendListContent { StandartSendListId = new List<int> { x.RecordId.Value } });
+                          positions.AddRange(sendListContent.Where(y => y.TargetPositionId.HasValue).Select(y => y.TargetPositionId.Value));
+                          agents.AddRange(sendListContent.Where(y => y.TargetAgentId.HasValue && !y.TargetPositionId.HasValue).Select(y => y.TargetAgentId.Value));
+                      }
+                      else if (x.AccessGroupsType == EnumEventAccessGroupsTypes.WorkGroup && x.RecordId.HasValue)
+                      {
+                          positions.AddRange(docAccesses.Where(y => y.PositionId.HasValue).Select(y => y.PositionId.Value));
+                          agents.AddRange(docAccesses.Where(y => y.AgentId.HasValue && !y.PositionId.HasValue).Select(y => y.AgentId.Value));
+                      }
+                      positions = positions.Where(y => !accesses.Select(z => z.PositionId).Contains(y)).ToList();
+                      agents = agents.Where(y => !accesses.Select(z => z.AgentId).Contains(y)).ToList();
+                      if (isVeryfyDocumentAccess)
+                      {
+                          positions = positions.Where(y => docAccesses.Select(z => z.PositionId).Contains(y)).ToList();
+                          agents = agents.Where(y => docAccesses.Select(z => z.AgentId).Contains(y)).ToList();
+                      }
+                      accesses.AddRange(positions.Select(y =>
+                      {
+                          var positionExecutor = GetExecutorAgentIdByPositionId(context, y);
+                          return new InternalDocumentEventAccess
+                          {
+                              ClientId = ev.ClientId,
+                              EntityTypeId = ev.EntityTypeId,
+                              DocumentId = ev.DocumentId,
+                              EventId = ev.Id,
+                              IsActive = true,
+                              AccessType = x.AccessType,
+                              PositionId = y,
+                              AgentId = positionExecutor.ExecutorAgentId,
+                              PositionExecutorTypeId = positionExecutor.ExecutorTypeId,
+                              ReadDate = (x.AccessType == EnumEventAccessTypes.Source) ? DateTime.UtcNow : (DateTime?)null,
+                              SendDate = (x.AccessType == EnumEventAccessTypes.Source) ? DateTime.UtcNow : (DateTime?)null,
+                              ReadAgentId = (x.AccessType == EnumEventAccessTypes.Source) ? context.CurrentAgentId : (int?)null,
+                              IsNew = !docAccesses.Select(z => z.PositionId).Contains(y),
+                          };
+                      }));
+                      accesses.AddRange(agents.Select(y => new InternalDocumentEventAccess
+                      {
+                          ClientId = ev.ClientId,
+                          EntityTypeId = ev.EntityTypeId,
+                          DocumentId = ev.DocumentId,
+                          EventId = ev.Id,
+                          IsActive = true,
+                          AccessType = x.AccessType,
+                          AgentId = y,
+                          ReadDate = (x.AccessType == EnumEventAccessTypes.Source) ? DateTime.UtcNow : (DateTime?)null,
+                          SendDate = (x.AccessType == EnumEventAccessTypes.Source) ? DateTime.UtcNow : (DateTime?)null,
+                          ReadAgentId = (x.AccessType == EnumEventAccessTypes.Source) ? context.CurrentAgentId : (int?)null,
+                          IsNew = !docAccesses.Select(z => z.AgentId).Contains(y),
+                      }));
+                  });
+                SetLastChange(context, accesses);
+                ev.Accesses = accesses;
+            }
+        }
         public static void SetLastChange(IContext context, IEnumerable<LastChangeInfo> documents)
         {
             documents.ToList().ForEach(x => SetLastChange(context, x));
@@ -195,7 +293,7 @@ namespace BL.Logic.Common
 
         public static InternalDocumentAccess GetNewDocumentAccess(IContext context, int entityTypeId, int? documentId = null, EnumDocumentAccesses? accessLevel = null, int? positionId = null)
         {
-            return new InternalDocumentAccess
+            var res = new InternalDocumentAccess
             {
                 DocumentId = documentId ?? 0,
                 ClientId = context.CurrentClientId,
@@ -203,10 +301,10 @@ namespace BL.Logic.Common
                 AccessLevel = accessLevel ?? EnumDocumentAccesses.PersonalRefIO,
                 IsInWork = true,
                 IsFavourite = false,
-                LastChangeDate = DateTime.UtcNow,
-                LastChangeUserId = context.CurrentAgentId,
                 PositionId = positionId ?? context.CurrentPositionId
             };
+            SetLastChange(context, res);
+            return res;
         }
 
         public static IEnumerable<InternalDocumentAccess> GetNewDocumentAccesses(IContext context, int entityTypeId, int? documentId = null, EnumDocumentAccesses? accessLevel = null, int? positionId = null)
@@ -221,7 +319,7 @@ namespace BL.Logic.Common
         {
             var sourcePositionExecutor = GetExecutorAgentIdByPositionId(context, model.SourcePositionId);
             var targetPositionExecutor = GetExecutorAgentIdByPositionId(context, model.TargetPositionId);
-            return new InternalDocumentEvent
+            var res = new InternalDocumentEvent
             {
                 DocumentId = model.DocumentId != 0 ? model.DocumentId : 0,
                 ClientId = context.CurrentClientId,
@@ -238,11 +336,11 @@ namespace BL.Logic.Common
                 TargetPositionExecutorAgentId = targetPositionExecutor?.ExecutorAgentId,
                 TargetPositionExecutorTypeId = targetPositionExecutor?.ExecutorTypeId,
                 TargetAgentId = model.TargetAgentId,
-                LastChangeUserId = context.CurrentAgentId,
-                LastChangeDate = DateTime.UtcNow,
                 Date = DateTime.UtcNow,
                 CreateDate = DateTime.UtcNow,
             };
+            SetLastChange(context, res);
+            return res;
         }
 
         public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvents(IContext context, InternalDocumentSendList model, EnumEventTypes? eventType = null)
@@ -253,11 +351,12 @@ namespace BL.Logic.Common
             };
         }
 
-        public static InternalDocumentEvent GetNewDocumentEvent(IContext context, int entityTypeId, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string addDescription = null, int? taskId = null, bool isAvailableWithinTask = false, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null)
+        public static InternalDocumentEvent GetNewDocumentEvent(IContext context, int entityTypeId, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string addDescription = null, int? taskId = null, bool isAvailableWithinTask = false, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, 
+                                                                List<EventAccessGroup> accessGroups = null, bool isVeryfyDocumentAccess = false)
         {
             var sourcePositionExecutor = GetExecutorAgentIdByPositionId(context, sourcePositionId ?? context.CurrentPositionId);
             var targetPositionExecutor = GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId);
-            return new InternalDocumentEvent
+            var res = new InternalDocumentEvent
             {
                 ClientId = context.CurrentClientId,
                 EntityTypeId = entityTypeId,
@@ -275,47 +374,48 @@ namespace BL.Logic.Common
                 TargetPositionExecutorAgentId = targetPositionExecutor?.ExecutorAgentId,
                 TargetPositionExecutorTypeId = targetPositionExecutor?.ExecutorTypeId,
                 TargetAgentId = targetAgentId,
-                LastChangeUserId = context.CurrentAgentId,
-                LastChangeDate = DateTime.UtcNow,
                 Date = eventDate ?? DateTime.UtcNow,
                 CreateDate = DateTime.UtcNow,
             };
+            SetLastChange(context, res);
+            SetEventAccessess(context, res, accessGroups, isVeryfyDocumentAccess);
+            return res;
         }
 
-        public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvents(IContext context, int entityTypeId, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string addDescription = null, int? taskId = null, bool isAvailableWithinTask = false, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null)
+        public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvents(IContext context, int entityTypeId, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string addDescription = null, int? taskId = null, bool isAvailableWithinTask = false, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, List<EventAccessGroup> accessGroups = null)
         {
             return new List<InternalDocumentEvent>
             {
-                GetNewDocumentEvent(context,entityTypeId, documentId,eventType,eventDate,description,addDescription,taskId,isAvailableWithinTask,targetPositionId,targetAgentId,sourcePositionId,sourceAgentId),
+                GetNewDocumentEvent(context,entityTypeId, documentId,eventType,eventDate,description,addDescription,taskId,isAvailableWithinTask,targetPositionId,targetAgentId,sourcePositionId,sourceAgentId,accessGroups),
             };
         }
 
         public static InternalDocumentWait GetNewDocumentWait(IContext context, int entityTypeId, int documentId, InternalDocumentEvent onEvent = null)
         {
-            return new InternalDocumentWait
+            var res = new InternalDocumentWait
             {
                 ClientId = context.CurrentClientId,
                 EntityTypeId = entityTypeId,
                 DocumentId = documentId,
                 OnEvent = onEvent,
-                LastChangeUserId = context.CurrentAgentId,
-                LastChangeDate = DateTime.UtcNow,
             };
+            SetLastChange(context, res);
+            return res;
         }
 
         public static InternalDocumentWait GetNewDocumentWait(IContext context, int entityTypeId, ControlOn controlOnModel, EnumEventTypes? eventType = null, int? taskId = null, bool isAvailableWithinTask = false)
         {
-            return new InternalDocumentWait
+            var res = new InternalDocumentWait
             {
                 ClientId = context.CurrentClientId,
                 EntityTypeId = entityTypeId,
                 DocumentId = controlOnModel.DocumentId,
                 DueDate = controlOnModel.DueDate,
                 AttentionDate = controlOnModel.AttentionDate,
-                LastChangeUserId = context.CurrentAgentId,
-                LastChangeDate = DateTime.UtcNow,
-                OnEvent = eventType == null ? null : GetNewDocumentEvent(context, entityTypeId,controlOnModel.DocumentId, eventType.Value, controlOnModel.EventDate, controlOnModel.Description, null, taskId, isAvailableWithinTask)
+                OnEvent = eventType == null ? null : GetNewDocumentEvent(context, entityTypeId, controlOnModel.DocumentId, eventType.Value, controlOnModel.EventDate, controlOnModel.Description, null, taskId, isAvailableWithinTask)
             };
+            SetLastChange(context, res);
+            return res;
         }
 
         public static IEnumerable<InternalDocumentWait> GetNewDocumentWaits(IContext context, int entityTypeId, ControlOn controlOnModel, EnumEventTypes? eventType = null, int? taskId = null, bool isAvailableWithinTask = false)
@@ -328,7 +428,7 @@ namespace BL.Logic.Common
 
         public static InternalDocumentWait GetNewDocumentWait(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes eventType, EnumEventCorrespondentType? eventCorrespondentType = null, bool? isTakeMainDueDate = null)
         {
-            return new InternalDocumentWait
+            var res = new InternalDocumentWait
             {
                 ClientId = context.CurrentClientId,
                 EntityTypeId = sendListModel.EntityTypeId,
@@ -345,8 +445,6 @@ namespace BL.Logic.Common
                                         (!sendListModel.SelfAttentionDay.HasValue || sendListModel.SelfAttentionDay.Value < 0) ? null : (DateTime?)DateTime.UtcNow.AddDays(sendListModel.SelfAttentionDay.Value)
                                     }.Max()
                             : null,
-                LastChangeUserId = context.CurrentAgentId,
-                LastChangeDate = DateTime.UtcNow,
                 OnEvent = //eventType == null ? null :
                             GetNewDocumentEvent
                             (
@@ -359,6 +457,8 @@ namespace BL.Logic.Common
                                 sendListModel.SourceAgentId
                             )
             };
+            SetLastChange(context, res);
+            return res;
         }
 
         public static IEnumerable<InternalDocumentWait> GetNewDocumentWaits(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes eventType, EnumEventCorrespondentType? eventCorrespondentType = null, bool? isTakeMainDueDate = null)
@@ -371,14 +471,12 @@ namespace BL.Logic.Common
 
         public static InternalDocumentSubscription GetNewDocumentSubscription(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes? eventType = null)
         {
-            return new InternalDocumentSubscription
+            var res = new InternalDocumentSubscription
             {
                 ClientId = context.CurrentClientId,
                 EntityTypeId = sendListModel.EntityTypeId,
                 DocumentId = sendListModel.DocumentId,
                 SubscriptionStates = EnumSubscriptionStates.No,
-                LastChangeUserId = context.CurrentAgentId,
-                LastChangeDate = DateTime.UtcNow,
                 SendEvent = eventType == null ? null :
                             GetNewDocumentEvent
                             (
@@ -389,6 +487,8 @@ namespace BL.Logic.Common
                                 sendListModel.SourceAgentId
                             )
             };
+            SetLastChange(context, res);
+            return res;
         }
 
         public static IEnumerable<InternalDocumentSubscription> GetNewDocumentSubscriptions(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes? eventType = null)
@@ -428,17 +528,16 @@ namespace BL.Logic.Common
                         AgentId = context.CurrentAgentId,
                         Name = task,
                         Description = description,
-                        LastChangeUserId = context.CurrentAgentId,
-                        LastChangeDate = DateTime.UtcNow,
                     }
                 };
+                SetLastChange(context, document.Tasks);
             }
             return taskId;
         }
 
         public static InternalDocumentSendList GetNewDocumentSendList(IContext context, int entityTypeId, BaseModifyDocumentSendList model, int? taskId = null)
         {
-            return new InternalDocumentSendList
+            var res = new InternalDocumentSendList
             {
                 ClientId = context.CurrentClientId,
                 EntityTypeId = entityTypeId,
@@ -468,30 +567,28 @@ namespace BL.Logic.Common
                 SelfDescription = model.SelfDescription,
                 SelfAttentionDate = model.SelfAttentionDate,
                 SelfAttentionDay = model.SelfAttentionDay,
-                LastChangeUserId = context.CurrentAgentId,
-                LastChangeDate = DateTime.UtcNow,
-
             };
+            SetLastChange(context, res);
+            return res;
         }
 
         public static InternalDocumentRestrictedSendList GetNewDocumentRestrictedSendList(IContext context, int entityTypeId, ModifyDocumentRestrictedSendList model)
         {
-            return new InternalDocumentRestrictedSendList
+            var res = new InternalDocumentRestrictedSendList
             {
                 ClientId = context.CurrentClientId,
                 EntityTypeId = entityTypeId,
                 AccessLevel = model.AccessLevel,
                 DocumentId = model.DocumentId,
                 PositionId = model.PositionId,
-                LastChangeUserId = context.CurrentAgentId,
-                LastChangeDate = DateTime.UtcNow,
-
             };
+            SetLastChange(context, res);
+            return res;
         }
 
         public static InternalDocumentPaper GetNewDocumentPaper(IContext context, int entityTypeId, BaseModifyDocumentPaper model, int orderNumber)
         {
-            return new InternalDocumentPaper
+            var res = new InternalDocumentPaper
             {
                 ClientId = context.CurrentClientId,
                 EntityTypeId = entityTypeId,
@@ -505,9 +602,9 @@ namespace BL.Logic.Common
                 OrderNumber = orderNumber,
                 Events = GetNewDocumentPaperEvents(context, (int)EnumEntytiTypes.Document, model.DocumentId, null, EnumEventTypes.AddNewPaper),
                 IsInWork = true,
-                LastChangeUserId = context.CurrentAgentId,
-                LastChangeDate = DateTime.UtcNow,
             };
+            SetLastChange(context, res);
+            return res;
         }
 
         public static IEnumerable<InternalDocumentPaper> GetNewDocumentPapers(IContext context, int entityTypeId, BaseModifyDocumentPaper model, int maxOrderNumber)
@@ -522,7 +619,7 @@ namespace BL.Logic.Common
 
         public static InternalTemplateDocumentPaper GetNewTemplateDocumentPaper(IContext context, AddTemplateDocumentPaper model, int orderNumber)
         {
-            return new InternalTemplateDocumentPaper
+            var res = new InternalTemplateDocumentPaper
             {
                 DocumentId = model.DocumentId,
                 Name = model.Name,
@@ -532,9 +629,9 @@ namespace BL.Logic.Common
                 IsCopy = model.IsCopy,
                 PageQuantity = model.PageQuantity,
                 OrderNumber = orderNumber,
-                LastChangeUserId = context.CurrentAgentId,
-                LastChangeDate = DateTime.UtcNow,
             };
+            SetLastChange(context, res);
+            return res;
         }
 
         public static IEnumerable<InternalTemplateDocumentPaper> GetNewTemplateDocumentPapers(IContext context, AddTemplateDocumentPaper model, int maxOrderNumber)
@@ -551,7 +648,7 @@ namespace BL.Logic.Common
         {
             var sourcePositionExecutor = GetExecutorAgentIdByPositionId(context, sourcePositionId ?? context.CurrentPositionId);
             var targetPositionExecutor = GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId);
-            return new InternalDocumentEvent
+            var res = new InternalDocumentEvent
             {
                 ClientId = context.CurrentClientId,
                 EntityTypeId = entityTypeId,
@@ -575,9 +672,9 @@ namespace BL.Logic.Common
                 PaperSendDate = IsMarkRecieve ? (DateTime?)DateTime.UtcNow : null,
                 PaperRecieveAgentId = IsMarkRecieve ? (int?)context.CurrentAgentId : null,
                 PaperRecieveDate = IsMarkRecieve ? (DateTime?)DateTime.UtcNow : null,
-                LastChangeUserId = context.CurrentAgentId,
-                LastChangeDate = DateTime.UtcNow,
             };
+            SetLastChange(context, res);
+            return res;
         }
 
         public static IEnumerable<InternalDocumentEvent> GetNewDocumentPaperEvents(IContext context, int entityTypeId, int documentId, int? paperId, EnumEventTypes eventType, string description = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, bool IsMarkPlan = true, bool IsMarkRecieve = true)
@@ -609,7 +706,7 @@ namespace BL.Logic.Common
                 foreach (var paper in document.Papers.ToList())
                 {
                     //paper.LastPaperEventId = null;
-                    paper.LastPaperEvent = CommonDocumentUtilities.GetNewDocumentPaperEvent(context, document.EntityTypeId,document.Id, paper.Id,
+                    paper.LastPaperEvent = CommonDocumentUtilities.GetNewDocumentPaperEvent(context, document.EntityTypeId, document.Id, paper.Id,
                         EnumEventTypes.MoveDocumentPaper, null, model.TargetPositionId, model.TargetAgentId, model.SourcePositionId, model.SourceAgentId, true, false);
                     CommonDocumentUtilities.SetLastChange(context, paper);
                     paper.LastPaperEventId = null;
@@ -851,7 +948,7 @@ namespace BL.Logic.Common
 
         public static InternalTemplateAttachedFile GetNewTemplateAttachedFile(IContext context, InternalTemplateAttachedFile src, int? newOrderNumber = null)
         {
-            return new InternalTemplateAttachedFile
+            var res = new InternalTemplateAttachedFile
             {
                 ClientId = context.CurrentClientId,
                 EntityTypeId = src.EntityTypeId,
@@ -868,11 +965,13 @@ namespace BL.Logic.Common
                 PdfCreated = src.PdfCreated,
                 LastPdfAccess = src.LastPdfAccess
             };
+            SetLastChange(context, res);
+            return res;
         }
 
         public static InternalDocumentAttachedFile GetNewDocumentAttachedFile(IContext context, InternalDocumentAttachedFile src, int? newOrderNumber = null, int? newVersion = null)
         {
-            return new InternalDocumentAttachedFile
+            var res = new InternalDocumentAttachedFile
             {
                 ClientId = context.CurrentClientId,
                 EntityTypeId = src.EntityTypeId,
@@ -897,6 +996,8 @@ namespace BL.Logic.Common
                 PdfCreated = src.PdfCreated,
                 LastPdfAccess = src.LastPdfAccess
             };
+            SetLastChange(context, res);
+            return res;
         }
 
         public static void CorrectModel(IContext context, AddTemplateDocumentSendList model)
@@ -964,7 +1065,7 @@ namespace BL.Logic.Common
             }
             return res;
         }
-        
+
         #region RegistrationNumber
         public static void FormationRegistrationNumberByFormula(InternalDocument doc, InternalDocumnRegistration model)
         {

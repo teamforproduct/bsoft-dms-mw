@@ -91,7 +91,6 @@ namespace BL.Logic.DocumentCore.TemplateCommands
                 {
                     var newFile = CommonDocumentUtilities.GetNewTemplateAttachedFile(_context,x);
                     newFile.DocumentId = _templateDoc.Id;
-                    CommonDocumentUtilities.SetLastChange(_context, newFile);
                     _fStore.CopyFile(_context, x, newFile);
                     newFile.Id = _operationDb.AddNewFile(_context, newFile);
                 });

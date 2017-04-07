@@ -2,6 +2,7 @@
 using BL.Model.Users;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace BL.Model.DocumentCore.Actions
 {
@@ -20,5 +21,9 @@ namespace BL.Model.DocumentCore.Actions
         /// </summary>
         [Required]
         public bool IsAddPositionsInfo { get; set; }
+        /// <summary>
+        /// группы получателей сообщения
+        /// </summary>
+        public List<EventAccessGroup> AccessGroups { get; set; }
     }
 }

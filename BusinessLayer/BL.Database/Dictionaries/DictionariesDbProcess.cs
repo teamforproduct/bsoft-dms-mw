@@ -4968,6 +4968,16 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(filterContains);
                 }
 
+                // по компаниям
+                if (filter.CompanyIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.New<DictionaryPositions>(false);
+                    filterContains = filter.CompanyIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Department.CompanyId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
                 // Условие по IsActive
                 if (filter.IsActive != null)
                 {
@@ -6275,6 +6285,26 @@ namespace BL.Database.Dictionaries
                 return res;
             }
         }
+
+        public IEnumerable<InternalDictionaryStandartSendListContent> GetInternalStandartSendListContents(IContext ctx, FilterDictionaryStandartSendListContent filter)
+        {
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetStandartSendListContentsQuery(ctx, dbContext, filter);
+
+                var res = qry.Select(x => new InternalDictionaryStandartSendListContent
+                {
+                    Id = x.Id,
+                    TargetPositionId = x.TargetPositionId,
+                    TargetAgentId = x.TargetAgentId,
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
 
         public int AddStandartSendListContent(IContext ctx, InternalDictionaryStandartSendListContent content)
         {

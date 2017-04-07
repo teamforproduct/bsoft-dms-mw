@@ -292,6 +292,7 @@
     <Compile Include="DocumentCore\Commands\AskPostponeDueDateDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\CancelPostponeDueDateDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\SendDocumentCommand.cs" />
+    <Compile Include="DocumentCore\Commands\SendMessageDocumentCommand_OLD.cs" />
     <Compile Include="DocumentCore\Commands\VerifySigningDocumentCommand.cs" />
     <Compile Include="DocumentCore\ReportCommand\ReportDocumentForDigitalSignature.cs" />
     <Compile Include="DocumentCore\TemplateCommands\AddTemplateAccessCommand.cs" />

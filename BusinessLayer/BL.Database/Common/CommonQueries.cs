@@ -1851,16 +1851,10 @@ namespace BL.Database.Common
             return dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId)
                     .Where(x => x.DocumentId == documentId).Select(acc => new InternalDocumentAccess
                     {
-                        LastChangeDate = acc.LastChangeDate,
-                        LastChangeUserId = acc.LastChangeUserId,
                         Id = acc.Id,
-                        ClientId = acc.ClientId,
-                        EntityTypeId = acc.EntityTypeId,
-                        PositionId = acc.PositionId,
-                        IsInWork = acc.IsInWork,
                         DocumentId = acc.DocumentId,
-                        IsFavourite = acc.IsFavourite,
-                        AccessLevel = (EnumDocumentAccesses)acc.AccessLevelId
+                        PositionId = acc.PositionId,
+                        AgentId = acc.AgentId,
                     }).ToList();
         }
         #endregion

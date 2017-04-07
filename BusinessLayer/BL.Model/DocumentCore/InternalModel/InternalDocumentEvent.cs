@@ -2,10 +2,11 @@
 using BL.Model.Common;
 using BL.Model.Enums;
 using BL.Model.Reports.Interfaces;
+using System.Collections.Generic;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalDocumentEvent : LastChangeInfo, IReports
+    public class InternalDocumentEvent : LastChangeInfo, IReports//, IDocumentEventAccessSet
     {
         public int Id { get; set; }
         public int ClientId { get; set; }
@@ -30,7 +31,6 @@ namespace BL.Model.DocumentCore.InternalModel
         public DateTime? ReadDate { get; set; }
         public int? ReadAgentId { get; set; }
         public DateTime? SendDate { get; set; }
-        public string GeneralInfo { get; set; }
         public string SourcePositionName { get; set; }
         public string TargetPositionName { get; set; }
         public string SourcePositionExecutorAgentName { get; set; }
@@ -46,7 +46,8 @@ namespace BL.Model.DocumentCore.InternalModel
         public Nullable<DateTime> PaperSendDate { get; set; }
         public Nullable<int> PaperRecieveAgentId { get; set; }
         public Nullable<DateTime> PaperRecieveDate { get; set; }
-
         public InternalDocumentPaper Paper { get; set; }
+        public IEnumerable<InternalDocumentEventAccess> Accesses { get; set; }
+        public IEnumerable<InternalDocumentEventAccessGroup> AccessGroups { get; set; }
     }
 }

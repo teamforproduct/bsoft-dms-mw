@@ -20,6 +20,8 @@ namespace BL.Database.DBModel.Document
         public int AccessTypeId { get; set; }
         public Nullable<int> PositionId { get; set; }
         public Nullable<int> AgentId { get; set; }
+        //public int? PositionExecutorTypeId { get; set; }
+
         public Nullable<DateTime> SendDate { get; set; }
         public Nullable<DateTime> ReadDate { get; set; }
         public Nullable<int> ReadAgentId { get; set; }
@@ -36,6 +38,8 @@ namespace BL.Database.DBModel.Document
         public virtual DictionaryPositions Position { get; set; }
         [ForeignKey("AgentId")]
         public virtual DictionaryAgents Agent { get; set; }
+        //[ForeignKey("PositionExecutorTypeId")]
+        //public virtual DictionaryPositionExecutorTypes PositionExecutorType { get; set; }
         [ForeignKey("ReadAgentId")]
         public virtual DictionaryAgents ReadAgent { get; set; }
     }

@@ -161,7 +161,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         IEnumerable<AutocompleteItem> GetPositionsExecutorShortList(IContext context, FilterDictionaryPosition filter);
 
         IEnumerable<AutocompleteItem> GetPositionsShortList(IContext context,  FilterDictionaryPosition filter);
-        List<int> GetChildPositions(IContext context, int positionId);
+        List<int> GetChildPositions(IContext context, int? positionId, int? departmentId = null, int? companyId = null);
         List<int> GetParentPositions(IContext context, int positionId);
         IEnumerable<ListItem> GetPositionList(IContext context, FilterDictionaryPosition filter, UIPaging paging);
 
