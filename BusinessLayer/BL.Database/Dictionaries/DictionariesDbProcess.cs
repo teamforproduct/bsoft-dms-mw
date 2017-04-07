@@ -5015,7 +5015,7 @@ namespace BL.Database.Dictionaries
                 {
                     var filterContains = PredicateBuilder.New<DictionaryPositions>(true);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.NameDepartmentExecutor).Aggregate(filterContains,
-                        (current, value) => current.And(e => (e.Name + " " + e.Department.Name + " " + e.ExecutorAgent.Name).Contains(value)).Expand());
+                        (current, value) => current.And(e => (e.Name + " " + e.Department.FullPath + " " + e.Department.Name + " " + e.ExecutorAgent.Name).Contains(value)).Expand());
 
                     qry = qry.Where(filterContains);
                 }
