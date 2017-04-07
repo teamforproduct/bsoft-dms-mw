@@ -31,7 +31,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Пол (true - мужской)
         /// </summary>
-        public bool IsMale { get; set; }
+        public bool? IsMale { get; set; }
         
         /// <summary>
         /// Дата рождения

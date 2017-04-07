@@ -25,7 +25,7 @@ namespace BL.Database.DBModel.Dictionary
         public string MiddleName { get; set; }
         
         public Nullable<DateTime> BirthDate { get; set; }
-        public bool IsMale { get; set; }
+        public bool? IsMale { get; set; }
         [MaxLength(2000)]
         public string PassportSerial { get; set; }
         public Nullable<int> PassportNumber { get; set; }

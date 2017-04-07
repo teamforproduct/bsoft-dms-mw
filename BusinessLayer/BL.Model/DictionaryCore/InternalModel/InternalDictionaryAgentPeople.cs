@@ -84,7 +84,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// <summary>
         /// Пол (true - мужской)
         /// </summary>
-        public bool IsMale { get; set; }
+        public bool? IsMale { get; set; }
         
         /// <summary>
         /// Серия паспорта
