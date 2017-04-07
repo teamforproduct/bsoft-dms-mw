@@ -214,7 +214,7 @@ namespace BL.Logic.Common
                     AgentId = x.AccessGroupsType == EnumEventAccessGroupsTypes.Agent ? x.RecordId : null,
                     DepartmentId = x.AccessGroupsType == EnumEventAccessGroupsTypes.Department ? x.RecordId : null,
                     CompanyId = x.AccessGroupsType == EnumEventAccessGroupsTypes.Company ? x.RecordId : null,
-                });
+                }).ToList();
                 SetLastChange(context, ev.AccessGroups);
                 var accesses = new List<InternalDocumentEventAccess>();
                 accessGroups.OrderBy(x => x.AccessType).ToList().ForEach(x =>

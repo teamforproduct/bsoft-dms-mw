@@ -160,8 +160,7 @@ namespace BL.Database.Common
                     ReadAgentId = evt.ReadAgentId,
                     ReadDate = evt.ReadDate,
                     EventAccesses = GetDbDocumentEventAccesses(evt.Accesses).ToList(),
-
-
+                    EventAccessGroups = GetDbDocumentEventAccessGroups(evt.AccessGroups).ToList(),
                     PaperId = evt.PaperId,
                     PaperPlanAgentId = evt.PaperPlanAgentId,
                     PaperPlanDate = evt.PaperPlanDate,

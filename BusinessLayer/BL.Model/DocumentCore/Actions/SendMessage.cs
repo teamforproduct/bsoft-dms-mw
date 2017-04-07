@@ -24,6 +24,6 @@ namespace BL.Model.DocumentCore.Actions
         /// <summary>
         /// группы получателей сообщения
         /// </summary>
-        public List<EventAccessGroup> AccessGroups { get; set; }
+        public List<EventAccessGroup> TargetAccessGroups { get; set; }
     }
 }
