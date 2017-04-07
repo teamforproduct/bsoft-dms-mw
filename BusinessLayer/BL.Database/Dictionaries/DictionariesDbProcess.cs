@@ -395,7 +395,7 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryAgentPersonsSet.Add(dbModel);
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.AddNew);
                 transaction.Complete();
 
                 return person.Id;
@@ -417,7 +417,7 @@ namespace BL.Database.Dictionaries
                 entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.UpdateFull);
                 transaction.Complete();
 
             }
@@ -431,7 +431,7 @@ namespace BL.Database.Dictionaries
                 var qry = GetAgentPersonsQuery(ctx, dbContext, new FilterDictionaryAgentPerson { IDs = new List<int> { id } });
                 qry.Delete();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, id, EnumObjects.DictionaryAgentPersons, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, id, EnumObjects.DictionaryAgentPersons, EnumOperationType.Delete);
 
                 transaction.Complete();
             }
@@ -806,7 +806,7 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryAgentEmployeesSet.Add(dbModel);
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryAgentEmployees, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryAgentEmployees, EnumOperationType.AddNew);
                 transaction.Complete();
 
                 return employee.Id;
@@ -827,7 +827,7 @@ namespace BL.Database.Dictionaries
                 entity.State = EntityState.Modified;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryAgentEmployees, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryAgentEmployees, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -840,7 +840,7 @@ namespace BL.Database.Dictionaries
                 var qry = GetAgentEmployeesQuery(ctx, dbContext, new FilterDictionaryAgentEmployee { IDs = new List<int> { id } });
                 qry.Delete();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, id, EnumObjects.DictionaryAgentEmployees, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, id, EnumObjects.DictionaryAgentEmployees, EnumOperationType.Delete);
 
                 transaction.Complete();
             }
@@ -1387,7 +1387,7 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryAgentAddressesSet.Add(dbModel);
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryAgentAddresses, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryAgentAddresses, EnumOperationType.AddNew);
                 addr.Id = dbModel.Id;
                 transaction.Complete();
                 return dbModel.Id;
@@ -1406,7 +1406,7 @@ namespace BL.Database.Dictionaries
                 entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryAgentAddresses, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryAgentAddresses, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -1417,7 +1417,7 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAddressQuery(ctx, dbContext, filter);
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryAgentAddresses, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryAgentAddresses, EnumOperationType.Delete);
                 qry.Delete();
 
                 transaction.Complete();
@@ -1557,7 +1557,7 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryAddressTypesSet.Add(dbModel);
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryAddressType, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryAddressType, EnumOperationType.AddNew);
                 addrType.Id = dbModel.Id;
                 transaction.Complete();
                 return dbModel.Id;
@@ -1581,7 +1581,7 @@ namespace BL.Database.Dictionaries
                 entity.Property(x => x.LastChangeUserId).IsModified = true;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryAddressType, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryAddressType, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -1594,7 +1594,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetAddressTypeQuery(ctx, dbContext, new FilterDictionaryAddressType { IDs = new List<int> { id } });
                 qry.Delete();
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, id, EnumObjects.DictionaryAddressType, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, id, EnumObjects.DictionaryAddressType, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
@@ -1799,7 +1799,7 @@ namespace BL.Database.Dictionaries
 
                 org.Id = dc.Id;
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dc.Id, EnumObjects.DictionaryAgentClientCompanies, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dc.Id, EnumObjects.DictionaryAgentClientCompanies, EnumOperationType.AddNew);
                 transaction.Complete();
 
                 return org.Id;
@@ -1819,7 +1819,7 @@ namespace BL.Database.Dictionaries
                 dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryAgentClientCompanies, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryAgentClientCompanies, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -1830,7 +1830,7 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAgentOrgsQuery(ctx, dbContext, filter);
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryAgentClientCompanies, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryAgentClientCompanies, EnumOperationType.Delete);
                 qry.Delete();
 
                 transaction.Complete();
@@ -2157,7 +2157,7 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryAgentCompaniesSet.Add(dbModel);
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryAgentCompanies, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryAgentCompanies, EnumOperationType.AddNew);
                 transaction.Complete();
 
                 return company.Id;
@@ -2178,7 +2178,7 @@ namespace BL.Database.Dictionaries
                 entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryAgentCompanies, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryAgentCompanies, EnumOperationType.UpdateFull);
                 transaction.Complete();
 
             }
@@ -2191,7 +2191,7 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAgentCompaniesQuery(ctx, dbContext, filter);
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryAgentCompanies, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryAgentCompanies, EnumOperationType.Delete);
                 qry.Delete();
 
                 transaction.Complete();
@@ -2439,7 +2439,7 @@ namespace BL.Database.Dictionaries
                 var dbModel = DictionaryModelConverter.GetDbAgentBank(ctx, bank);
 
                 dbContext.DictionaryAgentBanksSet.Add(dbModel);
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryAgentBanks, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryAgentBanks, EnumOperationType.AddNew);
                 dbContext.SaveChanges();
 
                 transaction.Complete();
@@ -2462,7 +2462,7 @@ namespace BL.Database.Dictionaries
                 entity.State = EntityState.Modified;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryAgentBanks, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryAgentBanks, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -2473,7 +2473,7 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAgentBanksQuery(ctx, dbContext, filter);
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryAgentBanks, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryAgentBanks, EnumOperationType.Delete);
                 qry.Delete();
 
                 transaction.Complete();
@@ -2694,7 +2694,7 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryAgentAccountsSet.Add(dbModel);
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryAgentAccounts, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryAgentAccounts, EnumOperationType.AddNew);
                 transaction.Complete();
                 return account.Id;
             }
@@ -2712,7 +2712,7 @@ namespace BL.Database.Dictionaries
                 entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryAgentAccounts, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryAgentAccounts, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -2723,7 +2723,7 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAgentAccountsQuery(ctx, dbContext, filter);
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryAgentAccounts, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryAgentAccounts, EnumOperationType.Delete);
                 qry.Delete();
                 transaction.Complete();
             }
@@ -2889,7 +2889,7 @@ namespace BL.Database.Dictionaries
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryContactType, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryContactType, EnumOperationType.AddNew);
                 transaction.Complete();
                 return dbModel.Id;
             }
@@ -2912,7 +2912,7 @@ namespace BL.Database.Dictionaries
                 entity.Property(x => x.LastChangeUserId).IsModified = true;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryContactType, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryContactType, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -2924,7 +2924,7 @@ namespace BL.Database.Dictionaries
                 var qry = GetContactTypeQuery(ctx, dbContext, new FilterDictionaryContactType { IDs = new List<int> { id } });
                 qry.Delete();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, id, EnumObjects.DictionaryContactType, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, id, EnumObjects.DictionaryContactType, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
@@ -3109,7 +3109,7 @@ namespace BL.Database.Dictionaries
                 dbContext.SaveChanges();
                 contact.Id = dbModel.Id;
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryContacts, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryContacts, EnumOperationType.AddNew);
                 transaction.Complete();
                 return dbModel.Id;
             }
@@ -3127,7 +3127,7 @@ namespace BL.Database.Dictionaries
                 entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryContacts, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryContacts, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -3138,7 +3138,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetContactsQuery(ctx, dbContext, filter);
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryContacts, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryContacts, EnumOperationType.Delete);
 
                 qry.Delete();
 
@@ -3344,7 +3344,7 @@ namespace BL.Database.Dictionaries
                 dbContext.SaveChanges();
 
                 department.Id = dd.Id;
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dd.Id, EnumObjects.DictionaryDepartments, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dd.Id, EnumObjects.DictionaryDepartments, EnumOperationType.AddNew);
                 transaction.Complete();
                 return dd.Id;
             }
@@ -3360,7 +3360,7 @@ namespace BL.Database.Dictionaries
                 dbContext.Entry(dd).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dd.Id, EnumObjects.DictionaryDepartments, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dd.Id, EnumObjects.DictionaryDepartments, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -3376,7 +3376,7 @@ namespace BL.Database.Dictionaries
 
                 qry.Update(x => new DictionaryDepartments { FullPath = codePreffix + "/" + x.Code });
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryDepartments, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryDepartments, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -3387,7 +3387,7 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetDepartmentsQuery(ctx, dbContext, filter);
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryDepartments, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryDepartments, EnumOperationType.Delete);
                 qry.Delete();
 
                 transaction.Complete();
@@ -3976,7 +3976,7 @@ namespace BL.Database.Dictionaries
                 dbContext.SaveChanges();
 
                 docType.Id = dbModel.Id;
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryDocumentType, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryDocumentType, EnumOperationType.AddNew);
                 transaction.Complete();
                 return dbModel.Id;
             }
@@ -3992,7 +3992,7 @@ namespace BL.Database.Dictionaries
                 dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryDocumentType, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryDocumentType, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -4005,7 +4005,7 @@ namespace BL.Database.Dictionaries
                 var qry = GetDocumentTypesQuery(ctx, dbContext, new FilterDictionaryDocumentType { IDs = new List<int> { id } });
                 qry.Delete();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, id, EnumObjects.DictionaryDocumentType, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, id, EnumObjects.DictionaryDocumentType, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
@@ -4374,7 +4374,7 @@ namespace BL.Database.Dictionaries
                 UpdateExecutorsInPositions(ctx, new List<int> { dd.Id });
                 position.Id = dd.Id;
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dd.Id, EnumObjects.DictionaryPositions, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dd.Id, EnumObjects.DictionaryPositions, EnumOperationType.AddNew);
                 transaction.Complete();
                 return dd.Id;
             }
@@ -4400,7 +4400,7 @@ namespace BL.Database.Dictionaries
                 entity.Property(x => x.LastChangeUserId).IsModified = true;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryPositions, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryPositions, EnumOperationType.UpdateFull);
 
                 UpdateExecutorsInPositions(ctx, new List<int> { position.Id });
 
@@ -4419,7 +4419,7 @@ namespace BL.Database.Dictionaries
                 entity.Property(x => x.Order).IsModified = true;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryPositions, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryPositions, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -4475,7 +4475,7 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionsQuery(ctx, dbContext, filter);
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryPositions, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryPositions, EnumOperationType.Delete);
                 qry.Delete();
                 transaction.Complete();
             }
@@ -5092,7 +5092,7 @@ namespace BL.Database.Dictionaries
                 DictionaryPositionExecutors dc = DictionaryModelConverter.GetDbExecutor(ctx, executor);
                 dbContext.DictionaryPositionExecutorsSet.Add(dc);
                 dbContext.SaveChanges();
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dc.Id, EnumObjects.DictionaryPositionExecutors, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dc.Id, EnumObjects.DictionaryPositionExecutors, EnumOperationType.AddNew);
                 executor.Id = dc.Id;
                 UpdateExecutorsInPositions(ctx, new List<int> { dc.PositionId });
                 transaction.Complete();
@@ -5111,7 +5111,7 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryPositionExecutorsSet.Attach(drj);
                 dbContext.Entry(drj).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, drj.Id, EnumObjects.DictionaryPositionExecutors, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, drj.Id, EnumObjects.DictionaryPositionExecutors, EnumOperationType.UpdateFull);
                 UpdateExecutorsInPositions(ctx, new List<int> { executor.PositionId });
                 transaction.Complete();
             }
@@ -5130,7 +5130,7 @@ namespace BL.Database.Dictionaries
                 qry.Delete();
 
                 UpdateExecutorsInPositions(ctx, list);
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, list, EnumObjects.DictionaryPositionExecutors, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, list, EnumObjects.DictionaryPositionExecutors, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
@@ -5591,7 +5591,7 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryRegistrationJournalsSet.Add(dbModel);
                 dbContext.SaveChanges();
                 regJournal.Id = dbModel.Id;
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.AddNew);
                 transaction.Complete();
                 return dbModel.Id;
             }
@@ -5607,7 +5607,7 @@ namespace BL.Database.Dictionaries
                 dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -5618,7 +5618,7 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetRegistrationJournalsQuery(ctx, dbContext, filter);
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryRegistrationJournals, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryRegistrationJournals, EnumOperationType.Delete);
                 qry.Delete();
 
                 transaction.Complete();
@@ -6332,7 +6332,7 @@ namespace BL.Database.Dictionaries
                 dbContext.SaveChanges();
                 content.Id = dbModel.Id;
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryStandartSendListContent, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryStandartSendListContent, EnumOperationType.AddNew);
                 transaction.Complete();
                 return dbModel.Id;
             }
@@ -6349,7 +6349,7 @@ namespace BL.Database.Dictionaries
                 entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryStandartSendListContent, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryStandartSendListContent, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -6360,7 +6360,7 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetStandartSendListContentsQuery(ctx, dbContext, filter);
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryStandartSendListContent, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryStandartSendListContent, EnumOperationType.Delete);
                 qry.Delete();
 
                 transaction.Complete();
@@ -6518,7 +6518,7 @@ namespace BL.Database.Dictionaries
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryStandartSendLists, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryStandartSendLists, EnumOperationType.AddNew);
                 transaction.Complete();
                 return dbModel.Id;
             }
@@ -6536,7 +6536,7 @@ namespace BL.Database.Dictionaries
                 entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryStandartSendLists, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryStandartSendLists, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -6549,7 +6549,7 @@ namespace BL.Database.Dictionaries
                 var qry = GetStandartSendListQuery(ctx, dbContext, new FilterDictionaryStandartSendList { IDs = new List<int> { id } });
                 qry.Delete();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, id, EnumObjects.DictionaryStandartSendLists, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, id, EnumObjects.DictionaryStandartSendLists, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
@@ -6798,7 +6798,7 @@ namespace BL.Database.Dictionaries
                 dbContext.DictionaryTagsSet.Add(dbModel);
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryTag, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryTag, EnumOperationType.AddNew);
 
                 model.Id = dbModel.Id;
                 transaction.Complete();
@@ -6817,7 +6817,7 @@ namespace BL.Database.Dictionaries
                 entity.State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.DictionaryStandartSendLists, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryStandartSendLists, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
 
@@ -6831,7 +6831,7 @@ namespace BL.Database.Dictionaries
                 var qry = GetTagsQuery(ctx, dbContext, new FilterDictionaryTag { IDs = new List<int> { id } });
                 qry.Delete();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, id, EnumObjects.DictionaryTag, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, id, EnumObjects.DictionaryTag, EnumOperationType.Delete);
                 transaction.Complete();
             }
         }
@@ -6938,7 +6938,7 @@ namespace BL.Database.Dictionaries
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.CustomDictionaryTypes, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.CustomDictionaryTypes, EnumOperationType.AddNew);
                 transaction.Complete();
                 return dbModel.Id;
             }
@@ -6960,7 +6960,7 @@ namespace BL.Database.Dictionaries
                 entity.Property(x => x.LastChangeUserId).IsModified = true;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.CustomDictionaryTypes, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.CustomDictionaryTypes, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -6971,7 +6971,7 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetCustomDictionaryTypesQuery(ctx, dbContext, filter);
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, qry.Select(x => x.Id).ToList(), EnumObjects.CustomDictionaryTypes, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.CustomDictionaryTypes, EnumOperationType.Delete);
                 qry.Delete();
                 transaction.Complete();
             }
@@ -7136,7 +7136,7 @@ namespace BL.Database.Dictionaries
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.CustomDictionaries, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.CustomDictionaries, EnumOperationType.AddNew);
                 transaction.Complete();
                 return dbModel.Id;
             }
@@ -7157,7 +7157,7 @@ namespace BL.Database.Dictionaries
                 entity.Property(x => x.LastChangeDate).IsModified = true;
                 entity.Property(x => x.LastChangeUserId).IsModified = true;
                 dbContext.SaveChanges();
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.CustomDictionaries, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.CustomDictionaries, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -7168,7 +7168,7 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetCustomDictionaryQuery(ctx, dbContext, filter);
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, qry.Select(x => x.Id).ToList(), EnumObjects.CustomDictionaries, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.CustomDictionaries, EnumOperationType.Delete);
                 qry.Delete();
                 transaction.Complete();
             }

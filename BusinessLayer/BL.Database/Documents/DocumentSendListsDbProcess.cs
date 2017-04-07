@@ -26,7 +26,7 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = CommonQueries.GetDocumentRestrictedSendListQuery(dbContext, ctx, new FilterDocumentRestrictedSendList { Id = new List<int> { id } });
+                var qry = CommonQueries.GetDocumentRestrictedSendListQuery(ctx, new FilterDocumentRestrictedSendList { Id = new List<int> { id } });
                 var res = qry.Select(y => new FrontDocumentRestrictedSendList
                 {
                     Id = y.Id,
@@ -48,7 +48,7 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = CommonQueries.GetDocumentRestrictedSendListQuery(dbContext, ctx, new FilterDocumentRestrictedSendList { DocumentId = new List<int> { documentId } });
+                var qry = CommonQueries.GetDocumentRestrictedSendListQuery(ctx, new FilterDocumentRestrictedSendList { DocumentId = new List<int> { documentId } });
                 var res = qry.Select(y => new FrontDocumentRestrictedSendList
                 {
                     Id = y.Id,
@@ -71,7 +71,7 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = CommonQueries.GetDocumentRestrictedSendListQuery(dbContext, ctx, new FilterDocumentRestrictedSendList { DocumentId = new List<int> { documentId } });
+                var qry = CommonQueries.GetDocumentRestrictedSendListQuery(ctx, new FilterDocumentRestrictedSendList { DocumentId = new List<int> { documentId } });
                 var res = qry.Select(x => new AutocompleteItem
                 {
                     Id = x.Position.Id,
@@ -92,7 +92,7 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var res = CommonQueries.GetDocumentSendList(dbContext, ctx, new FilterDocumentSendList { DocumentId = new List<int> { documentId } });
+                var res = CommonQueries.GetDocumentSendList(ctx, new FilterDocumentSendList { DocumentId = new List<int> { documentId } });
                 transaction.Complete();
                 return res;
             }
@@ -103,7 +103,7 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var res = CommonQueries.GetDocumentSendList(dbContext, ctx, new FilterDocumentSendList { Id = new List<int> { id } }).FirstOrDefault();
+                var res = CommonQueries.GetDocumentSendList(ctx, new FilterDocumentSendList { Id = new List<int> { id } }).FirstOrDefault();
                 transaction.Complete();
                 return res;
             }

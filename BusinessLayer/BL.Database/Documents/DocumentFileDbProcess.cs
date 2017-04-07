@@ -23,7 +23,7 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var res = CommonQueries.GetDocumentFiles(ctx, dbContext, filter, paging);
+                var res = CommonQueries.GetDocumentFiles(ctx, filter, paging);
                 transaction.Complete();
                 return res;
             }
@@ -89,7 +89,7 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, null, true, true)
+                var doc = CommonQueries.GetDocumentQuery(ctx, null, null, true, true)
                                     .Where(x => x.Id == documentId)
                                     .Select(x => new InternalDocument
                                     {
@@ -138,7 +138,7 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, null, true, true)
+                var doc = CommonQueries.GetDocumentQuery(ctx, null, null, true, true)
                                     .Where(x => x.Id == documentId)
                                     .Select(x => new InternalDocument
                                     {
@@ -181,7 +181,7 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(dbContext, ctx, null, null, true, true)
+                var doc = CommonQueries.GetDocumentQuery(ctx, null, null, true, true)
                     .Where(x => x.Id == documentId)
                     .Select(x => new InternalDocument
                     {
@@ -242,7 +242,7 @@ namespace BL.Database.Documents
                 }
                 dbContext.SaveChanges();
                 docFile.Id = fl.Id;
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, fl.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, fl.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
                 return fl.Id;
             }
@@ -292,7 +292,7 @@ namespace BL.Database.Documents
                     dbContext.DocumentEventsSet.AddRange(dbEvents);
                     dbContext.SaveChanges();
                 }
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, fl.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, fl.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -364,7 +364,7 @@ namespace BL.Database.Documents
                     dbContext.SaveChanges();
                 }
                 if (documentId.HasValue)
-                    CommonQueries.AddFullTextCacheInfo(ctx, dbContext, documentId.Value, EnumObjects.Documents, EnumOperationType.UpdateFull);
+                    CommonQueries.AddFullTextCacheInfo(ctx, documentId.Value, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -462,7 +462,7 @@ namespace BL.Database.Documents
                     }
                 }
                 dbContext.SaveChanges();
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, docFile.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, docFile.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }

@@ -457,7 +457,7 @@ namespace BL.Database.Admins
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.AdminRoles, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.AdminRoles, EnumOperationType.AddNew);
                 transaction.Complete();
                 res = dbModel.Id;
             }
@@ -475,7 +475,7 @@ namespace BL.Database.Admins
                 dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.AdminRoles, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.AdminRoles, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
             _cacheService.RefreshKey(ctx, SettingConstants.ADMIN_ROLE_CASHE_KEY);
@@ -489,7 +489,7 @@ namespace BL.Database.Admins
                 var qry = GetRolesQuery(ctx, dbContext, new FilterAdminRole { IDs = new List<int> { id } });
                 qry.Delete();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, id, EnumObjects.AdminRoles, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, id, EnumObjects.AdminRoles, EnumOperationType.Delete);
                 transaction.Complete();
             }
             _cacheService.RefreshKey(ctx, SettingConstants.ADMIN_ROLE_CASHE_KEY);
@@ -745,7 +745,7 @@ namespace BL.Database.Admins
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.AdminPositionRoles, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.AdminPositionRoles, EnumOperationType.AddNew);
                 transaction.Complete();
                 return dbModel.Id;
             }
@@ -757,7 +757,7 @@ namespace BL.Database.Admins
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAdminPositionRoleQuery(ctx, dbContext, filter);
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, qry.Select(x => x.Id).ToList(), EnumObjects.AdminPositionRoles, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.AdminPositionRoles, EnumOperationType.Delete);
                 qry.Delete();
                 transaction.Complete();
             }
@@ -955,7 +955,7 @@ namespace BL.Database.Admins
                 var list = dbContext.AdminUserRolesSet.AddRange(dbModels);
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, list.Select(x => x.Id).ToList(), EnumObjects.AdminUserRoles, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, list.Select(x => x.Id).ToList(), EnumObjects.AdminUserRoles, EnumOperationType.AddNew);
                 transaction.Complete();
             }
             _cacheService.RefreshKey(ctx, SettingConstants.USER_ROLE_CASHE_KEY);
@@ -967,7 +967,7 @@ namespace BL.Database.Admins
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetUserRolesQuery(ctx, dbContext, filter);
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, qry.Select(x => x.Id).ToList(), EnumObjects.AdminUserRoles, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.AdminUserRoles, EnumOperationType.Delete);
                 qry.Delete();
 
                 transaction.Complete();
@@ -1491,7 +1491,7 @@ namespace BL.Database.Admins
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, dbModel.Id, EnumObjects.AdminRegistrationJournalPositions, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.AdminRegistrationJournalPositions, EnumOperationType.AddNew);
                 transaction.Complete();
                 return dbModel.Id;
             }
@@ -1506,7 +1506,7 @@ namespace BL.Database.Admins
                 var res = dbContext.AdminRegistrationJournalPositionsSet.AddRange(items);
                 dbContext.SaveChanges();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, res.Select(x => x.Id).ToList(), EnumObjects.AdminRegistrationJournalPositions, EnumOperationType.AddNew);
+                CommonQueries.AddFullTextCacheInfo(ctx, res.Select(x => x.Id).ToList(), EnumObjects.AdminRegistrationJournalPositions, EnumOperationType.AddNew);
                 transaction.Complete();
             }
         }
@@ -1517,7 +1517,7 @@ namespace BL.Database.Admins
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetRegistrationJournalPositionQuery(ctx, dbContext, filter);
-                CommonQueries.AddFullTextCacheInfo(ctx, dbContext, qry.Select(x => x.Id).ToList(), EnumObjects.AdminRegistrationJournalPositions, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.AdminRegistrationJournalPositions, EnumOperationType.Delete);
                 qry.Delete();
                 transaction.Complete();
             }

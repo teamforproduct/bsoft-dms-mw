@@ -44,7 +44,7 @@ namespace BL.Database.Encryption
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = CommonQueries.GetCertificatesQuery(dbContext, ctx, filter);
+                var qry = CommonQueries.GetCertificatesQuery(ctx, filter);
 
                 //TODO Sort
                 {
@@ -99,7 +99,7 @@ namespace BL.Database.Encryption
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = CommonQueries.GetCertificatesQuery(dbContext, ctx, new FilterEncryptionCertificate { CertificateId = new List<int> { certificateId } });
+                var qry = CommonQueries.GetCertificatesQuery(ctx, new FilterEncryptionCertificate { CertificateId = new List<int> { certificateId } });
 
                 var item = qry.Select(x => new InternalEncryptionCertificate
                 {
@@ -149,7 +149,7 @@ namespace BL.Database.Encryption
             {
                 var filter = new FilterEncryptionCertificate { CertificateId = new List<int> { itemId } };
                 if (ctx.IsAdmin && agentId.HasValue) filter.AgentId = new List<int> { agentId.Value };
-                var qry = CommonQueries.GetCertificatesQuery(dbContext, ctx, filter);
+                var qry = CommonQueries.GetCertificatesQuery(ctx, filter);
 
                 var item = qry.Select(x => new InternalEncryptionCertificate
                 {
@@ -190,7 +190,7 @@ namespace BL.Database.Encryption
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = CommonQueries.GetCertificatesQuery(dbContext, ctx, new FilterEncryptionCertificate { CertificateId = new List<int> { itemId } });
+                var qry = CommonQueries.GetCertificatesQuery(ctx, new FilterEncryptionCertificate { CertificateId = new List<int> { itemId } });
 
                 dbContext.EncryptionCertificatesSet.RemoveRange(qry);
                 dbContext.SaveChanges();

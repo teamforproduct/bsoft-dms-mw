@@ -15,7 +15,7 @@ namespace BL.Database.Documents.Interfaces
     public interface ITemplateDocumentsDbProcess
     {
         #region TemplateDocument
-        IQueryable<TemplateDocuments> GetTemplateDocumentQuery(IContext ctx, DmsContext dbContext, FilterTemplateDocument filter);
+//        IQueryable<TemplateDocuments> GetTemplateDocumentQuery(IContext ctx, FilterTemplateDocument filter);
         bool ExistsTemplateDocuments(IContext context, FilterTemplateDocument filter);
         IEnumerable<FrontMainTemplateDocument> GetMainTemplateDocument(IContext ctx, IBaseFilter filter, UIPaging paging, UISorting sotring);
         List<int> GetTemplateDocumentIDs(IContext ctx, IBaseFilter filter, UISorting sotring);

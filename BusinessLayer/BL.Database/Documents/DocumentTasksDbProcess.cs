@@ -23,7 +23,7 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var res = CommonQueries.GetDocumentTasks(dbContext, ctx, filter, paging);
+                var res = CommonQueries.GetDocumentTasks(ctx, filter, paging);
                 transaction.Complete();
                 return res;
             }
@@ -34,7 +34,7 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var res = CommonQueries.GetDocumentTasks(dbContext, ctx, new FilterDocumentTask { Id = new List<int> { id } }, null).FirstOrDefault();
+                var res = CommonQueries.GetDocumentTasks(ctx, new FilterDocumentTask { Id = new List<int> { id } }, null).FirstOrDefault();
                 transaction.Complete();
                 return res;
             }
