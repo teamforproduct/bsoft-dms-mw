@@ -957,8 +957,10 @@ namespace DMS_WebAPI.Utilities
                 DatabaseId = context.CurrentDB.Id,
                 IsChangePasswordRequired = context.IsChangePasswordRequired,
                 UserId = context.CurrentEmployee.UserId,
+                UserName = context.UserName,
                 LoginLogId = context.LoginLogId,
-                LoginLogInfo = context.LoginLogInfo
+                LoginLogInfo = context.LoginLogInfo,
+                LastChangeDate = DateTime.UtcNow,
             };
 
 
