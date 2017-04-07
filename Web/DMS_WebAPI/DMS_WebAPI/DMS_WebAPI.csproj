@@ -473,6 +473,10 @@
     <Compile Include="Migrations\201704070550425_UserContexts.Designer.cs">
       <DependentUpon>201704070550425_UserContexts.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201704070558303_UserContexts1.cs" />
+    <Compile Include="Migrations\201704070558303_UserContexts1.Designer.cs">
+      <DependentUpon>201704070558303_UserContexts1.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -682,6 +686,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201704070550425_UserContexts.resx">
       <DependentUpon>201704070550425_UserContexts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704070558303_UserContexts1.resx">
+      <DependentUpon>201704070558303_UserContexts1.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

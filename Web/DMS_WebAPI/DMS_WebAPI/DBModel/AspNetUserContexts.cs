@@ -15,7 +15,9 @@ namespace DMS_WebAPI.DBModel
         [MaxLength(550)]
         public string Token { get; set; }
 
+        [MaxLength(128)]
         public string UserId { get; set; }
+        [MaxLength(256)]
         public string UserName { get; set; }
         public int ClientId { get; set; }
 
