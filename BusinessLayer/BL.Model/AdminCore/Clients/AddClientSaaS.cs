@@ -24,10 +24,11 @@ namespace BL.Model.AdminCore.Clients
         [StringLength(100, ErrorMessage = "{0} должно быть по крайней мере {2} символов.", MinimumLength = 3)]
         public string ClientCode { get { return _ClientCode; } set { _ClientCode = value.Trim().ToLower(); } }
         private string _ClientCode;
+        
         /// <summary>
         /// Язык интерфейса
         /// </summary>
-        public int? LanguageId { get; set; }
+        public string Language { get; set; }
 
         /// <summary>
         /// Адрес первого пользователя - директора, админа

@@ -1561,64 +1561,6 @@ namespace BL.Database.DatabaseContext
         }
 
 
-        public static List<InternalDictionaryDocumentType> GetDocumentTypes()
-        {
-            var items = new List<InternalDictionaryDocumentType>();
-
-            items.Add(GetDocumentTypes(EnumDocumentTypes.Agreement));
-            items.Add(GetDocumentTypes(EnumDocumentTypes.Commission));
-            items.Add(GetDocumentTypes(EnumDocumentTypes.Decree));
-            items.Add(GetDocumentTypes(EnumDocumentTypes.Letter));
-            items.Add(GetDocumentTypes(EnumDocumentTypes.Memo));
-            items.Add(GetDocumentTypes(EnumDocumentTypes.Order));
-            items.Add(GetDocumentTypes(EnumDocumentTypes.Protocol));
-
-
-            return items;
-        }
-
-        private static InternalDictionaryDocumentType GetDocumentTypes(EnumDocumentTypes id)
-        {
-            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
-            return new InternalDictionaryDocumentType()
-            {
-                Id = (int)id,
-                Name = name,
-                IsActive = true,
-                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
-                LastChangeDate = DateTime.UtcNow,
-            };
-        }
-
-
-        public static List<InternalDictionaryAddressType> GetAddressTypes()
-        {
-            var items = new List<InternalDictionaryAddressType>();
-
-            items.Add(GetAddressType(EnumAddressTypes.Actual));
-            items.Add(GetAddressType(EnumAddressTypes.Current));
-            items.Add(GetAddressType(EnumAddressTypes.Legal));
-            items.Add(GetAddressType(EnumAddressTypes.Working));
-            return items;
-        }
-
-        private static InternalDictionaryAddressType GetAddressType(EnumAddressTypes id)
-        {
-            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
-            string code = GetLabel("AddressTypesCode", id.ToString());
-            return new InternalDictionaryAddressType()
-            {
-                Id = (int)id,
-                Name = name,
-                Code = code,
-                SpecCode = id.ToString(),
-                IsActive = true,
-                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
-                LastChangeDate = DateTime.UtcNow,
-            };
-        }
-
-
         public static List<SystemFormulas> GetSystemFormulas()
         {
             var items = new List<SystemFormulas>();

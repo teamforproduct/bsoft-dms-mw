@@ -25,6 +25,7 @@ namespace BL.Model.DictionaryCore.InternalModel
             Code = model.Code;
             Name = model.Name;
             IsActive = model.IsActive;
+            SpecCode = model.SpecCode;
         }
 
         /// <summary>

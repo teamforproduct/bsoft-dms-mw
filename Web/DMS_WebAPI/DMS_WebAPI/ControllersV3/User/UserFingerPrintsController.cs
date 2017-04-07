@@ -93,7 +93,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Fingerprints)]
-        public async Task<IHttpActionResult> Put([FromBody]ModifyAspNetUserFingerprint model)
+        public IHttpActionResult Put([FromBody]ModifyAspNetUserFingerprint model)
         {
             //!ASYNC
             var context = DmsResolver.Current.Get<UserContexts>().Get();
