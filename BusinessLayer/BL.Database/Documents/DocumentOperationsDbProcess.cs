@@ -484,6 +484,14 @@ namespace BL.Database.Documents
                         PaperRecieveAgentName = x.PaperRecieveAgent.Name,
                         LastChangeDate = x.LastChangeDate
                     }).FirstOrDefault();
+                if (res != null)
+
+                    res.Accesses = dbContext.DocumentEventAccessesSet.Where(x => x.Id == eventId).Select(y => new FrontDocumentEventAccess
+                    {
+                        AccessType = (EnumEventAccessTypes)y.AccessTypeId,
+                        Name = y.Agent.Name + (y.PositionExecutorType.Suffix != null ? " (" + y.PositionExecutorType.Suffix + ")" : null),
+                    }).ToList();
+
                 transaction.Complete();
                 return res;
             }
@@ -687,17 +695,18 @@ namespace BL.Database.Documents
                 filterEvContains = ids.Aggregate(filterEvContains,
                     (current, value) => current.Or(e => e.EventId == value).Expand());
                 qryAcc = qryAcc.Where(filterEvContains);
-                var t = qryAcc.GroupBy(x => x.EventId).Select(x => new
+                var accGroups = qryAcc.GroupBy(x => x.EventId).Select(x => new
                 {
                     EventId = x.Key,
                     AccessGroups = x.Select(y => new FrontDocumentEventAccessGroup
                     {
                         AccessType = (EnumEventAccessTypes)y.AccessTypeId,
                         AccessGroupType = (EnumEventAccessGroupTypes)y.AccessGroupTypeId,
-                        Name = y.Agent.Name ?? y.Company.Agent.Name ?? y.Department.Name ?? y.Position.Name
-                    })
-                });
+                        Name = y.Agent.Name ?? y.Company.Agent.Name ?? y.Department.Name ?? y.Position.Name ?? y.StandartSendList.Name,
+                    }).ToList(),
+                }).ToList();
 
+                res.ForEach(x => x.AccessGroups = accGroups.Where(y => y.EventId == x.Id).Select(y => y.AccessGroups).FirstOrDefault());
                 #endregion filling
 
                 transaction.Complete();

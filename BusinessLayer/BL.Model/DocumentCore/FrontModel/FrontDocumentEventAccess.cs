@@ -23,6 +23,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public Nullable<int> AgentId { get; set; }
         public string AgentName { get; set; }
         public int? PositionExecutorTypeId { get; set; }
+        public string Name { get; set; }
         public Nullable<DateTime> SendDate { get; set; }
         public Nullable<DateTime> ReadDate { get; set; }
         public Nullable<int> ReadAgentId { get; set; }

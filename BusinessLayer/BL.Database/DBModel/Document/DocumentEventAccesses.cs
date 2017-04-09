@@ -38,8 +38,8 @@ namespace BL.Database.DBModel.Document
         public virtual DictionaryPositions Position { get; set; }
         [ForeignKey("AgentId")]
         public virtual DictionaryAgents Agent { get; set; }
-        //[ForeignKey("PositionExecutorTypeId")]
-        //public virtual DictionaryPositionExecutorTypes PositionExecutorType { get; set; }
+        [ForeignKey("PositionExecutorTypeId")]
+        public virtual DictionaryPositionExecutorTypes PositionExecutorType { get; set; }
         [ForeignKey("ReadAgentId")]
         public virtual DictionaryAgents ReadAgent { get; set; }
     }
