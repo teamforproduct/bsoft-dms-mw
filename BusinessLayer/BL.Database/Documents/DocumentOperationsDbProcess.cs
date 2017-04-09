@@ -126,7 +126,6 @@ namespace BL.Database.Documents
                             ClientId = x.ClientId,
                             EntityTypeId = x.EntityTypeId,
                             TaskId = x.OnEvent.TaskId,
-                            IsAvailableWithinTask = x.OnEvent.IsAvailableWithinTask,
                             SourcePositionId = x.OnEvent.SourcePositionId,
                             TargetPositionId = x.OnEvent.TargetPositionId,
                             //SourcePositionName = x.OnEvent.SourcePosition.Name,
@@ -414,7 +413,6 @@ namespace BL.Database.Documents
                         TargetPositionExecutorAgentId = x.TargetPositionExecutorAgentId,
                         SourcePositionName = x.SourcePosition.Name,
                         TargetPositionName = x.TargetPosition.Name,
-                        IsAvailableWithinTask = x.IsAvailableWithinTask,
                         PaperPlanAgentName = x.PaperPlanAgent.Name,
                         PaperSendAgentName = x.PaperSendAgent.Name,
                         PaperRecieveAgentName = x.PaperRecieveAgent.Name,
@@ -797,7 +795,6 @@ namespace BL.Database.Documents
                                                 SourceAgentId = x.OnEvent.SourceAgentId,
                                                 TargetAgentId = x.OnEvent.TargetAgentId,
                                                 TaskId = x.OnEvent.TaskId,
-                                                IsAvailableWithinTask = x.OnEvent.IsAvailableWithinTask,
                                                 Description = x.OnEvent.Description,
                                                 AddDescription = x.OnEvent.AddDescription,
                                                 EventType = (EnumEventTypes)x.OnEvent.EventTypeId,
@@ -898,7 +895,6 @@ namespace BL.Database.Documents
                                                 SourcePositionId = x.OnEvent.SourcePositionId,
                                                 TargetPositionId = x.OnEvent.TargetPositionId,
                                                 TaskId = x.OnEvent.TaskId,
-                                                IsAvailableWithinTask = x.OnEvent.IsAvailableWithinTask,
                                             }
                                         }
                                     }
@@ -998,7 +994,6 @@ namespace BL.Database.Documents
                             SourcePositionId = x.OnEvent.SourcePositionId,
                             TargetPositionId = x.OnEvent.TargetPositionId,
                             TaskId = x.OnEvent.TaskId,
-                            IsAvailableWithinTask = x.OnEvent.IsAvailableWithinTask,
                         }
                     }
                     ).ToList();
@@ -1035,7 +1030,6 @@ namespace BL.Database.Documents
                             SourcePositionId = x.OnEvent.SourcePositionId,
                             TargetPositionId = x.OnEvent.TargetPositionId,
                             TaskId = x.OnEvent.TaskId,
-                            IsAvailableWithinTask = x.OnEvent.IsAvailableWithinTask,
                         }
                     }
                     ).ToList();
@@ -2144,7 +2138,6 @@ namespace BL.Database.Documents
                 entry.Property(e => e.TargetPositionExecutorTypeId).IsModified = true;
                 entry.Property(e => e.TargetAgentId).IsModified = true;
                 entry.Property(e => e.TaskId).IsModified = true;
-                entry.Property(e => e.IsAvailableWithinTask).IsModified = true;
                 entry.Property(e => e.IsWorkGroup).IsModified = true;
                 entry.Property(e => e.IsAddControl).IsModified = true;
                 entry.Property(e => e.SelfDescription).IsModified = true;
@@ -2314,7 +2307,6 @@ namespace BL.Database.Documents
                                             TargetPositionId = x.TargetPositionId,
                                             TargetAgentId = x.TargetAgentId,
                                             TaskId = x.TaskId,
-                                            IsAvailableWithinTask = x.IsAvailableWithinTask,
                                             IsWorkGroup = x.IsWorkGroup,
                                             IsAddControl = x.IsAddControl,
                                             SelfDescription = x.SelfDescription,

@@ -8,7 +8,7 @@ using BL.Database.DBModel.Dictionary;
 
 namespace BL.Database.DBModel.Document
 {
-    public class DocumentEventAccesses
+    public class DocumentSendListAccessGroups
     {
         public int Id { get; set; }
         [Index("IX_ClientId", 1)]
@@ -16,31 +16,35 @@ namespace BL.Database.DBModel.Document
         [Index("IX_EntityTypeId", 1)]
         public int EntityTypeId { get; set; }
         public int DocumentId { get; set; }
-        public int EventId { get; set; }
-        public int AccessTypeId { get; set; }
-        public Nullable<int> PositionId { get; set; }
-        public Nullable<int> AgentId { get; set; }
-        public int? PositionExecutorTypeId { get; set; }
+        public int SendListId { get; set; }
+        public int AccessTypeId { get; set; }   // получатель, копия, досылка
+        public int AccessGroupsTypeId { get; set; } //тип группы, в т.ч. РГ по доку
+        public int? CompanyId { get; set; }
+        public int? DepartmentId { get; set; }
+        public int? PositionId { get; set; }
+        public int? AgentId { get; set; }
 
-        public Nullable<DateTime> SendDate { get; set; }
-        public Nullable<DateTime> ReadDate { get; set; }
-        public Nullable<int> ReadAgentId { get; set; }
-        public bool IsFavourite { get; set; }
-        public bool IsAddLater { get; set; }
+
+
         public bool IsActive { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
+
         [ForeignKey("DocumentId")]
         public virtual Documents Document { get; set; }
-        [ForeignKey("EventId")]
-        public virtual DocumentEvents Event { get; set; }
+        [ForeignKey("SendListId")]
+        public virtual DocumentSendLists SendList { get; set; }
+        [ForeignKey("CompanyId")]
+        public virtual DictionaryCompanies Company { get; set; }
+        [ForeignKey("DepartmentId")]
+        public virtual DictionaryDepartments Department { get; set; }
         [ForeignKey("PositionId")]
         public virtual DictionaryPositions Position { get; set; }
         [ForeignKey("AgentId")]
         public virtual DictionaryAgents Agent { get; set; }
-        //[ForeignKey("PositionExecutorTypeId")]
-        //public virtual DictionaryPositionExecutorTypes PositionExecutorType { get; set; }
-        [ForeignKey("ReadAgentId")]
-        public virtual DictionaryAgents ReadAgent { get; set; }
+
+
+
+
     }
 }

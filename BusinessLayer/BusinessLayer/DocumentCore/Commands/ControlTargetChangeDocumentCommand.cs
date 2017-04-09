@@ -75,7 +75,7 @@ namespace BL.Logic.DocumentCore.Commands
             if (!string.IsNullOrEmpty(addDescripton))
             {
                 addDescripton = addDescripton.Remove(addDescripton.Length - 1);
-                var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, EnumEventTypes.ControlTargetChange, Model.EventDate, Model.TargetDescription, addDescripton, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask);
+                var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, EnumEventTypes.ControlTargetChange, Model.EventDate, Model.TargetDescription, addDescripton, _docWait.OnEvent.TaskId);
                 _docWait.TargetDescription = Model.TargetDescription;
                 _docWait.AttentionDate = Model.TargetAttentionDate;
                 CommonDocumentUtilities.SetLastChange(_context, _docWait);

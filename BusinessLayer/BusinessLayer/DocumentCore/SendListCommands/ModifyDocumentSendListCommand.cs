@@ -104,7 +104,6 @@ namespace BL.Logic.DocumentCore.SendListCommands
             _sendList.AccessLevel = Model.AccessLevel;
             _sendList.IsInitial = Model.IsInitial;
             _sendList.TaskId = taskId;
-            _sendList.IsAvailableWithinTask = Model.IsAvailableWithinTask;
             _sendList.IsWorkGroup = Model.IsWorkGroup;
             _sendList.IsAddControl = Model.IsAddControl;
             _sendList.SelfDueDate = Model.SelfDueDate;

@@ -770,26 +770,11 @@ namespace BL.Database.Common
 
             if (!context.IsAdmin)
             {
-                //var filterContains = PredicateBuilder.New<DocumentAccesses>(false);
-                //filterContains = isVerifyAccessLevel
-                //    ? context.CurrentPositionsAccessLevel.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand())
-                //    : context.CurrentPositionsIdList.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
-                //qry = qry.Where(x => x.Document.Accesses.AsQueryable().Any(filterContains));
-
                 var filterPositionContains = PredicateBuilder.New<DocumentEvents>(false);
                 filterPositionContains = context.CurrentPositionsAccessLevel.Aggregate(filterPositionContains,
                     (current, value) => current.Or(e => (e.TargetPositionId == value.Key || e.SourcePositionId == value.Key)
                     && e.Document.Accesses.Any(x => x.PositionId == value.Key && x.AccessLevelId >= value.Value)).Expand());
-
-                //var filterTaskAccessesContains = PredicateBuilder.New<DocumentTaskAccesses>(false);
-                //filterTaskAccessesContains = context.CurrentPositionsIdList.Aggregate(filterTaskAccessesContains,
-                //    (current, value) => current.Or(e => e.PositionId == value).Expand());
-
-                res.Add(qry/*.Where(x => !x.IsAvailableWithinTask)*/.Where(filterPositionContains));
-                //res.Add(qry.Where(x => x.IsAvailableWithinTask && x.Task.TaskAccesses.AsQueryable().Any(filterTaskAccessesContains)));
-
-                //qry = qry.Where(x => !x.IsAvailableWithinTask).Where(filterPositionContains)
-                //         .Concat(qry.Where(x => x.IsAvailableWithinTask && x.Task.TaskAccesses.AsQueryable().Any(filterTaskAccessesContains)));
+                res.Add(qry.Where(filterPositionContains));
             }
             else
             {
@@ -1557,8 +1542,7 @@ namespace BL.Database.Common
                     var filterOnEventTaskAccessesContains = PredicateBuilder.New<DocumentTaskAccesses>(false);
                     filterOnEventTaskAccessesContains = context.CurrentPositionsIdList.Aggregate(filterOnEventTaskAccessesContains,
                         (current, value) => current.Or(e => e.PositionId == value).Expand());
-                    res.Add(qry./*Where(x => !x.OnEvent.IsAvailableWithinTask).*/Where(filterOnEventPositionsContains));
-                    //res.Add(qry.Where(x => x.OnEvent.IsAvailableWithinTask && x.OnEvent.TaskId.HasValue && x.OnEvent.Task.TaskAccesses.AsQueryable().Any(filterOnEventTaskAccessesContains)));
+                    res.Add(qry.Where(filterOnEventPositionsContains));
                 }
             }
             else
@@ -2734,7 +2718,6 @@ namespace BL.Database.Common
                 TargetPositionExecutorAgentName = (y.TargetPosition.ExecutorAgent.Name + (y.TargetPosition.ExecutorType.Suffix != null ? " (" + y.TargetPosition.ExecutorType.Suffix + ")" : (string)null))
                                                 ?? y.TargetAgent.Name,
                 Task = y.Task.Task,
-                IsAvailableWithinTask = y.IsAvailableWithinTask,
                 IsWorkGroup = y.IsWorkGroup,
                 IsAddControl = y.IsAddControl,
                 SelfDescription = y.SelfDescription,
@@ -3692,7 +3675,7 @@ namespace BL.Database.Common
         {
             var dbContext = context.DbContext as DmsContext;
             var qry0 = dbContext.DocumentEventsSet.Where(x => x.ClientId == context.CurrentClientId)
-                .Where(x => x.DocumentId == documentId /*&& x.IsAvailableWithinTask*/ );
+                .Where(x => x.DocumentId == documentId );
             if (taskId.HasValue)
                 qry0 = qry0.Where(x => x.TaskId == taskId);
             else

@@ -21,7 +21,6 @@ namespace BL.Model.DocumentCore.FrontModel
 
 
         public string Task { get; set; }
-        public bool? IsAvailableWithinTask { get; set; }
         public string Description { get; set; }
         public string AddDescription { get; set; }
         

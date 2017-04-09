@@ -69,7 +69,7 @@ namespace BL.Logic.DocumentCore.Commands
 
             var addDescription = Model.IsAddPositionsInfo ? "##l@General:DirectTo@l##: " + string.Join(", ", posInfos.Select(x => x.PositionName))  : null;
             evtToAdd.AddRange(actuelPosList.Select(targetPositionId =>
-                CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.SendMessage, Model.EventDate, Model.Description, addDescription, taskId, Model.IsAvailableWithinTask, targetPositionId)
+                CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.SendMessage, Model.EventDate, Model.Description, addDescription, taskId, targetPositionId)
                                                     ));
             _document.Events = evtToAdd;
             _operationDb.AddDocumentEvents(_context, _document);

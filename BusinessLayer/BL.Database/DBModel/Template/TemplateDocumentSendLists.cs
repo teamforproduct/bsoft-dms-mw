@@ -12,6 +12,10 @@ namespace BL.Database.DBModel.Template
 {
     public class TemplateDocumentSendLists
     {
+        public TemplateDocumentSendLists()
+        {
+            this.SendListAccessGroups = new HashSet<TemplateDocumentSendListAccessGroups>();
+        }
         public int Id { get; set; }
         public int DocumentId { get; set; }
         public int SendTypeId { get; set; }
@@ -30,7 +34,6 @@ namespace BL.Database.DBModel.Template
         public string SelfDescription { get; set; }
         public int? SelfDueDay { get; set; }
         public int? SelfAttentionDay { get; set; }
-        public bool IsAvailableWithinTask { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
         [ForeignKey("DocumentId")]
@@ -47,6 +50,8 @@ namespace BL.Database.DBModel.Template
         public virtual AdminAccessLevels AccessLevel { get; set; }
         [ForeignKey("TaskId")]
         public virtual TemplateDocumentTasks Task { get; set; }
+        [ForeignKey("SendListId")]
+        public virtual ICollection<TemplateDocumentSendListAccessGroups> SendListAccessGroups { get; set; }
 
     }
 }

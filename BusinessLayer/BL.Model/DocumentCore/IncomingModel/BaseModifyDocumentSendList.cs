@@ -78,10 +78,6 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// </sumпmary>
         public int? SelfAttentionDay { get; set; }
         /// <summary>
-        /// Событие доступно в рамках задачи
-        /// </summary>
-        public bool IsAvailableWithinTask { get; set; }
-        /// <summary>
         /// Комментарий
         /// </summary>
         public string Description { get; set; }

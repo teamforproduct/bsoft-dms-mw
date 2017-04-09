@@ -19,8 +19,6 @@ namespace BL.Model.DocumentCore.InternalModel
         public string SelfDescription { get; set; }
         public int? SelfDueDay { get; set; }
         public int? SelfAttentionDay { get; set; }
-
-        public bool IsAvailableWithinTask { get; set; }
         public string Description { get; set; }
         public string TaskName { get; set; }
         
@@ -58,7 +56,6 @@ namespace BL.Model.DocumentCore.InternalModel
             SelfDueDay = model.SelfDueDay;
             SelfAttentionDay = model.SelfAttentionDay;
 
-            IsAvailableWithinTask = model.IsAvailableWithinTask;
             Description = model.Description;
             Stage = model.Stage;
             DueDay = model.DueDay;

@@ -17,7 +17,6 @@ namespace BL.Model.DocumentCore.InternalModel
         public DateTime CreateDate { get; set; }
         public DateTime Date { get; set; }
         public int? TaskId { get; set; }
-        public bool IsAvailableWithinTask { get; set; }
         public string Description { get; set; }
         public string AddDescription { get; set; }
         public int? SourcePositionId { get; set; }

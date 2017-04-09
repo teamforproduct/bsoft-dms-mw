@@ -12,6 +12,7 @@ namespace BL.Database.DBModel.Document
         public DocumentSendLists()
         {
             this.PaperEvents = new HashSet<DocumentEvents>();
+            this.SendListAccessGroups = new HashSet<DocumentSendListAccessGroups>();
         }
         public int Id { get; set; }
         [Index("IX_ClientId", 1)]
@@ -48,7 +49,6 @@ namespace BL.Database.DBModel.Document
         public int? SelfDueDay { get; set; }
         public Nullable<DateTime> SelfAttentionDate { get; set; }
         public int? SelfAttentionDay { get; set; }
-        public bool IsAvailableWithinTask { get; set; }
         public Nullable<int> StartEventId { get; set; }
         public Nullable<int> CloseEventId { get; set; }
         public int LastChangeUserId { get; set; }
@@ -86,5 +86,7 @@ namespace BL.Database.DBModel.Document
         public virtual DocumentEvents CloseEvent { get; set; }
         [ForeignKey("SendListId")]
         public virtual ICollection<DocumentEvents> PaperEvents { get; set; }
+        [ForeignKey("SendListId")]
+        public virtual ICollection<DocumentSendListAccessGroups> SendListAccessGroups { get; set; }
     }
 }

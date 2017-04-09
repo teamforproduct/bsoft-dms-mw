@@ -88,7 +88,7 @@ namespace BL.Logic.DocumentCore.Commands
                 newWait.TargetDescription = _docWait.TargetDescription;
                 newWait.AttentionDate = _eventType == EnumEventTypes.ControlChange ? Model.AttentionDate : _docWait.AttentionDate;
 
-                var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, addDescripton, _docWait.OnEvent.TaskId, _docWait.OnEvent.IsAvailableWithinTask, _docWait.OnEvent.TargetPositionId);
+                var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, addDescripton, _docWait.OnEvent.TaskId, _docWait.OnEvent.TargetPositionId);
                 var oldEvent = _docWait.OnEvent;
 
                 newEvent.Id = newWait.OnEventId = oldEvent.Id;

@@ -20,10 +20,6 @@ namespace BL.Model.DocumentCore.Actions
         /// </summary>
         public string Task { get; set; }
         /// <summary>
-        /// Событие доступно в рамках задачи
-        /// </summary>
-        public bool IsAvailableWithinTask { get; set; }
-        /// <summary>
         /// Комментарий
         /// </summary>
         public string Description { get; set; }

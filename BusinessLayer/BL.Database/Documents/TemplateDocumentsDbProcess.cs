@@ -341,7 +341,6 @@ namespace BL.Database.Documents
                         TargetPositionId = y.TargetPositionId,
                         TargetAgentId = y.TargetAgentId,
                         TaskName = y.Task.Task,
-                        IsAvailableWithinTask = y.IsAvailableWithinTask,
                         IsWorkGroup = y.IsWorkGroup,
                         IsAddControl = y.IsAddControl,
                         SelfDescription = y.SelfDescription,
@@ -517,7 +516,6 @@ namespace BL.Database.Documents
                     IsAddControl = x.IsAddControl,
                     TaskId = x.TaskId,
                     TaskName = x.Task.Task,
-                    IsAvailableWithinTask = x.IsAvailableWithinTask,
                     DueDay = x.DueDay,
                     SelfDueDay = x.SelfDueDay,
                     SelfAttentionDay = x.SelfAttentionDay,
@@ -573,7 +571,6 @@ namespace BL.Database.Documents
                             SelfDueDay = x.SelfDueDay,
                             SelfAttentionDay = x.SelfAttentionDay,
                             SelfDescription = x.SelfDescription,
-                            IsAvailableWithinTask = x.IsAvailableWithinTask
                         }).FirstOrDefault();
                 transaction.Complete();
                 return res;
@@ -594,7 +591,6 @@ namespace BL.Database.Documents
                     SelfDescription = template.SelfDescription,
                     SelfDueDay = template.SelfDueDay,
                     SelfAttentionDay = template.SelfAttentionDay,
-                    IsAvailableWithinTask = template.IsAvailableWithinTask,
                     TargetPositionId = template.TargetPositionId,
                     AccessLevelId = (int)template.AccessLevel,
                     DueDay = template.DueDay,

@@ -163,7 +163,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 if (_document.IsRegistered.HasValue)
                 {
                     att.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, att.DocumentId,
-                        EnumEventTypes.AddDocumentFile, null, null, att.Name + "." + att.Extension, null, false,
+                        EnumEventTypes.AddDocumentFile, null, null, att.Name + "." + att.Extension, null, 
                         att.Type != EnumFileTypes.Additional ? (int?) null : _document.ExecutorPositionId);
                 }
                 res.Add(_operationDb.AddNewFileOrVersion(_context, att));

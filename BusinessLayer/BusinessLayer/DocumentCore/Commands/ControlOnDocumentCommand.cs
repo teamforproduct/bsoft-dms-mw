@@ -48,7 +48,7 @@ namespace BL.Logic.DocumentCore.Commands
         public override object Execute()
         {
             var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task);
-            _document.Waits = CommonDocumentUtilities.GetNewDocumentWaits(_context, (int)EnumEntytiTypes.Document, Model, EnumEventTypes.ControlOn, taskId, Model.IsAvailableWithinTask);
+            _document.Waits = CommonDocumentUtilities.GetNewDocumentWaits(_context, (int)EnumEntytiTypes.Document, Model, EnumEventTypes.ControlOn, taskId);
             _operationDb.AddDocumentWaits(_context, _document);
             return null;
         }

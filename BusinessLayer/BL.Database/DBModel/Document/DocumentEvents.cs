@@ -35,7 +35,6 @@ namespace BL.Database.DBModel.Document
         public DateTime CreateDate { get; set; }
         [Index("IX_Date", 1)]
         public DateTime Date { get; set ; }
-        [Index("IX_IsAvailableWithinTask", 2)]
         [Index("IX_TaskId",1)]
         public Nullable<int> TaskId { get; set; }
         //public string TaskName { get; set; }
@@ -55,11 +54,7 @@ namespace BL.Database.DBModel.Document
         public Nullable<int> TargetPositionExecutorAgentId { get; set; }
         public int? TargetPositionExecutorTypeId { get; set; }
         public Nullable<int> TargetAgentId { get; set; }
-
-        [Index("IX_IsAvailableWithinTask", 1)]
-        public bool IsAvailableWithinTask { get; set; }
         public Nullable<DateTime> SendDate { get; set; }
-
         [Index("IX_ReadDate", 1)]
         public Nullable<DateTime> ReadDate { get; set; }
         public Nullable<int> ReadAgentId { get; set; }
