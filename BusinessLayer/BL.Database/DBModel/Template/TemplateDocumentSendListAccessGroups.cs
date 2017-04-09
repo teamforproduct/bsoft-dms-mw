@@ -14,7 +14,7 @@ namespace BL.Database.DBModel.Template
         public int DocumentId { get; set; }
         public int SendListId { get; set; }
         public int AccessTypeId { get; set; }   // получатель, копия, досылка
-        public int AccessGroupsTypeId { get; set; } //тип группы, в т.ч. РГ по доку
+        public int AccessGroupTypeId { get; set; } //тип группы, в т.ч. РГ по доку
         public int? CompanyId { get; set; }
         public int? DepartmentId { get; set; }
         public int? PositionId { get; set; }

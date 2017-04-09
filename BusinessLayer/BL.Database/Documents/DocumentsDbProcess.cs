@@ -669,7 +669,7 @@ namespace BL.Database.Documents
 
                 if (res.LinkId.HasValue)
                 {
-                    res.LinkedDocuments = CommonQueries.GetLinkedDocuments(context, res.LinkId.Value);
+                    res.LinkedDocuments = GetLinkedDocuments(context, res.LinkId.Value);
                     var linkedDocumentsCount = res.LinkedDocuments.Count();
                     if (linkedDocumentsCount > 1)
                     {
@@ -712,6 +712,88 @@ namespace BL.Database.Documents
                 transaction.Complete();
                 return res;
             }
+        }
+        private IEnumerable<FrontDocument> GetLinkedDocuments(IContext context, int linkId)
+        {
+            //var acc = CommonQueries.GetDocumentAccesses(context, dbContext, true);
+            var filterAccessPositionContains = PredicateBuilder.New<DocumentAccesses>(false);
+            filterAccessPositionContains = context.CurrentPositionsAccessLevel.Aggregate(filterAccessPositionContains,
+                (current, value) => current.Or(e => (e.PositionId == value.Key && e.AccessLevelId >= value.Value)).Expand());
+
+            var items = CommonQueries.GetDocumentQuery(context)
+                    .Where(x => x.LinkId == linkId)
+                        .OrderBy(x => x.RegistrationDate ?? x.CreateDate)
+                        .Select(y => new FrontDocument
+                        {
+                            Id = y.Id,
+                            DocumentDirectionName = y.TemplateDocument.DocumentDirection.Name,
+                            DocumentTypeName = y.TemplateDocument.DocumentType.Name,
+
+                            RegistrationNumber = y.RegistrationNumber,
+                            RegistrationNumberPrefix = y.RegistrationNumberPrefix,
+                            RegistrationNumberSuffix = y.RegistrationNumberSuffix,
+
+                            DocumentDate = y.RegistrationDate ?? y.CreateDate,
+                            IsRegistered = y.IsRegistered,
+                            Description = y.Description,
+                            ExecutorPositionId = y.ExecutorPositionId,
+                            ExecutorPositionName = y.ExecutorPosition.Name,
+                            ExecutorPositionExecutorAgentId = y.ExecutorPositionExecutorAgentId,
+                            ExecutorPositionExecutorAgentName = y.ExecutorPositionExecutorAgent.Name + (y.ExecutorPositionExecutorType.Suffix != null ? " (" + y.ExecutorPositionExecutorType.Suffix + ")" : null),
+                            Links = y.LinksDocuments
+                                    .Where(z => z.Document.Accesses.AsQueryable().Any(filterAccessPositionContains))
+                                    .Where(z => z.ParentDocument.Accesses.AsQueryable().Any(filterAccessPositionContains))
+                                    .OrderBy(z => z.LastChangeDate)
+                                    .Select(z => new FrontDocumentLink
+                                    {
+                                        Id = z.Id,
+                                        DocumentId = z.DocumentId,
+                                        ParentDocumentId = z.ParentDocumentId,
+                                        LinkTypeName = z.LinkType.Name,
+                                        IsParent = true,
+                                        RegistrationNumber = z.ParentDocument.RegistrationNumber,
+                                        RegistrationNumberPrefix = z.ParentDocument.RegistrationNumberPrefix,
+                                        RegistrationNumberSuffix = z.ParentDocument.RegistrationNumberSuffix,
+                                        RegistrationFullNumber = "#" + z.ParentDocument.Id.ToString(),
+                                        DocumentDate = (z.ParentDocument.RegistrationDate ?? z.ParentDocument.CreateDate),
+                                        ExecutorPositionId = z.ExecutorPositionId,
+                                        ExecutorPositionName = z.ExecutorPosition.Name,
+                                        ExecutorPositionExecutorAgentId = z.ExecutorPositionExecutorAgentId,
+                                        ExecutorPositionExecutorAgentName = z.ExecutorPositionExecutorAgent.Name + (z.ExecutorPositionExecutorType.Suffix != null ? " (" + z.ExecutorPositionExecutorType.Suffix + ")" : null),
+                                    }).Concat
+                                    (y.LinksParentDocuments.OrderBy(z => z.LastChangeDate)
+                                    .Select(z => new FrontDocumentLink
+                                    {
+                                        Id = z.Id,
+                                        DocumentId = z.DocumentId,
+                                        ParentDocumentId = z.ParentDocumentId,
+                                        LinkTypeName = z.LinkType.Name,
+                                        IsParent = false,
+                                        RegistrationNumber = z.Document.RegistrationNumber,
+                                        RegistrationNumberPrefix = z.Document.RegistrationNumberPrefix,
+                                        RegistrationNumberSuffix = z.Document.RegistrationNumberSuffix,
+                                        RegistrationFullNumber = "#" + z.Document.Id.ToString(),
+                                        DocumentDate = (z.Document.RegistrationDate ?? z.Document.CreateDate),
+                                        ExecutorPositionId = z.ExecutorPositionId,
+                                        ExecutorPositionName = z.ExecutorPosition.Name,
+                                        ExecutorPositionExecutorAgentId = z.ExecutorPositionExecutorAgentId,
+                                        ExecutorPositionExecutorAgentName = z.ExecutorPositionExecutorAgent.Name + (z.ExecutorPositionExecutorType.Suffix != null ? " (" + z.ExecutorPositionExecutorType.Suffix + ")" : null),
+                                    })),
+                        }).ToList();
+            items.ForEach(x =>
+            {
+                CommonQueries.ChangeRegistrationFullNumber(x);
+                var links = x.Links.ToList();
+                links.ForEach(y =>
+                {
+                    CommonQueries.ChangeRegistrationFullNumber(y);
+                    y.CanDelete = context.CurrentPositionsIdList.Contains(y.ExecutorPositionId ?? (int)EnumSystemPositions.AdminPosition);
+                });
+                x.Links = links;
+                x.DocumentWorkGroup = CommonQueries.GetDocumentWorkGroup(context, new FilterDictionaryPosition { DocumentIDs = new List<int> { x.Id } });
+                //TODO x.Accesses = acc.Where(y => y.DocumentId == x.Id).ToList();
+            });
+            return items;
         }
 
         public IEnumerable<int> GetLinkedDocumentIds(IContext context, int documentId)

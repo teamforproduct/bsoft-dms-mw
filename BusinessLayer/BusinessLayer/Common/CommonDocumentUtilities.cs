@@ -200,7 +200,7 @@ namespace BL.Logic.Common
                 var docAccesses = operationDb.GetDocumentAccesses(context, ev.DocumentId);
                 if (accessGroups == null) accessGroups = new List<EventAccessGroup>();
                 if (!accessGroups.Any(x => x.AccessType == EnumEventAccessTypes.Source))
-                    accessGroups.Add(new EventAccessGroup { AccessType = EnumEventAccessTypes.Source, AccessGroupsType = EnumEventAccessGroupsTypes.Position, RecordId = context.CurrentPositionId });
+                    accessGroups.Add(new EventAccessGroup { AccessType = EnumEventAccessTypes.Source, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = context.CurrentPositionId });
                 ev.AccessGroups = accessGroups.Select(x => new InternalDocumentEventAccessGroup
                 {
                     ClientId = ev.ClientId,
@@ -209,11 +209,11 @@ namespace BL.Logic.Common
                     EventId = ev.Id,
                     IsActive = true,
                     AccessType = x.AccessType,
-                    AccessGroupsType = x.AccessGroupsType,
-                    PositionId = x.AccessGroupsType == EnumEventAccessGroupsTypes.Position ? x.RecordId : null,
-                    AgentId = x.AccessGroupsType == EnumEventAccessGroupsTypes.Agent ? x.RecordId : null,
-                    DepartmentId = x.AccessGroupsType == EnumEventAccessGroupsTypes.Department ? x.RecordId : null,
-                    CompanyId = x.AccessGroupsType == EnumEventAccessGroupsTypes.Company ? x.RecordId : null,
+                    AccessGroupType = x.AccessGroupType,
+                    PositionId = x.AccessGroupType == EnumEventAccessGroupTypes.Position ? x.RecordId : null,
+                    AgentId = x.AccessGroupType == EnumEventAccessGroupTypes.Agent ? x.RecordId : null,
+                    DepartmentId = x.AccessGroupType == EnumEventAccessGroupTypes.Department ? x.RecordId : null,
+                    CompanyId = x.AccessGroupType == EnumEventAccessGroupTypes.Company ? x.RecordId : null,
                 }).ToList();
                 SetLastChange(context, ev.AccessGroups);
                 var accesses = new List<InternalDocumentEventAccess>();
@@ -221,21 +221,21 @@ namespace BL.Logic.Common
                   {
                       List<int> positions = new List<int>();
                       List<int> agents = new List<int>();
-                      if (x.AccessGroupsType == EnumEventAccessGroupsTypes.Position && x.RecordId.HasValue)
+                      if (x.AccessGroupType == EnumEventAccessGroupTypes.Position && x.RecordId.HasValue)
                           positions.Add(x.RecordId.Value);
-                      else if (x.AccessGroupsType == EnumEventAccessGroupsTypes.Agent && x.RecordId.HasValue)
+                      else if (x.AccessGroupType == EnumEventAccessGroupTypes.Agent && x.RecordId.HasValue)
                           agents.Add(x.RecordId.Value);
-                      else if (x.AccessGroupsType == EnumEventAccessGroupsTypes.Department && x.RecordId.HasValue)
+                      else if (x.AccessGroupType == EnumEventAccessGroupTypes.Department && x.RecordId.HasValue)
                           positions.AddRange(dict.GetChildPositions(context, null, x.RecordId.Value));
-                      else if (x.AccessGroupsType == EnumEventAccessGroupsTypes.Company && x.RecordId.HasValue)
+                      else if (x.AccessGroupType == EnumEventAccessGroupTypes.Company && x.RecordId.HasValue)
                           positions.AddRange(dict.GetChildPositions(context, null, null, x.RecordId.Value));
-                      else if (x.AccessGroupsType == EnumEventAccessGroupsTypes.SendList && x.RecordId.HasValue)
+                      else if (x.AccessGroupType == EnumEventAccessGroupTypes.SendList && x.RecordId.HasValue)
                       {
                           var sendListContent = dictDB.GetInternalStandartSendListContents(context, new FilterDictionaryStandartSendListContent { StandartSendListId = new List<int> { x.RecordId.Value } });
                           positions.AddRange(sendListContent.Where(y => y.TargetPositionId.HasValue).Select(y => y.TargetPositionId.Value));
                           agents.AddRange(sendListContent.Where(y => y.TargetAgentId.HasValue && !y.TargetPositionId.HasValue).Select(y => y.TargetAgentId.Value));
                       }
-                      else if (x.AccessGroupsType == EnumEventAccessGroupsTypes.WorkGroup && x.RecordId.HasValue)
+                      else if (x.AccessGroupType == EnumEventAccessGroupTypes.WorkGroup && x.RecordId.HasValue)
                       {
                           positions.AddRange(docAccesses.Where(y => y.PositionId.HasValue).Select(y => y.PositionId.Value));
                           agents.AddRange(docAccesses.Where(y => y.AgentId.HasValue && !y.PositionId.HasValue).Select(y => y.AgentId.Value));

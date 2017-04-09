@@ -14,7 +14,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// <summary>
         /// тип группы
         /// </summary>
-        public EnumEventAccessGroupsTypes AccessGroupsType { get; set; } //тип группы, в т.ч. РГ по доку
+        public EnumEventAccessGroupTypes AccessGroupType { get; set; } //тип группы, в т.ч. РГ по доку
         /// <summary>
         /// ИД
         /// </summary>

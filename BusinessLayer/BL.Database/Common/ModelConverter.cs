@@ -117,7 +117,7 @@ namespace BL.Database.Common
                     DocumentId = access.DocumentId,
                     EventId = access.EventId,
                     AccessTypeId = (int)access.AccessType,
-                    AccessGroupsTypeId = (int)access.AccessGroupsType,
+                    AccessGroupTypeId = (int)access.AccessGroupType,
                     PositionId = access.PositionId,
                     AgentId = access.AgentId,
                     CompanyId = access.CompanyId,

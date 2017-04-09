@@ -1,5 +1,6 @@
 ﻿using System;
 using BL.Model.Extensions;
+using System.Collections.Generic;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
@@ -72,6 +73,8 @@ namespace BL.Model.DocumentCore.FrontModel
         public string PaperPlanAgentName { get; set; }
         public string PaperSendAgentName { get; set; }
         public string PaperRecieveAgentName { get; set; }
+        public IEnumerable<FrontDocumentEventAccess> Accesses { get; set; }
+        public IEnumerable<FrontDocumentEventAccessGroup> AccessGroups { get; set; }
 
     }
 }

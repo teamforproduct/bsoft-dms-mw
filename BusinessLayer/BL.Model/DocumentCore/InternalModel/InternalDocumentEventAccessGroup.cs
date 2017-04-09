@@ -12,7 +12,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public int DocumentId { get; set; }
         public int EventId { get; set; }
         public EnumEventAccessTypes AccessType { get; set; }   // получатель, копия, досылка
-        public EnumEventAccessGroupsTypes AccessGroupsType { get; set; } //тип группы, в т.ч. РГ по доку
+        public EnumEventAccessGroupTypes AccessGroupType { get; set; } //тип группы, в т.ч. РГ по доку
         public int? CompanyId { get; set; }
         public int? DepartmentId { get; set; }
         public int? PositionId { get; set; }

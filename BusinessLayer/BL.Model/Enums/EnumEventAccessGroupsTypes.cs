@@ -3,7 +3,7 @@
     /// <summary>
     /// Типы групп субъектов события
     /// </summary>
-    public enum EnumEventAccessGroupsTypes
+    public enum EnumEventAccessGroupTypes
     {
         /// <summary>
         /// Контрагент / пользователь

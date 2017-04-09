@@ -13,17 +13,134 @@ using BL.Model.SystemCore;
 using BL.Model.Enums;
 using BL.CrossCutting.Helpers;
 using BL.Model.FullTextSearch;
+using LinqKit;
+using BL.Model.Exception;
+using BL.Database.DBModel.Document;
 
 namespace BL.Database.Documents
 {
     public class DocumentFileDbProcess : CoreDb.CoreDb, IDocumentFileDbProcess
     {
-        public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterBase filter, UIPaging paging = null)
+        public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext context, FilterBase filter, UIPaging paging = null)
         {
-            var dbContext = ctx.DbContext as DmsContext;
+            var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var res = CommonQueries.GetDocumentFiles(ctx, filter, paging);
+                var qry = CommonQueries.GetDocumentFileQuery(context, filter?.File);
+
+                if (filter?.Document != null)
+                {
+                    var documentIds = CommonQueries.GetDocumentQuery(context, filter.Document, true)
+                                        .Select(x => x.Id);
+
+                    qry = qry.Where(x => documentIds.Contains(x.DocumentId));
+                }
+
+                if (filter?.Event != null)
+                {
+                    var eventsDocumentIds = CommonQueries.GetDocumentEventQuery(context, filter?.Event)
+                                                .Select(x => x.DocumentId);
+
+                    qry = qry.Where(x => eventsDocumentIds.Contains(x.DocumentId));
+                }
+
+                if (filter?.Wait != null)
+                {
+                    var waitsDocumentIds = CommonQueries.GetDocumentWaitQuery(context, filter?.Wait)
+                                                .Select(x => x.DocumentId);
+
+                    qry = qry.Where(x => waitsDocumentIds.Contains(x.DocumentId));
+                }
+
+                //TODO Sort
+                qry = qry.OrderByDescending(x => x.LastChangeDate);
+
+                if (paging != null)
+                {
+                    if (paging.IsOnlyCounter ?? true)
+                    {
+                        paging.TotalItemsCount = qry.Count();
+                    }
+
+                    if (paging.IsOnlyCounter ?? false)
+                    {
+                        return new List<FrontDocumentAttachedFile>();
+                    }
+
+                    if (!paging.IsAll)
+                    {
+                        var skip = paging.PageSize * (paging.CurrentPage - 1);
+                        var take = paging.PageSize;
+
+                        qry = qry.Skip(() => skip).Take(() => take);
+                    }
+                }
+
+                if ((paging?.IsAll ?? true) && (filter == null || filter.File == null || ((filter.File.DocumentId?.Count ?? 0) == 0 && (filter.File.FileId?.Count ?? 0) == 0)))
+                {
+                    throw new WrongAPIParameters();
+                }
+
+                var isNeedRegistrationFullNumber = !(filter?.File?.DocumentId?.Any() ?? false);
+
+                var qryFE = dbContext.DocumentFilesSet.Where(x => qry.Select(y => y.Id).Contains(x.Id))
+                                .OrderByDescending(x => x.LastChangeDate)
+                                .Join(dbContext.DictionaryAgentsSet, o => o.LastChangeUserId, i => i.Id, (file, agent) => new FrontDocumentAttachedFile
+                                {
+                                    Id = file.Id,
+                                    Date = file.Date,
+                                    DocumentId = file.DocumentId,
+                                    Extension = file.Extension,
+                                    FileContent = file.Content,
+                                    FileType = file.FileType,
+                                    FileSize = file.FileSize,
+                                    Type = (EnumFileTypes)file.TypeId,
+                                    TypeName = file.Type.Name,
+                                    IsMainVersion = file.IsMainVersion,
+                                    IsDeleted = file.IsDeleted,
+                                    IsWorkedOut = file.IsWorkedOut ?? true,
+                                    Description = file.Description,
+                                    Hash = file.Hash,
+                                    LastChangeDate = file.LastChangeDate,
+                                    LastChangeUserId = file.LastChangeUserId,
+                                    LastChangeUserName = agent.Name,
+                                    Name = file.Name,
+                                    OrderInDocument = file.OrderNumber,
+                                    Version = file.Version,
+                                    WasChangedExternal = false,
+                                    ExecutorPositionName = file.ExecutorPosition.Name,
+                                    ExecutorPositionExecutorAgentName = file.ExecutorPositionExecutorAgent.Name + (file.ExecutorPositionExecutorType.Suffix != null ? " (" + file.ExecutorPositionExecutorType.Suffix + ")" : null),
+
+                                    DocumentDate = (file.Document.LinkId.HasValue || isNeedRegistrationFullNumber) ? file.Document.RegistrationDate ?? file.Document.CreateDate : (DateTime?)null,
+                                    RegistrationNumber = file.Document.RegistrationNumber,
+                                    RegistrationNumberPrefix = file.Document.RegistrationNumberPrefix,
+                                    RegistrationNumberSuffix = file.Document.RegistrationNumberSuffix,
+                                    RegistrationFullNumber = "#" + file.Document.Id,
+                                });
+
+                var res = qryFE.ToList();
+
+                if (res.Any(x => x.IsMainVersion))
+                {
+                    var filterContains = PredicateBuilder.New<DocumentFiles>(false);
+                    filterContains = res.Where(x => x.IsMainVersion).Select(x => new { x.DocumentId, x.OrderInDocument }).ToList()
+                                        .Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.DocumentId == value.DocumentId && e.OrderNumber == value.OrderInDocument).Expand());
+
+                    var isNotAllWorkedOut = dbContext.DocumentFilesSet.Where(filterContains)
+                                .Where(x => !x.IsDeleted)
+                                .GroupBy(x => new { x.DocumentId, x.OrderNumber })
+                                .Select(x => new
+                                {
+                                    DocumentId = x.Key.DocumentId,
+                                    OrderNumber = x.Key.OrderNumber,
+                                    IsNotAllWorkedOut = x.Any(y => y.IsWorkedOut == false)
+                                }).ToList();
+
+                    res.ForEach(x => x.IsNotAllWorkedOut = isNotAllWorkedOut.FirstOrDefault(y => y.DocumentId == x.DocumentId && y.OrderNumber == x.OrderInDocument)?.IsNotAllWorkedOut ?? false);
+                }
+
+                res.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
                 transaction.Complete();
                 return res;
             }
