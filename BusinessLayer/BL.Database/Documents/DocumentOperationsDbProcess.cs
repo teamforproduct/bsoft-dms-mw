@@ -486,7 +486,7 @@ namespace BL.Database.Documents
                     }).FirstOrDefault();
                 if (res != null)
 
-                    res.Accesses = dbContext.DocumentEventAccessesSet.Where(x => x.Id == eventId).Select(y => new FrontDocumentEventAccess
+                    res.Accesses = dbContext.DocumentEventAccessesSet.Where(x => x.EventId == eventId).Select(y => new FrontDocumentEventAccess
                     {
                         AccessType = (EnumEventAccessTypes)y.AccessTypeId,
                         Name = y.Agent.Name + (y.PositionExecutorType.Suffix != null ? " (" + y.PositionExecutorType.Suffix + ")" : null),
