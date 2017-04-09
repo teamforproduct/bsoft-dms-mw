@@ -17,7 +17,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public int? DepartmentId { get; set; }
         public int? PositionId { get; set; }
         public int? AgentId { get; set; }
-
+        public int? StandartSendListId { get; set; }
         public string Name { get; set; }
 
         public bool? IsActive { get; set; }

@@ -122,7 +122,9 @@ namespace BL.Database.Common
                     AgentId = access.AgentId,
                     CompanyId = access.CompanyId,
                     DepartmentId = access.DepartmentId,
+                    StandartSendListId = access.StandartSendListId,
                     IsActive = access.IsActive,
+
 
                 };
         }

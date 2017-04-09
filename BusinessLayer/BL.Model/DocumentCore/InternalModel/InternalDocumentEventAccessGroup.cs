@@ -17,6 +17,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public int? DepartmentId { get; set; }
         public int? PositionId { get; set; }
         public int? AgentId { get; set; }
+        public int? StandartSendListId { get; set; }
 
 
 

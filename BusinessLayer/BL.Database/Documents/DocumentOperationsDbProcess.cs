@@ -694,7 +694,7 @@ namespace BL.Database.Documents
                     {
                         AccessType = (EnumEventAccessTypes)y.AccessTypeId,
                         AccessGroupType = (EnumEventAccessGroupTypes)y.AccessGroupTypeId,
-
+                        Name = y.Agent.Name ?? y.Company.Agent.Name ?? y.Department.Name ?? y.Position.Name
                     })
                 });
 
