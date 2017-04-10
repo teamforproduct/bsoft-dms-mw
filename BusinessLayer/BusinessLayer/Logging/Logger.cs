@@ -13,6 +13,7 @@ using BL.Model.DictionaryCore.FrontModel;
 using LinqKit;
 using BL.Database.Common;
 using BL.Logic.Common;
+using BL.Model.DictionaryCore.FrontModel.Employees;
 
 namespace BL.Logic.Logging
 {

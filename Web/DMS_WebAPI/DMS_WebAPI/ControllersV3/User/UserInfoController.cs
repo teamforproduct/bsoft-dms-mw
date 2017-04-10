@@ -1,10 +1,8 @@
 ﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
-using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
-using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
@@ -25,6 +23,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
+using BL.Model.DictionaryCore.FrontModel.Employees;
 
 namespace DMS_WebAPI.ControllersV3.User
 {
@@ -33,7 +32,6 @@ namespace DMS_WebAPI.ControllersV3.User
     /// Контекст пользователя (Все пользователя являются сотрудниками, но у сотрудника может быть выключена возможность авторизации)
     /// </summary>
     [Authorize]
-    //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserInfoController : ApiController
     {

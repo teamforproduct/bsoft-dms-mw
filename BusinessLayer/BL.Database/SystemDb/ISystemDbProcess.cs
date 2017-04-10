@@ -1,15 +1,12 @@
 using BL.Model.SystemCore;
 using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
-using BL.Model.Enums;
-using BL.Model.FullTextSearch;
 using BL.Model.SystemCore.InternalModel;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.FrontModel;
-using BL.Model.Tree;
 using BL.Database.DBModel.System;
 using System;
-using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.DictionaryCore.FrontModel.Employees;
 
 namespace BL.Database.SystemDb
 {

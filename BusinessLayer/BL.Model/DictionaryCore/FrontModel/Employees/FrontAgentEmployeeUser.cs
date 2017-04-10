@@ -1,7 +1,7 @@
-﻿using BL.Model.Extensions;
-using System;
+﻿using System;
+using BL.Model.Extensions;
 
-namespace BL.Model.DictionaryCore.FrontModel
+namespace BL.Model.DictionaryCore.FrontModel.Employees
 {
     /// <summary>
     /// сотрудник - пользователь

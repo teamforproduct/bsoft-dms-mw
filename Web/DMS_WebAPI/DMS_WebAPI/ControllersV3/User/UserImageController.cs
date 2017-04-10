@@ -11,6 +11,7 @@ using System;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
+using BL.Model.DictionaryCore.FrontModel.Employees;
 
 namespace DMS_WebAPI.ControllersV3.User
 {

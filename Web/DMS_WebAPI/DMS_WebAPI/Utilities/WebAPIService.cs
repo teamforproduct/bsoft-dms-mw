@@ -11,7 +11,6 @@ using BL.Model.AdminCore.Clients;
 using BL.Model.AdminCore.WebUser;
 using BL.Model.Common;
 using BL.Model.Database;
-using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
@@ -32,9 +31,7 @@ using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
-using BL.Database.DatabaseContext;
-using Ninject;
-using Ninject.Parameters;
+using BL.Model.DictionaryCore.FrontModel.Employees;
 
 namespace DMS_WebAPI.Utilities
 {
