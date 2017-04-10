@@ -117,6 +117,13 @@ namespace BL.Model.Exception
         public ClientIsNotFound(System.Exception ex) : base(ex) { }
     }
 
+    public class ClientRequired : DmsExceptions
+    {
+        public ClientRequired() : base() { }
+        public ClientRequired(System.Exception ex) : base(ex) { }
+    }
+    
+
     public class ServerIsNotFound : DmsExceptions
     {
         public ServerIsNotFound() : base() { }
@@ -804,6 +811,25 @@ namespace BL.Model.Exception
         public DictionaryAgentCompanyOKPOCodeNotUnique(string Name, string OKPOCode) : base() { Parameters = new List<string> { Name, OKPOCode }; }
         public DictionaryAgentCompanyOKPOCodeNotUnique(System.Exception ex) : base(ex) { }
     }
+
+    public class OrgRequired : DmsExceptions
+    {
+        public OrgRequired() : base() { }
+        public OrgRequired(System.Exception ex) : base(ex) { }
+    }
+
+    public class DepartmentRequired : DmsExceptions
+    {
+        public DepartmentRequired() : base() { }
+        public DepartmentRequired(System.Exception ex) : base(ex) { }
+    }
+
+    public class PositionRequired : DmsExceptions
+    {
+        public PositionRequired() : base() { }
+        public PositionRequired(System.Exception ex) : base(ex) { }
+    }
+
     public class DictionaryTagNotFoundOrUserHasNoAccess : DmsExceptions
     {
         public DictionaryTagNotFoundOrUserHasNoAccess() : base() { }

@@ -4,6 +4,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.Model.SystemCore.Filters;
 using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
@@ -14,6 +15,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
+using Microsoft.Owin.Security.Provider;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,11 +23,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
-using BL.Database.DatabaseContext;
-using Ninject;
-using Ninject.Parameters;
-using Microsoft.Owin.Security.Provider;
-using BL.Model.SystemCore.Filters;
 
 namespace DMS_WebAPI.Providers
 {
@@ -79,7 +76,12 @@ namespace DMS_WebAPI.Providers
 
             string clientCode = GetClientCodeFromBody(context.Request.Body);
 
+            if (string.IsNullOrEmpty(clientCode)) throw new ClientRequired();
+
             var webService = DmsResolver.Current.Get<WebAPIService>();
+
+            // TODO может тут нужен ThrowErrorGrantResourceOwnerCredentials - не знаю - и зачем не понимаю
+            if (!webService.ExistsClients(new FilterAspNetClients { Code = clientCode })) throw new ClientIsNotFound();
 
             ApplicationUser user = await webService.GetUser(userEmail, context.Password, clientCode);
 
