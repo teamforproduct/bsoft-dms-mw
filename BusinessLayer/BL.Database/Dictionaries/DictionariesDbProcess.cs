@@ -313,8 +313,11 @@ namespace BL.Database.Dictionaries
 
         private void FormAgentPeopleName(InternalDictionaryAgentPeople people)
         {
-            var F = people.FirstName?.Trim().First().ToString(); ;
-            var M = people.MiddleName?.Trim().First().ToString();
+            var F = string.Empty;
+            var M = string.Empty;
+
+            if (!string.IsNullOrEmpty(people.FirstName))people.FirstName.Trim().First().ToString();
+            if (!string.IsNullOrEmpty(people.MiddleName)) people.MiddleName.Trim().First().ToString();
 
             people.Name = people.LastName?.Trim();
             people.Name += string.IsNullOrEmpty(F) ? "" : " " + F + ".";
