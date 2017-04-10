@@ -92,6 +92,9 @@ namespace BL.Logic.DocumentCore.Commands
                 var oldEvent = _docWait.OnEvent;
 
                 newEvent.Id = newWait.OnEventId = oldEvent.Id;
+                newEvent.Accesses?.ToList().ForEach(x => x.EventId = newEvent.Id);
+                newEvent.AccessGroups?.ToList().ForEach(x => x.EventId = newEvent.Id);
+
 
                 newWait.OnEvent = newEvent;
                 newWait.ParentWait = _docWait;
