@@ -19,7 +19,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
-    public class DocumentTagController : ApiController
+    public class DocumentTagController : WebApiController
     {
         /// <summary>
         /// Возвращает список тегов по ИД документа
@@ -31,7 +31,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentTag>))]
         public async Task<IHttpActionResult> GetByDocumentId(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var docProc = DmsResolver.Current.Get<IDocumentTagService>();
                 var items = docProc.GetTags(context, Id);
@@ -49,7 +49,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Tags)]
         public async Task<IHttpActionResult> Post([FromBody]ModifyDocumentTags model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var tmpItem = Action.Execute(context, EnumDocumentActions.ModifyDocumentTags, model, model.CurrentPositionId);
                    var res = new JsonResult(tmpItem, this);

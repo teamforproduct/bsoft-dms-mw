@@ -23,7 +23,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Employee)]
-    public class EmployeeRolesController : ApiController
+    public class EmployeeRolesController : WebApiController
     {
         /// <summary>
         /// Возвращает роли пользователя с пычками
@@ -39,7 +39,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
             if (filter == null) filter = new FilterDIPAdminUserRole();
             filter.IsChecked = true;
 
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 var tmpItems = tmpService.GetUserRolesDIP(context, Id, filter);
@@ -64,7 +64,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
             filter.StartDate = DateTime.UtcNow;
             filter.EndDate = DateTime.UtcNow;
 
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 var tmpItems = tmpService.GetUserRolesDIP(context, Id, filter);
@@ -89,7 +89,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
             //filter.StartDate = DateTime.UtcNow;
             //filter.EndDate = DateTime.UtcNow;
 
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 var tmpItems = tmpService.GetUserRolesDIP(context, Id, filter);
@@ -114,7 +114,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
             filter.StartDate = DateTime.UtcNow;
             filter.EndDate = DateTime.UtcNow;
 
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 var tmpItems = tmpService.GetUserRolesDIP(context, Id, filter);
@@ -132,7 +132,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [Route(Features.Roles + "/Set")]
         public async Task<IHttpActionResult> Set([FromBody] SetUserRole model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumAdminActions.SetUserRole, model);
                 var res = new JsonResult(tmpItem, this);
@@ -149,7 +149,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [Route(Features.Roles + "/SetByAssignment")]
         public async Task<IHttpActionResult> SetByDepartment([FromBody] ItemCheck model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumAdminActions.SetUserRoleByAssignment, model);
                 var res = new JsonResult(tmpItem, this);

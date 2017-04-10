@@ -20,7 +20,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
-    public class DocumentWorkGroupController : ApiController
+    public class DocumentWorkGroupController : WebApiController
     {
         /// <summary>
         /// Возвращает список рабочей группы
@@ -33,7 +33,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDictionaryPosition>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryPosition filter, [FromUri]UIPaging paging)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var docProc = DmsResolver.Current.Get<IDocumentService>();
                    var items = docProc.GetDocumentWorkGroup(context, filter, paging);
@@ -53,7 +53,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentAccess>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterDocumentAccess filter, [FromUri]UIPaging paging)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var docProc = DmsResolver.Current.Get<IDocumentService>();
                    var items = docProc.GetDocumentAccesses(context, filter, paging);

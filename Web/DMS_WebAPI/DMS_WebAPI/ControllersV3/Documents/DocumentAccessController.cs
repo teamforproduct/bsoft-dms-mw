@@ -10,7 +10,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
-    public class DocumentAccessController : ApiController
+    public class DocumentAccessController : WebApiController
     {
 
     }

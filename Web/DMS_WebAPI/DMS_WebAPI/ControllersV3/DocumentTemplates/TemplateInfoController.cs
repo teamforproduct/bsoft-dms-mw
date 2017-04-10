@@ -23,7 +23,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Templates)]
-    public class TemplateInfoController : ApiController
+    public class TemplateInfoController : WebApiController
     {
         private IHttpActionResult GetById(IContext context, int Id)
         {
@@ -46,7 +46,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [ResponseType(typeof(List<FrontMainTemplateDocument>))]
         public async Task<IHttpActionResult> Get([FromUri]FullTextSearch ftSearch, [FromUri]FilterTemplateDocument filter, [FromUri]UIPaging paging)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
                 var tmpItems = tmpService.GetMainTemplateDocument(context, ftSearch, filter, paging);
@@ -66,7 +66,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [ResponseType(typeof(FrontTemplateDocument))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -81,7 +81,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Post([FromBody]AddTemplateDocument model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var tmpItem = Action.Execute(context, EnumDocumentActions.AddTemplateDocument, model);
                    return GetById(context, tmpItem);
@@ -97,7 +97,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Info + "/Duplicate")]
         public async Task<IHttpActionResult> Duplicate([FromBody]Item model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var tmpItem = Action.Execute(context, EnumDocumentActions.CopyTemplateDocument, model.Id);
                    return GetById(context, tmpItem);
@@ -113,7 +113,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyTemplateDocument model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.ModifyTemplateDocument, model);
                    return GetById(context, model.Id);
@@ -129,7 +129,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Info + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.DeleteTemplateDocument, Id);
                    var tmpItem = new FrontDeleteModel(Id);

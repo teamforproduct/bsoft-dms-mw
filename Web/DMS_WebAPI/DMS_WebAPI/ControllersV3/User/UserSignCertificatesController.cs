@@ -23,7 +23,7 @@ namespace DMS_WebAPI.ControllersV3.User
     [Authorize]
     //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
-    public class UserSignCertificatesController : ApiController
+    public class UserSignCertificatesController : WebApiController
     {
         private IHttpActionResult GetById(IContext context, int Id)
         {
@@ -46,7 +46,7 @@ namespace DMS_WebAPI.ControllersV3.User
         {
             if (paging == null) paging = new UIPaging();
 
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IEncryptionService>();
                 var tmpItems = tmpService.GetCertificates(context, filter, paging);
@@ -65,7 +65,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontEncryptionCertificate))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -86,7 +86,7 @@ namespace DMS_WebAPI.ControllersV3.User
             HttpPostedFile file = HttpContext.Current.Request.Files[0];
             model.PostedFileData = file;
 
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 model.AgentId = context.CurrentAgentId;
                 var tmpItem = Action.Execute(context, EnumEncryptionActions.AddEncryptionCertificate, model);
@@ -103,7 +103,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.SignCertificates)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyEncryptionCertificate model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumEncryptionActions.ModifyEncryptionCertificate, model);
                 return GetById(context, model.Id);
@@ -119,7 +119,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.SignCertificates + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumEncryptionActions.DeleteEncryptionCertificate, Id);
                 var tmpItem = new FrontDeleteModel(Id);

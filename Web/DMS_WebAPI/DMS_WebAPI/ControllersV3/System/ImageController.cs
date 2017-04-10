@@ -1,12 +1,13 @@
 ﻿using System.IO;
 using System.Web.Http;
 using System.Web.Mvc;
+using DMS_WebAPI.Utilities;
 
 namespace DMS_WebAPI.ControllersV3.System
 {
-    public class ImageController : ApiController
+    public class ImageController : WebApiController
     {
-        public ActionResult GetTenderReport()
+        public ActionResult GetDmsFile()
         {
 
                 //string filename = "tenderReport.xls";
@@ -23,7 +24,7 @@ namespace DMS_WebAPI.ControllersV3.System
                 //Response.AppendHeader("Content-Disposition", cd.ToString());
 
                 //return File(filedata, contentType);
-            
+            return null;
         }
     }
 }

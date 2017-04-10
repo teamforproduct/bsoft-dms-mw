@@ -33,7 +33,7 @@ namespace DMS_WebAPI.ControllersV3.User
     /// </summary>
     [Authorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
-    public class UserInfoController : ApiController
+    public class UserInfoController : WebApiController
     {
 
         private ApplicationUserManager _userManager;
@@ -128,7 +128,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(List<FrontPermission>))]
         public async Task<IHttpActionResult> GetPermissions()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 var tmpItem = tmpService.GetUserPermissions(context);
@@ -151,7 +151,7 @@ namespace DMS_WebAPI.ControllersV3.User
             var ctxs = DmsResolver.Current.Get<UserContexts>();
             var sessions = ctxs.GetContextListQuery();
 
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var pSessions = (IQueryable<FrontSystemSession>)param;
                 var tmpService = DmsResolver.Current.Get<ILogger>();
@@ -185,7 +185,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route("Language")]
         public async Task<IHttpActionResult> SetLanguage(SetUserLanguage model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var contexts = (UserContexts)param;
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();

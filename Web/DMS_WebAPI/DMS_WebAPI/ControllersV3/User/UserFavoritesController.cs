@@ -18,7 +18,7 @@ namespace DMS_WebAPI.ControllersV3.User
     [Authorize]
     //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
-    public class UserFavoritesController : ApiController
+    public class UserFavoritesController : WebApiController
     {
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontUserFavorites))]
         public async Task<IHttpActionResult> Get()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetUserFavourites(context);
@@ -66,7 +66,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Favorites + "/Bulk")]
         public async Task<IHttpActionResult> PostBulk([FromBody]FrontUserFavorites model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 tmpService.SetUserFavoritesBulk(context, model);
@@ -84,7 +84,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Favorites)]
         public async Task<IHttpActionResult> Post([FromBody]AddAgentFavourite model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 tmpService.SetUserFavorite(context, model);
@@ -102,7 +102,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Favorites + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var webService = DmsResolver.Current.Get<WebAPIService>();
                 webService.DeleteUserFingerprint(Id);

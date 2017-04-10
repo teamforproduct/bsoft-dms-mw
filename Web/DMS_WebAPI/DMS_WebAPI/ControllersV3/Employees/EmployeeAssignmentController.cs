@@ -25,7 +25,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Employee)]
-    public class EmployeeAssignmentsController : ApiController
+    public class EmployeeAssignmentsController : WebApiController
     {
         private IHttpActionResult GetById(IContext context, int Id)
         {
@@ -49,7 +49,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
             if (filter == null) filter = new FilterDictionaryPositionExecutor();
             filter.AgentIDs = new List<int> { Id };
 
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetDictionaryPositionExecutors(context, filter);
@@ -76,7 +76,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
             filter.IsActive = true;
 
 
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItems = tmpService.GetDictionaryPositionExecutors(context, filter);
@@ -100,7 +100,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
 
             filter.PositionIDs = new List<int> { Id };
 
-return await this.SafeExecuteAsync(ModelState, (context, param) =>
+return await SafeExecuteAsync(ModelState, (context, param) =>
             {
             var tmpService = DmsResolver.Current.Get<IAdminService>();
             var tmpItems = tmpService.GetListRoles(context,   filter, paging);
@@ -118,7 +118,7 @@ return await this.SafeExecuteAsync(ModelState, (context, param) =>
         [ResponseType(typeof(FrontDictionaryPositionExecutor))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -132,7 +132,7 @@ return await this.SafeExecuteAsync(ModelState, (context, param) =>
         [HttpPost]
         [Route(Features.Assignments)]
         public async Task<IHttpActionResult> Post([FromBody]AddPositionExecutor model)
-        {return await this.SafeExecuteAsync(ModelState, (context, param) =>
+        {return await SafeExecuteAsync(ModelState, (context, param) =>
             {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddExecutor, context,  model);
@@ -147,7 +147,7 @@ return await this.SafeExecuteAsync(ModelState, (context, param) =>
         [HttpPut]
         [Route(Features.Assignments)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyPositionExecutor model)
-        {return await this.SafeExecuteAsync(ModelState, (context, param) =>
+        {return await SafeExecuteAsync(ModelState, (context, param) =>
             {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             tmpService.ExecuteAction(EnumDictionaryActions.ModifyExecutor, context, model);
@@ -162,7 +162,7 @@ return await this.SafeExecuteAsync(ModelState, (context, param) =>
         [HttpDelete]
         [Route(Features.Assignments + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
-        {return await this.SafeExecuteAsync(ModelState, (context, param) =>
+        {return await SafeExecuteAsync(ModelState, (context, param) =>
             {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
 

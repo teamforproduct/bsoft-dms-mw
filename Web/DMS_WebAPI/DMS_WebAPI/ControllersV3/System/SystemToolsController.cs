@@ -20,7 +20,7 @@ namespace DMS_WebAPI.ControllersV3.System
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Tools)]
-    public class SystemToolsController : ApiController
+    public class SystemToolsController : WebApiController
     {
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Info + "/FullTextReindex")]
         public async Task<IHttpActionResult> FullTextReindex()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
                 var clientServer = dbProc.GetClientServer(context.CurrentClientId);

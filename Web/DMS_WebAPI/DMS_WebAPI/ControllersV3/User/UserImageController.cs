@@ -1,7 +1,6 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.Common;
-using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
@@ -21,7 +20,7 @@ namespace DMS_WebAPI.ControllersV3.User
     [Authorize]
     //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
-    public class UserImageController : ApiController
+    public class UserImageController : WebApiController
     {
 
         /// <summary>
@@ -33,7 +32,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontAgentEmployeeUser))]
         public async Task<IHttpActionResult> Get()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItem = tmpService.GetDictionaryAgentUserPicture(context, context.CurrentAgentId);
@@ -63,7 +62,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Image)]
         public async Task<IHttpActionResult> Delete()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.DeleteAgentImage, context.CurrentAgentId);
                 var tmpItem = new FrontDeleteModel(context.CurrentAgentId);

@@ -19,7 +19,7 @@ namespace DMS_WebAPI.ControllersV3.User
     [Authorize]
     //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
-    public class UserPassportController : ApiController
+    public class UserPassportController : WebApiController
     {
         private IHttpActionResult GetById(IContext context)
         {
@@ -38,7 +38,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontAgentPeoplePassport))]
         public async Task<IHttpActionResult> Get()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context);
             });
@@ -53,7 +53,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Passport)]
         public async Task<IHttpActionResult> Put([FromBody]AddAgentPeoplePassport model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpModel = new ModifyAgentPeoplePassport()
                 {

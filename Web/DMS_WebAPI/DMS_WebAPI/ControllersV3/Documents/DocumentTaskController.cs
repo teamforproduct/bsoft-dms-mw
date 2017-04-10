@@ -22,7 +22,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
-    public class DocumentTaskController : ApiController
+    public class DocumentTaskController : WebApiController
     {
         private IHttpActionResult GetById(IContext context, int Id)
         {
@@ -43,7 +43,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentTask>))]
         public async Task<IHttpActionResult> Get([FromUri]FilterDocumentTask filter, [FromUri]UIPaging paging)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var docProc = DmsResolver.Current.Get<IDocumentTaskService>();
                    var items = docProc.GetTasks(context, filter, paging);
@@ -62,7 +62,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(FrontDocumentTask))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -77,7 +77,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Tasks)]
         public async Task<IHttpActionResult> Post([FromBody]AddDocumentTask model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentTask, model, model.CurrentPositionId);
                    var res = new JsonResult(tmpItem, this);
@@ -94,7 +94,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Tasks)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyDocumentTask model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var tmpItem = Action.Execute(context, EnumDocumentActions.ModifyDocumentTask, model);
                    var res = new JsonResult(tmpItem, this);
@@ -111,7 +111,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Tasks + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.DeleteDocumentTask, Id);
                    var tmpItem = new FrontDeleteModel(Id);

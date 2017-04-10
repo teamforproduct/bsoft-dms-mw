@@ -23,7 +23,7 @@ namespace DMS_WebAPI.ControllersV3.System
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.ContactType)]
-    public class ContactTypeInfoController : ApiController
+    public class ContactTypeInfoController : WebApiController
     {
         private IHttpActionResult GetById(IContext context, int Id)
         {
@@ -44,7 +44,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [ResponseType(typeof(List<FrontDictionaryContactType>))]
         public async Task<IHttpActionResult> Get([FromUri] FullTextSearch ftSearch, [FromUri] FilterDictionaryContactType filter)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetMainDictionaryContactTypes(context, ftSearch, filter);
@@ -63,7 +63,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [ResponseType(typeof(FrontDictionaryContactType))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -78,7 +78,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Post([FromBody]AddContactType model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumDictionaryActions.AddContactType, model);
                 return GetById(context, tmpItem);
@@ -94,7 +94,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyContactType model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.ModifyContactType, model);
                 return GetById(context, model.Id);
@@ -110,7 +110,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Info + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.DeleteContactType, Id);
                 var tmpItem = new FrontDeleteModel(Id);

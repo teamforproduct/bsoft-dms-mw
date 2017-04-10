@@ -23,7 +23,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
-    public class DocumentPlanController : ApiController
+    public class DocumentPlanController : WebApiController
     {
         private IHttpActionResult GetById(IContext context, int Id)
         {
@@ -43,7 +43,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentSendList>))]
         public async Task<IHttpActionResult> GetByDocumentId(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
                    var items = docProc.GetSendLists(context, Id);
@@ -62,7 +62,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(FrontDocumentSendList))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -77,7 +77,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Plan)]
         public async Task<IHttpActionResult> Post([FromBody]AddDocumentSendList model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentSendList, model, model.CurrentPositionId);
                    //var res = new JsonResult(tmpItem, this);
@@ -94,7 +94,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Plan + "/AddStage")]
         public async Task<IHttpActionResult> AddStage([FromBody]ModifyDocumentSendListStage model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var docProc = DmsResolver.Current.Get<IDocumentService>();
                    var tmpItem = (bool)docProc.ExecuteAction(EnumDocumentActions.AddDocumentSendListStage, context, model);
@@ -112,7 +112,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Plan)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyDocumentSendList model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var tmpItem = Action.Execute(context, EnumDocumentActions.ModifyDocumentSendList, model);
                    //var res = new JsonResult(tmpItem, this);
@@ -129,7 +129,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Plan + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.DeleteDocumentSendList, Id);
                    var tmpItem = new FrontDeleteModel(Id);
@@ -147,7 +147,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Plan + "/DeleteStage")]
         public async Task<IHttpActionResult> DeleteStage([FromUri]ModifyDocumentSendListStage model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.DeleteDocumentSendListStage, model);
                    var res = new JsonResult(null, this);
@@ -164,7 +164,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<InternalDictionaryPositionWithActions>))]
         public async Task<IHttpActionResult> Actions([FromUri]int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var docProc = DmsResolver.Current.Get<ICommandService>();
                    var items = docProc.GetDocumentSendListActions(context, Id);
@@ -183,7 +183,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocument>))]
         public async Task<IHttpActionResult> AdditinalLinkedDocumentSendLists([FromUri]AdditinalLinkedDocumentSendList model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
                    var items = docProc.GetAdditinalLinkedDocumentSendLists(context, model);
@@ -201,7 +201,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Plan + "/LaunchItem")]
         public async Task<IHttpActionResult> LaunchItem([FromBody]Item model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var aplan = DmsResolver.Current.Get<IAutoPlanService>();
                    aplan.ManualRunAutoPlan(context, model.Id, null);
@@ -219,7 +219,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> LaunchPlan([FromBody]Item model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.LaunchPlan, model.Id);
                    var res = new JsonResult(null, this);
@@ -236,7 +236,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> StopPlan([FromBody]Item model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.StopPlan, model.Id);
                    var res = new JsonResult(null, this);

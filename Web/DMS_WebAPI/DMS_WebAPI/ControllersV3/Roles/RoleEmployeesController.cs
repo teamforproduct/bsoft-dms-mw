@@ -18,7 +18,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Role)]
-    public class RoleEmployeesController : ApiController
+    public class RoleEmployeesController : WebApiController
     {
         /// <summary>
         /// Возвращает список сотрудников
@@ -35,7 +35,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
             if (filter == null) filter = new FilterDictionaryAgentEmployee();
             filter.RoleIDs = new List<int> { Id };
 
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetAgentEmployeeList(context, filter, paging);

@@ -14,7 +14,7 @@ namespace DMS_WebAPI.ControllersV3.System
     [Authorize]
     //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.System)]
-    public class SystemSettingsController : ApiController
+    public class SystemSettingsController : WebApiController
     {
         /// <summary>
         /// Возвращает значение настройки: 
@@ -26,7 +26,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Settings + "/IsSendAllForExecution")]
         public async Task<IHttpActionResult> IsSendAllForExecution()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ISettings>();
                 var tmpItem = tmpService.GetSubordinationsSendAllForExecution(context);
@@ -45,7 +45,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Settings + "/IsSendAllForInforming")]
         public async Task<IHttpActionResult> IsSendAllForInforming()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ISettings>();
                 var tmpItem = tmpService.GetSubordinationsSendAllForInforming(context);
@@ -62,7 +62,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Settings + "/IsDigitalSignatureIsUseCertificateSign")]
         public async Task<IHttpActionResult> IsDigitalSignatureIsUseCertificateSign()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ISettings>();
                 var tmpItem = tmpService.GetDigitalSignatureIsUseCertificateSign(context);
@@ -79,7 +79,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Settings + "/IsDigitalSignatureIsUseInternalSign")]
         public async Task<IHttpActionResult> IsDigitalSignatureIsUseInternalSign()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ISettings>();
                 var tmpItem = tmpService.GetDigitalSignatureIsUseInternalSign(context);
@@ -96,7 +96,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Settings + "/FulltextRefreshTimeout")]
         public async Task<IHttpActionResult> GetFulltextRefreshTimeout()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ISettings>();
                 var tmpItem = tmpService.GetFulltextRefreshTimeout(context);
@@ -113,7 +113,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Settings + "/FulltextRowLimit")]
         public async Task<IHttpActionResult> GetFulltextRowLimit()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ISettings>();
                 var tmpItem = tmpService.GetFulltextRowLimit(context);
@@ -130,7 +130,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Settings + "/AutoplanTimeout")]
         public async Task<IHttpActionResult> GetAutoplanTimeoutMinute()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ISettings>();
                 var tmpItem = tmpService.GetAutoplanTimeoutMinute(context);
@@ -147,7 +147,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Settings + "/ClearTrashDocumentsTimeout")]
         public async Task<IHttpActionResult> GetClearTrashDocumentsTimeoutMinute()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ISettings>();
                 var tmpItem = tmpService.GetClearTrashDocumentsTimeoutMinute(context);
@@ -164,7 +164,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Settings + "/ClearTrashDocumentsTimeoutMinuteForClear")]
         public async Task<IHttpActionResult> GetClearTrashDocumentsTimeoutMinuteForClear()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ISettings>();
                 var tmpItem = tmpService.GetClearTrashDocumentsTimeoutMinuteForClear(context);

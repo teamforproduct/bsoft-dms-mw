@@ -23,7 +23,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
-    public class DocumentSignController : ApiController
+    public class DocumentSignController : WebApiController
     {
         /// <summary>
         /// Возвращает список подписей
@@ -36,7 +36,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentSubscription>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterDocumentSubscription filter, [FromUri]UIPaging paging)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var docProc = DmsResolver.Current.Get<IDocumentService>();
                    var items = docProc.GetDocumentSubscriptions(context, filter, paging);
@@ -56,7 +56,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         public async Task<IHttpActionResult> RejectSigning(SendEventMessage model)
         {
             model.ServerPath = Properties.Settings.Default.ServerPath;
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.RejectSigning, model);
                    var res = new JsonResult(true, this);
@@ -73,7 +73,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         public async Task<IHttpActionResult> RejectVisaing(SendEventMessage model)
         {
             model.ServerPath = Properties.Settings.Default.ServerPath;
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.RejectVisaing, model);
                    var res = new JsonResult(true, this);
@@ -90,7 +90,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         public async Task<IHttpActionResult> RejectАgreement(SendEventMessage model)
         {
             model.ServerPath = Properties.Settings.Default.ServerPath;
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.RejectАgreement, model);
                    var res = new JsonResult(true, this);
@@ -107,7 +107,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         public async Task<IHttpActionResult> RejectАpproval(SendEventMessage model)
         {
             model.ServerPath = Properties.Settings.Default.ServerPath;
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.RejectАpproval, model);
                    var res = new JsonResult(true, this);
@@ -125,7 +125,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         public async Task<IHttpActionResult> WithdrawSigning(SendEventMessage model)
         {
             model.ServerPath = Properties.Settings.Default.ServerPath;
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.WithdrawSigning, model);
                    var res = new JsonResult(true, this);
@@ -142,7 +142,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         public async Task<IHttpActionResult> WithdrawVisaing(SendEventMessage model)
         {
             model.ServerPath = Properties.Settings.Default.ServerPath;
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.WithdrawVisaing, model);
                    var res = new JsonResult(true, this);
@@ -159,7 +159,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         public async Task<IHttpActionResult> WithdrawАgreement(SendEventMessage model)
         {
             model.ServerPath = Properties.Settings.Default.ServerPath;
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.WithdrawАgreement, model);
                    var res = new JsonResult(true, this);
@@ -176,7 +176,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         public async Task<IHttpActionResult> WithdrawАpproval(SendEventMessage model)
         {
             model.ServerPath = Properties.Settings.Default.ServerPath;
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.WithdrawАpproval, model);
                    var res = new JsonResult(true, this);
@@ -194,7 +194,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         public async Task<IHttpActionResult> AffixSigning(AffixSigning model)
         {
             model.ServerPath = Properties.Settings.Default.ServerPath;
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.AffixSigning, model);
                    var res = new JsonResult(true, this);
@@ -211,7 +211,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         public async Task<IHttpActionResult> AffixVisaing(AffixSigning model)
         {
             model.ServerPath = Properties.Settings.Default.ServerPath;
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.AffixVisaing, model);
                    var res = new JsonResult(true, this);
@@ -228,7 +228,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         public async Task<IHttpActionResult> AffixАgreement(AffixSigning model)
         {
             model.ServerPath = Properties.Settings.Default.ServerPath;
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.AffixАgreement, model);
                    var res = new JsonResult(true, this);
@@ -245,7 +245,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         public async Task<IHttpActionResult> AffixАpproval(AffixSigning model)
         {
             model.ServerPath = Properties.Settings.Default.ServerPath;
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.AffixАpproval, model);
                    var res = new JsonResult(true, this);
@@ -263,7 +263,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         public async Task<IHttpActionResult> SelfAffixSigning(SelfAffixSigning model)
         {
             model.ServerPath = Properties.Settings.Default.ServerPath;
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.SelfAffixSigning, model, model.CurrentPositionId);
                    var res = new JsonResult(true, this);
@@ -286,7 +286,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
                 Id = model.Id,
                 ServerPath = Properties.Settings.Default.ServerPath
             };
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var mod = (VerifySignCertificate) param;
                 Action.Execute(context, EnumDocumentActions.VerifySigning, mod);

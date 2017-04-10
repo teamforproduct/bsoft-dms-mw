@@ -8,7 +8,6 @@ using BL.Model.WebAPI.IncomingModel;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -20,7 +19,7 @@ namespace DMS_WebAPI.ControllersV3.User
     [Authorize]
     //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
-    public class UserFingerprintsController : ApiController
+    public class UserFingerprintsController : WebApiController
     {
         private IHttpActionResult GetById(IContext context, int Id)
         {

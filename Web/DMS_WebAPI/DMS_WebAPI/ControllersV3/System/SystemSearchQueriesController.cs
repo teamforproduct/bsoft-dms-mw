@@ -18,7 +18,7 @@ namespace DMS_WebAPI.ControllersV3.System
     [Authorize]
     //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.System)]
-    public class SystemSearchQueriesController : ApiController
+    public class SystemSearchQueriesController : WebApiController
     {
 
         /// <summary>
@@ -31,7 +31,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [ResponseType(typeof(List<FrontSearchQueryLog>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterSystemSearchQueryLog filter)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ILogger>();
                 var tmpItems = tmpService.GetSystemSearchQueryLogs(context, filter, new UIPaging { PageSize = 6, CurrentPage = 1, IsOnlyCounter = false });
@@ -48,7 +48,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.SearchQueries + "/DeleteForCurrentUser")]
         public async Task<IHttpActionResult> DeleteSearchQueries([FromBody] FilterSystemSearchQueryLog filter)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ILogger>();
                 tmpService.DeleteSystemSearchQueryLogsForCurrentUser(context, filter);

@@ -16,7 +16,7 @@ namespace DMS_WebAPI.ControllersV3.System
     [Authorize]
     //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Licences)]
-    public class LicencesCheckController : ApiController
+    public class LicencesCheckController : WebApiController
     {
         /// <summary>
         /// Проверка лицензии
@@ -27,7 +27,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [ResponseType(typeof(FrontSystemLicencesInfo))]
         public async Task<IHttpActionResult> VerifyLicences()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = new FrontSystemLicencesInfo
                 {

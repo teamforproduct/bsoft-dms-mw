@@ -22,7 +22,7 @@ namespace DMS_WebAPI.ControllersV3.SendLists
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.SendList)]
-    public class SendListContentsController : ApiController
+    public class SendListContentsController : WebApiController
     {
         private IHttpActionResult GetById(IContext context, int Id)
         {
@@ -46,7 +46,7 @@ namespace DMS_WebAPI.ControllersV3.SendLists
             if (filter == null) filter = new FilterDictionaryStandartSendListContent();
             filter.StandartSendListId = new List<int> { Id };
 
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetDictionaryStandartSendListContents(context, filter);
@@ -65,7 +65,7 @@ namespace DMS_WebAPI.ControllersV3.SendLists
         [ResponseType(typeof(FrontDictionaryStandartSendListContent))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -80,7 +80,7 @@ namespace DMS_WebAPI.ControllersV3.SendLists
         [Route(Features.Contents)]
         public async Task<IHttpActionResult> Post([FromBody]AddStandartSendListContent model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumDictionaryActions.AddStandartSendListContent, model);
                 return GetById(context, tmpItem);
@@ -96,7 +96,7 @@ namespace DMS_WebAPI.ControllersV3.SendLists
         [Route(Features.Contents)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyStandartSendListContent model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.ModifyStandartSendListContent, model);
                 return GetById(context, model.Id);
@@ -112,7 +112,7 @@ namespace DMS_WebAPI.ControllersV3.SendLists
         [Route(Features.Contents + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.DeleteStandartSendListContent, Id);
                 var tmpItem = new FrontDeleteModel(Id);

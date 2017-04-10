@@ -24,7 +24,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
-    public class DocumentPaperController : ApiController
+    public class DocumentPaperController : WebApiController
     {
         private IHttpActionResult GetById(IContext context, int Id)
         {
@@ -45,7 +45,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentPaper>))]
         public async Task<IHttpActionResult> Get([FromUri]FilterDocumentPaper filter, [FromUri]UIPaging paging)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var docProc = DmsResolver.Current.Get<IDocumentService>();
                    var items = docProc.GetDocumentPapers(context, filter, paging);
@@ -64,7 +64,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(FrontDocumentPaper))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -79,7 +79,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Papers)]
         public async Task<IHttpActionResult> Post([FromBody]AddDocumentPaper model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentPaper, model, model.CurrentPositionId);
                    var res = new JsonResult(tmpItem, this);
@@ -96,7 +96,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Papers)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyDocumentPaper model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var tmpItem = Action.Execute(context, EnumDocumentActions.ModifyDocumentPaper, model);
                    var res = new JsonResult(tmpItem, this);
@@ -113,7 +113,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Papers + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.DeleteDocumentPaper, Id);
                    var tmpItem = new FrontDeleteModel(Id);
@@ -132,7 +132,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<InternalDictionaryPositionWithActions>))]
         public async Task<IHttpActionResult> Actions([FromUri]int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var docProc = DmsResolver.Current.Get<ICommandService>();
                    var items = docProc.GetDocumentPaperActions(context, Id);
@@ -150,7 +150,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> MarkOwnerDocumentPaper([FromBody]MarkOwnerDocumentPaper model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.MarkOwnerDocumentPaper, model, model.CurrentPositionId);
                    var res = new JsonResult(null, this);
@@ -167,7 +167,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> MarkСorruptionDocumentPaper([FromBody]PaperEvent model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.MarkСorruptionDocumentPaper, model);
                    var res = new JsonResult(null, this);
@@ -184,7 +184,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> PlanDocumentPaperEvent([FromBody]List<PlanMovementPaper> model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.PlanDocumentPaperEvent, model);
                    var res = new JsonResult(null, this);
@@ -201,7 +201,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> CancelPlanDocumentPaperEvent([FromBody]List<int> model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.CancelPlanDocumentPaperEvent, new PaperList { PaperId = model });
                    var res = new JsonResult(null, this);
@@ -218,7 +218,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> SendDocumentPaperEvent([FromBody]List<int> model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDocumentActions.SendDocumentPaperEvent, new PaperList { PaperId = model });
                 var res = new JsonResult(null, this);
@@ -235,7 +235,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> CancelSendDocumentPaperEvent([FromBody]List<int> model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.CancelSendDocumentPaperEvent, new PaperList { PaperId = model });
                    var res = new JsonResult(null, this);
@@ -252,7 +252,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> RecieveDocumentPaperEvent([FromBody]List<int> model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.RecieveDocumentPaperEvent, new PaperList { PaperId = model });
                    var res = new JsonResult(null, this);

@@ -26,7 +26,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Journal)]
-    public class JournalInfoController : ApiController
+    public class JournalInfoController : WebApiController
     {
         private IHttpActionResult GetById(IContext context, int Id)
         {
@@ -48,7 +48,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [ResponseType(typeof(List<TreeItem>))]
         public async Task<IHttpActionResult> Get([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryJournalsTree filter, [FromUri]bool? searchInJournals = false)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetRegistrationJournalsFilter(context, searchInJournals ?? false, ftSearch, filter);
@@ -70,7 +70,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [ResponseType(typeof(List<FrontDictionaryRegistrationJournal>))]
         public async Task<IHttpActionResult> GetMain([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryRegistrationJournal filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetMainRegistrationJournals(context, ftSearch, filter, paging, sorting);
@@ -91,7 +91,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [ResponseType(typeof(List<FrontDictionaryRegistrationJournal>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryRegistrationJournal filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetRegistrationJournals(context, filter, paging, sorting);
@@ -110,7 +110,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [ResponseType(typeof(FrontDictionaryRegistrationJournal))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -125,7 +125,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Post([FromBody]AddRegistrationJournal model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumDictionaryActions.AddRegistrationJournal, model);
                 return GetById(context, tmpItem);
@@ -141,7 +141,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyRegistrationJournal model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.ModifyRegistrationJournal, model);
                 return GetById(context, model.Id);
@@ -157,7 +157,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
         [Route(Features.Info + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.DeleteRegistrationJournal, Id);
                 var tmpItem = new FrontDeleteModel(Id);
