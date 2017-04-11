@@ -12,7 +12,7 @@ namespace BL.Logic.DictionaryCore
     public class AddDictionaryAgentClientCompanyCommand : BaseDictionaryAgentClientCompanyCommand
     {
 
-        private AddAgentClientCompany Model { get { return GetModel<AddAgentClientCompany>(); } }
+        private AddOrg Model { get { return GetModel<AddOrg>(); } }
 
         public override object Execute()
         {

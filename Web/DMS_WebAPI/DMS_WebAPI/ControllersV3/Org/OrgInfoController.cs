@@ -97,7 +97,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info)]
-        public async Task<IHttpActionResult> Post([FromBody]AddAgentClientCompany model)
+        public async Task<IHttpActionResult> Post([FromBody]AddOrg model)
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {
@@ -113,7 +113,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info)]
-        public async Task<IHttpActionResult> Put([FromBody]ModifyAgentClientCompany model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyOrg model)
         {
             return await this.SafeExecuteAsync(ModelState, (context, param) =>
             {

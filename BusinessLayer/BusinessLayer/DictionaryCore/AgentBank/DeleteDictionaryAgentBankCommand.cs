@@ -1,4 +1,5 @@
-﻿using BL.Logic.Common;
+﻿using BL.CrossCutting.Helpers;
+using BL.Logic.Common;
 using BL.Model.DictionaryCore.FilterModel;
 using System.Collections.Generic;
 
@@ -19,8 +20,13 @@ namespace BL.Logic.DictionaryCore
 
         public override object Execute()
         {
-            _dictDb.DeleteAgentBank(_context, new FilterDictionaryAgentBank { IDs = new List<int> { Model } });
-            _dictService.DeleteAgentIfNoAny(_context, new List<int>() { Model });
+            using (var transaction = Transactions.GetTransaction())
+            {
+                _dictDb.DeleteAgentBank(_context, new FilterDictionaryAgentBank { IDs = new List<int> { Model } });
+                _dictService.DeleteAgentIfNoAny(_context, new List<int>() { Model });
+
+                transaction.Complete();
+            }
             return null;
         }
     }

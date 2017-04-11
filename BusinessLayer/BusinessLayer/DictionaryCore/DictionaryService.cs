@@ -83,14 +83,20 @@ namespace BL.Logic.DictionaryCore
 
                 if (_dictDb.ExistsAgentCompanies(context, new FilterDictionaryAgentCompany() { IDs = new List<int>() { agentId } })) return;
 
+                using (var transaction = Transactions.GetTransaction())
+                {
 
-                _dictDb.DeleteAgentAddress(context, new FilterDictionaryAgentAddress { AgentIDs = new List<int> { agentId } });
+                    _dictDb.DeleteAgentAddress(context, new FilterDictionaryAgentAddress { AgentIDs = new List<int> { agentId } });
 
-                _dictDb.DeleteAgentContacts(context, new FilterDictionaryContact { AgentIDs = new List<int> { agentId } });
+                    _dictDb.DeleteAgentContacts(context, new FilterDictionaryContact { AgentIDs = new List<int> { agentId } });
 
-                _dictDb.DeleteAgentAccounts(context, new FilterDictionaryAgentAccount { AgentIDs = new List<int> { agentId } });
+                    _dictDb.DeleteAgentAccounts(context, new FilterDictionaryAgentAccount { AgentIDs = new List<int> { agentId } });
 
-                _dictDb.DeleteAgent(context, new FilterDictionaryAgent { IDs = new List<int> { agentId } });
+                    _dictDb.DeleteAgent(context, new FilterDictionaryAgent { IDs = new List<int> { agentId } });
+
+                    transaction.Complete();
+
+                }
             }
         }
         #endregion DictionaryAgents

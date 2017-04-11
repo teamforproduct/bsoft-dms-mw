@@ -7,7 +7,7 @@ namespace BL.Logic.DictionaryCore
 {
     public class BaseDictionaryAgentClientCompanyCommand : BaseDictionaryCommand
     {
-        private AddAgentClientCompany Model { get { return GetModel<AddAgentClientCompany>(); } }
+        private AddOrg Model { get { return GetModel<AddOrg>(); } }
 
         public override bool CanBeDisplayed(int CompanyId) => true;
 
