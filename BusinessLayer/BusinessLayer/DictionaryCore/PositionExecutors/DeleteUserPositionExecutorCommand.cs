@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.Helpers;
 using BL.Logic.Common;
+using BL.Model.AdminCore.FilterModel;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
@@ -52,8 +53,8 @@ namespace BL.Logic.DictionaryCore
                 var frontObj = _dictDb.GetPositionExecutors(_context, new FilterDictionaryPositionExecutor { IDs = new List<int> { Model } }).FirstOrDefault();
                 _logger.Information(_context, null, (int)EnumObjects.DictionaryPositionExecutors, (int)CommandType, frontObj.Id, frontObj);
 
-                _adminDb.DeleteUserRoles(_context, new BL.Model.AdminCore.FilterModel.FilterAdminUserRole() { PositionExecutorIDs = new List<int> { Model } });
-                _dictDb.DeleteExecutors(_context, new List<int> { Model });
+                _adminDb.DeleteUserRoles(_context, new FilterAdminUserRole() { PositionExecutorIDs = new List<int> { Model } });
+                _dictDb.DeleteExecutors(_context, new FilterDictionaryPositionExecutor { IDs = new List<int> { Model } });
 
                 transaction.Complete();
             }

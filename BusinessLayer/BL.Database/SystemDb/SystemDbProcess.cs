@@ -365,6 +365,20 @@ namespace BL.Database.SystemDb
             }
         }
 
+        public void DeleteSystemSearchQueryLogs(IContext ctx, FilterSystemSearchQueryLog filter)
+        {
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetSystemSearchQueryLogsQuery(ctx, dbContext, filter);
+                dbContext.SystemSearchQueryLogsSet.RemoveRange(qry);
+                dbContext.SaveChanges();
+                transaction.Complete();
+            }
+        }
+
+
+
         public FrontAgentEmployeeUser GetLastSuccessLoginInfo(IContext ctx)
         {
             var dbContext = ctx.DbContext as DmsContext;
@@ -727,6 +741,17 @@ namespace BL.Database.SystemDb
                 }
                 transaction.Complete();
                 return res;
+            }
+        }
+
+        public void DeleteSystemSettings(IContext ctx)
+        {
+            var res = string.Empty;
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
+            {
+                dbContext.SettingsSet.Where(x => ctx.CurrentClientId == x.ClientId).Delete();
+                transaction.Complete();
             }
         }
 
@@ -1444,18 +1469,13 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public void DeleteProperty(IContext ctx, InternalProperty model)
+        public void DeleteProperties(IContext ctx, FilterProperty filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var item =
-                    dbContext.PropertiesSet.FirstOrDefault(x => ctx.CurrentClientId == x.ClientId && x.Id == model.Id);
-                if (item != null)
-                {
-                    dbContext.PropertiesSet.Remove(item);
-                    dbContext.SaveChanges();
-                }
+                var qry = GetPropertiesQuery(dbContext, ctx, filter);
+                qry.Delete();
                 transaction.Complete();
             }
         }
@@ -1464,7 +1484,7 @@ namespace BL.Database.SystemDb
 
         #region PropertyLinks
 
-        private IQueryable<PropertyLinks> GetPropertyLinksQuery(DmsContext dbContext, IContext ctx, FilterPropertyLink filter)
+        private IQueryable<PropertyLinks> GetPropertyLinksQuery(IContext ctx, DmsContext dbContext, FilterPropertyLink filter)
         {
             var qry = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == ctx.CurrentClientId).AsQueryable();
 
@@ -1497,7 +1517,7 @@ namespace BL.Database.SystemDb
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetPropertyLinksQuery(dbContext, ctx, filter);
+                var qry = GetPropertyLinksQuery(ctx, dbContext, filter);
 
                 var res = qry.Select(x => new InternalPropertyLink
                 {
@@ -1519,7 +1539,7 @@ namespace BL.Database.SystemDb
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetPropertyLinksQuery(dbContext, ctx, filter);
+                var qry = GetPropertyLinksQuery(ctx, dbContext, filter);
 
                 var res = qry.Select(x => new FrontPropertyLink
                 {
@@ -1586,17 +1606,13 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public void DeletePropertyLink(IContext ctx, InternalPropertyLink model)
+        public void DeletePropertyLinks(IContext ctx, FilterPropertyLink filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var item = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == ctx.CurrentClientId).FirstOrDefault(x => x.Id == model.Id);
-                if (item != null)
-                {
-                    dbContext.PropertyLinksSet.Remove(item);
-                    dbContext.SaveChanges();
-                }
+                var qry = GetPropertyLinksQuery(ctx, dbContext, filter);
+                qry.Delete();
                 transaction.Complete();
             }
         }
@@ -1610,7 +1626,7 @@ namespace BL.Database.SystemDb
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetPropertyLinksQuery(dbContext, ctx, filter);
+                var qry = GetPropertyLinksQuery(ctx, dbContext, filter);
 
                 //TODO проверить запрос
                 qry = qry.Select(

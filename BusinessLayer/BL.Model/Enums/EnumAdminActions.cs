@@ -169,7 +169,7 @@
         /// <summary>
         /// Добавить администратора подразделения
         /// </summary>
-        AddDepartmentAdmin = 210001,
+        AddDepartmentAdmin = 210003,
 
         /// <summary>
         /// Удалить администратора подразделения

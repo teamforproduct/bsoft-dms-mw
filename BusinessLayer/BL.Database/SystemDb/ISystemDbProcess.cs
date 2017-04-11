@@ -21,6 +21,7 @@ namespace BL.Database.SystemDb
         IEnumerable<FrontSystemLog> GetSystemLogs(IContext context, FilterSystemLog filter, UIPaging paging);
         IEnumerable<FrontSearchQueryLog> GetSystemSearchQueryLogs(IContext context, FilterSystemSearchQueryLog filter, UIPaging paging);
         void DeleteSystemSearchQueryLogsForCurrentUser(IContext context, FilterSystemSearchQueryLog filter);
+        void DeleteSystemSearchQueryLogs(IContext ctx, FilterSystemSearchQueryLog filter);
         int AddSearchQueryLog(IContext ctx, InternalSearchQueryLog model);
         int AddLog(IContext ctx, InternalLog log);
         void UpdateLogDate1(IContext ctx, int id, DateTime datetime);
@@ -28,6 +29,7 @@ namespace BL.Database.SystemDb
 
         #region Settings
         int MergeSetting(IContext ctx, InternalSystemSetting model);
+        void DeleteSystemSettings(IContext ctx);
         string GetSettingValue(IContext ctx, FilterSystemSetting filter);
         IEnumerable<InternalSystemSetting> GetSystemSettingsInternal(IContext ctx, FilterSystemSetting filter);
         IEnumerable<FrontSystemSetting> GetSystemSettings(IContext ctx, FilterSystemSetting filter);
@@ -73,7 +75,7 @@ namespace BL.Database.SystemDb
 
         void UpdateProperty(IContext context, InternalProperty model);
 
-        void DeleteProperty(IContext context, InternalProperty model);
+        void DeleteProperties(IContext context, FilterProperty filter);
         #endregion Properties
 
         #region PropertyLinks
@@ -86,7 +88,7 @@ namespace BL.Database.SystemDb
 
         void UpdatePropertyLink(IContext context, InternalPropertyLink model);
 
-        void DeletePropertyLink(IContext context, InternalPropertyLink model);
+        void DeletePropertyLinks(IContext context, FilterPropertyLink filter);
 
         #endregion PropertyLinks
 

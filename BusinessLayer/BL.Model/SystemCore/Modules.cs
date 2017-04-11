@@ -13,6 +13,7 @@ namespace BL.Model.SystemCore
         public const string Person = "Person";
         public const string Employee = "Employee";
         public const string Company = "Company";
+        public const string Clients = "Clients";
         public const string Bank = "Bank";
         public const string Journal = "Journal";
         public const string DocumentType = "DocumentType";
@@ -70,6 +71,7 @@ namespace BL.Model.SystemCore
                 case PaperList:             res = 340; break;
 
                 case Delegates:             res = 350; break;
+                case Clients:               res = 360; break;
 
                 default: throw new System.Exception();
             }

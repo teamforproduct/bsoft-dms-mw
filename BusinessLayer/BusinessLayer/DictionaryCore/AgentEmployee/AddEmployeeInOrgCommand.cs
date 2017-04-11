@@ -3,7 +3,6 @@ using BL.Logic.Common;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
-using System;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -72,20 +71,9 @@ namespace BL.Logic.DictionaryCore
                     Model.PositionId = (int)_dictService.ExecuteAction(EnumDictionaryActions.AddPosition, _context, pos);
                 }
 
-                var empId = (int)_dictService.ExecuteAction(EnumDictionaryActions.AddAgentEmployee, _context, employee);
-
-                var ass = new AddPositionExecutor();
-                ass.AccessLevelId = EnumAccessLevels.Personally;
-                ass.AgentId = empId;
-                ass.IsActive = true;
-                ass.PositionId = Model.PositionId ?? -1;
-                ass.StartDate = DateTime.UtcNow;
-
-                var assignmentId = _dictService.ExecuteAction(EnumDictionaryActions.AddExecutor, _context, ass);
-
                 transaction.Complete();
 
-                return empId;
+                return employee;
             }
         }
     }

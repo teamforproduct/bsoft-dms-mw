@@ -481,15 +481,15 @@ namespace BL.Database.Admins
             _cacheService.RefreshKey(ctx, SettingConstants.ADMIN_ROLE_CASHE_KEY);
         }
 
-        public void DeleteRole(IContext ctx, int id)
+        public void DeleteRoles(IContext ctx, FilterAdminRole filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetRolesQuery(ctx, dbContext, new FilterAdminRole { IDs = new List<int> { id } });
+                var qry = GetRolesQuery(ctx, dbContext, filter);
+                CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.AdminRoles, EnumOperationType.Delete);
                 qry.Delete();
 
-                CommonQueries.AddFullTextCacheInfo(ctx, id, EnumObjects.AdminRoles, EnumOperationType.Delete);
                 transaction.Complete();
             }
             _cacheService.RefreshKey(ctx, SettingConstants.ADMIN_ROLE_CASHE_KEY);
@@ -891,7 +891,7 @@ namespace BL.Database.Admins
 
         private IQueryable<AdminPositionRoles> GetAdminPositionRoleQuery(IContext ctx, DmsContext dbContext, FilterAdminPositionRole filter)
         {
-            var qry = dbContext.AdminPositionRolesSet.AsQueryable();
+            var qry = dbContext.AdminPositionRolesSet.Where(x => x.Role.ClientId == ctx.CurrentClientId).AsQueryable();
 
             if (filter != null)
             {
@@ -1060,7 +1060,7 @@ namespace BL.Database.Admins
 
         private IQueryable<AdminUserRoles> GetUserRolesQuery(IContext ctx, DmsContext dbContext, FilterAdminUserRole filter)
         {
-            var qry = dbContext.AdminUserRolesSet.AsQueryable();
+            var qry = dbContext.AdminUserRolesSet.Where(x => x.Role.ClientId == ctx.CurrentClientId).AsQueryable();
 
             if (filter != null)
             {
@@ -1167,7 +1167,7 @@ namespace BL.Database.Admins
 
         }
 
-        public void DeleteDepartmentAdmin(IContext ctx, FilterAdminEmployeeDepartments filter)
+        public void DeleteDepartmentAdmins(IContext ctx, FilterAdminEmployeeDepartments filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
@@ -1201,7 +1201,7 @@ namespace BL.Database.Admins
 
         private IQueryable<AdminEmployeeDepartments> GetEmployeeDepartmentsQuery(IContext ctx, DmsContext dbContext, FilterAdminEmployeeDepartments filter)
         {
-            var qry = dbContext.AdminEmployeeDepartmentsSet.AsQueryable();
+            var qry = dbContext.AdminEmployeeDepartmentsSet.Where(x => x.Employee.ClientId == ctx.CurrentClientId).AsQueryable();
 
             if (filter != null)
             {
@@ -1405,7 +1405,7 @@ namespace BL.Database.Admins
 
         private IQueryable<AdminSubordinations> GetSubordinationsQuery(IContext ctx, DmsContext dbContext, FilterAdminSubordination filter)
         {
-            var qry = dbContext.AdminSubordinationsSet.AsQueryable();
+            var qry = dbContext.AdminSubordinationsSet.Where(x => x.SourcePosition.Department.Company.ClientId == ctx.CurrentClientId).AsQueryable();
 
             if (filter != null)
             {
@@ -1581,7 +1581,7 @@ namespace BL.Database.Admins
 
         private IQueryable<AdminRegistrationJournalPositions> GetRegistrationJournalPositionQuery(IContext ctx, DmsContext dbContext, FilterAdminRegistrationJournalPosition filter)
         {
-            var qry = dbContext.AdminRegistrationJournalPositionsSet.AsQueryable();
+            var qry = dbContext.AdminRegistrationJournalPositionsSet.Where(x => x.RegistrationJournal.ClientId == ctx.CurrentClientId).AsQueryable();
 
             if (filter != null)
             {
@@ -1692,7 +1692,7 @@ namespace BL.Database.Admins
 
         private IQueryable<AdminRolePermissions> GetRolePermissionsQuery(IContext ctx, DmsContext dbContext, FilterAdminRolePermissions filter)
         { //TODO change to cashe
-            var qry = dbContext.AdminRolePermissionsSet.AsQueryable();
+            var qry = dbContext.AdminRolePermissionsSet.Where(x => x.Role.ClientId == ctx.CurrentClientId).AsQueryable();
 
             if (filter != null)
             {
@@ -1805,7 +1805,7 @@ namespace BL.Database.Admins
                         IsGrantable = x.IsGrantable,
                         IsGrantableByRecordId = x.IsGrantableByRecordId,
                         IsVisibleInMenu = x.IsVisibleInMenu,
-                        ObjectId = (EnumObjects) x.ObjectId
+                        ObjectId = (EnumObjects)x.ObjectId
                     }).ToList();
                 });
             }

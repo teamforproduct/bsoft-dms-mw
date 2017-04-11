@@ -92,7 +92,7 @@ namespace BL.Logic.DictionaryCore
 
                     _dictDb.DeleteAgentAccounts(context, new FilterDictionaryAgentAccount { AgentIDs = new List<int> { agentId } });
 
-                    _dictDb.DeleteAgent(context, new FilterDictionaryAgent { IDs = new List<int> { agentId } });
+                    _dictDb.DeleteAgents(context, new FilterDictionaryAgent { IDs = new List<int> { agentId } });
 
                     transaction.Complete();
 
@@ -132,9 +132,9 @@ namespace BL.Logic.DictionaryCore
         {
             using (var transaction = Transactions.GetTransaction())
             {
-                _dictDb.DeleteAgentPerson(context, id);
+                _dictDb.DeleteAgentPersons(context, new FilterDictionaryAgentPerson { IDs = new List<int> { id } });
 
-                _dictDb.DeleteAgentPeople(context, id);
+                _dictDb.DeleteAgentPeoples(context, new FilterDictionaryAgentPeoples { IDs = new List<int> { id } });
 
                 DeleteAgentIfNoAny(context, new List<int>() { id });
 
@@ -458,10 +458,10 @@ namespace BL.Logic.DictionaryCore
                 if (positions.Count() > 0) DeletePositions(context, positions);
 
                 // AdminEmployeeDepartments
-                _adminDb.DeleteDepartmentAdmin(context, new FilterAdminEmployeeDepartments { DepartmentIDs = list });
+                _adminDb.DeleteDepartmentAdmins(context, new FilterAdminEmployeeDepartments { DepartmentIDs = list });
 
                 // DictionaryRegistrationJournals
-                _dictDb.DeleteRegistrationJournal(context, new FilterDictionaryRegistrationJournal { DepartmentIDs = list });
+                _dictDb.DeleteRegistrationJournals(context, new FilterDictionaryRegistrationJournal { DepartmentIDs = list });
 
                 _dictDb.DeleteDepartments(context, new FilterDictionaryDepartment { IDs = list });
 
@@ -640,7 +640,7 @@ namespace BL.Logic.DictionaryCore
         {
             if (companyId.HasValue)
             {
-                return _dictDb.GetInternalPositions(context, new FilterDictionaryPosition {CompanyIDs = new List<int> { companyId.Value }}).Select(x=>x.Id).ToList();
+                return _dictDb.GetInternalPositions(context, new FilterDictionaryPosition { CompanyIDs = new List<int> { companyId.Value } }).Select(x => x.Id).ToList();
             }
             else
             {

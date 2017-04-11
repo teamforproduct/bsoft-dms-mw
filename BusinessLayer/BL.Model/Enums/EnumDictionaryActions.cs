@@ -237,6 +237,8 @@
         /// </summary>
         ModifyAgentEmployeeLanguage = 212002,
 
+        AddAgentEmployeeInOrg = 212003,
+
         #endregion AgentEmployee
 
         // Тэги

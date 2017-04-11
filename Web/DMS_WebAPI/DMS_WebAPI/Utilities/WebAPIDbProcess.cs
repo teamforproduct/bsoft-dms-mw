@@ -460,80 +460,53 @@ namespace DMS_WebAPI.Utilities
 
         public int SetClientLicenceKey(IContext ctx, SetClientLicenceKey model)
         {
-            try
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+                var item = new AspNetClientLicences
                 {
-                    var item = new AspNetClientLicences
-                    {
-                        Id = model.ClientLicenceId,
-                        LicenceKey = model.LicenceKey,
-                        IsActive = true,
-                    };
+                    Id = model.ClientLicenceId,
+                    LicenceKey = model.LicenceKey,
+                    IsActive = true,
+                };
 
-                    dbContext.AspNetClientLicencesSet.Attach(item);
+                dbContext.AspNetClientLicencesSet.Attach(item);
 
-                    var entry = dbContext.Entry(item);
-                    entry.Property(p => p.LicenceKey).IsModified = true;
-                    entry.Property(p => p.IsActive).IsModified = true;
+                var entry = dbContext.Entry(item);
+                entry.Property(p => p.LicenceKey).IsModified = true;
+                entry.Property(p => p.IsActive).IsModified = true;
 
-                    dbContext.SaveChanges();
-                    transaction.Complete();
-                    return item.Id;
-                }
-            }
-            catch
-            {
-                throw new DictionaryRecordCouldNotBeAdded();
+                dbContext.SaveChanges();
+                transaction.Complete();
+                return item.Id;
             }
         }
 
         public void UpdateClientLicence(ModifyAspNetClientLicence model)
         {
-            try
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+                var item = new AspNetClientLicences
                 {
-                    var item = new AspNetClientLicences
-                    {
-                        Id = model.Id,
-                        IsActive = model.IsActive,
-                    };
-                    dbContext.AspNetClientLicencesSet.Attach(item);
+                    Id = model.Id,
+                    IsActive = model.IsActive,
+                };
+                dbContext.AspNetClientLicencesSet.Attach(item);
 
-                    var entry = dbContext.Entry(item);
-                    entry.Property(p => p.IsActive).IsModified = true;
-                    transaction.Complete();
-                    dbContext.SaveChanges();
-                }
-            }
-            catch
-            {
-                throw new DictionaryRecordCouldNotBeAdded();
+                var entry = dbContext.Entry(item);
+                entry.Property(p => p.IsActive).IsModified = true;
+                transaction.Complete();
+                dbContext.SaveChanges();
             }
         }
 
-        public void DeleteClientLicence(int id)
+        public void DeleteClientLicence(FilterAspNetClientLicences filter)
         {
-            try
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
-                {
-                    var item = new AspNetClientLicences
-                    {
-                        Id = id
-                    };
-                    dbContext.AspNetClientLicencesSet.Attach(item);
+                var qry = GetClientLicencesQuery(dbContext, filter);
+                qry.Delete();
 
-                    dbContext.Entry(item).State = EntityState.Deleted;
-
-                    dbContext.SaveChanges();
-                    transaction.Complete();
-                }
-            }
-            catch
-            {
-                throw new DictionaryRecordCouldNotBeAdded();
+                transaction.Complete();
             }
         }
 
@@ -812,9 +785,9 @@ namespace DMS_WebAPI.Utilities
         {
             using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                var itemsDb = GetClientServersQuery(dbContext, filter);
+                var qry = GetClientServersQuery(dbContext, filter);
 
-                var itemsRes = itemsDb;
+                var itemsRes = qry;
 
                 var items = itemsRes.Select(x => new FrontAspNetClientServer
                 {
@@ -831,50 +804,29 @@ namespace DMS_WebAPI.Utilities
 
         public int AddClientServer(ModifyAspNetClientServer model)
         {
-            try
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+                var item = new AspNetClientServers
                 {
-                    var item = new AspNetClientServers
-                    {
-                        ClientId = model.ClientId,
-                        ServerId = model.ServerId,
-                    };
-                    dbContext.AspNetClientServersSet.Add(item);
-                    dbContext.SaveChanges();
+                    ClientId = model.ClientId,
+                    ServerId = model.ServerId,
+                };
+                dbContext.AspNetClientServersSet.Add(item);
+                dbContext.SaveChanges();
 
-                    model.Id = item.Id;
-                    transaction.Complete();
-                    return model.Id;
-                }
-            }
-            catch
-            {
-                throw new DictionaryRecordCouldNotBeAdded();
+                model.Id = item.Id;
+                transaction.Complete();
+                return model.Id;
             }
         }
 
-        public void DeleteClientServer(int id)
+        public void DeleteClientServer(FilterAspNetClientServers filter)
         {
-            try
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
-                {
-                    var item = new AspNetClientServers
-                    {
-                        Id = id
-                    };
-                    dbContext.AspNetClientServersSet.Attach(item);
-
-                    dbContext.Entry(item).State = EntityState.Deleted;
-
-                    dbContext.SaveChanges();
-                    transaction.Complete();
-                }
-            }
-            catch
-            {
-                throw new DictionaryRecordCouldNotBeAdded();
+                var qry = GetClientServersQuery(dbContext, filter);
+                qry.Delete();
+                transaction.Complete();
             }
         }
 
@@ -1259,51 +1211,20 @@ namespace DMS_WebAPI.Utilities
 
         public int AddUserServer(ModifyAspNetUserServer model)
         {
-            try
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+                var item = new AspNetUserServers
                 {
-                    var item = new AspNetUserServers
-                    {
-                        ClientId = model.ClientId,
-                        UserId = model.UserId,
-                        ServerId = model.ServerId,
-                    };
-                    dbContext.AspNetUserServersSet.Add(item);
-                    dbContext.SaveChanges();
+                    ClientId = model.ClientId,
+                    UserId = model.UserId,
+                    ServerId = model.ServerId,
+                };
+                dbContext.AspNetUserServersSet.Add(item);
+                dbContext.SaveChanges();
 
-                    model.Id = item.Id;
-                    transaction.Complete();
-                    return model.Id;
-                }
-            }
-            catch
-            {
-                throw new DictionaryRecordCouldNotBeAdded();
-            }
-        }
-
-        public void DeleteUserServer(int id)
-        {
-            try
-            {
-                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
-                {
-                    var item = new AspNetUserServers
-                    {
-                        Id = id
-                    };
-                    dbContext.AspNetUserServersSet.Attach(item);
-
-                    dbContext.Entry(item).State = EntityState.Deleted;
-
-                    dbContext.SaveChanges();
-                    transaction.Complete();
-                }
-            }
-            catch
-            {
-                throw new DictionaryRecordCouldNotBeAdded();
+                model.Id = item.Id;
+                transaction.Complete();
+                return model.Id;
             }
         }
 
@@ -1460,19 +1381,12 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public void DeleteUserFingerprint(int id)
+        public void DeleteUserFingerprints(FilterAspNetUserFingerprint filter)
         {
             using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                var item = new AspNetUserFingerprints
-                {
-                    Id = id
-                };
-                dbContext.AspNetUserFingerprintsSet.Attach(item);
-
-                dbContext.Entry(item).State = EntityState.Deleted;
-
-                dbContext.SaveChanges();
+                var qry = GetUserFingerprintQuery(dbContext, filter);
+                qry.Delete();
                 transaction.Complete();
             }
         }
@@ -1583,6 +1497,18 @@ namespace DMS_WebAPI.Utilities
                 transaction.Complete();
             }
         }
+
+        public void DeleteUserContexts(FilterAspNetUserContext filter)
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetUserContextQuery(dbContext, filter);
+                qry.Delete();
+                transaction.Complete();
+            }
+        }
+
+
 
 
         #endregion
