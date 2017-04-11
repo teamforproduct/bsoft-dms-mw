@@ -526,6 +526,7 @@ namespace DMS_WebAPI.Utilities
 
         public void DeleteClient(int Id)
         {
+            if (!_webDb.ExistsClients(new FilterAspNetClients { ClientIds = new List<int> { Id } })) throw new ClientIsNotFound();
 
             var list = new List<int> { Id };
 
