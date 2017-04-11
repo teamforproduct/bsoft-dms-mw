@@ -701,8 +701,6 @@ namespace DMS_WebAPI.Utilities
 
         public void DeleteClient(int id)
         {
-            try
-            {
                 using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
                 {
                     var item = new AspNetClients
@@ -716,11 +714,6 @@ namespace DMS_WebAPI.Utilities
                     dbContext.SaveChanges();
                     transaction.Complete();
                 }
-            }
-            catch
-            {
-                throw new DictionaryRecordCouldNotBeAdded();
-            }
         }
 
         #endregion Clients

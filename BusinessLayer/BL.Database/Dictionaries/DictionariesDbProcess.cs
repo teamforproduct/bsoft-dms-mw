@@ -4485,10 +4485,16 @@ namespace BL.Database.Dictionaries
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var dbModel = DictionaryModelConverter.GetDbPosition(ctx, new InternalDictionaryPosition() { Id = positionId, Order = order });
-                dbContext.DictionaryPositionsSet.Attach(dbModel);
-                var entity = dbContext.Entry(dbModel);
-                entity.Property(x => x.Order).IsModified = true;
+                // Attach стал стреляться при внедрении ctx.DbContext as DmsContext;
+
+                //var dbModel = DictionaryModelConverter.GetDbPosition(ctx, new InternalDictionaryPosition() { Id = positionId, Order = order });
+                //dbContext.DictionaryPositionsSet.Attach(dbModel);
+                //var entity = dbContext.Entry(dbModel);
+                //entity.Property(x => x.Order).IsModified = true;
+
+                var qry = GetPositionsQuery(ctx, dbContext, new FilterDictionaryPosition { IDs = new List<int> { positionId } });
+                var dbModel = qry.FirstOrDefault();
+                dbModel.Order = order;
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryPositions, EnumOperationType.UpdateFull);

@@ -172,6 +172,8 @@ namespace BL.Logic.ClientCore
                 _DictDb.DeleteAgentPeoples(context, null);
 
                 _DictDb.DeleteAgentAccounts(context, null);
+                _DictDb.DeleteAgentAddress(context, null);
+                _DictDb.DeleteAgentContacts(context, null);
                 _DictDb.DeleteAddressTypes(context, null);
                 _DictDb.DeleteContactType(context, null);
 

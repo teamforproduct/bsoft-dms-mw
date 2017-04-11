@@ -224,6 +224,7 @@ namespace DMS_WebAPI.Utilities
             ass.IsActive = true;
             ass.PositionId = model.PositionId ?? -1;
             ass.StartDate = DateTime.UtcNow;
+            ass.PositionExecutorTypeId = EnumPositionExecutionTypes.Personal;
 
             var assignmentId = tmpService.ExecuteAction(EnumDictionaryActions.AddExecutor, context, ass);
 
@@ -358,7 +359,7 @@ namespace DMS_WebAPI.Utilities
                 ClientCode = _webDb.GetClientCode(model.ClientId),
                 Email = model.Email,
                 FirstEntry = "true"
-            }, new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "restore-password").ToString(), null, "Ostrean. Приглашение", RenderPartialView.RestorePasswordAgentUserVerificationEmail);
+            },  new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "restore-password").ToString(), null, "Ostrean. Приглашение", RenderPartialView.RestorePasswordAgentUserVerificationEmail);
 
             return userId;
         }
@@ -509,7 +510,7 @@ namespace DMS_WebAPI.Utilities
                 LastName = model.LastName,
                 //MiddleName = model.MiddleName,
                 OrgName = languages.GetTranslation(ctx.CurrentEmployee.LanguageId, "##l@Clients:" + "MyCompany" + "@l##"),
-            DepartmentName = languages.GetTranslation(ctx.CurrentEmployee.LanguageId, "##l@Clients:" + "MyDepartment" + "@l##"),
+                DepartmentName = languages.GetTranslation(ctx.CurrentEmployee.LanguageId, "##l@Clients:" + "MyDepartment" + "@l##"),
                 PositionName = languages.GetTranslation(ctx.CurrentEmployee.LanguageId, "##l@Clients:" + "MyPosition" + "@l##"),
                 LanguageId = ctx.CurrentEmployee.LanguageId,
                 //Phone = model.PhoneNumber,
@@ -530,7 +531,7 @@ namespace DMS_WebAPI.Utilities
 
             var clients = new List<int> { Id };
 
-            var servers = _webDb.GetServers(new FilterAdminServers { ClientIds = clients });
+            var servers = _webDb.GetServers(new FilterAdminServers () { ClientIds = clients });
 
             var clientService = DmsResolver.Current.Get<IClientService>();
 
