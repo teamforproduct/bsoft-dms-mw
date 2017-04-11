@@ -7,13 +7,13 @@ namespace BL.Database.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class Add_FK_EmployeesPositionExecutors : IMigrationMetadata
+    public sealed partial class Initial : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(Add_FK_EmployeesPositionExecutors));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(Initial));
         
         string IMigrationMetadata.Id
         {
-            get { return "201611042001383_Add_FK_Employees-PositionExecutors"; }
+            get { return "201704110936260_Initial"; }
         }
         
         string IMigrationMetadata.Source

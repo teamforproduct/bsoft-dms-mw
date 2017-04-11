@@ -28,7 +28,7 @@ namespace DMS_WebAPI.Utilities
         /// <returns></returns>
         public Task<IHttpActionResult> SafeExecuteAsync(ModelStateDictionary state, Func<IContext, object, IHttpActionResult> action, object addittionalParameters = null)
         {
-            try
+//            try
             {
                 if (state !=null && !state.IsValid)
                 {
@@ -38,11 +38,11 @@ namespace DMS_WebAPI.Utilities
                 var context = DmsResolver.Current.Get<UserContexts>().Get();
                 return Task.Factory.StartNew(() => ExecuteAction(context, action, addittionalParameters));
             }
-            catch (Exception ex)
-            {
-                FileLogger.AppendTextToFile($"SafeExecuteAsync: Message={ex.Message}  STACK={ex.StackTrace}", "C:\\err.txt" );
-                throw ex;
-            }
+            //catch (Exception ex)
+            //{
+            //    FileLogger.AppendTextToFile($"SafeExecuteAsync: Message={ex.Message}  STACK={ex.StackTrace}", "C:\\err.txt" );
+            //    throw ex;
+            //}
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace DMS_WebAPI.Utilities
         /// <returns></returns>
         public IHttpActionResult ExecuteAction(IContext context, Func<IContext, object, IHttpActionResult> action, object addittionalParameters)
         {
-            try
+            //try
             {
                 var stopWatch = new Stopwatch();
                 stopWatch.Start();
@@ -69,12 +69,12 @@ namespace DMS_WebAPI.Utilities
                 }
                 return ret;
             }
-            catch (Exception ex)
-            {
-                FileLogger.AppendTextToFile($"ExecuteAction: Message={ex.Message}  STACK={ex.StackTrace}", "C:\\err.txt");
-                throw ex;
-                //  return PrepareResponse(ex.Message, 422);
-            }
+            //catch (Exception ex)
+            //{
+            //    FileLogger.AppendTextToFile($"ExecuteAction: Message={ex.Message}  STACK={ex.StackTrace}", "C:\\err.txt");
+            //    throw ex;
+            //    //  return PrepareResponse(ex.Message, 422);
+            //}
 
 
             //var name = string.Empty;
