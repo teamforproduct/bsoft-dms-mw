@@ -51,6 +51,7 @@ namespace BL.Logic.ClientCore
         public void AddDictionary(IContext context, AddClientSaaS client)
         {
             // SystemSettings
+            var languages = DmsResolver.Current.Get<ILanguages>();
 
             foreach (var item in GetSystemSettings())
             {
@@ -83,10 +84,13 @@ namespace BL.Logic.ClientCore
             AddContactType(context, EnumContactTypes.Another);
             #endregion
 
+            /// Переводы
             #region [+] AddressTypes ...
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             foreach (var item in GetAddressTypes())
             {
+                item.Name = languages.GetTranslation(context.CurrentEmployee.LanguageId, item.Name);
+                item.Code = languages.GetTranslation(context.CurrentEmployee.LanguageId, item.Code);
                 tmpService.ExecuteAction(EnumDictionaryActions.AddAddressType, context, item);
             };
             #endregion
@@ -95,6 +99,7 @@ namespace BL.Logic.ClientCore
 
             foreach (var item in GetDocumentTypes())
             {
+                item.Name = languages.GetTranslation(context.CurrentEmployee.LanguageId, item.Name);
                 tmpService.ExecuteAction(EnumDictionaryActions.AddDocumentType, context, item);
             };
 
@@ -103,45 +108,6 @@ namespace BL.Logic.ClientCore
             // добавить шаблоны под каждый тип
 
             #endregion
-
-            #region [+] Agent-Company ....
-            // Pss Локализация для названия компании
-            //var company = new InternalDictionaryAgentOrg()
-            //{
-            //    Name = "Наша компания",
-            //    FullName = "Наша компания"
-            //};
-
-            //CommonDocumentUtilities.SetLastChange(context, company);
-
-            //var companyId = _DictDb.AddAgentOrg(context, company);
-
-
-
-            ////_DictDb.AddContact(context, new InternalDictionaryContact()
-            ////{ AgentId = companyId, ContactTypeId = mobiContactType, Value = client.PhoneNumber, IsActive = true, IsConfirmed = true });
-
-            ////_DictDb.AddContact(context, new InternalDictionaryContact()
-            ////{ AgentId = companyId, ContactTypeId = emailContactType, Value = client.Email, IsActive = true, IsConfirmed = true });
-            //var department = new InternalDictionaryDepartment()
-            //{ CompanyId = companyId, Index = "01", Code = "01", Name = "Мой отдел", FullName = "Мой отдел", IsActive = true };
-
-            //CommonDocumentUtilities.SetLastChange(context, department);
-
-            //var departmentId = _DictDb.AddDepartment(context, department);
-
-            //var position = new InternalDictionaryPosition()
-            //{ DepartmentId = departmentId, Name = "Директор", FullName = "Директор", Order = 1, IsActive = true };
-
-            //CommonDocumentUtilities.SetLastChange(context, position);
-
-            //var positionDirector = _DictDb.AddPosition(context, position);
-
-            #endregion
-
-
-
-
 
             // Включить соответствующие воркеры
         }

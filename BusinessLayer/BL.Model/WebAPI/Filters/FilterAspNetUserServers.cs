@@ -8,6 +8,6 @@ namespace BL.Model.WebAPI.Filters
         public List<int> UserServerIds { get; set; }
         public List<string> UserIds { get; set; }
         public List<int> ServerIds { get; set; }
-        public List<int> ClientIds { get; set; }
+        public List<int> ClientIDs { get; set; }
     }
 }

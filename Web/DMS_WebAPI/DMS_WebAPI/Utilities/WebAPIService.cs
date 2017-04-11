@@ -508,9 +508,9 @@ namespace DMS_WebAPI.Utilities
                 FirstName = model.Name,
                 LastName = model.LastName,
                 //MiddleName = model.MiddleName,
-                OrgName = "OurCompany",
-                DepartmentName = "OurDepartment",
-                PositionName = "MyPosition",
+                OrgName = languages.GetTranslation(ctx.CurrentEmployee.LanguageId, "##l@Clients:" + "MyCompany" + "@l##"),
+            DepartmentName = languages.GetTranslation(ctx.CurrentEmployee.LanguageId, "##l@Clients:" + "MyDepartment" + "@l##"),
+                PositionName = languages.GetTranslation(ctx.CurrentEmployee.LanguageId, "##l@Clients:" + "MyPosition" + "@l##"),
                 LanguageId = ctx.CurrentEmployee.LanguageId,
                 //Phone = model.PhoneNumber,
                 Login = model.Email,
@@ -530,23 +530,6 @@ namespace DMS_WebAPI.Utilities
 
             var clients = new List<int> { Id };
 
-            using (var transaction = Transactions.GetTransaction())
-            {
-                _webDb.DeleteClientLicence(new FilterAspNetClientLicences { ClientIds = clients });
-                _webDb.DeleteClientServer(new FilterAspNetClientServers { ClientIds = clients });
-                _webDb.DeleteClient(Id);
-
-                var users = _webDb.GetUserClients(new FilterAspNetUserClients { ClientIds = clients }).Select(x => x.UserId).ToList();
-
-                _webDb.DeleteUserClients(new FilterAspNetUserClients { ClientIds = clients });
-                _webDb.DeleteUserContexts(new FilterAspNetUserContext { UserIDs = users });
-                _webDb.DeleteUserFingerprints(new FilterAspNetUserFingerprint { UserIDs = users });
-                _webDb.DeleteUserServers(new FilterAspNetUserServers { UserIds = users, ClientIds = clients });
-
-                transaction.Complete();
-            }
-            //пользователя не удаляю пока
-
             var servers = _webDb.GetServers(new FilterAdminServers { ClientIds = clients });
 
             var clientService = DmsResolver.Current.Get<IClientService>();
@@ -557,6 +540,22 @@ namespace DMS_WebAPI.Utilities
                 var ctx = new AdminContext(server);
                 clientService.Delete(ctx);
             }
+
+            using (var transaction = Transactions.GetTransaction())
+            {
+                _webDb.DeleteUserClients(new FilterAspNetUserClients { ClientIds = clients });
+                _webDb.DeleteUserContexts(new FilterAspNetUserContext { ClientIDs = clients });
+                _webDb.DeleteUserServers(new FilterAspNetUserServers { ClientIDs = clients });
+
+                _webDb.DeleteClientLicence(new FilterAspNetClientLicences { ClientIds = clients });
+                _webDb.DeleteClientServer(new FilterAspNetClientServers { ClientIds = clients });
+                _webDb.DeleteClient(Id);
+
+                transaction.Complete();
+            }
+
+            //_webDb.DeleteUserFingerprints(new FilterAspNetUserFingerprint { UserIDs = users });
+            //пользователя пока не удаляю
 
         }
 

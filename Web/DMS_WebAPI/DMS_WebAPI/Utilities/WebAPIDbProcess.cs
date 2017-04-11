@@ -1152,10 +1152,10 @@ namespace DMS_WebAPI.Utilities
 
                     qry = qry.Where(filterContains);
                 }
-                if (filter.ClientIds?.Count > 0)
+                if (filter.ClientIDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.New<AspNetUserServers>(false);
-                    filterContains = filter.ClientIds.Aggregate(filterContains,
+                    filterContains = filter.ClientIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ClientId == value).Expand());
 
                     qry = qry.Where(filterContains);
@@ -1426,6 +1426,15 @@ namespace DMS_WebAPI.Utilities
                     var filterContains = PredicateBuilder.New<AspNetUserContexts>(false);
                     filterContains = filter.UserIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.UserId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.ClientIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.New<AspNetUserContexts>(false);
+                    filterContains = filter.ClientIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.ClientId == value).Expand());
 
                     qry = qry.Where(filterContains);
                 }

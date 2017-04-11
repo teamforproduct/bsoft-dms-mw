@@ -11,5 +11,7 @@ namespace BL.Model.WebAPI.Filters
         [IgnoreDataMember]
         public string TokenExact { get; set; }
 
+        [IgnoreDataMember]
+        public List<int> ClientIDs { get; set; }
     }
 }
