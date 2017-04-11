@@ -285,7 +285,7 @@
     <Compile Include="DictionaryCore\FrontModel\Tags\FrontMainTag.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentPeoplePassport.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentContactPerson.cs" />
-    <Compile Include="DictionaryCore\IncomingModel\AddAgentClientCompany.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\AddOrg.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentCompany.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentPeople.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddContactType.cs" />

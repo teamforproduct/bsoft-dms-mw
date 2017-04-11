@@ -18,6 +18,10 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// </summary>
         public string DepartmentName { get; set; }
         /// <summary>
+        /// Индекс отдела (будет создан новый)
+        /// </summary>
+        public string DepartmentIndex { get; set; }
+        /// <summary>
         /// ID отдела
         /// </summary>
         public int? DepartmentId { get; set; }
@@ -37,6 +41,12 @@ namespace BL.Model.DictionaryCore.IncomingModel
         [Required]
         //[EmailAddress]
         public string Login { get; set; }
+
+        /// <summary>
+        /// Профиль пользователя. Язык интерфейса.
+        /// </summary>
+        [Required]
+        public int LanguageId { get; set; }
 
     }
 }

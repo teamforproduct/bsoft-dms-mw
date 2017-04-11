@@ -12,18 +12,18 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryAgentOrg()
         { }
 
-        public InternalDictionaryAgentOrg(AddAgentClientCompany model)
+        public InternalDictionaryAgentOrg(AddOrg model)
         {
             SetInternalDictionaryAgentClientCompany(model);
         }
 
-        public InternalDictionaryAgentOrg(ModifyAgentClientCompany model)
+        public InternalDictionaryAgentOrg(ModifyOrg model)
         {
             Id = model.Id;
             SetInternalDictionaryAgentClientCompany(model);
         }
 
-        private void SetInternalDictionaryAgentClientCompany(AddAgentClientCompany model)
+        private void SetInternalDictionaryAgentClientCompany(AddOrg model)
         {
             IsActive = model.IsActive;
             Name = model.Name;
