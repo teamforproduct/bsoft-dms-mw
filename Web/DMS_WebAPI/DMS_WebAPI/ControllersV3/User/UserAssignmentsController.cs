@@ -20,7 +20,7 @@ namespace DMS_WebAPI.ControllersV3.User
     [Authorize]
     //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
-    public class UserAssignmentsController : ApiController
+    public class UserAssignmentsController : WebApiController
     {
         /// <summary>
         /// Возвращает список назначений для текущего пользователя (должность - интервал назначения, количество новых событий)
@@ -32,7 +32,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(List<FrontUserAssignments>))]
         public async Task<IHttpActionResult> Assignments()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 var tmpItems = tmpService.GetAvailablePositions(context);
@@ -51,7 +51,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(List<FrontUserAssignmentsAvailableGroup>))]
         public async Task<IHttpActionResult> GetAvailableShort()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 var tmpItems = tmpService.GetAvailablePositionsDialog(context);
@@ -71,7 +71,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(List<FrontUserAssignments>))]
         public async Task<IHttpActionResult> GetAssignments()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 var tmpItems = tmpService.GetAvailablePositions(context, context.CurrentPositionsIdList);
@@ -90,7 +90,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Assignments)]
         public async Task<IHttpActionResult> Assignments([FromBody]List<int> positionsIdList)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var userContexts = (UserContexts)param;
                 var tmpService = DmsResolver.Current.Get<IAdminService>();

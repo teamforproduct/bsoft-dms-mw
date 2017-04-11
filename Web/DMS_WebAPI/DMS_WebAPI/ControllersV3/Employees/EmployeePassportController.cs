@@ -19,7 +19,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Employee)]
-    public class EmployeePassportController : ApiController
+    public class EmployeePassportController : WebApiController
     {
         private IHttpActionResult GetById(IContext context, int Id)
         {
@@ -39,7 +39,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [ResponseType(typeof(FrontAgentPeoplePassport))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -54,7 +54,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [Route(Features.Passport)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyAgentPeoplePassport model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.ModifyAgentPeoplePassport, model);
                 return GetById(context, model.Id);

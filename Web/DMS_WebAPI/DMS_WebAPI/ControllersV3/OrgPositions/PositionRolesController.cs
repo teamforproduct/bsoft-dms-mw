@@ -22,7 +22,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Position)]
-    public class PositionRolesController : ApiController
+    public class PositionRolesController : WebApiController
     {
         /// <summary>
         /// Возвращает роли должности
@@ -39,7 +39,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
             filter.PositionIDs = new List<int> { Id };
             filter.IsChecked = true;
 
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 var tmpItems = tmpService.GetPositionRolesDIP(context, filter);
@@ -63,7 +63,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
             filter.PositionIDs = new List<int> { Id };
             filter.IsChecked = null;
 
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 var tmpItems = tmpService.GetPositionRolesDIP(context, filter);
@@ -81,7 +81,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Roles + "/Set")]
         public async Task<IHttpActionResult> Set([FromBody] SetAdminPositionRole model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumAdminActions.SetPositionRole, model);
                 var res = new JsonResult(tmpItem, this);
@@ -99,7 +99,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         [Route(Features.Roles + "/Duplicate")]
         public async Task<IHttpActionResult> Duplicate([FromBody] CopyAdminSettingsByPosition model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumAdminActions.DuplicatePositionRoles, model);
                 var res = new JsonResult(tmpItem, this);

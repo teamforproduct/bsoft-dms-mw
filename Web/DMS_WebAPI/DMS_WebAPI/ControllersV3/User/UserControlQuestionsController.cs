@@ -5,7 +5,6 @@ using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace DMS_WebAPI.ControllersV3.User
@@ -16,7 +15,7 @@ namespace DMS_WebAPI.ControllersV3.User
     [Authorize]
     //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
-    public class UserControlQuestionController : ApiController
+    public class UserControlQuestionController : WebApiController
     {
         private IHttpActionResult GetById(IContext context)
         {

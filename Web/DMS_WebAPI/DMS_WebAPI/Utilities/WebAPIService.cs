@@ -11,7 +11,6 @@ using BL.Model.AdminCore.Clients;
 using BL.Model.AdminCore.WebUser;
 using BL.Model.Common;
 using BL.Model.Database;
-using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
@@ -32,9 +31,7 @@ using System.Configuration;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
-using BL.Database.DatabaseContext;
-using Ninject;
-using Ninject.Parameters;
+using BL.Model.DictionaryCore.FrontModel.Employees;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -433,7 +430,6 @@ namespace DMS_WebAPI.Utilities
             if (server == null) throw new ServerIsNotFound();
 
 
-
             if (string.IsNullOrEmpty(model.Password)) model.Password = "admin_" + model.ClientCode;
 
             using (var transaction = Transactions.GetTransaction())
@@ -444,6 +440,7 @@ namespace DMS_WebAPI.Utilities
                     Name = model.ClientCode,
                     Code = model.ClientCode,
                 });
+
 
                 // Линкую клиента на сервер
                 _webDb.AddClientServer(new ModifyAspNetClientServer { ClientId = model.ClientId, ServerId = server.Id });
@@ -465,10 +462,9 @@ namespace DMS_WebAPI.Utilities
                 transaction.Complete();
             }
 
-            var ctx = new AdminContext(server);
+            server.ClientId = model.ClientId;
 
-            //!!!!!!!!!!!! ClientId
-            ctx.CurrentClientId = model.ClientId;
+            var ctx = new AdminContext(server);
 
             var languages = DmsResolver.Current.Get<ILanguages>();
 
@@ -991,6 +987,11 @@ namespace DMS_WebAPI.Utilities
         {
             return _webDb.GetClientCode(clientId);
 
+        }
+
+        public bool ExistsClients(FilterAspNetClients filter)
+        {
+            return _webDb.ExistsClients(filter);
         }
 
         public DatabaseModel GetServerByUser(string userId, SetUserServer setUserServer)

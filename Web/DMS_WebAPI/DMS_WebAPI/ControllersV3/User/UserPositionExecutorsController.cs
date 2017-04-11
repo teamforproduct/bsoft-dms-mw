@@ -22,7 +22,7 @@ namespace DMS_WebAPI.ControllersV3.User
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
-    public class UserPositionExecutorsController : ApiController
+    public class UserPositionExecutorsController : WebApiController
     {
         private IHttpActionResult GetById(IContext context, int Id)
         {
@@ -44,7 +44,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(List<FrontDictionaryPositionExecutor>))]
         public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterDictionaryPositionExecutor filter)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetUserPositionExecutors(context, Id, filter);
@@ -64,7 +64,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontDictionaryPositionExecutor))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -79,7 +79,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route("Positions/" + Features.Executors)]
         public async Task<IHttpActionResult> Post([FromBody]AddPositionExecutor model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddUserPositionExecutor, context, model);
@@ -96,7 +96,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route("Positions/" + Features.Executors)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyPositionExecutor model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 tmpService.ExecuteAction(EnumDictionaryActions.ModifyUserPositionExecutor, context, model);
@@ -113,7 +113,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route("Positions/" + Features.Executors + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
 

@@ -14,7 +14,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
-    public class DocumentFavouriteController : ApiController
+    public class DocumentFavouriteController : WebApiController
     {
         /// <summary>
         /// Добавляет в Избранное
@@ -25,7 +25,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> AddFavourite(ChangeFavourites model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDocumentActions.AddFavourite, model, model.CurrentPositionId);
                 var res = new JsonResult(null, this);
@@ -42,7 +42,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPut]
         public async Task<IHttpActionResult> DeleteFavourite(ChangeFavourites model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDocumentActions.DeleteFavourite, model, model.CurrentPositionId);
                 var res = new JsonResult(null, this);

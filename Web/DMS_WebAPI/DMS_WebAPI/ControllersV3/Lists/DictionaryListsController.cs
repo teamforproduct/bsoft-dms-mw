@@ -24,7 +24,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
     [Authorize]
     //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.List)]
-    public class DictionaryListsController : ApiController
+    public class DictionaryListsController : WebApiController
     {
         /// <summary>
         /// Типы адресов
@@ -36,7 +36,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<ListItem>))]
         public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryAddressType filter)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetShortListAddressTypes(context, filter);
@@ -56,7 +56,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<ListItem>))]
         public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryContactType filter)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetShortListContactTypes(context, filter);
@@ -82,7 +82,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
                 FeatureName = ApiPrefix.CurrentFeature()
             };
 
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var currMf = (ModuleFeatureModel) param;
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -113,7 +113,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
                 ModuleName = ApiPrefix.CurrentModule(),
                 FeatureName = ApiPrefix.CurrentFeature()
             };
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var currMf = (ModuleFeatureModel)param;
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -141,7 +141,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
                 ModuleName = ApiPrefix.CurrentModule(),
                 FeatureName = ApiPrefix.CurrentFeature()
             };
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var currMf = (ModuleFeatureModel)param;
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -168,7 +168,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
                 ModuleName = ApiPrefix.CurrentModule(),
                 FeatureName = ApiPrefix.CurrentFeature()
             };
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var currMf = (ModuleFeatureModel)param;
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -190,7 +190,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<ListItem>))]
         public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryDocumentType filter, [FromUri]UIPaging paging)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetShortListDocumentTypes(context, filter, paging);
@@ -216,7 +216,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
                 ModuleName = ApiPrefix.CurrentModule(),
                 FeatureName = ApiPrefix.CurrentFeature()
             };
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var currMf = (ModuleFeatureModel)param;
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -238,7 +238,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [ResponseType(typeof(List<AutocompleteItem>))]
         public async Task<IHttpActionResult> GetList([FromUri]FilterDictionaryRegistrationJournal filter)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetRegistrationJournalsShortList(context, filter);
@@ -264,7 +264,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
                 ModuleName = ApiPrefix.CurrentModule(),
                 FeatureName = ApiPrefix.CurrentFeature()
             };
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var currMf = (ModuleFeatureModel)param;
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -291,7 +291,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
                 ModuleName = ApiPrefix.CurrentModule(),
                 FeatureName = ApiPrefix.CurrentFeature()
             };
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var currMf = (ModuleFeatureModel)param;
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -317,7 +317,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
                 ModuleName = ApiPrefix.CurrentModule(),
                 FeatureName = ApiPrefix.CurrentFeature()
             };
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var currMf = (ModuleFeatureModel)param;
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -344,7 +344,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
                 ModuleName = ApiPrefix.CurrentModule(),
                 FeatureName = ApiPrefix.CurrentFeature()
             };
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var currMf = (ModuleFeatureModel)param;
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -368,7 +368,7 @@ namespace DMS_WebAPI.ControllersV3.Lists
             var ctxs = DmsResolver.Current.Get<UserContexts>();
             var sesions = ctxs.GetContextListQuery();
 
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var cSess = (IQueryable<FrontSystemSession>)param;
                 var tmpService = DmsResolver.Current.Get<ILogger>();

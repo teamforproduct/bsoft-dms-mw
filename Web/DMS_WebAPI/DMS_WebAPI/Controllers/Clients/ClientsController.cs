@@ -22,9 +22,8 @@ namespace DMS_WebAPI.Controllers.Admins
         /// <returns>FrontAdminPositionRole</returns>
         public IHttpActionResult Post([FromBody]AddClientSaaS model)
         {
-            var cxt = DmsResolver.Current.Get<UserContexts>().Get();
-            var tmpService = DmsResolver.Current.Get<IClientService>();
-            tmpService.AddNewClient(cxt, model);
+            var tmpService = DmsResolver.Current.Get<WebAPIService>();
+            tmpService.AddClientSaaS(model);
             return new JsonResult(model, this);
         }
 

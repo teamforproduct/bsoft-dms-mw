@@ -19,7 +19,7 @@ namespace DMS_WebAPI.ControllersV3.User
     [Authorize]
     //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
-    public class UserSessionsController : ApiController
+    public class UserSessionsController : WebApiController
     {
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace DMS_WebAPI.ControllersV3.User
             var ctxs = DmsResolver.Current.Get<UserContexts>();
             var sesions = ctxs.GetContextListQuery();
 
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var sessParam = (IQueryable<FrontSystemSession>) param;
                 var tmpService = DmsResolver.Current.Get<ILogger>();
@@ -62,7 +62,7 @@ namespace DMS_WebAPI.ControllersV3.User
             var ctxs = DmsResolver.Current.Get<UserContexts>();
             var sesions = ctxs.GetContextListQuery();
 
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ILogger>();
                 if (filter == null) filter = new FilterSystemSession();

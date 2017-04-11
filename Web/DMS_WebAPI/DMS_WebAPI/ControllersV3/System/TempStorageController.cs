@@ -21,7 +21,7 @@ namespace DMS_WebAPI.ControllersV3.System
     [Authorize]
     //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.System)]
-    public class TempFileStorageController : ApiController
+    public class TempFileStorageController : WebApiController
     {
         /// <summary>
         /// Возвращает файл из временного хранилища
@@ -33,7 +33,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [ResponseType(typeof(FrontFile))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ITempStorageService>();
                 var img = tmpService.GetStoreObject(Id) as string;
@@ -57,7 +57,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.TempFileStorage)]
         public async Task<IHttpActionResult> Post()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var file = (HttpPostedFile)param;
                 byte[] buffer = new byte[file.ContentLength];
@@ -80,7 +80,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.TempFileStorage + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ITempStorageService>();
                 tmpService.ExtractStoreObject(Id);

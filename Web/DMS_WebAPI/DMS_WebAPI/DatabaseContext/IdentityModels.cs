@@ -34,8 +34,6 @@ namespace DMS_WebAPI.Models
 
         public string ControlAnswer { get; set; }
 
-
-
         public DateTime CreateDate { get; set; }
 
         public DateTime LastChangeDate { get; set; }

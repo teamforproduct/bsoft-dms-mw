@@ -19,7 +19,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
-    public class DocumentLinkController : ApiController
+    public class DocumentLinkController : WebApiController
     {
         private IHttpActionResult GetById(IContext context, int Id)
         {
@@ -39,7 +39,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<int>))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -55,7 +55,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<int>))]
         public async Task<IHttpActionResult> Post([FromBody]AddDocumentLink model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.AddDocumentLink, model, model.CurrentPositionId);
                    var res = new JsonResult(null, this);
@@ -72,7 +72,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [Route(Features.Links + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.DeleteDocumentLink, Id);
                    var res = new JsonResult(null, this);

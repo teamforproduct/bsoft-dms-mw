@@ -21,6 +21,7 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using BL.CrossCutting.Helpers.CashService;
 using BL.Model.Constants;
+using BL.Model.DictionaryCore.FrontModel.Employees;
 
 namespace BL.Database.SystemDb
 {

@@ -22,7 +22,7 @@ namespace DMS_WebAPI.ControllersV3.User
     [Authorize]
     //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
-    public class UserAddressesController : ApiController
+    public class UserAddressesController : WebApiController
     {
         private IHttpActionResult GetById(IContext context, int Id)
         {
@@ -42,7 +42,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(List<FrontDictionaryAgentAddress>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryAgentAddress filter)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 if (filter == null) filter = new FilterDictionaryAgentAddress();
                 filter.AgentIDs = new List<int> { context.CurrentAgentId };
@@ -64,7 +64,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontDictionaryAgentAddress))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -79,7 +79,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Addresses)]
         public async Task<IHttpActionResult> Post([FromBody]BaseAgentAddress model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var address = new AddAgentAddress(model);
                 address.AgentId = context.CurrentAgentId;
@@ -97,7 +97,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Addresses)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyUserAddress model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var address = new ModifyAgentAddress(model);
                 address.AgentId = context.CurrentAgentId;
@@ -115,7 +115,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Addresses + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.DeleteEmployeeAddress, Id);
                 var tmpItem = new FrontDeleteModel(Id);

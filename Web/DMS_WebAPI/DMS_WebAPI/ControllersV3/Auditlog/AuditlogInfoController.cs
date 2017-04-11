@@ -19,7 +19,7 @@ namespace DMS_WebAPI.ControllersV3.Auditlog
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Auditlog)]
-    public class AuditlogInfoController : ApiController
+    public class AuditlogInfoController : WebApiController
     {
         //TODO ASYNC
         Stopwatch stopWatch = new Stopwatch();

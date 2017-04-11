@@ -18,7 +18,7 @@ namespace DMS_WebAPI.ControllersV3.Utilities
     //![Authorize]
     //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Dev)]
-    public class DevController : ApiController
+    public class DevController : WebApiController
     {
         /// <summary>
         /// Возвращает Hello, world!
@@ -64,7 +64,7 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         [Route("RefreshPermissions")]
         public async Task<IHttpActionResult> RefreshPermissions()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ISystemService>();
                 tmpService.RefreshModuleFeature(context);
@@ -82,7 +82,7 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         [Route("RefreshSystemActions")]
         public async Task<IHttpActionResult> RefreshSystemActions()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ISystemService>();
                 tmpService.RefreshSystemActions(context);
@@ -99,7 +99,7 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         [Route("RefreshSystemObjects")]
         public async Task<IHttpActionResult> RefreshSystemObjects()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ISystemService>();
                 tmpService.RefreshSystemObjects(context);
@@ -129,7 +129,7 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         public async Task<IHttpActionResult> Test()
         {
             //TODO REMOVE
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
                 //ftService.FullTextIndexPrepareNew(context, EnumObjects.Documents, true, true, 0, 1000);

@@ -153,6 +153,7 @@
     <Compile Include="Common\BaseFilterCodeNameIsActive.cs" />
     <Compile Include="Common\ItemCheck.cs" />
     <Compile Include="Common\AutocompleteItem.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\AddEmployeeInOrg.cs" />
     <Compile Include="DictionaryCore\InternalModel\SortPositoin.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentEventAccess.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentEventAccessGroup.cs" />
@@ -285,7 +286,7 @@
     <Compile Include="DictionaryCore\FrontModel\Tags\FrontMainTag.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentPeoplePassport.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentContactPerson.cs" />
-    <Compile Include="DictionaryCore\IncomingModel\AddAgentClientCompany.cs" />
+    <Compile Include="DictionaryCore\IncomingModel\AddOrg.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentCompany.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddAgentPeople.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddContactType.cs" />
@@ -308,7 +309,6 @@
     <Compile Include="DictionaryCore\IncomingModel\AddPosition.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddDocumentType.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddRegistrationJournal.cs" />
-    <Compile Include="DictionaryCore\IncomingModel\ModifyDictionaryAgent.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddStandartSendList.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddStandartSendListContent.cs" />
     <Compile Include="DictionaryCore\InternalModel\InternalCustomDictionary.cs" />

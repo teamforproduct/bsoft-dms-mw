@@ -22,7 +22,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Templates)]
-    public class TemplatePapersController : ApiController
+    public class TemplatePapersController : WebApiController
     {
         private IHttpActionResult GetById(IContext context, int Id)
         {
@@ -46,7 +46,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
             if (filter == null) filter = new FilterTemplateDocumentPaper();
             filter.TemplateId = Id;
 
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
                 var tmpItems = tmpService.GetTemplateDocumentPapers(context, filter);
@@ -66,7 +66,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [ResponseType(typeof(FrontTemplateDocumentPaper))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -81,7 +81,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Papers)]
         public async Task<IHttpActionResult> Post([FromBody]AddTemplateDocumentPaper model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var tmpItem = Action.Execute(context, EnumDocumentActions.AddTemplateDocumentPaper, model);
                    return GetById(context, tmpItem);
@@ -97,7 +97,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Papers)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyTemplateDocumentPaper model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.ModifyTemplateDocumentPaper, model);
                    return GetById(context, model.Id);
@@ -113,7 +113,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         [Route(Features.Papers + "/{Id:int}")]
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.DeleteTemplateDocumentPaper, Id);
                    var tmpItem = new FrontDeleteModel(Id);

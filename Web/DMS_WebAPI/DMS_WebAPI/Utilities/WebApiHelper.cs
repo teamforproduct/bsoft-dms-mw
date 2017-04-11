@@ -16,7 +16,7 @@ namespace DMS_WebAPI.Utilities
     /// <summary>
     /// 
     /// </summary>
-    public static class WebApiHelper
+    public class WebApiController:ApiController
     {
         /// <summary>
         /// 
@@ -26,7 +26,7 @@ namespace DMS_WebAPI.Utilities
         /// <param name="action"></param>
         /// <param name="addittionalParameters"></param>
         /// <returns></returns>
-        public static Task<IHttpActionResult> SafeExecuteAsync(this ApiController ctrl, ModelStateDictionary state, Func<IContext, object, IHttpActionResult> action, object addittionalParameters = null)
+        public Task<IHttpActionResult> SafeExecuteAsync(ModelStateDictionary state, Func<IContext, object, IHttpActionResult> action, object addittionalParameters = null)
         {
             try
             {
@@ -53,7 +53,7 @@ namespace DMS_WebAPI.Utilities
         /// <param name="addittionalParameters"></param>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static IHttpActionResult ExecuteAction(IContext context, Func<IContext, object, IHttpActionResult> action, object addittionalParameters)
+        public IHttpActionResult ExecuteAction(IContext context, Func<IContext, object, IHttpActionResult> action, object addittionalParameters)
         {
             try
             {
@@ -88,7 +88,7 @@ namespace DMS_WebAPI.Utilities
             //}
         }
 
-        private static IHttpActionResult PrepareResponse(string responseBody, int rc)
+        private IHttpActionResult PrepareResponse(string responseBody, int rc)
         {
             var response = new HttpResponseMessage((HttpStatusCode)rc)
             {
@@ -97,16 +97,5 @@ namespace DMS_WebAPI.Utilities
             return new ResponseMessageResult(response);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="ctrl"></param>
-        /// <param name="responseBody"></param>
-        /// <param name="rc"></param>
-        /// <returns></returns>
-        public static IHttpActionResult PrepareResponse(this ApiController ctrl, string responseBody, int rc)
-        {
-            return PrepareResponse(responseBody, rc);
-        }
     }
 }

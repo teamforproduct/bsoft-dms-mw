@@ -20,7 +20,7 @@ namespace DMS_WebAPI.ControllersV3.System
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Settings)]
-    public class SettingsInfoController : ApiController
+    public class SettingsInfoController : WebApiController
     {
         /// <summary>
         /// Список настроек
@@ -32,7 +32,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [ResponseType(typeof(FrontDictionarySettingType))]
         public async Task<IHttpActionResult> Get([FromUri] FilterSystemSetting filter)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ISystemService>();
                 var tmpItems = tmpService.GetSystemSettings(context, filter);
@@ -51,7 +51,7 @@ namespace DMS_WebAPI.ControllersV3.System
         [Route(Features.Info)]
         public async Task<IHttpActionResult> Put([FromBody]List<ModifySystemSetting> model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumSystemActions.SetSetting, model);
                 var res = new JsonResult(tmpItem, this);

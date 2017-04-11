@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using BL.CrossCutting.Context;
 using System.Linq;
-using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.DictionaryCore.FrontModel.Employees;
 
 namespace BL.CrossCutting.Interfaces
 {

@@ -9,16 +9,6 @@ namespace BL.Model.DictionaryCore.InternalModel
     public class InternalDictionaryAgent : LastChangeInfo
     {
         
-        public InternalDictionaryAgent()
-        { }
-
-        public InternalDictionaryAgent(ModifyDictionaryAgent model)
-        {
-            Id = model.Id;
-            Name = model.Name;
-        }
-
-
         /// <summary>
         /// ИД
         /// </summary>

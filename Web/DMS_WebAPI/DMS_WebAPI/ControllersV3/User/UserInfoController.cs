@@ -1,10 +1,8 @@
 ﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
-using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
-using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
@@ -25,6 +23,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
+using BL.Model.DictionaryCore.FrontModel.Employees;
 
 namespace DMS_WebAPI.ControllersV3.User
 {
@@ -33,9 +32,8 @@ namespace DMS_WebAPI.ControllersV3.User
     /// Контекст пользователя (Все пользователя являются сотрудниками, но у сотрудника может быть выключена возможность авторизации)
     /// </summary>
     [Authorize]
-    //![DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
-    public class UserInfoController : ApiController
+    public class UserInfoController : WebApiController
     {
 
         private ApplicationUserManager _userManager;
@@ -130,7 +128,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(List<FrontPermission>))]
         public async Task<IHttpActionResult> GetPermissions()
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 var tmpItem = tmpService.GetUserPermissions(context);
@@ -153,7 +151,7 @@ namespace DMS_WebAPI.ControllersV3.User
             var ctxs = DmsResolver.Current.Get<UserContexts>();
             var sessions = ctxs.GetContextListQuery();
 
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var pSessions = (IQueryable<FrontSystemSession>)param;
                 var tmpService = DmsResolver.Current.Get<ILogger>();
@@ -187,7 +185,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route("Language")]
         public async Task<IHttpActionResult> SetLanguage(SetUserLanguage model)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var contexts = (UserContexts)param;
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();

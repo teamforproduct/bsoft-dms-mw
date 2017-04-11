@@ -24,7 +24,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Employee)]
-    public class EmployeeInfoController : ApiController
+    public class EmployeeInfoController : WebApiController
     {
         private IHttpActionResult GetById(IContext context, int Id)
         {
@@ -47,7 +47,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [ResponseType(typeof(List<FrontMainAgentEmployee>))]
         public async Task<IHttpActionResult> GetMain([FromUri]FullTextSearch ftSearch, [FromUri] FilterDictionaryAgentEmployee filter, [FromUri]UIPaging paging, [FromUri]UISorting sorting)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetMainAgentEmployees(context, ftSearch, filter, paging, sorting);
@@ -68,7 +68,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [ResponseType(typeof(FrontAgentEmployee))]
         public async Task<IHttpActionResult> Get(int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
             });
@@ -142,7 +142,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         [Route(Features.Info + "/DeleteImage/{Id:int}")]
         public async Task<IHttpActionResult> DeleteImage([FromUri] int Id)
         {
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDictionaryActions.DeleteAgentImage, Id);
                 var tmpItem = new FrontDeleteModel(Id);

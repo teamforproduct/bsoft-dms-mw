@@ -18,7 +18,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
     [Authorize]
     [DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Role)]
-    public class RolePositionsController : ApiController
+    public class RolePositionsController : WebApiController
     {
         /// <summary>
         /// Возвращает список должностей
@@ -35,7 +35,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
             if (filter == null) filter = new FilterDictionaryPosition();
             filter.RoleIDs = new List<int> { Id };
 
-            return await this.SafeExecuteAsync(ModelState, (context, param) =>
+            return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
                 var tmpItems = tmpService.GetPositionList(context, filter, paging);
