@@ -1,7 +1,8 @@
 ﻿using BL.Database.SystemDb;
 using BL.Logic.Common;
 using BL.Model.Enums;
-using BL.Model.SystemCore.InternalModel;
+using BL.Model.SystemCore.Filters;
+using System.Collections.Generic;
 
 namespace BL.Logic.PropertyCore.Commands
 {
@@ -28,11 +29,7 @@ namespace BL.Logic.PropertyCore.Commands
 
         public override object Execute()
         {
-            var item = new InternalPropertyLink
-            {
-                Id = Model
-            };
-            _systDb.DeletePropertyLink(_context, item);
+            _systDb.DeletePropertyLinks(_context, new FilterPropertyLink { PropertyLinkId = new List<int> { Model } });
             return null;
         }
 

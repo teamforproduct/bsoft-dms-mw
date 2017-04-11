@@ -19,7 +19,7 @@ namespace BL.Logic.DictionaryCore
 
         public override object Execute()
         {
-            _dictDb.DeleteStandartSendListContent(_context, new FilterDictionaryStandartSendListContent { IDs = new List<int> { Model } });
+            _dictDb.DeleteStandartSendListContents(_context, new FilterDictionaryStandartSendListContent { IDs = new List<int> { Model } });
             return null;
         }
     }

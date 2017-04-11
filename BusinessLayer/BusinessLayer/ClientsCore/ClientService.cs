@@ -1,17 +1,15 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Admins;
-using BL.Database.DatabaseContext;
 using BL.Database.Dictionaries;
+using BL.Database.Encryption.Interfaces;
 using BL.Database.SystemDb;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.ClientCore.Interfaces;
-using BL.Logic.Common;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Logic.Settings;
 using BL.Model.AdminCore.Clients;
 using BL.Model.DictionaryCore.IncomingModel;
-using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore.InternalModel;
 using System;
@@ -23,16 +21,20 @@ namespace BL.Logic.ClientCore
     {
         private readonly AdminsDbProcess _AdminDb;
         private readonly DictionariesDbProcess _DictDb;
+        private readonly IEncryptionDbProcess _EncrDb;
         private readonly ISystemDbProcess _SystemDb;
+        private readonly IFullTextDbProcess _FTextDb;
         //private readonly ICommandService _commandService;
         private readonly IAdminService _AdminService;
 
-        public ClientService(AdminsDbProcess AdminDb, DictionariesDbProcess DictionaryDb, IAdminService AdminService, ISystemDbProcess SystemDb)
+        public ClientService(AdminsDbProcess AdminDb, DictionariesDbProcess DictionaryDb, IAdminService AdminService, ISystemDbProcess SystemDb, IEncryptionDbProcess EncrypDb, IFullTextDbProcess FTextDb)
         {
             _AdminDb = AdminDb;
             _AdminService = AdminService;
             _DictDb = DictionaryDb;
             _SystemDb = SystemDb;
+            _EncrDb = EncrypDb;
+            _FTextDb = FTextDb;
             //_commandService = commandService;
         }
 
@@ -45,7 +47,7 @@ namespace BL.Logic.ClientCore
 
         private static string GetLabel(string module, string item) => "##l@" + module.Trim() + ":" + item.Trim() + "@l##";
 
-        public void AddNewClient(IContext context, AddClientSaaS client)
+        public void AddDictionary(IContext context, AddClientSaaS client)
         {
             // SystemSettings
 
@@ -103,44 +105,113 @@ namespace BL.Logic.ClientCore
 
             #region [+] Agent-Company ....
             // Pss Локализация для названия компании
-            var company = new InternalDictionaryAgentOrg()
-            {
-                Name = "Наша компания",
-                FullName = "Наша компания"
-            };
+            //var company = new InternalDictionaryAgentOrg()
+            //{
+            //    Name = "Наша компания",
+            //    FullName = "Наша компания"
+            //};
 
-            CommonDocumentUtilities.SetLastChange(context, company);
+            //CommonDocumentUtilities.SetLastChange(context, company);
 
-            var companyId = _DictDb.AddAgentOrg(context, company);
+            //var companyId = _DictDb.AddAgentOrg(context, company);
 
 
 
-            //_DictDb.AddContact(context, new InternalDictionaryContact()
-            //{ AgentId = companyId, ContactTypeId = mobiContactType, Value = client.PhoneNumber, IsActive = true, IsConfirmed = true });
+            ////_DictDb.AddContact(context, new InternalDictionaryContact()
+            ////{ AgentId = companyId, ContactTypeId = mobiContactType, Value = client.PhoneNumber, IsActive = true, IsConfirmed = true });
 
-            //_DictDb.AddContact(context, new InternalDictionaryContact()
-            //{ AgentId = companyId, ContactTypeId = emailContactType, Value = client.Email, IsActive = true, IsConfirmed = true });
-            var department = new InternalDictionaryDepartment()
-            { CompanyId = companyId, Index = "01", Code = "01", Name = "Мой отдел", FullName = "Мой отдел", IsActive = true };
+            ////_DictDb.AddContact(context, new InternalDictionaryContact()
+            ////{ AgentId = companyId, ContactTypeId = emailContactType, Value = client.Email, IsActive = true, IsConfirmed = true });
+            //var department = new InternalDictionaryDepartment()
+            //{ CompanyId = companyId, Index = "01", Code = "01", Name = "Мой отдел", FullName = "Мой отдел", IsActive = true };
 
-            CommonDocumentUtilities.SetLastChange(context, department);
+            //CommonDocumentUtilities.SetLastChange(context, department);
 
-            var departmentId = _DictDb.AddDepartment(context, department);
+            //var departmentId = _DictDb.AddDepartment(context, department);
 
-            var position = new InternalDictionaryPosition()
-            { DepartmentId = departmentId, Name = "Директор", FullName = "Директор", Order = 1, IsActive = true };
+            //var position = new InternalDictionaryPosition()
+            //{ DepartmentId = departmentId, Name = "Директор", FullName = "Директор", Order = 1, IsActive = true };
 
-            CommonDocumentUtilities.SetLastChange(context, position);
+            //CommonDocumentUtilities.SetLastChange(context, position);
 
-            var positionDirector = _DictDb.AddPosition(context, position);
+            //var positionDirector = _DictDb.AddPosition(context, position);
 
             #endregion
 
-            
+
+
+
+
+            // Включить соответствующие воркеры
+        }
+
+        public void Delete(IContext context)
+        {
+            // Остановить соответствующие воркеры
+
+            _FTextDb.Delete(context, context.CurrentClientId);
+
+
+            _DictDb.DeleteRegistrationJournals(context, null);
+
+            _DictDb.DeleteDocumentType(context, null);
+
+            _AdminDb.DeleteDepartmentAdmins(context, null);
+
+            _SystemDb.DeletePropertyLinks(context, null);
+            _SystemDb.DeleteProperties(context, null);
+
+
+            _AdminDb.DeleteUserRoles(context, null);
+            _AdminDb.DeletePositionRoles(context, null);
+            _AdminDb.DeleteRolePermissions(context, null);
+            _AdminDb.DeleteRoles(context, null);
+
+            _AdminDb.DeleteSubordinations(context, null);
+
+            _AdminDb.DeleteRegistrationJournalPositions(context, null);
+
+            _EncrDb.DeleteCertificate(context, null);
 
             
 
+            _DictDb.DeleteTags(context, null);
 
+            _DictDb.DeleteStandartSendListContents(context, null);
+            _DictDb.DeleteStandartSendList(context, null);
+
+            _DictDb.DeleteCustomDictionaries(context, null);
+            _DictDb.DeleteCustomDictionaryType(context, null);
+
+            _DictDb.DeleteStandartSendListContents(context, null);
+            _DictDb.DeleteStandartSendList(context, null);
+
+            // Структура организации
+            _DictDb.DeleteExecutors(context, null);
+            _DictDb.DeletePositions(context, null);
+            _DictDb.DeleteDepartments(context, null);
+            _DictDb.DeleteAgentOrg(context, null);
+
+
+            // Агенты
+            _DictDb.DeleteAgentFavourite(context, null);
+
+            _DictDb.DeleteAgentBank(context, null);
+            _DictDb.DeleteAgentCompanies(context, null);
+            _DictDb.DeleteAgentPersons(context, null);
+            _DictDb.DeleteAgentEmployees(context, null);
+            _DictDb.DeleteAgentUsers(context, null);
+            _DictDb.DeleteAgentPeoples(context, null);
+
+            _DictDb.DeleteAgentAccounts(context, null);
+            _DictDb.DeleteAddressTypes(context, null);
+            _DictDb.DeleteContactType(context, null);
+
+            _DictDb.DeleteAgents(context, null);
+
+            _SystemDb.DeleteSystemLogs(context, null);
+            _SystemDb.DeleteSystemSearchQueryLogs(context, null);
+            _SystemDb.DeleteSystemSettings(context);
         }
 
         /// <summary>

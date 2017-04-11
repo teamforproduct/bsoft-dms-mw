@@ -185,12 +185,12 @@ namespace BL.Database.Encryption
             }
         }
 
-        public void DeleteCertificate(IContext ctx, int itemId)
+        public void DeleteCertificate(IContext ctx, FilterEncryptionCertificate filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = CommonQueries.GetCertificatesQuery(ctx, new FilterEncryptionCertificate { CertificateId = new List<int> { itemId } });
+                var qry = CommonQueries.GetCertificatesQuery(ctx, filter);
 
                 dbContext.EncryptionCertificatesSet.RemoveRange(qry);
                 dbContext.SaveChanges();

@@ -38,7 +38,7 @@ namespace DMS_WebAPI.Controllers.WebAPI
         public IHttpActionResult Delete(int id)
         {
             var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
-            dbProc.DeleteClientServer(id);
+            //dbProc.DeleteClientServer(id);
             var item = new FrontAspNetClientServer { Id = id };
             return new JsonResult(item, this);
         }

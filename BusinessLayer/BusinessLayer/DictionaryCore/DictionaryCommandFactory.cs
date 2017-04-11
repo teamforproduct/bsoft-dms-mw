@@ -71,6 +71,9 @@ namespace BL.Logic.DictionaryCore
                 case EnumDictionaryActions.AddAgentEmployee:
                     cmd = DmsResolver.Current.Get<AddDictionaryAgentEmployeeCommand>();
                     break;
+                case EnumDictionaryActions.AddAgentEmployeeInOrg:
+                    cmd = DmsResolver.Current.Get<AddEmployeeInOrgCommand>();
+                    break;
                 case EnumDictionaryActions.DeleteAgentEmployee:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAgentEmployeeCommand>();
                     break;

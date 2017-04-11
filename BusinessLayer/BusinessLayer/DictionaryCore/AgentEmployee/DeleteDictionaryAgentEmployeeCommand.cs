@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.Helpers;
 using BL.Logic.Common;
+using BL.Model.DictionaryCore.FilterModel;
 using System.Collections.Generic;
 
 namespace BL.Logic.DictionaryCore
@@ -21,10 +22,10 @@ namespace BL.Logic.DictionaryCore
         {
             using (var transaction = Transactions.GetTransaction())
             {
-                _dictDb.DeleteAgentEmployee(_context, Model);
+                _dictDb.DeleteAgentEmployees(_context, new FilterDictionaryAgentEmployee { IDs = new List<int> { Model } });
 
-                _dictDb.DeleteAgentUser(_context, Model);
-                _dictDb.DeleteAgentPeople(_context, Model);
+                _dictDb.DeleteAgentUsers(_context, new FilterDictionaryAgentUsers { IDs = new List<int> { Model } });
+                _dictDb.DeleteAgentPeoples(_context, new FilterDictionaryAgentPeoples { IDs = new List<int> { Model } });
                 _dictService.DeleteAgentIfNoAny(_context, new List<int>() { Model });
 
                 transaction.Complete();

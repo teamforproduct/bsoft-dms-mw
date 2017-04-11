@@ -32,7 +32,7 @@ namespace BL.Logic.AdminCore
             _adminDb.DeletePositionRoles(_context, new FilterAdminPositionRole { RoleIDs = new List<int> { Model } });
             _adminDb.DeleteUserRoles(_context, new FilterAdminUserRole { RoleIDs = new List<int> { Model } });
 
-            _adminDb.DeleteRole(_context, Model);
+            _adminDb.DeleteRoles(_context, new FilterAdminRole { IDs = new List<int> { Model } });
             return null;
         }
     }

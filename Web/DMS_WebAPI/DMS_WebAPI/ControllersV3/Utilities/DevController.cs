@@ -80,15 +80,13 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         /// <returns></returns>
         [HttpPost]
         [Route("RefreshSystemActions")]
-        public async Task<IHttpActionResult> RefreshSystemActions()
+        public IHttpActionResult RefreshSystemActions()
         {
-            return await SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                var tmpService = DmsResolver.Current.Get<ISystemService>();
-                tmpService.RefreshSystemActions(context);
-                var res = new JsonResult(null, this);
-                return res;
-            });
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
+            var tmpService = DmsResolver.Current.Get<ISystemService>();
+            tmpService.RefreshSystemActions(context);
+            var res = new JsonResult(null, this);
+            return res;
         }
 
         /// <summary>

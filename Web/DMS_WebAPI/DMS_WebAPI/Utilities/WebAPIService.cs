@@ -211,6 +211,25 @@ namespace DMS_WebAPI.Utilities
 
         }
 
+        public int AddUserEmployeeInOrg(IContext context, AddEmployeeInOrg model)
+        {
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpEmployee = (AddAgentEmployeeUser)tmpService.ExecuteAction(EnumDictionaryActions.AddAgentEmployeeInOrg, context, model);
+
+            var empId = AddUserEmployee(context, tmpEmployee);
+
+            var ass = new AddPositionExecutor();
+            ass.AccessLevelId = EnumAccessLevels.Personally;
+            ass.AgentId = empId;
+            ass.IsActive = true;
+            ass.PositionId = model.PositionId ?? -1;
+            ass.StartDate = DateTime.UtcNow;
+
+            var assignmentId = tmpService.ExecuteAction(EnumDictionaryActions.AddExecutor, context, ass);
+
+            return empId;
+        }
+
         public int UpdateUserEmployee(IContext context, ModifyAgentEmployee model)
         {
             var user = GetUser(context, model.Id);
@@ -417,7 +436,6 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        //TODO NOT USED - do not delete
         public string AddClientSaaS(AddClientSaaS model)
         {
             // Проверка уникальности доменного имени
@@ -447,17 +465,20 @@ namespace DMS_WebAPI.Utilities
 
                 // Линкую клиента на лицензию
 
-                // Создаю первого пользователя
-                var userId = AddFirstAdmin(new BL.Model.WebAPI.IncomingModel.AddFirstAdminClient
-                {
-                    ClientCode = model.ClientCode,
-                    Admin = new ModifyAspNetUser
-                    {
-                        Email = model.Email,
-                        Password = model.Password,
-                    }
 
-                });
+
+
+                // Создаю первого пользователя
+                //var userId = AddFirstAdmin(new BL.Model.WebAPI.IncomingModel.AddFirstAdminClient
+                //{
+                //    ClientCode = model.ClientCode,
+                //    Admin = new ModifyAspNetUser
+                //    {
+                //        Email = model.Email,
+                //        Password = model.Password,
+                //    }
+
+                //});
 
                 transaction.Complete();
             }
@@ -479,24 +500,61 @@ namespace DMS_WebAPI.Utilities
             }
 
             var clientService = DmsResolver.Current.Get<IClientService>();
-            clientService.AddNewClient(ctx, model);
+            clientService.AddDictionary(ctx, model);
 
-            // !!! посмотреть отправку писем
-            AddUserEmployee(ctx, new AddAgentEmployeeUser
+            // !!! посмотреть отправку писем или возвращать ссылку без письма
+            AddUserEmployeeInOrg(ctx, new AddEmployeeInOrg
             {
                 FirstName = model.Name,
                 LastName = model.LastName,
                 //MiddleName = model.MiddleName,
+                OrgName = "OurCompany",
+                DepartmentName = "OurDepartment",
+                PositionName = "MyPosition",
                 LanguageId = ctx.CurrentEmployee.LanguageId,
-                IsActive = true,
-                //IsMale = model.IsMale,
-                Phone = model.PhoneNumber,
+                //Phone = model.PhoneNumber,
                 Login = model.Email,
             });
+
+
             //UserManager.AddLogin(userId, new UserLoginInfo {    })
 
 
             return "token";
+
+        }
+
+        public void DeleteClient(int Id)
+        {
+
+
+
+
+            var list = new List<int> { Id };
+
+            _webDb.DeleteClientLicence(new FilterAspNetClientLicences { ClientIds = list });
+            _webDb.DeleteClientServer(new FilterAspNetClientServers { ClientIds = list });
+
+            var users = _webDb.GetUserClients(new FilterAspNetUserClients { ClientIds = list }).Select(x => x.UserId).ToList();
+
+            _webDb.DeleteUserClients(new FilterAspNetUserClients { ClientIds = list });
+            _webDb.DeleteUserContexts(new FilterAspNetUserContext { UserIDs = users });
+            _webDb.DeleteUserFingerprints(new FilterAspNetUserFingerprint { UserIDs = users });
+            _webDb.DeleteUserServers(new FilterAspNetUserServers { UserIds = users });
+
+            //пользователя не удаляю пока
+
+            var servers = _webDb.GetServers(new FilterAdminServers { ClientIds = list });
+
+            var clientService = DmsResolver.Current.Get<IClientService>();
+
+            foreach (var server in servers)
+            {
+                server.ClientId = Id;
+                var ctx = new AdminContext(server);
+                clientService.Delete(ctx);
+            }
+
 
         }
 
@@ -912,7 +970,7 @@ namespace DMS_WebAPI.Utilities
 
         public void DeleteUserFingerprint(int id)
         {
-            _webDb.DeleteUserFingerprint(id);
+            _webDb.DeleteUserFingerprints(new FilterAspNetUserFingerprint { IDs = new List<int> { id } });
         }
 
 

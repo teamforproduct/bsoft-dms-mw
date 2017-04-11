@@ -18,7 +18,7 @@ namespace BL.Database.Encryption.Interfaces
 
         void ModifyCertificate(IContext ctx, InternalEncryptionCertificate item);
 
-        void DeleteCertificate(IContext ctx, int itemId);
+        void DeleteCertificate(IContext ctx, FilterEncryptionCertificate filter);
 
         #endregion
 

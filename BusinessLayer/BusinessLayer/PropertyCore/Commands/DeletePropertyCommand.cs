@@ -4,11 +4,13 @@ using BL.Model.Exception;
 using BL.Database.SystemDb;
 using BL.Model.SystemCore.InternalModel;
 using BL.Model.Enums;
+using BL.Model.SystemCore.Filters;
+using System.Collections.Generic;
 
 namespace BL.Logic.PropertyCore.Commands
 {
     public class DeletePropertyCommand : BasePropertyCommand
-   
+
     {
         private readonly ISystemDbProcess _systDb;
 
@@ -30,19 +32,8 @@ namespace BL.Logic.PropertyCore.Commands
 
         public override object Execute()
         {
-            try
-            {
-                var item = new InternalProperty
-                {
-                    Id = Model
-                };
-                _systDb.DeleteProperty(_context, item);
-                return null;
-            }
-            catch (Exception ex)
-            {
-                throw new DictionaryRecordCouldNotBeDeleted(ex);
-            }
+            _systDb.DeleteProperties(_context, new FilterProperty { PropertyId = new List<int> { Model } });
+            return null;
         }
 
         public override EnumPropertyActions CommandType => EnumPropertyActions.DeleteProperty;

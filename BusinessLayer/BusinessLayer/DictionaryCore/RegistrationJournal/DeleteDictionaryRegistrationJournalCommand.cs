@@ -20,7 +20,7 @@ namespace BL.Logic.DictionaryCore
 
         public override object Execute()
         {
-            _dictDb.DeleteRegistrationJournal(_context, new FilterDictionaryRegistrationJournal { IDs = new List<int> { Model } });
+            _dictDb.DeleteRegistrationJournals(_context, new FilterDictionaryRegistrationJournal { IDs = new List<int> { Model } });
             return null;
         }
     }

@@ -1696,6 +1696,15 @@ namespace BL.Database.SystemDb
             }
         }
 
+        public void Delete(IContext ctx, int clientId)
+        {
+            using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
+            {
+                dbContext.FullTextIndexCashSet.Where(x => x.ClientId == clientId).Delete();
+                transaction.Complete();
+            }
+        }
+
 
     }
 }

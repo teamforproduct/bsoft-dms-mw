@@ -28,6 +28,7 @@ namespace BL.Model.DictionaryCore.InternalModel
             Name = Model.Name;
             InputMask = Model.InputMask;
             Code = Model.Code;
+            SpecCode = Model.SpecCode;
             IsActive = Model.IsActive;
         }
 

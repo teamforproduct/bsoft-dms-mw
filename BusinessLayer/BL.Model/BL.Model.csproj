@@ -153,6 +153,8 @@
     <Compile Include="Common\BaseFilterCodeNameIsActive.cs" />
     <Compile Include="Common\ItemCheck.cs" />
     <Compile Include="Common\AutocompleteItem.cs" />
+    <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgentPeoples.cs" />
+    <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgentUsers.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddEmployeeInOrg.cs" />
     <Compile Include="DictionaryCore\InternalModel\SortPositoin.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentEventAccess.cs" />

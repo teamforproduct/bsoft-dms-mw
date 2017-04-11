@@ -1,4 +1,6 @@
 ﻿using BL.Logic.Common;
+using BL.Model.DictionaryCore.FilterModel;
+using System.Collections.Generic;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -16,7 +18,7 @@ namespace BL.Logic.DictionaryCore
 
         public override object Execute()
         {
-            _dictDb.DeleteDocumentType(_context, Model);
+            _dictDb.DeleteDocumentType(_context, new FilterDictionaryDocumentType { IDs = new List<int> { Model } });
             return null;
         }
     }

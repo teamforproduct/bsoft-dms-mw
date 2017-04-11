@@ -9,7 +9,7 @@ namespace BL.Logic.AdminCore
 
         public override object Execute()
         {
-            _adminDb.DeleteDepartmentAdmin(_context, new FilterAdminEmployeeDepartments { IDs = new List<int> { Model } });
+            _adminDb.DeleteDepartmentAdmins(_context, new FilterAdminEmployeeDepartments { IDs = new List<int> { Model } });
             return null;
         }
     }

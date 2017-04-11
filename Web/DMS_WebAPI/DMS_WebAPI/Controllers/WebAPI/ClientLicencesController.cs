@@ -74,7 +74,7 @@ namespace DMS_WebAPI.Controllers.WebAPI
         public IHttpActionResult Delete(int id)
         {
             var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
-            dbProc.DeleteClientLicence(id);
+            //dbProc.DeleteClientLicence(id);
             var item = new FrontAspNetClientLicence { Id = id };
             return new JsonResult(item, this);
         }
