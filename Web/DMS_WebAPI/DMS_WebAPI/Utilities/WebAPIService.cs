@@ -528,26 +528,26 @@ namespace DMS_WebAPI.Utilities
         {
             if (!_webDb.ExistsClients(new FilterAspNetClients { ClientIds = new List<int> { Id } })) throw new ClientIsNotFound();
 
-            var list = new List<int> { Id };
+            var clients = new List<int> { Id };
 
             using (var transaction = Transactions.GetTransaction())
             {
-                _webDb.DeleteClientLicence(new FilterAspNetClientLicences { ClientIds = list });
-                _webDb.DeleteClientServer(new FilterAspNetClientServers { ClientIds = list });
+                _webDb.DeleteClientLicence(new FilterAspNetClientLicences { ClientIds = clients });
+                _webDb.DeleteClientServer(new FilterAspNetClientServers { ClientIds = clients });
                 _webDb.DeleteClient(Id);
 
-                var users = _webDb.GetUserClients(new FilterAspNetUserClients { ClientIds = list }).Select(x => x.UserId).ToList();
+                var users = _webDb.GetUserClients(new FilterAspNetUserClients { ClientIds = clients }).Select(x => x.UserId).ToList();
 
-                _webDb.DeleteUserClients(new FilterAspNetUserClients { ClientIds = list });
+                _webDb.DeleteUserClients(new FilterAspNetUserClients { ClientIds = clients });
                 _webDb.DeleteUserContexts(new FilterAspNetUserContext { UserIDs = users });
                 _webDb.DeleteUserFingerprints(new FilterAspNetUserFingerprint { UserIDs = users });
-                _webDb.DeleteUserServers(new FilterAspNetUserServers { UserIds = users });
+                _webDb.DeleteUserServers(new FilterAspNetUserServers { UserIds = users, ClientIds = clients });
 
                 transaction.Complete();
             }
             //пользователя не удаляю пока
 
-            var servers = _webDb.GetServers(new FilterAdminServers { ClientIds = list });
+            var servers = _webDb.GetServers(new FilterAdminServers { ClientIds = clients });
 
             var clientService = DmsResolver.Current.Get<IClientService>();
 
