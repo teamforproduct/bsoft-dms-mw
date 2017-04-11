@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Admins;
 using BL.Database.Dictionaries;
@@ -148,70 +149,74 @@ namespace BL.Logic.ClientCore
         public void Delete(IContext context)
         {
             // Остановить соответствующие воркеры
-
-            _FTextDb.Delete(context, context.CurrentClientId);
-
-
-            _DictDb.DeleteRegistrationJournals(context, null);
-
-            _DictDb.DeleteDocumentType(context, null);
-
-            _AdminDb.DeleteDepartmentAdmins(context, null);
-
-            _SystemDb.DeletePropertyLinks(context, null);
-            _SystemDb.DeleteProperties(context, null);
+            using (var transaction = Transactions.GetTransaction())
+            {
+                _FTextDb.Delete(context, context.CurrentClientId);
 
 
-            _AdminDb.DeleteUserRoles(context, null);
-            _AdminDb.DeletePositionRoles(context, null);
-            _AdminDb.DeleteRolePermissions(context, null);
-            _AdminDb.DeleteRoles(context, null);
+                _DictDb.DeleteRegistrationJournals(context, null);
 
-            _AdminDb.DeleteSubordinations(context, null);
+                _DictDb.DeleteDocumentType(context, null);
 
-            _AdminDb.DeleteRegistrationJournalPositions(context, null);
+                _AdminDb.DeleteDepartmentAdmins(context, null);
 
-            _EncrDb.DeleteCertificate(context, null);
-
-            
-
-            _DictDb.DeleteTags(context, null);
-
-            _DictDb.DeleteStandartSendListContents(context, null);
-            _DictDb.DeleteStandartSendList(context, null);
-
-            _DictDb.DeleteCustomDictionaries(context, null);
-            _DictDb.DeleteCustomDictionaryType(context, null);
-
-            _DictDb.DeleteStandartSendListContents(context, null);
-            _DictDb.DeleteStandartSendList(context, null);
-
-            // Структура организации
-            _DictDb.DeleteExecutors(context, null);
-            _DictDb.DeletePositions(context, null);
-            _DictDb.DeleteDepartments(context, null);
-            _DictDb.DeleteAgentOrg(context, null);
+                _SystemDb.DeletePropertyLinks(context, null);
+                _SystemDb.DeleteProperties(context, null);
 
 
-            // Агенты
-            _DictDb.DeleteAgentFavourite(context, null);
+                _AdminDb.DeleteUserRoles(context, null);
+                _AdminDb.DeletePositionRoles(context, null);
+                _AdminDb.DeleteRolePermissions(context, null);
+                _AdminDb.DeleteRoles(context, null);
 
-            _DictDb.DeleteAgentBank(context, null);
-            _DictDb.DeleteAgentCompanies(context, null);
-            _DictDb.DeleteAgentPersons(context, null);
-            _DictDb.DeleteAgentEmployees(context, null);
-            _DictDb.DeleteAgentUsers(context, null);
-            _DictDb.DeleteAgentPeoples(context, null);
+                _AdminDb.DeleteSubordinations(context, null);
 
-            _DictDb.DeleteAgentAccounts(context, null);
-            _DictDb.DeleteAddressTypes(context, null);
-            _DictDb.DeleteContactType(context, null);
+                _AdminDb.DeleteRegistrationJournalPositions(context, null);
 
-            _DictDb.DeleteAgents(context, null);
+                _EncrDb.DeleteCertificate(context, null);
 
-            _SystemDb.DeleteSystemLogs(context, null);
-            _SystemDb.DeleteSystemSearchQueryLogs(context, null);
-            _SystemDb.DeleteSystemSettings(context);
+
+
+                _DictDb.DeleteTags(context, null);
+
+                _DictDb.DeleteStandartSendListContents(context, null);
+                _DictDb.DeleteStandartSendList(context, null);
+
+                _DictDb.DeleteCustomDictionaries(context, null);
+                _DictDb.DeleteCustomDictionaryType(context, null);
+
+                _DictDb.DeleteStandartSendListContents(context, null);
+                _DictDb.DeleteStandartSendList(context, null);
+
+                // Структура организации
+                _DictDb.DeleteExecutors(context, null);
+                _DictDb.DeletePositions(context, null);
+                _DictDb.DeleteDepartments(context, null);
+                _DictDb.DeleteAgentOrg(context, null);
+
+
+                // Агенты
+                _DictDb.DeleteAgentFavourite(context, null);
+
+                _DictDb.DeleteAgentBank(context, null);
+                _DictDb.DeleteAgentCompanies(context, null);
+                _DictDb.DeleteAgentPersons(context, null);
+                _DictDb.DeleteAgentEmployees(context, null);
+                _DictDb.DeleteAgentUsers(context, null);
+                _DictDb.DeleteAgentPeoples(context, null);
+
+                _DictDb.DeleteAgentAccounts(context, null);
+                _DictDb.DeleteAddressTypes(context, null);
+                _DictDb.DeleteContactType(context, null);
+
+                _DictDb.DeleteAgents(context, null);
+
+                _SystemDb.DeleteSystemLogs(context, null);
+                _SystemDb.DeleteSystemSearchQueryLogs(context, null);
+                _SystemDb.DeleteSystemSettings(context);
+
+                transaction.Complete();
+            }
         }
 
         /// <summary>

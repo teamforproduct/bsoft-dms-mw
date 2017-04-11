@@ -527,21 +527,23 @@ namespace DMS_WebAPI.Utilities
         public void DeleteClient(int Id)
         {
 
-
-
-
             var list = new List<int> { Id };
 
-            _webDb.DeleteClientLicence(new FilterAspNetClientLicences { ClientIds = list });
-            _webDb.DeleteClientServer(new FilterAspNetClientServers { ClientIds = list });
+            using (var transaction = Transactions.GetTransaction())
+            {
+                _webDb.DeleteClientLicence(new FilterAspNetClientLicences { ClientIds = list });
+                _webDb.DeleteClientServer(new FilterAspNetClientServers { ClientIds = list });
+                _webDb.DeleteClient(Id);
 
-            var users = _webDb.GetUserClients(new FilterAspNetUserClients { ClientIds = list }).Select(x => x.UserId).ToList();
+                var users = _webDb.GetUserClients(new FilterAspNetUserClients { ClientIds = list }).Select(x => x.UserId).ToList();
 
-            _webDb.DeleteUserClients(new FilterAspNetUserClients { ClientIds = list });
-            _webDb.DeleteUserContexts(new FilterAspNetUserContext { UserIDs = users });
-            _webDb.DeleteUserFingerprints(new FilterAspNetUserFingerprint { UserIDs = users });
-            _webDb.DeleteUserServers(new FilterAspNetUserServers { UserIds = users });
+                _webDb.DeleteUserClients(new FilterAspNetUserClients { ClientIds = list });
+                _webDb.DeleteUserContexts(new FilterAspNetUserContext { UserIDs = users });
+                _webDb.DeleteUserFingerprints(new FilterAspNetUserFingerprint { UserIDs = users });
+                _webDb.DeleteUserServers(new FilterAspNetUserServers { UserIds = users });
 
+                transaction.Complete();
+            }
             //пользователя не удаляю пока
 
             var servers = _webDb.GetServers(new FilterAdminServers { ClientIds = list });
@@ -554,7 +556,6 @@ namespace DMS_WebAPI.Utilities
                 var ctx = new AdminContext(server);
                 clientService.Delete(ctx);
             }
-
 
         }
 
