@@ -10,8 +10,7 @@ namespace BL.Model.Users
         /// <summary>
         /// ИД должности, от которой будет выполнятся действие
         /// </summary>
-        [Required]
-        public int CurrentPositionId { get; set; }
-//        public string Name { get; set; }
+        public int? CurrentPositionId { get; set; }
+
     }
 }

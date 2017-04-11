@@ -295,7 +295,7 @@
         /// <summary>
         /// Добавить план работы по стандартному списку
         /// </summary>
-        AddByStandartSendListDocumentSendList = 103002,
+        //AddByStandartSendListDocumentSendList = 103002,
 
         /// <summary>
         ///  Изменить документ

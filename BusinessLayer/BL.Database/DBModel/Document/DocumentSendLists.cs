@@ -12,7 +12,7 @@ namespace BL.Database.DBModel.Document
         public DocumentSendLists()
         {
             this.PaperEvents = new HashSet<DocumentEvents>();
-            this.SendListAccessGroups = new HashSet<DocumentSendListAccessGroups>();
+            this.AccessGroups = new HashSet<DocumentSendListAccessGroups>();
         }
         public int Id { get; set; }
         [Index("IX_ClientId", 1)]
@@ -87,6 +87,6 @@ namespace BL.Database.DBModel.Document
         [ForeignKey("SendListId")]
         public virtual ICollection<DocumentEvents> PaperEvents { get; set; }
         [ForeignKey("SendListId")]
-        public virtual ICollection<DocumentSendListAccessGroups> SendListAccessGroups { get; set; }
+        public virtual ICollection<DocumentSendListAccessGroups> AccessGroups { get; set; }
     }
 }

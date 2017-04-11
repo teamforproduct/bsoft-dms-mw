@@ -107,5 +107,9 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// Признак, запуска пункта плана сразу после сохранения
         /// </summary>
         public bool? IsLaunchItem { get; set; }
+        /// <summary>
+        /// группы получателей
+        /// </summary>
+        public List<AccessGroup> TargetAccessGroups { get; set; }
     }
 }

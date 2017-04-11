@@ -5,7 +5,7 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// группы получателей
     /// </summary>
-    public class EventAccessGroup
+    public class AccessGroup
     {
         /// <summary>
         /// тип доступа к событию

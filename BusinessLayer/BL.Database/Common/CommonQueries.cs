@@ -1534,7 +1534,7 @@ namespace BL.Database.Common
                 }
             });
 
-            tasks.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
+            tasks.ForEach(x => CommonQueries.SetRegistrationFullNumber(x));
 
             return tasks;
 
@@ -2262,7 +2262,7 @@ namespace BL.Database.Common
 
             }).ToList();
 
-            items.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
+            items.ForEach(x => CommonQueries.SetRegistrationFullNumber(x));
 
             return items;
         }
@@ -2323,7 +2323,19 @@ namespace BL.Database.Common
         #endregion
 
         #region RegistrationFullNumber
-        public static void ChangeRegistrationFullNumber(FrontDocument item, bool isClearFields = true)
+        public static string GetRegistrationFullNumber(InternalDocument item)
+        {
+            string res = null;
+            try
+            {
+                if ((item.IsRegistered.HasValue && item.IsRegistered.Value) || item.RegistrationNumber.HasValue)
+                    res = (item.RegistrationNumberPrefix ?? "") + item.RegistrationNumber + (item.RegistrationNumberSuffix ?? "");
+            }
+            catch { }
+            return res;
+        }
+
+        public static void SetRegistrationFullNumber(FrontDocument item, bool isClearFields = true)
         {
             if (item.RegistrationNumber != null)
             {
@@ -2342,19 +2354,7 @@ namespace BL.Database.Common
             }
         }
 
-        public static string GetRegistrationFullNumber(InternalDocument item)
-        {
-            string res = null;
-            try
-            {
-                if ((item.IsRegistered.HasValue && item.IsRegistered.Value) || item.RegistrationNumber.HasValue)
-                    res = (item.RegistrationNumberPrefix ?? "") + item.RegistrationNumber + (item.RegistrationNumberSuffix ?? "");
-            }
-            catch { }
-            return res;
-        }
-
-        public static void ChangeRegistrationFullNumber(FrontRegistrationFullNumber item, bool isClearFields = true)
+        public static void SetRegistrationFullNumber(FrontRegistrationFullNumber item)
         {
             if (item.DocumentDate.HasValue)
             {
@@ -2368,12 +2368,9 @@ namespace BL.Database.Common
             {
                 item.RegistrationFullNumber = null;
             }
-            if (isClearFields)
-            {
-                item.RegistrationNumber = null;
-                item.RegistrationNumberPrefix = null;
-                item.RegistrationNumberSuffix = null;
-            }
+            item.RegistrationNumber = null;
+            item.RegistrationNumberPrefix = null;
+            item.RegistrationNumberSuffix = null;
         }
         #endregion
 
@@ -2874,13 +2871,13 @@ namespace BL.Database.Common
             return res;
         }
         #endregion
-        
+
         #region TaskAccesses
         public static void ModifyDocumentTaskAccesses(IContext context, int documentId, int? taskId = null)
         {
             var dbContext = context.DbContext as DmsContext;
             var qry0 = dbContext.DocumentEventsSet.Where(x => x.ClientId == context.CurrentClientId)
-                .Where(x => x.DocumentId == documentId );
+                .Where(x => x.DocumentId == documentId);
             if (taskId.HasValue)
                 qry0 = qry0.Where(x => x.TaskId == taskId);
             else

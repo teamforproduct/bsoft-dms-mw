@@ -83,19 +83,7 @@ namespace BL.Logic.Common
         };
         #endregion Dictionaries
 
-        internal static string GetTemplateNameForCopy(IContext context, string name)
-        {
-            var _templateDb = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
-            var i = 1;
-            var res = name + $" ({i})";
-            while (_templateDb.ExistsTemplateDocuments(context, new FilterTemplateDocument { NameExectly = res }))
-            {
-                i++;
-                res = name + $" ({i})";
-            }
-            return res;
-        }
-
+        #region Set
         public static void SetAtrributesForNewDocument(IContext context, InternalDocument document)
         {
             document.CreateDate = DateTime.UtcNow.Date;
@@ -189,8 +177,12 @@ namespace BL.Logic.Common
                 document.LastChangeUserId = context.CurrentAgentId;
             }
         }
+        public static void SetLastChange(IContext context, IEnumerable<LastChangeInfo> documents)
+        {
+            documents.ToList().ForEach(x => SetLastChange(context, x));
+        }
 
-        public static void SetEventAccessess(IContext context, InternalDocumentEvent ev, List<EventAccessGroup> accessGroups, bool isVeryfyDocumentAccess = false)
+        public static void SetAccessess(IContext context, InternalDocumentEvent ev, List<AccessGroup> accessGroups, bool isVeryfyDocumentAccess = false)
         {
             if (ev != null)
             {
@@ -198,9 +190,9 @@ namespace BL.Logic.Common
                 var dictDB = DmsResolver.Current.Get<DictionariesDbProcess>();
                 var operationDb = DmsResolver.Current.Get<IDocumentOperationsDbProcess>();
                 var docAccesses = operationDb.GetDocumentAccesses(context, ev.DocumentId);
-                if (accessGroups == null) accessGroups = new List<EventAccessGroup>();
+                if (accessGroups == null) accessGroups = new List<AccessGroup>();
                 if (!accessGroups.Any(x => x.AccessType == EnumEventAccessTypes.Source))
-                    accessGroups.Add(new EventAccessGroup { AccessType = EnumEventAccessTypes.Source, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = context.CurrentPositionId });
+                    accessGroups.Add(new AccessGroup { AccessType = EnumEventAccessTypes.Source, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = context.CurrentPositionId });
                 ev.AccessGroups = accessGroups.Select(x => new InternalDocumentEventAccessGroup
                 {
                     ClientId = ev.ClientId,
@@ -287,11 +279,35 @@ namespace BL.Logic.Common
                 ev.Accesses = accesses;
             }
         }
-        public static void SetLastChange(IContext context, IEnumerable<LastChangeInfo> documents)
-        {
-            documents.ToList().ForEach(x => SetLastChange(context, x));
-        }
 
+        public static void SetAccessess(IContext context, InternalDocumentSendList sl, List<AccessGroup> accessGroups)
+        {
+            if (sl != null)
+            {
+                if (accessGroups == null) accessGroups = new List<AccessGroup>();
+                if (!accessGroups.Any(x => x.AccessType == EnumEventAccessTypes.Source))
+                    accessGroups.Add(new AccessGroup { AccessType = EnumEventAccessTypes.Source, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = context.CurrentPositionId });
+                sl.AccessGroups = accessGroups.Select(x => new InternalDocumentSendListAccessGroup
+                {
+                    ClientId = sl.ClientId,
+                    EntityTypeId = sl.EntityTypeId,
+                    DocumentId = sl.DocumentId,
+                    SendListId = sl.Id,
+                    IsActive = true,
+                    AccessType = x.AccessType,
+                    AccessGroupType = x.AccessGroupType,
+                    PositionId = x.AccessGroupType == EnumEventAccessGroupTypes.Position ? x.RecordId : null,
+                    AgentId = x.AccessGroupType == EnumEventAccessGroupTypes.Agent ? x.RecordId : null,
+                    DepartmentId = x.AccessGroupType == EnumEventAccessGroupTypes.Department ? x.RecordId : null,
+                    CompanyId = x.AccessGroupType == EnumEventAccessGroupTypes.Company ? x.RecordId : null,
+                    StandartSendListId = x.AccessGroupType == EnumEventAccessGroupTypes.SendList ? x.RecordId : null,
+                }).ToList();
+                SetLastChange(context, sl.AccessGroups);
+            }
+        }
+        #endregion Set
+
+        #region GetNew
         public static InternalDocumentAccess GetNewDocumentAccess(IContext context, int entityTypeId, int? documentId = null, EnumDocumentAccesses? accessLevel = null, int? positionId = null)
         {
             var res = new InternalDocumentAccess
@@ -352,7 +368,7 @@ namespace BL.Logic.Common
         }
 
         public static InternalDocumentEvent GetNewDocumentEvent(IContext context, int entityTypeId, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string addDescription = null, int? taskId = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, 
-                                                                List<EventAccessGroup> accessGroups = null, bool isVeryfyDocumentAccess = false)
+                                                                List<AccessGroup> accessGroups = null, bool isVeryfyDocumentAccess = false)
         {
             var sourcePositionExecutor = GetExecutorAgentIdByPositionId(context, sourcePositionId ?? context.CurrentPositionId);
             var targetPositionExecutor = GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId);
@@ -377,11 +393,11 @@ namespace BL.Logic.Common
                 CreateDate = DateTime.UtcNow,
             };
             SetLastChange(context, res);
-            SetEventAccessess(context, res, accessGroups, isVeryfyDocumentAccess);
+            SetAccessess(context, res, accessGroups, isVeryfyDocumentAccess);
             return res;
         }
 
-        public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvents(IContext context, int entityTypeId, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string addDescription = null, int? taskId = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, List<EventAccessGroup> accessGroups = null)
+        public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvents(IContext context, int entityTypeId, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string addDescription = null, int? taskId = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, List<AccessGroup> accessGroups = null)
         {
             return new List<InternalDocumentEvent>
             {
@@ -498,42 +514,6 @@ namespace BL.Logic.Common
             };
         }
 
-        public static int? GetDocumentTaskOrCreateNew(IContext context, InternalDocument document, string task, int? positionId = null, string description = null)
-        {
-            int? taskId = null;
-            if (document.Tasks?.Any() ?? false)
-            {
-                taskId = document.Tasks.Select(x => x.Id).First();
-                //document.Tasks = null;
-            }
-            else
-            {
-                if (string.IsNullOrEmpty(task)) return taskId;
-                var positionExecutor = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(context, positionId ?? context.CurrentPositionId);
-                if (!positionExecutor?.ExecutorAgentId.HasValue ?? true)
-                {
-                    throw new ExecutorAgentForPositionIsNotDefined();
-                }
-                document.Tasks = new List<InternalDocumentTask>
-                {
-                    new InternalDocumentTask
-                    {
-                        DocumentId = document.Id,
-                        ClientId = document.ClientId,
-                        EntityTypeId = document.EntityTypeId,
-                        PositionId = context.CurrentPositionId,
-                        PositionExecutorAgentId = positionExecutor.ExecutorAgentId.Value,
-                        PositionExecutorTypeId = positionExecutor.ExecutorTypeId,
-                        AgentId = context.CurrentAgentId,
-                        Name = task,
-                        Description = description,
-                    }
-                };
-                SetLastChange(context, document.Tasks);
-            }
-            return taskId;
-        }
-
         public static InternalDocumentSendList GetNewDocumentSendList(IContext context, int entityTypeId, BaseModifyDocumentSendList model, int? taskId = null)
         {
             var res = new InternalDocumentSendList
@@ -567,6 +547,7 @@ namespace BL.Logic.Common
                 SelfAttentionDay = model.SelfAttentionDay,
             };
             SetLastChange(context, res);
+            SetAccessess(context, res, model.TargetAccessGroups);
             return res;
         }
 
@@ -584,6 +565,62 @@ namespace BL.Logic.Common
             return res;
         }
 
+        public static InternalTemplateAttachedFile GetNewTemplateAttachedFile(IContext context, InternalTemplateAttachedFile src, int? newOrderNumber = null)
+        {
+            var res = new InternalTemplateAttachedFile
+            {
+                ClientId = context.CurrentClientId,
+                EntityTypeId = src.EntityTypeId,
+                DocumentId = src.DocumentId,
+                Extension = src.Extension,
+                Name = src.Name,
+                FileType = src.FileType,
+                FileSize = src.FileSize,
+                Type = src.Type,
+                FileContent = src.FileContent,
+                OrderInDocument = newOrderNumber ?? src.OrderInDocument,
+                Hash = src.Hash,
+                Description = src.Description,
+                PdfCreated = src.PdfCreated,
+                LastPdfAccess = src.LastPdfAccess
+            };
+            SetLastChange(context, res);
+            return res;
+        }
+
+        public static InternalDocumentAttachedFile GetNewDocumentAttachedFile(IContext context, InternalDocumentAttachedFile src, int? newOrderNumber = null, int? newVersion = null)
+        {
+            var res = new InternalDocumentAttachedFile
+            {
+                ClientId = context.CurrentClientId,
+                EntityTypeId = src.EntityTypeId,
+                Extension = src.Extension,
+                Name = src.Name,
+                FileType = src.FileType,
+                FileSize = src.FileSize,
+                Type = src.Type,
+                Description = src.Description,
+                IsMainVersion = true,
+                IsWorkedOut = src.IsWorkedOut,
+                IsDeleted = src.IsDeleted,
+                FileContent = src.FileContent,
+                Hash = src.Hash,
+                OrderInDocument = newOrderNumber ?? src.OrderInDocument,
+                Date = DateTime.UtcNow,
+                Version = newVersion ?? 1,
+                WasChangedExternal = false,
+                ExecutorPositionId = src.ExecutorPositionId,
+                ExecutorPositionExecutorAgentId = src.ExecutorPositionExecutorAgentId,
+                ExecutorPositionExecutorTypeId = src.ExecutorPositionExecutorTypeId,
+                PdfCreated = src.PdfCreated,
+                LastPdfAccess = src.LastPdfAccess
+            };
+            SetLastChange(context, res);
+            return res;
+        }
+        #endregion GetNew
+
+        #region Paper
         public static InternalDocumentPaper GetNewDocumentPaper(IContext context, int entityTypeId, BaseModifyDocumentPaper model, int orderNumber)
         {
             var res = new InternalDocumentPaper
@@ -712,6 +749,45 @@ namespace BL.Logic.Common
 
                 }
             }
+        }
+
+        #endregion Paper
+
+        #region Misc
+        public static int? GetDocumentTaskOrCreateNew(IContext context, InternalDocument document, string task, int? positionId = null, string description = null)
+        {
+            int? taskId = null;
+            if (document.Tasks?.Any() ?? false)
+            {
+                taskId = document.Tasks.Select(x => x.Id).First();
+                //document.Tasks = null;
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(task)) return taskId;
+                var positionExecutor = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(context, positionId ?? context.CurrentPositionId);
+                if (!positionExecutor?.ExecutorAgentId.HasValue ?? true)
+                {
+                    throw new ExecutorAgentForPositionIsNotDefined();
+                }
+                document.Tasks = new List<InternalDocumentTask>
+                {
+                    new InternalDocumentTask
+                    {
+                        DocumentId = document.Id,
+                        ClientId = document.ClientId,
+                        EntityTypeId = document.EntityTypeId,
+                        PositionId = context.CurrentPositionId,
+                        PositionExecutorAgentId = positionExecutor.ExecutorAgentId.Value,
+                        PositionExecutorTypeId = positionExecutor.ExecutorTypeId,
+                        AgentId = context.CurrentAgentId,
+                        Name = task,
+                        Description = description,
+                    }
+                };
+                SetLastChange(context, document.Tasks);
+            }
+            return taskId;
         }
 
         public static IEnumerable<BaseSystemUIElement> VerifyDocument(IContext ctx, FrontDocument doc, IEnumerable<BaseSystemUIElement> uiElements)
@@ -944,59 +1020,6 @@ namespace BL.Logic.Common
             return new List<FrontDocumentSendListStage>();
         }
 
-        public static InternalTemplateAttachedFile GetNewTemplateAttachedFile(IContext context, InternalTemplateAttachedFile src, int? newOrderNumber = null)
-        {
-            var res = new InternalTemplateAttachedFile
-            {
-                ClientId = context.CurrentClientId,
-                EntityTypeId = src.EntityTypeId,
-                DocumentId = src.DocumentId,
-                Extension = src.Extension,
-                Name = src.Name,
-                FileType = src.FileType,
-                FileSize = src.FileSize,
-                Type = src.Type,
-                FileContent = src.FileContent,
-                OrderInDocument = newOrderNumber ?? src.OrderInDocument,
-                Hash = src.Hash,
-                Description = src.Description,
-                PdfCreated = src.PdfCreated,
-                LastPdfAccess = src.LastPdfAccess
-            };
-            SetLastChange(context, res);
-            return res;
-        }
-
-        public static InternalDocumentAttachedFile GetNewDocumentAttachedFile(IContext context, InternalDocumentAttachedFile src, int? newOrderNumber = null, int? newVersion = null)
-        {
-            var res = new InternalDocumentAttachedFile
-            {
-                ClientId = context.CurrentClientId,
-                EntityTypeId = src.EntityTypeId,
-                Extension = src.Extension,
-                Name = src.Name,
-                FileType = src.FileType,
-                FileSize = src.FileSize,
-                Type = src.Type,
-                Description = src.Description,
-                IsMainVersion = true,
-                IsWorkedOut = src.IsWorkedOut,
-                IsDeleted = src.IsDeleted,
-                FileContent = src.FileContent,
-                Hash = src.Hash,
-                OrderInDocument = newOrderNumber ?? src.OrderInDocument,
-                Date = DateTime.UtcNow,
-                Version = newVersion ?? 1,
-                WasChangedExternal = false,
-                ExecutorPositionId = src.ExecutorPositionId,
-                ExecutorPositionExecutorAgentId = src.ExecutorPositionExecutorAgentId,
-                ExecutorPositionExecutorTypeId = src.ExecutorPositionExecutorTypeId,
-                PdfCreated = src.PdfCreated,
-                LastPdfAccess = src.LastPdfAccess
-            };
-            SetLastChange(context, res);
-            return res;
-        }
 
         public static void CorrectModel(IContext context, AddTemplateDocumentSendList model)
         {
@@ -1059,6 +1082,53 @@ namespace BL.Logic.Common
             }
             return res;
         }
+
+        internal static string GetTemplateNameForCopy(IContext context, string name)
+        {
+            var _templateDb = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
+            var i = 1;
+            var res = name + $" ({i})";
+            while (_templateDb.ExistsTemplateDocuments(context, new FilterTemplateDocument { NameExectly = res }))
+            {
+                i++;
+                res = name + $" ({i})";
+            }
+            return res;
+        }
+
+        public static List<int> GetLinkedDocuments(int id, IEnumerable<InternalDocumentLink> link)
+        {
+            List<int> res = new List<int> { id };
+            List<int> resInit = new List<int> { id };
+            var oldCount = 1;
+            var newCount = 0;
+            while (oldCount != newCount && res.Count > 0)
+            {
+                oldCount = res.Count;
+                res = link.Where(x => res.Contains(x.DocumentId) || res.Contains(x.ParentDocumentId)).Select(x => x.DocumentId)
+                        .Concat(link.Where(x => res.Contains(x.DocumentId) || res.Contains(x.ParentDocumentId)).Select(x => x.ParentDocumentId))
+                        .Concat(resInit)
+                        .GroupBy(x => x).Select(x => x.Key).ToList();
+                newCount = res.Count;
+            }
+            return res;
+        }
+
+        public static void ThrowError(IContext context, Exception ex, InternalDocumentSendList model)
+        {
+            if (ex != null)
+            {
+                if (model.Stage.HasValue)
+                {
+                    model.AddDescription = (ex is DmsExceptions) ? "##l@DmsExceptions:" + ex.GetType().Name + "@l##" : ex.Message;
+                    var _operationDb = DmsResolver.Current.Get<IDocumentOperationsDbProcess>();
+                    _operationDb.ModifyDocumentSendListAddDescription(context, model);
+                }
+                throw ex;
+            }
+        }
+
+        #endregion Misc
 
         #region RegistrationNumber
         public static void FormationRegistrationNumberByFormula(InternalDocument doc, InternalDocumnRegistration model)
@@ -1295,37 +1365,7 @@ namespace BL.Logic.Common
         }
         #endregion Property
 
-        public static List<int> GetLinkedDocuments(int id, IEnumerable<InternalDocumentLink> link)
-        {
-            List<int> res = new List<int> { id };
-            List<int> resInit = new List<int> { id };
-            var oldCount = 1;
-            var newCount = 0;
-            while (oldCount != newCount && res.Count > 0)
-            {
-                oldCount = res.Count;
-                res = link.Where(x => res.Contains(x.DocumentId) || res.Contains(x.ParentDocumentId)).Select(x => x.DocumentId)
-                        .Concat(link.Where(x => res.Contains(x.DocumentId) || res.Contains(x.ParentDocumentId)).Select(x => x.ParentDocumentId))
-                        .Concat(resInit)
-                        .GroupBy(x => x).Select(x => x.Key).ToList();
-                newCount = res.Count;
-            }
-            return res;
-        }
 
-        public static void ThrowError(IContext context, Exception ex, InternalDocumentSendList model)
-        {
-            if (ex != null)
-            {
-                if (model.Stage.HasValue)
-                {
-                    model.AddDescription = (ex is DmsExceptions) ? "##l@DmsExceptions:" + ex.GetType().Name + "@l##" : ex.Message;
-                    var _operationDb = DmsResolver.Current.Get<IDocumentOperationsDbProcess>();
-                    _operationDb.ModifyDocumentSendListAddDescription(context, model);
-                }
-                throw ex;
-            }
-        }
 
 
     }

@@ -156,6 +156,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DocumentEvents> DocumentEventsSet { get; set; }
         public virtual DbSet<DocumentRestrictedSendLists> DocumentRestrictedSendListsSet { get; set; }
         public virtual DbSet<DocumentSendLists> DocumentSendListsSet { get; set; }
+        public virtual DbSet<DocumentSendListAccessGroups> DocumentSendListAccessGroupsSet { get; set; }
         public virtual DbSet<DocumentSubscriptions> DocumentSubscriptionsSet { get; set; }
         public virtual DbSet<DocumentWaits> DocumentWaitsSet { get; set; }
         public virtual DbSet<DocumentTags> DocumentTagsSet { get; set; }
@@ -168,6 +169,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DocumentPaperLists> DocumentPaperListsSet { get; set; }
 
         public virtual DbSet<TemplateDocumentSendLists> TemplateDocumentSendListsSet { get; set; }
+        public virtual DbSet<TemplateDocumentSendListAccessGroups> TemplateDocumentSendListAccessGroupsSet { get; set; }
         public virtual DbSet<TemplateDocumentRestrictedSendLists> TemplateDocumentRestrictedSendListsSet { get; set; }
         public virtual DbSet<TemplateDocumentAccesses> TemplateDocumentAccessesSet { get; set; }
         public virtual DbSet<TemplateDocuments> TemplateDocumentsSet { get; set; }

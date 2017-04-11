@@ -17,8 +17,8 @@ namespace BL.Database.DBModel.Document
             this.DoneSubscription = new HashSet<DocumentSubscriptions>();
             this.StartSendList = new HashSet<DocumentSendLists>();
             this.CloseSendList = new HashSet<DocumentSendLists>();
-            this.EventAccesses = new HashSet<DocumentEventAccesses>();
-            this.EventAccessGroups = new HashSet<DocumentEventAccessGroups>();
+            this.Accesses = new HashSet<DocumentEventAccesses>();
+            this.AccessGroups = new HashSet<DocumentEventAccessGroups>();
             this.Files = new HashSet<DocumentFiles>();
             this.ChildEvents = new HashSet<DocumentEvents>();
         }
@@ -115,9 +115,9 @@ namespace BL.Database.DBModel.Document
         [ForeignKey("CloseEventId")]
         public virtual ICollection<DocumentSendLists> CloseSendList { get; set; }
         [ForeignKey("EventId")]
-        public virtual ICollection<DocumentEventAccesses> EventAccesses { get; set; }
+        public virtual ICollection<DocumentEventAccesses> Accesses { get; set; }
         [ForeignKey("EventId")]
-        public virtual ICollection<DocumentEventAccessGroups> EventAccessGroups { get; set; }
+        public virtual ICollection<DocumentEventAccessGroups> AccessGroups { get; set; }
         [ForeignKey("EventId")]
         public virtual ICollection<DocumentFiles> Files { get; set; }
 

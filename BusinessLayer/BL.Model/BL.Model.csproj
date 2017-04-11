@@ -156,7 +156,8 @@
     <Compile Include="DictionaryCore\InternalModel\SortPositoin.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentEventAccess.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentEventAccessGroup.cs" />
-    <Compile Include="DocumentCore\IncomingModel\EventAccessGroup.cs" />
+    <Compile Include="DocumentCore\IncomingModel\AccessGroup.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalDocumentSendListAccessGroup.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentEventAccessGroup.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentEventAccess.cs" />
     <Compile Include="EncryptionCore\InternalModel\VerifyPdfCertificate.cs" />

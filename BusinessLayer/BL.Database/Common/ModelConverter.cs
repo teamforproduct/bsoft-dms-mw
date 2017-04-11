@@ -124,14 +124,40 @@ namespace BL.Database.Common
                     DepartmentId = access.DepartmentId,
                     StandartSendListId = access.StandartSendListId,
                     IsActive = access.IsActive,
-
-
                 };
         }
 
         public static IEnumerable<DocumentEventAccessGroups> GetDbDocumentEventAccessGroups(IEnumerable<InternalDocumentEventAccessGroup> accesses)
         {
             return accesses?.Any() ?? false ? accesses.Select(GetDbDocumentEventAccessGroup) : null;
+        }
+
+        public static DocumentSendListAccessGroups GetDbDocumentSendListAccessGroup(InternalDocumentSendListAccessGroup access)
+        {
+            return access == null ? null :
+                new DocumentSendListAccessGroups
+                {
+                    Id = access.Id,
+                    EntityTypeId = access.EntityTypeId,
+                    ClientId = access.ClientId,
+                    LastChangeDate = access.LastChangeDate,
+                    LastChangeUserId = access.LastChangeUserId,
+                    DocumentId = access.DocumentId,
+                    SendListId = access.SendListId,
+                    AccessTypeId = (int)access.AccessType,
+                    AccessGroupTypeId = (int)access.AccessGroupType,
+                    PositionId = access.PositionId,
+                    AgentId = access.AgentId,
+                    CompanyId = access.CompanyId,
+                    DepartmentId = access.DepartmentId,
+                    StandartSendListId = access.StandartSendListId,
+                    IsActive = access.IsActive,
+                };
+        }
+
+        public static IEnumerable<DocumentSendListAccessGroups> GetDbDocumentSendListAccessGroups(IEnumerable<InternalDocumentSendListAccessGroup> accesses)
+        {
+            return accesses?.Any() ?? false ? accesses.Select(GetDbDocumentSendListAccessGroup) : null;
         }
 
         public static DocumentEvents GetDbDocumentEvent(InternalDocumentEvent evt)
@@ -161,8 +187,8 @@ namespace BL.Database.Common
                     SourcePositionExecutorTypeId = evt.SourcePositionExecutorTypeId,
                     ReadAgentId = evt.ReadAgentId,
                     ReadDate = evt.ReadDate,
-                    EventAccesses = GetDbDocumentEventAccesses(evt.Accesses)?.ToList(),
-                    EventAccessGroups = GetDbDocumentEventAccessGroups(evt.AccessGroups)?.ToList(),
+                    Accesses = GetDbDocumentEventAccesses(evt.Accesses)?.ToList(),
+                    AccessGroups = GetDbDocumentEventAccessGroups(evt.AccessGroups)?.ToList(),
                     PaperId = evt.PaperId,
                     PaperPlanAgentId = evt.PaperPlanAgentId,
                     PaperPlanDate = evt.PaperPlanDate,
@@ -322,6 +348,9 @@ namespace BL.Database.Common
                     TargetPositionId = sendList.TargetPositionId,
                     TargetPositionExecutorAgentId = sendList.TargetPositionExecutorAgentId,
                     TargetPositionExecutorTypeId = sendList.TargetPositionExecutorTypeId,
+
+                    AccessGroups = GetDbDocumentSendListAccessGroups(sendList.AccessGroups)?.ToList(),
+
                     LastChangeUserId = sendList.LastChangeUserId,
                     LastChangeDate = sendList.LastChangeDate
                 };

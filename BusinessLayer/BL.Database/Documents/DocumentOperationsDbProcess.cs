@@ -456,7 +456,7 @@ namespace BL.Database.Documents
 
         public FrontDocumentEvent GetDocumentEvent(IContext context, int eventId)
         {
-            var dbContext = context.DbContext as DmsContext;
+
             using (var transaction = Transactions.GetTransaction())
             {
                 var res = CommonQueries.GetDocumentEventQuery(context, new FilterDocumentEvent { EventId = new List<int> { eventId } })
@@ -468,7 +468,7 @@ namespace BL.Database.Documents
                         DocumentDirectionName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentDirection.Name : null,
                         ReadAgentId = x.ReadAgentId,
                         ReadAgentName = x.ReadAgent.Name,
-                        ReadDate = x.ReadAgentId.HasValue ? x.ReadDate : null,
+                        ReadDate = x.ReadDate,
                         SourceAgentId = x.SourceAgentId,
                         SourceAgentName = x.SourceAgent.Name,
                         TargetAgentId = x.TargetAgentId,
@@ -485,16 +485,20 @@ namespace BL.Database.Documents
                         LastChangeDate = x.LastChangeDate
                     }).FirstOrDefault();
                 if (res != null)
-
-                    res.Accesses = dbContext.DocumentEventAccessesSet.Where(x => x.EventId == eventId).Select(y => new FrontDocumentEventAccess
-                    {
-                        AccessType = (EnumEventAccessTypes)y.AccessTypeId,
-                        Name = y.Agent.Name + (y.PositionExecutorType.Suffix != null ? " (" + y.PositionExecutorType.Suffix + ")" : null),
-                    }).ToList();
-
+                    SetAccesses(context, new List<FrontDocumentEvent> { res });
                 transaction.Complete();
                 return res;
             }
+        }
+        private void SetAccesses(IContext context, List<FrontDocumentEvent> items)
+        {
+            var dbContext = context.DbContext as DmsContext;
+            foreach (var item in items)
+                item.Accesses = dbContext.DocumentEventAccessesSet.Where(x => x.EventId == item.Id).Select(y => new FrontDocumentEventAccess
+                {
+                    AccessType = (EnumEventAccessTypes)y.AccessTypeId,
+                    Name = y.Agent.Name + (y.PositionExecutorType.Suffix != null ? " (" + y.PositionExecutorType.Suffix + ")" : null),
+                }).ToList();
         }
 
         public IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext context, FilterBase filter, UIPaging paging)
@@ -603,13 +607,12 @@ namespace BL.Database.Documents
                     }
                 }
 
-                var maxDateTime = DateTime.UtcNow.AddYears(50);
                 var isNeedRegistrationFullNumber = !(filter?.Event?.DocumentId?.Any() ?? false);
 
                 var qryView = dbContext.DocumentEventsSet.Where(x => qryRes.Select(y => y.Id).Contains(x.Id))
                     //TODO Sort
                     .OrderByDescending(x => x.Date)
-                    .Select(x => new
+                    .Select(x => new FrontDocumentEvent
                     {
                         Id = x.Id,
                         DocumentId = x.DocumentId,
@@ -620,6 +623,7 @@ namespace BL.Database.Documents
                         Task = x.Task.Task,
                         Description = x.Description,
                         AddDescription = x.AddDescription,
+
                         SourcePositionExecutorAgentName = x.SourcePositionExecutorAgent.Name + (x.SourcePositionExecutorType.Suffix != null ? " (" + x.SourcePositionExecutorType.Suffix + ")" : null),
                         TargetPositionExecutorAgentName = (x.TargetPositionExecutorAgent.Name + (x.TargetPositionExecutorType.Suffix != null ? " (" + x.TargetPositionExecutorType.Suffix + ")" : null))
                                                           ?? x.TargetAgent.Name,
@@ -629,89 +633,76 @@ namespace BL.Database.Documents
                         RegistrationNumberSuffix = x.Document.RegistrationNumberSuffix,
                         RegistrationFullNumber = "#" + x.Document.Id,
 
-                        OnWait = x.OnWait.Select(y => new { DueDate = y.DueDate, OffEventDate = (DateTime?)y.OffEvent.Date }).FirstOrDefault(),
+                        OnWait = x.OnWait.Select(y => new FrontDocumentWait { DueDate = y.DueDate, OffEventDate = (DateTime?)y.OffEvent.Date }).FirstOrDefault(),
 
                         //For IsRead
                         TargetPositionId = x.TargetPositionId,
                         SourcePositionId = x.SourcePositionId,
-                        ReadDate = x.ReadAgentId.HasValue ? x.ReadDate : null,
+                        ReadDate = x.ReadDate,
 
-                        PaperId = (int?)x.Paper.Id,
+                        PaperId = x.Paper.Id,
                         PaperName = x.Paper.Name,
-                        PaperIsMain = (bool?)x.Paper.IsMain,
-                        PaperIsOriginal = (bool?)x.Paper.IsOriginal,
-                        PaperIsCopy = (bool?)x.Paper.IsCopy,
-                        PaperOrderNumber = (int?)x.Paper.OrderNumber,
+                        PaperIsMain = x.Paper.IsMain,
+                        PaperIsOriginal = x.Paper.IsOriginal,
+                        PaperIsCopy = x.Paper.IsCopy,
+                        PaperOrderNumber = x.Paper.OrderNumber,
 
                         PaperPlanDate = x.PaperPlanDate,
                         PaperSendDate = x.PaperSendDate,
                         PaperRecieveDate = x.PaperRecieveDate,
                     });
 
-                var qryFE = qryView.ToList();
+                var res = qryView.ToList();
 
-                var res = qryFE.Select(x => new FrontDocumentEvent
-                {
-                    Id = x.Id,
-                    DocumentId = x.DocumentId,
-                    EventType = x.EventType,
-                    EventTypeName = x.EventTypeName,
-                    Date = x.Date,
-                    CreateDate = x.CreateDate,
-                    Task = x.Task,
-                    Description = x.Description,
-                    AddDescription = x.AddDescription,
-                    SourcePositionExecutorAgentName = x.SourcePositionExecutorAgentName,
-                    TargetPositionExecutorAgentName = x.TargetPositionExecutorAgentName,
-                    DocumentDate = x.DocumentDate,
-                    RegistrationNumber = x.RegistrationNumber,
-                    RegistrationNumberPrefix = x.RegistrationNumberPrefix,
-                    RegistrationNumberSuffix = x.RegistrationNumberSuffix,
-                    RegistrationFullNumber = x.RegistrationFullNumber,
+                res.ForEach(x => CommonQueries.SetRegistrationFullNumber(x));
+                SetAccessGroups(context, res);
+                SetWaitInfo(context, res);
 
-                    DueDate = x.OnWait != null ? x.OnWait.DueDate > maxDateTime ? null : x.OnWait.DueDate : null,
-                    CloseDate = x.OnWait != null ? x.OnWait.OffEventDate : null,
-                    IsOnEvent = x.OnWait != null,
-
-                    IsRead = !x.TargetPositionId.HasValue || x.TargetPositionId == x.SourcePositionId || !context.CurrentPositionsIdList.Contains(x.TargetPositionId ?? 0) ? null : (bool?)x.ReadDate.HasValue,
-
-                    PaperId = x.PaperId,
-                    PaperName = x.PaperName,
-                    PaperIsMain = x.PaperIsMain,
-                    PaperIsOriginal = x.PaperIsOriginal,
-                    PaperIsCopy = x.PaperIsCopy,
-                    PaperOrderNumber = x.PaperOrderNumber,
-
-                    PaperPlanDate = x.PaperPlanDate,
-                    PaperSendDate = x.PaperSendDate,
-                    PaperRecieveDate = x.PaperRecieveDate,
-                }).ToList();
-
-                res.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
-
-                var qryAcc = dbContext.DocumentEventAccessGroupsSet.AsQueryable();
-                var ids = res.Select(x => x.Id).ToList();
-                var filterEvContains = PredicateBuilder.New<DocumentEventAccessGroups>(false);
-                filterEvContains = ids.Aggregate(filterEvContains,
-                    (current, value) => current.Or(e => e.EventId == value).Expand());
-                qryAcc = qryAcc.Where(filterEvContains);
-                var accGroups = qryAcc.GroupBy(x => x.EventId).Select(x => new
-                {
-                    EventId = x.Key,
-                    AccessGroups = x.Select(y => new FrontDocumentEventAccessGroup
-                    {
-                        AccessType = (EnumEventAccessTypes)y.AccessTypeId,
-                        AccessGroupType = (EnumEventAccessGroupTypes)y.AccessGroupTypeId,
-                        Name = y.Agent.Name ?? y.Company.Agent.Name ?? y.Department.Name ?? y.Position.Name ?? y.StandartSendList.Name,
-                    }).ToList(),
-                }).ToList();
-
-                res.ForEach(x => x.AccessGroups = accGroups.Where(y => y.EventId == x.Id).Select(y => y.AccessGroups).FirstOrDefault());
                 #endregion filling
 
                 transaction.Complete();
                 return res;
             }
+        }
+        private void SetReadInfo(IContext context, List<FrontDocumentEvent> events)
+        {
+            foreach (var item in events)
+            {
+                item.IsRead = !item.TargetPositionId.HasValue || item.TargetPositionId == item.SourcePositionId || !context.CurrentPositionsIdList.Contains(item.TargetPositionId ?? 0)
+                    ? null : (bool?)item.ReadDate.HasValue;
+            }
+        }
+        private void SetWaitInfo(IContext context, List<FrontDocumentEvent> events)
+        {
+            var maxDateTime = DateTime.UtcNow.AddYears(50);
+            foreach (var item in events)
+            {
+                item.DueDate = item.OnWait != null ? item.OnWait.DueDate > maxDateTime ? null : item.OnWait.DueDate : null;
+                item.CloseDate = item.OnWait != null ? item.OnWait.OffEventDate : null;
+                item.IsOnEvent = item.OnWait != null;
+                item.OnWait = null;
+            }
+        }
+        private void SetAccessGroups(IContext context, List<FrontDocumentEvent> events)
+        {
+            var dbContext = context.DbContext as DmsContext;
+            var qryAcc = dbContext.DocumentEventAccessGroupsSet.AsQueryable();
+            var ids = events.Select(x => x.Id).ToList();
+            var filterEvContains = PredicateBuilder.New<DocumentEventAccessGroups>(false);
+            filterEvContains = ids.Aggregate(filterEvContains,
+                (current, value) => current.Or(e => e.EventId == value).Expand());
+            qryAcc = qryAcc.Where(filterEvContains);
+            var accGroups = qryAcc.GroupBy(x => x.EventId).Select(x => new
+            {
+                EventId = x.Key,
+                AccessGroups = x.Select(y => new FrontDocumentEventAccessGroup
+                {
+                    AccessType = (EnumEventAccessTypes)y.AccessTypeId,
+                    AccessGroupType = (EnumEventAccessGroupTypes)y.AccessGroupTypeId,
+                    Name = y.Agent.Name ?? y.Company.Agent.Name ?? y.Department.Name ?? y.Position.Name ?? y.StandartSendList.Name,
+                }).ToList(),
+            }).ToList();
+            events.ForEach(x => x.AccessGroups = accGroups.Where(y => y.EventId == x.Id).Select(y => y.AccessGroups).FirstOrDefault());
         }
         public IEnumerable<FrontDocumentWait> GetDocumentWaits(IContext context, FilterBase filter, UIPaging paging)
         {
@@ -881,7 +872,7 @@ namespace BL.Database.Documents
                             TargetPositionExecutorAgentName = x.OnEvent.TargetPositionExecutorAgent.Name + (x.OnEvent.TargetPositionExecutorType.Suffix != null ? " (" + x.OnEvent.TargetPositionExecutorType.Suffix + ")" : (string)null),
 
                             ReadAgentName = x.OnEvent.ReadAgent.Name,
-                            ReadDate = x.OnEvent.ReadAgentId.HasValue ? x.OnEvent.ReadDate : null,
+                            ReadDate = x.OnEvent.ReadDate,
                             SourceAgentId = x.OnEvent.SourceAgentId,
                             SourceAgentName = x.OnEvent.SourceAgent.Name,
 
@@ -908,7 +899,7 @@ namespace BL.Database.Documents
                             TargetPositionExecutorAgentName = x.OffEvent.TargetPositionExecutorAgent.Name + (x.OffEvent.TargetPositionExecutorType.Suffix != null ? " (" + x.OffEvent.TargetPositionExecutorType.Suffix + ")" : (string)null),
 
                             ReadAgentName = x.OffEvent.ReadAgent.Name,
-                            ReadDate = x.OffEvent.ReadAgentId.HasValue ? x.OffEvent.ReadDate : null,
+                            ReadDate = x.OffEvent.ReadDate,
                             SourceAgentId = x.OffEvent.SourceAgentId,
                             SourceAgentName = x.OffEvent.SourceAgent.Name,
 
@@ -921,7 +912,7 @@ namespace BL.Database.Documents
 
                 var res = qryFE.ToList();
 
-                res.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
+                res.ForEach(x => CommonQueries.SetRegistrationFullNumber(x));
                 #endregion filling
 
                 transaction.Complete();
@@ -1005,7 +996,7 @@ namespace BL.Database.Documents
                             Description = x.SendEvent.Description,
                             AddDescription = x.SendEvent.AddDescription,
                             ReadAgentName = x.SendEvent.ReadAgent.Name,
-                            ReadDate = x.SendEvent.ReadAgentId.HasValue ? x.SendEvent.ReadDate : null,
+                            ReadDate = x.SendEvent.ReadDate,
                             SourceAgentId = x.SendEvent.SourceAgentId,
                             SourceAgentName = x.SendEvent.SourceAgent.Name,
                             SourcePositionName = x.SendEvent.SourcePosition.Name,
@@ -1031,7 +1022,7 @@ namespace BL.Database.Documents
                             AddDescription = x.DoneEvent.AddDescription,
 
                             ReadAgentName = x.DoneEvent.ReadAgent.Name,
-                            ReadDate = x.DoneEvent.ReadAgentId.HasValue ? x.DoneEvent.ReadDate : null,
+                            ReadDate = x.DoneEvent.ReadDate,
                             SourceAgentId = x.DoneEvent.SourceAgentId,
                             SourceAgentName = x.DoneEvent.SourceAgent.Name,
                             //TODO Фронт очен хочет поля SourcePositionId, TargetPositionId
@@ -1053,7 +1044,7 @@ namespace BL.Database.Documents
 
                 }).ToList();
 
-                res.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
+                res.ForEach(x => CommonQueries.SetRegistrationFullNumber(x));
                 transaction.Complete();
                 return res;
             }
@@ -1764,7 +1755,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.DocumentEventsSet.Where(x => !x.ReadDate.HasValue && (!x.TargetPositionId.HasValue || x.TargetPositionId == x.SourcePositionId))
-                    .Update(x => new DocumentEvents { ReadDate = x.CreateDate });
+                    .Update(x => new DocumentEvents { ReadDate = x.CreateDate, ReadAgentId = x.SourceAgentId });
                 //dbContext.SaveChanges();
                 transaction.Complete();
             }
@@ -2822,6 +2813,7 @@ namespace BL.Database.Documents
                 if (item != null)
                 {
                     dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.ClientId == context.CurrentClientId).Where(x => x.SendListId == sendList.Id && x.PaperPlanDate == null));
+                    dbContext.DocumentSendListAccessGroupsSet.RemoveRange(dbContext.DocumentSendListAccessGroupsSet.Where(x => x.ClientId == context.CurrentClientId).Where(x => x.SendListId == sendList.Id));
                     dbContext.DocumentSendListsSet.Remove(item);
                     dbContext.SaveChanges();
                 }

@@ -350,7 +350,6 @@
     <Compile Include="DocumentCore\Interfaces\IDocumentTaskService.cs" />
     <Compile Include="DocumentCore\ReportCommand\ReportRegisterTransmissionDocumentsCommand.cs" />
     <Compile Include="DocumentCore\ReportCommand\ReportRegistrationCardDocumentCommand.cs" />
-    <Compile Include="DocumentCore\SendListCommands\AddByStandartSendListDocumentSendListCommand.cs" />
     <Compile Include="DocumentCore\SendListCommands\AddByStandartSendListDocumentRestrictedSendListCommand.cs" />
     <Compile Include="DocumentCore\AdditionalCommands\AddDocumentFileCommand.cs" />
     <Compile Include="DocumentCore\SendListCommands\DeleteDocumentSendListCommand.cs" />

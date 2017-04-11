@@ -182,7 +182,6 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentCommand>().To<ModifySavedFilterCommand>();
 
             Bind<IDocumentCommand>().To<AddByStandartSendListDocumentRestrictedSendListCommand>();
-            Bind<IDocumentCommand>().To<AddByStandartSendListDocumentSendListCommand>();
             Bind<IDocumentCommand>().To<AddDocumentRestrictedSendListCommand>();
             Bind<IDocumentCommand>().To<AddDocumentSendListCommand>();
             Bind<IDocumentCommand>().To<AddDocumentSendListStageCommand>();

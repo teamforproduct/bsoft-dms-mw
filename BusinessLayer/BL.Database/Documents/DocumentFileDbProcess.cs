@@ -140,7 +140,7 @@ namespace BL.Database.Documents
                     res.ForEach(x => x.IsNotAllWorkedOut = isNotAllWorkedOut.FirstOrDefault(y => y.DocumentId == x.DocumentId && y.OrderNumber == x.OrderInDocument)?.IsNotAllWorkedOut ?? false);
                 }
 
-                res.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
+                res.ForEach(x => CommonQueries.SetRegistrationFullNumber(x));
                 transaction.Complete();
                 return res;
             }

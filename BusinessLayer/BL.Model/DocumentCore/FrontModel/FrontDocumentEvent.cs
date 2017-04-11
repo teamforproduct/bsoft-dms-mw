@@ -68,8 +68,8 @@ namespace BL.Model.DocumentCore.FrontModel
         private DateTime?  _PaperSendDate; 
         
         public DateTime? PaperRecieveDate { get { return _PaperRecieveDate; } set { _PaperRecieveDate=value.ToUTC(); } }
-        private DateTime?  _PaperRecieveDate; 
-
+        private DateTime?  _PaperRecieveDate;
+        public FrontDocumentWait OnWait { get; set; }
         public string PaperPlanAgentName { get; set; }
         public string PaperSendAgentName { get; set; }
         public string PaperRecieveAgentName { get; set; }

@@ -111,9 +111,9 @@ namespace BL.Logic.DocumentCore
                 case EnumDocumentActions.SendDocument:
                     cmd = DmsResolver.Current.Get<SendDocumentCommand>();
                     break;
-                case EnumDocumentActions.AddByStandartSendListDocumentSendList:
-                    cmd = DmsResolver.Current.Get<AddByStandartSendListDocumentSendListCommand>();
-                    break;
+                //case EnumDocumentActions.AddByStandartSendListDocumentSendList:
+                //    cmd = DmsResolver.Current.Get<AddByStandartSendListDocumentSendListCommand>();
+                //    break;
                 case EnumDocumentActions.ModifyDocumentSendList:
                     cmd = DmsResolver.Current.Get<ModifyDocumentSendListCommand>();
                     break;

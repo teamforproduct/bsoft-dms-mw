@@ -14,7 +14,7 @@ namespace BL.Database.DBModel.Template
     {
         public TemplateDocumentSendLists()
         {
-            this.SendListAccessGroups = new HashSet<TemplateDocumentSendListAccessGroups>();
+            this.AccessGroups = new HashSet<TemplateDocumentSendListAccessGroups>();
         }
         public int Id { get; set; }
         public int DocumentId { get; set; }
@@ -51,7 +51,7 @@ namespace BL.Database.DBModel.Template
         [ForeignKey("TaskId")]
         public virtual TemplateDocumentTasks Task { get; set; }
         [ForeignKey("SendListId")]
-        public virtual ICollection<TemplateDocumentSendListAccessGroups> SendListAccessGroups { get; set; }
+        public virtual ICollection<TemplateDocumentSendListAccessGroups> AccessGroups { get; set; }
 
     }
 }

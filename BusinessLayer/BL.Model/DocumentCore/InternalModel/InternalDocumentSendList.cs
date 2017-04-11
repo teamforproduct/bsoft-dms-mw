@@ -51,6 +51,7 @@ namespace BL.Model.DocumentCore.InternalModel
 
         public string InitiatorPositionName { get; set; }
         public string InitiatorPositionExecutorAgentName { get; set; }
+        public IEnumerable<InternalDocumentSendListAccessGroup> AccessGroups { get; set; }
 
     }
 }

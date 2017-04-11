@@ -147,7 +147,7 @@ namespace BL.Database.Documents
                          IsRegistered = y.IsRegistered,
                          Description = y.Description,
                      }).ToList();
-                docs.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
+                docs.ForEach(x => CommonQueries.SetRegistrationFullNumber(x));
                 res.Documents = docs;
                 var filterPositionsContains = PredicateBuilder.New<DictionaryPositions>(false);
                 filterPositionsContains = model.Positions.Aggregate(filterPositionsContains,

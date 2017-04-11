@@ -521,7 +521,7 @@ namespace BL.Database.Documents
                         });
                     }
 
-                    docs.ForEach(x => CommonQueries.ChangeRegistrationFullNumber(x));
+                    docs.ForEach(x => CommonQueries.SetRegistrationFullNumber(x));
 
                     var acc = CommonQueries.GetDocumentAccessesQuery(context,new FilterDocumentAccess {DocumentId = docs.Select(x => x.Id).ToList()})
                             .GroupBy(x => x.DocumentId)
@@ -663,7 +663,7 @@ namespace BL.Database.Documents
                 res.IsInWork = accs.Any() ? accs.Any(x => x.IsInWork) : true;
                 res.Accesses = accs;
 
-                CommonQueries.ChangeRegistrationFullNumber(res, false);
+                CommonQueries.SetRegistrationFullNumber(res, false);
 
                 var docIds = new List<int> {res.Id};
 
@@ -782,11 +782,11 @@ namespace BL.Database.Documents
                         }).ToList();
             items.ForEach(x =>
             {
-                CommonQueries.ChangeRegistrationFullNumber(x);
+                CommonQueries.SetRegistrationFullNumber(x);
                 var links = x.Links.ToList();
                 links.ForEach(y =>
                 {
-                    CommonQueries.ChangeRegistrationFullNumber(y);
+                    CommonQueries.SetRegistrationFullNumber(y);
                     y.CanDelete = context.CurrentPositionsIdList.Contains(y.ExecutorPositionId ?? (int)EnumSystemPositions.AdminPosition);
                 });
                 x.Links = links;

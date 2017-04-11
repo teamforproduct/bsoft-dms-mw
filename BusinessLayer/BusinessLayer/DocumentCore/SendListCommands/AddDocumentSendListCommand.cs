@@ -111,21 +111,18 @@ namespace BL.Logic.DocumentCore.SendListCommands
             var paperEvents = new List<InternalDocumentEvent>();
             if (Model.PaperEvents?.Any() ?? false)
                 paperEvents.AddRange(Model.PaperEvents.Select(model => CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, model.Id, EnumEventTypes.MoveDocumentPaper, model.Description, _sendList.TargetPositionId, _sendList.TargetAgentId, _sendList.SourcePositionId, _sendList.SourceAgentId, false, false)));
-            //            using (var transaction = Transactions.GetTransaction())
-            {
-                res = _operationDb.AddDocumentSendList(_context, new List<InternalDocumentSendList> { _sendList }, _document.Tasks, paperEvents)?.FirstOrDefault();
-                if (!_sendList.Stage.HasValue)
-                {
-                    var docProc = DmsResolver.Current.Get<IDocumentService>();
-                    docProc.ExecuteAction((EnumDocumentActions)Enum.Parse(typeof(EnumDocumentActions), _sendList.SendType.ToString()), _context, _sendList);
-                }
-                else if (Model.IsLaunchItem ?? false)
-                    DmsResolver.Current.Get<IAutoPlanService>().ManualRunAutoPlan(_context, res, _document.Id);
-                else
-                    DmsResolver.Current.Get<IAutoPlanService>().ManualRunAutoPlan(_context, null, _document.Id);
 
-                //                transaction.Complete();
+            res = _operationDb.AddDocumentSendList(_context, new List<InternalDocumentSendList> { _sendList }, _document.Tasks, paperEvents)?.FirstOrDefault();
+            if (!_sendList.Stage.HasValue)
+            {
+                var docProc = DmsResolver.Current.Get<IDocumentService>();
+                docProc.ExecuteAction((EnumDocumentActions)Enum.Parse(typeof(EnumDocumentActions), _sendList.SendType.ToString()), _context, _sendList);
             }
+            else if (Model.IsLaunchItem ?? false)
+                DmsResolver.Current.Get<IAutoPlanService>().ManualRunAutoPlan(_context, res, _document.Id);
+            else
+                DmsResolver.Current.Get<IAutoPlanService>().ManualRunAutoPlan(_context, null, _document.Id);
+
             return res;
         }
 
