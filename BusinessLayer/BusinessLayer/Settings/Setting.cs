@@ -191,6 +191,8 @@ namespace BL.Logic.Settings
         {
             object res;
 
+            if (string.IsNullOrEmpty(Value)) return null;
+
             switch (ValueType)
             {
                 case EnumValueTypes.Text:

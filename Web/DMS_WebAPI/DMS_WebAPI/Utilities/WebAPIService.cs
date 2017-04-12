@@ -383,60 +383,60 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public string AddFirstAdmin(AddFirstAdminClient model)
-        {
-            #region Verification client code 
-            var client = _webDb.GetClients(new FilterAspNetClients { Code = model.ClientCode, VerificationCode = model.VerificationCode }).FirstOrDefault();
+        //public string AddFirstAdmin(AddFirstAdminClient model)
+        //{
+        //    #region Verification client code 
+        //    var client = _webDb.GetClients(new FilterAspNetClients { Code = model.ClientCode, VerificationCode = model.VerificationCode }).FirstOrDefault();
 
-            if (client == null) throw new ClientVerificationCodeIncorrect();
+        //    if (client == null) throw new ClientVerificationCodeIncorrect();
 
-            #endregion Verification client code 
+        //    #endregion Verification client code 
 
-            try
-            {
-                //using (var dbContext = new ApplicationDbContext())
-                using (var transaction = Transactions.GetTransaction())
-                {
-                    var clientId = _webDb.GetClientId(model.ClientCode);
-                    var serverId = _webDb.GetServerIdByClientId(clientId);
+        //    try
+        //    {
+        //        //using (var dbContext = new ApplicationDbContext())
+        //        using (var transaction = Transactions.GetTransaction())
+        //        {
+        //            var clientId = _webDb.GetClientId(model.ClientCode);
+        //            var serverId = _webDb.GetServerIdByClientId(clientId);
 
-                    #region Create user   
-                    var userId = AddUser(new AddWebUser
-                    {
-                        Email = model.Admin.Email,
-                        Password = model.Admin.Password,
-                        ClientId = clientId,
-                        ServerId = serverId,
-                    });
-                    #endregion
+        //            #region Create user   
+        //            var userId = AddUser(new AddWebUser
+        //            {
+        //                Email = model.Admin.Email,
+        //                Password = model.Admin.Password,
+        //                ClientId = clientId,
+        //                ServerId = serverId,
+        //            });
+        //            #endregion
 
-                    #region add user to role admin
-                    var roleName = FormRoleNameAdmin(model.ClientCode);
+        //            #region add user to role admin
+        //            var roleName = FormRoleNameAdmin(model.ClientCode);
 
-                    AddRole(roleName);
+        //            AddRole(roleName);
 
-                    UserManager.AddToRole(userId, roleName);
+        //            UserManager.AddToRole(userId, roleName);
 
-                    #endregion
+        //            #endregion
 
-                    transaction.Complete();
+        //            transaction.Complete();
 
-                    return userId;
-                }
-            }
-            catch (UserNameAlreadyExists)
-            {
-                throw new UserNameAlreadyExists(model.Admin.Email);
-            }
-            catch (ClientNameAlreadyExists)
-            {
-                throw new ClientNameAlreadyExists();
-            }
-            catch
-            {
-                throw new DictionaryRecordCouldNotBeAdded();
-            }
-        }
+        //            return userId;
+        //        }
+        //    }
+        //    catch (UserNameAlreadyExists)
+        //    {
+        //        throw new UserNameAlreadyExists(model.Admin.Email);
+        //    }
+        //    catch (ClientNameAlreadyExists)
+        //    {
+        //        throw new ClientNameAlreadyExists();
+        //    }
+        //    catch
+        //    {
+        //        throw new DictionaryRecordCouldNotBeAdded();
+        //    }
+        //}
 
         public string AddClientSaaS(AddClientSaaS model)
         {
@@ -634,15 +634,15 @@ namespace DMS_WebAPI.Utilities
                 #region Create user                        
 
                 #endregion Create user
-                var userId = AddFirstAdmin(new BL.Model.WebAPI.IncomingModel.AddFirstAdminClient
-                {
-                    ClientCode = model.Client.Code,
-                    Admin = new ModifyAspNetUser
-                    {
-                        Email = model.Admin.Email,
-                        Password = model.Admin.Password,
-                    }
-                });
+                //var userId = AddFirstAdmin(new AddFirstAdminClient
+                //{
+                //    ClientCode = model.Client.Code,
+                //    Admin = new ModifyAspNetUser
+                //    {
+                //        Email = model.Admin.Email,
+                //        Password = model.Admin.Password,
+                //    }
+                //});
 
                 transaction.Complete();
 
