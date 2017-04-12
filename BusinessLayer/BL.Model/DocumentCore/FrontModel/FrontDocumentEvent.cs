@@ -1,6 +1,8 @@
 ﻿using System;
 using BL.Model.Extensions;
 using System.Collections.Generic;
+using System.Xml.Serialization;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
@@ -69,6 +71,8 @@ namespace BL.Model.DocumentCore.FrontModel
         
         public DateTime? PaperRecieveDate { get { return _PaperRecieveDate; } set { _PaperRecieveDate=value.ToUTC(); } }
         private DateTime?  _PaperRecieveDate;
+        [XmlIgnore]
+        [IgnoreDataMember]
         public FrontDocumentWait OnWait { get; set; }
         public string PaperPlanAgentName { get; set; }
         public string PaperSendAgentName { get; set; }

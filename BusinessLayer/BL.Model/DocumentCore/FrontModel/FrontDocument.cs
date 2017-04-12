@@ -196,18 +196,18 @@ namespace BL.Model.DocumentCore.FrontModel
         public int? SendListStageMax { get; set; }
         //public IEnumerable<FrontDocumentEvent> Events { get; set; }
         public IEnumerable<FrontDocumentAccess> Accesses { get; set; }
-        public IEnumerable<FrontDocumentAttachedFile> DocumentFiles { get; set; }
+//        public IEnumerable<FrontDocumentAttachedFile> DocumentFiles { get; set; }
         public IEnumerable<FrontDocument> LinkedDocuments { get; set; }
         public IEnumerable<FrontDocumentLink> Links { get; set; }
-        public IEnumerable<FrontDocumentTask> DocumentTasks { get; set; }
-        public IEnumerable<FrontDocumentWait> DocumentWaits { get; set; }
+//        public IEnumerable<FrontDocumentTask> DocumentTasks { get; set; }
+//        public IEnumerable<FrontDocumentWait> DocumentWaits { get; set; }
         public IEnumerable<FrontDocumentTag> DocumentTags { get; set; }
 
-        public IEnumerable<FrontDocumentPaper> DocumentPapers { get; set; }
-        public IEnumerable<FrontDocumentPaperEvent> DocumentPaperEvents { get; set; }
+//        public IEnumerable<FrontDocumentPaper> DocumentPapers { get; set; }
+//        public IEnumerable<FrontDocumentPaperEvent> DocumentPaperEvents { get; set; }
 
         public IEnumerable<FrontDictionaryPosition> DocumentWorkGroup { get; set; }
-        public IEnumerable<FrontDocumentSubscription> DocumentSubscriptions { get; set; }
+//        public IEnumerable<FrontDocumentSubscription> DocumentSubscriptions { get; set; }
 
         public IEnumerable<FrontPropertyValue> Properties { get; set; }
 
