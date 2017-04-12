@@ -85,7 +85,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route(Features.Signs + "/RejectАgreement")]
+        [Route(Features.Signs + "/RejectAgreement")]
         [HttpPut]
         public async Task<IHttpActionResult> RejectАgreement(SendEventMessage model)
         {
@@ -154,7 +154,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route(Features.Signs + "/WithdrawАgreement")]
+        [Route(Features.Signs + "/WithdrawAgreement")]
         [HttpPut]
         public async Task<IHttpActionResult> WithdrawАgreement(SendEventMessage model)
         {
@@ -223,7 +223,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route(Features.Signs + "/AffixАgreement")]
+        [Route(Features.Signs + "/AffixAgreement")]
         [HttpPut]
         public async Task<IHttpActionResult> AffixАgreement(AffixSigning model)
         {

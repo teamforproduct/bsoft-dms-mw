@@ -163,7 +163,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [Route(Features.Papers + "/MarkСorruption")]
+        [Route(Features.Papers + "/MarkCorruption")]
         [HttpPut]
         public async Task<IHttpActionResult> MarkСorruptionDocumentPaper([FromBody]PaperEvent model)
         {
