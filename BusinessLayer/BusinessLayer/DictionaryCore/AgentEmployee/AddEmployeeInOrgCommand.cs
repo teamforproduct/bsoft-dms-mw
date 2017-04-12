@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.Helpers;
 using BL.Logic.Common;
+using BL.Model.AdminCore.IncomingModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
@@ -34,10 +35,8 @@ namespace BL.Logic.DictionaryCore
 
         public override object Execute()
         {
-
             using (var transaction = Transactions.GetTransaction())
             {
-
                 if (Model.OrgId == null && !string.IsNullOrEmpty(Model.OrgName))
                 {
                     var org = new AddOrg();
@@ -70,6 +69,13 @@ namespace BL.Logic.DictionaryCore
 
                     Model.PositionId = (int)_dictService.ExecuteAction(EnumDictionaryActions.AddPosition, _context, pos);
                 }
+
+                // Назначаю роль администратора для MyPosition
+                var pRole = new SetAdminPositionRole();
+                pRole.PositionId = Model.PositionId ?? -1;
+                pRole.RoleId = _adminDb.GetRoleByCode(_context, Model.Role);
+
+                _adminService.ExecuteAction(EnumAdminActions.SetPositionRole, _context, pRole);
 
                 transaction.Complete();
 

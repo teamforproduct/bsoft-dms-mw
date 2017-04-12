@@ -214,6 +214,7 @@ namespace DMS_WebAPI.Utilities
         public int AddUserEmployeeInOrg(IContext context, AddEmployeeInOrg model)
         {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+
             var tmpEmployee = (AddAgentEmployeeUser)tmpService.ExecuteAction(EnumDictionaryActions.AddAgentEmployeeInOrg, context, model);
 
             var empId = AddUserEmployee(context, tmpEmployee);
@@ -515,7 +516,8 @@ namespace DMS_WebAPI.Utilities
                 LanguageId = ctx.CurrentEmployee.LanguageId,
                 //Phone = model.PhoneNumber,
                 Login = model.Email,
-            });
+                Role = Roles.Admin,
+        });
 
 
             //UserManager.AddLogin(userId, new UserLoginInfo {    })

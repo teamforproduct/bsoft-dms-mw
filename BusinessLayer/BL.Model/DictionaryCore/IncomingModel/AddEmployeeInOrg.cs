@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BL.Model.Enums;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.IncomingModel
 {
@@ -47,6 +49,9 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// </summary>
         [Required]
         public int LanguageId { get; set; }
+
+        [IgnoreDataMember]
+        public Roles Role { get; set; }
 
     }
 }
