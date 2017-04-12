@@ -360,7 +360,7 @@ namespace DMS_WebAPI.Utilities
                 ClientCode = _webDb.GetClientCode(model.ClientId),
                 Email = model.Email,
                 FirstEntry = "true"
-            },  new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "restore-password").ToString(), null, "Ostrean. Приглашение", RenderPartialView.RestorePasswordAgentUserVerificationEmail);
+            }, new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "restore-password").ToString(), null, "Ostrean. Приглашение", RenderPartialView.RestorePasswordAgentUserVerificationEmail);
 
             return userId;
         }
@@ -517,7 +517,7 @@ namespace DMS_WebAPI.Utilities
                 //Phone = model.PhoneNumber,
                 Login = model.Email,
                 Role = Roles.Admin,
-        });
+            });
 
 
             //UserManager.AddLogin(userId, new UserLoginInfo {    })
@@ -535,7 +535,7 @@ namespace DMS_WebAPI.Utilities
 
             var clients = new List<int> { Id };
 
-            var servers = _webDb.GetServers(new FilterAdminServers () { ClientIds = clients });
+            var servers = _webDb.GetServers(new FilterAdminServers() { ClientIds = clients });
 
             var clientService = DmsResolver.Current.Get<IClientService>();
 
@@ -761,6 +761,9 @@ namespace DMS_WebAPI.Utilities
             string callbackurl = builder.ToString();
 
             var htmlContent = callbackurl.RenderPartialViewToString(renderPartialView);
+
+
+
 
             var client = _webDb.GetClient(model.ClientCode);
 

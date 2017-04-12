@@ -3,7 +3,6 @@ using BL.Model.AdminCore.Clients;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace DMS_WebAPI.ControllersV3.Clients

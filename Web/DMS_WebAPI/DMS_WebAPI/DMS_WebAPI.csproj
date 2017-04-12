@@ -377,15 +377,10 @@
     <Compile Include="Controllers\Documents\TemplateDocumentsPapersController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentsTasksController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentsSendListsController.cs" />
-    <Compile Include="Controllers\EncriptionSign\EncryptionCertificatesController.cs" />
     <Compile Include="Controllers\Properties\FilterPropertiesController.cs" />
     <Compile Include="Controllers\Properties\PropertyLinksController.cs" />
     <Compile Include="Controllers\Properties\PropertiesController.cs" />
     <Compile Include="Controllers\System\AccountController.cs" />
-    <Compile Include="Controllers\Admins\AdminAccessLevelsController.cs" />
-    <Compile Include="Controllers\Dictionaries\DictionaryPositionsController.cs" />
-    <Compile Include="Controllers\Dictionaries\DictionaryLinkTypesController.cs" />
-    <Compile Include="Controllers\Dictionaries\DictionaryImportanceEventTypesController.cs" />
     <Compile Include="Controllers\Documents\DocumentActionsController.cs" />
     <Compile Include="Controllers\Documents\DocumentFilesController.cs" />
     <Compile Include="Controllers\Documents\DocumentRestrictedSendListsController.cs" />
@@ -395,7 +390,6 @@
     <Compile Include="Controllers\Documents\DocumentSendListsController.cs" />
     <Compile Include="Controllers\System\HomeController.cs" />
     <Compile Include="Controllers\Documents\TemplateDocumentsController.cs" />
-    <Compile Include="Controllers\System\UsersController.cs" />
     <Compile Include="Controllers\WebAPI\CreateClientController.cs" />
     <Compile Include="Controllers\WebAPI\LicencesController.cs" />
     <Compile Include="Controllers\WebAPI\ClientServersController.cs" />
@@ -688,9 +682,7 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controllers\Clients\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

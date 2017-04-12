@@ -74,6 +74,7 @@ namespace BL.Logic.DictionaryCore
                 var pRole = new SetAdminPositionRole();
                 pRole.PositionId = Model.PositionId ?? -1;
                 pRole.RoleId = _adminDb.GetRoleByCode(_context, Model.Role);
+                pRole.IsChecked = true;
 
                 _adminService.ExecuteAction(EnumAdminActions.SetPositionRole, _context, pRole);
 
