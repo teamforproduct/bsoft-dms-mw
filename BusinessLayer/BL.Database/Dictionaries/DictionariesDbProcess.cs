@@ -316,12 +316,12 @@ namespace BL.Database.Dictionaries
             var F = string.Empty;
             var M = string.Empty;
 
-            if (!string.IsNullOrEmpty(people.FirstName)) people.FirstName.Trim().First().ToString();
-            if (!string.IsNullOrEmpty(people.MiddleName)) people.MiddleName.Trim().First().ToString();
+            if (!string.IsNullOrEmpty(people.FirstName)) F = people.FirstName.Trim().First().ToString();
+            if (!string.IsNullOrEmpty(people.MiddleName)) M = people.MiddleName.Trim().First().ToString();
 
             people.Name = people.LastName?.Trim();
-            people.Name += string.IsNullOrEmpty(F) ? "" : " " + F + ".";
-            people.Name += string.IsNullOrEmpty(F + M) ? "" : M + ".";
+            people.Name += string.IsNullOrEmpty(F) ? "" : (" " + F + ".");
+            people.Name += string.IsNullOrEmpty(F + M) ? "" : (M + ".");
 
             people.FullName = (people.LastName?.Trim() + " " + people.FirstName?.Trim() + " " + people.MiddleName?.Trim())?.Trim();
         }

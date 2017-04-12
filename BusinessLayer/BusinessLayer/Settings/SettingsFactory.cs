@@ -154,7 +154,7 @@ namespace BL.Logic.Settings
             }
 
             res.Key = key.ToString();
-            res.Name = GetLabel(key.GetType().Name.Replace("Enum", ""), key.ToString());
+            res.Name = GetLabel(key.GetType().Name.Replace("Enum", ""), key.ToString()+ ".Name");
             res.Description = GetLabel(key.GetType().Name.Replace("Enum", ""), key.ToString() + ".Description");
             res.AgentId = null;
             res.AccessType = 0;
