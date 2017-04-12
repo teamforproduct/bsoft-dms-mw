@@ -117,9 +117,6 @@ namespace BL.Logic.ClientCore
             // Остановить соответствующие воркеры
             using (var transaction = Transactions.GetTransaction())
             {
-                _FTextDb.Delete(context, context.CurrentClientId);
-
-
                 _DictDb.DeleteRegistrationJournals(context, null);
 
                 _DictDb.DeleteDocumentType(context, null);
@@ -182,6 +179,8 @@ namespace BL.Logic.ClientCore
                 _SystemDb.DeleteSystemLogs(context, null);
                 _SystemDb.DeleteSystemSearchQueryLogs(context, null);
                 _SystemDb.DeleteSystemSettings(context);
+
+                _FTextDb.Delete(context, context.CurrentClientId);
 
                 transaction.Complete();
             }

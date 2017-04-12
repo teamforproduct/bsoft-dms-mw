@@ -531,6 +531,8 @@ namespace DMS_WebAPI.Utilities
         {
             if (!_webDb.ExistsClients(new FilterAspNetClients { ClientIds = new List<int> { Id } })) throw new ClientIsNotFound();
 
+            if (Id == 1) throw new ClientIsNotFound();
+
             var clients = new List<int> { Id };
 
             var servers = _webDb.GetServers(new FilterAdminServers () { ClientIds = clients });
