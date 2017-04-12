@@ -29,6 +29,7 @@ namespace BL.Model.Exception
         public DmsExceptions() : base("DmsException") { }
         public DmsExceptions(System.Exception ex) : base("DmsException", ex) { }
         public List<string> Parameters { set; get; }
+        public IEnumerable<string> Errors { set; get; }
     }
 
     #region [+] LicenceError ... 
@@ -149,14 +150,20 @@ namespace BL.Model.Exception
 
     public class UserCouldNotBeAdded : DmsExceptions
     {
-        public UserCouldNotBeAdded(string userName) : base() { Parameters = new List<string> { userName }; }
+        public UserCouldNotBeAdded(string userName, IEnumerable<string> Errors) : base() { Parameters = new List<string> { userName }; base.Errors = Errors; }
         public UserCouldNotBeAdded(System.Exception ex) : base(ex) { }
     }
 
     public class UserCouldNotBeDeleted : DmsExceptions
     {
-        public UserCouldNotBeDeleted() : base() { }
+        public UserCouldNotBeDeleted(string userName, IEnumerable<string> Errors) : base() { Parameters = new List<string> { userName }; base.Errors = Errors; }
         public UserCouldNotBeDeleted(System.Exception ex) : base(ex) { }
+    }
+
+    public class UserLoginCouldNotBeChanged : DmsExceptions
+    {
+        public UserLoginCouldNotBeChanged(string userName, IEnumerable<string> Errors) : base() { Parameters = new List<string> { userName }; base.Errors = Errors; }
+        public UserLoginCouldNotBeChanged(System.Exception ex) : base(ex) { }
     }
 
     public class UserPositionExecutorIsIncorrect : DmsExceptions
@@ -174,7 +181,7 @@ namespace BL.Model.Exception
 
     public class RoleCouldNotBeAdded : DmsExceptions
     {
-        public RoleCouldNotBeAdded(string roleName) : base() { Parameters = new List<string> { roleName }; }
+        public RoleCouldNotBeAdded(string roleName, IEnumerable<string> Errors) : base() { Parameters = new List<string> { roleName }; base.Errors = Errors; }
         public RoleCouldNotBeAdded(System.Exception ex) : base(ex) { }
     }
 
@@ -195,6 +202,7 @@ namespace BL.Model.Exception
     {
         public DatabaseError() : base() { }
         public DatabaseError(System.Exception ex) : base(ex) { }
+        public DatabaseError(IEnumerable<string> Errors) : base() { base.Errors = Errors;  }
     }
 
     /// <summary>
@@ -505,7 +513,7 @@ namespace BL.Model.Exception
 
     public class ResetPasswordCodeInvalid : DmsExceptions
     {
-        public ResetPasswordCodeInvalid() : base() { }
+        public ResetPasswordCodeInvalid(IEnumerable<string> Errors) : base() { base.Errors = Errors;  }
         public ResetPasswordCodeInvalid(System.Exception ex) : base(ex) { }
     }
 
