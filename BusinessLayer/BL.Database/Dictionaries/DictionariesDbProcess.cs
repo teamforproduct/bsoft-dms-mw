@@ -2553,12 +2553,12 @@ namespace BL.Database.Dictionaries
         }
 
 
-        public FrontAgentBank GetAgentBank(IContext ctx, int id)
+        public IEnumerable<FrontAgentBank>GetAgentBanks(IContext ctx, FilterDictionaryAgentBank filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetAgentBanksQuery(ctx, dbContext, new FilterDictionaryAgentBank { IDs = new List<int> { id } });
+                var qry = GetAgentBanksQuery(ctx, dbContext, filter);
 
                 var res = qry.Select(x => new FrontAgentBank
                 {
@@ -2569,7 +2569,7 @@ namespace BL.Database.Dictionaries
                     FullName = x.FullName,
                     Description = x.Description,
                     IsActive = x.IsActive,
-                }).FirstOrDefault();
+                }).ToList();
 
                 transaction.Complete();
                 return res;
