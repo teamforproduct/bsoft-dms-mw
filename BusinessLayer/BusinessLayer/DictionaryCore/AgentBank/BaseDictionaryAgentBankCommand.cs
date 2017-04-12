@@ -41,9 +41,11 @@ namespace BL.Logic.DictionaryCore
                 if (TypeModelIs<ModifyAgentBank>())
                 { filter.NotContainsIDs = new List<int> { GetModel<ModifyAgentBank>().Id }; }
 
-                if (_dictDb.ExistsAgentBanks(_context, filter))
+                var bank = _dictDb.GetAgentBanks(_context, filter).FirstOrDefault();
+
+                if (bank != null)
                 {
-                    throw new DictionaryAgentBankMFOCodeNotUnique(Model.Name, Model.MFOCode);
+                    throw new DictionaryAgentBankMFOCodeNotUnique(bank.Name, bank.MFOCode);
                 }
             }
             return true;

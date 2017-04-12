@@ -294,7 +294,7 @@ namespace DMS_WebAPI.Utilities
 
                 IdentityResult result = UserManager.Create(user, userPassword);
 
-                if (!result.Succeeded) throw new UserCouldNotBeAdded(userEmail);
+                if (!result.Succeeded) throw new UserCouldNotBeAdded(userEmail, result.Errors);
 
                 transaction.Complete();
 
@@ -313,7 +313,7 @@ namespace DMS_WebAPI.Utilities
 
                 IdentityResult result = UserManager.Delete(user);
 
-                if (!result.Succeeded) throw new UserCouldNotBeDeleted();
+                if (!result.Succeeded) throw new UserCouldNotBeDeleted(user.Email, result.Errors);
 
                 transaction.Complete();
 
@@ -377,7 +377,7 @@ namespace DMS_WebAPI.Utilities
 
                 IdentityResult result = roleManager.Create(new IdentityRole { Name = roleName });
 
-                if (!result.Succeeded) throw new RoleCouldNotBeAdded(roleName);
+                if (!result.Succeeded) throw new RoleCouldNotBeAdded(roleName, result.Errors);
                 transaction.Complete();
                 return role.Id;
             }
@@ -678,7 +678,7 @@ namespace DMS_WebAPI.Utilities
 
             var result = await UserManager.UpdateAsync(user);
 
-            if (!result.Succeeded) throw new DatabaseError();
+            if (!result.Succeeded) throw new UserLoginCouldNotBeChanged(model.NewEmail, result.Errors);
 
             // выкидываю пользователя из системы
             userContexts.RemoveByAgentId(model.Id);
@@ -713,7 +713,7 @@ namespace DMS_WebAPI.Utilities
 
             var result = await UserManager.UpdateAsync(user);
 
-            if (!result.Succeeded) throw new DatabaseError();
+            if (!result.Succeeded) throw new DatabaseError(result.Errors);
 
         }
 
@@ -729,7 +729,7 @@ namespace DMS_WebAPI.Utilities
 
             var result = UserManager.Update(user);
 
-            if (!result.Succeeded) throw new DatabaseError();
+            if (!result.Succeeded) throw new DatabaseError(result.Errors);
 
         }
 
@@ -822,20 +822,14 @@ namespace DMS_WebAPI.Utilities
 
             var result = await UserManager.ResetPasswordAsync(user.Id, token, model.NewPassword);
 
-            if (!result.Succeeded)
-            {
-                throw new Exception(string.Join(" ", result.Errors));
-            }
+            if (!result.Succeeded) throw new DatabaseError(result.Errors);
 
             user.IsChangePasswordRequired = model.IsChangePasswordRequired;//true;
             user.LastChangeDate = DateTime.UtcNow;
 
             result = await UserManager.UpdateAsync(user);
 
-            if (!result.Succeeded)
-            {
-                throw new Exception(string.Join(" ", result.Errors));
-            }
+            if (!result.Succeeded) throw new DatabaseError(result.Errors);
 
             if (model.IsKillSessions)
                 userContexts.RemoveByAgentId(model.Id);
@@ -856,7 +850,7 @@ namespace DMS_WebAPI.Utilities
 
             var result = await UserManager.UpdateAsync(user);
 
-            if (!result.Succeeded) throw new DatabaseError();
+            if (!result.Succeeded) throw new DatabaseError(result.Errors);
 
             var userContexts = DmsResolver.Current.Get<UserContexts>();
             if (model.IsKillSessions)
@@ -867,10 +861,7 @@ namespace DMS_WebAPI.Utilities
         {
             var result = await UserManager.ConfirmEmailAsync(userId, code);
 
-            if (!result.Succeeded)
-            {
-                throw new Exception(string.Join(" ", result.Errors));
-            }
+            if (!result.Succeeded) throw new DatabaseError(result.Errors);
 
             ApplicationUser user = await GetUserByIdAsync(userId);
 
@@ -881,7 +872,7 @@ namespace DMS_WebAPI.Utilities
 
             result = await UserManager.UpdateAsync(user);
 
-            if (!result.Succeeded) throw new DatabaseError();
+            if (!result.Succeeded) throw new DatabaseError(result.Errors);
 
         }
 
@@ -890,8 +881,7 @@ namespace DMS_WebAPI.Utilities
 
             var result = await UserManager.ResetPasswordAsync(model.UserId, model.Code, model.NewPassword);
 
-            if (!result.Succeeded)
-                throw new ResetPasswordCodeInvalid();
+            if (!result.Succeeded) throw new ResetPasswordCodeInvalid(result.Errors);
 
             ApplicationUser user = await UserManager.FindByIdAsync(model.UserId);
 
@@ -905,7 +895,7 @@ namespace DMS_WebAPI.Utilities
 
             result = await UserManager.UpdateAsync(user);
 
-            if (!result.Succeeded) throw new DatabaseError();
+            if (!result.Succeeded) throw new DatabaseError(result.Errors);
 
 
             var userContexts = DmsResolver.Current.Get<UserContexts>();
@@ -999,7 +989,7 @@ namespace DMS_WebAPI.Utilities
 
             var result = await UserManager.UpdateAsync(user);
 
-            if (!result.Succeeded) throw new DatabaseError();
+            if (!result.Succeeded) throw new DatabaseError(result.Errors);
         }
 
         #endregion

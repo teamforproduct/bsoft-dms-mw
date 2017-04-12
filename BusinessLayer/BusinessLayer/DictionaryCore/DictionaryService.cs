@@ -289,7 +289,7 @@ namespace BL.Logic.DictionaryCore
         #region DictionaryAgentBanks
         public FrontAgentBank GetAgentBank(IContext context, int id)
         {
-            return _dictDb.GetAgentBank(context, id);
+            return _dictDb.GetAgentBanks(context, new FilterDictionaryAgentBank { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
         public IEnumerable<FrontMainAgentBank> GetMainAgentBanks(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentBank filter, UIPaging paging, UISorting sorting)

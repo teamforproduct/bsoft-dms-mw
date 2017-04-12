@@ -62,7 +62,11 @@ namespace DMS_WebAPI.Infrastructure
                 var d = string.Empty;
 
                 // для DmsExceptions Message формирую на основании названия класса
-                if (exc is DmsExceptions) m = "##l@DmsExceptions:" + exc.GetType().Name + "@l##";
+                if (exc is DmsExceptions)
+                {
+                    m = "##l@DmsExceptions:" + exc.GetType().Name + "@l##";
+                    d = string.Join(" ", (exc as DmsExceptions).Errors);
+                }
                 else m = exc.Message;
 
                 // ошибки SQL-базы
