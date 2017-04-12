@@ -158,6 +158,10 @@ namespace BL.Logic.ClientCore
                 _DictDb.DeleteAgentOrg(context, null);
 
 
+                _SystemDb.DeleteSystemLogs(context, null);
+                _SystemDb.DeleteSystemSearchQueryLogs(context, null);
+                _SystemDb.DeleteSystemSettings(context);
+
                 // Агенты
                 _DictDb.DeleteAgentFavourite(context, null);
 
@@ -175,10 +179,6 @@ namespace BL.Logic.ClientCore
                 _DictDb.DeleteContactType(context, null);
 
                 _DictDb.DeleteAgents(context, null);
-
-                _SystemDb.DeleteSystemLogs(context, null);
-                _SystemDb.DeleteSystemSearchQueryLogs(context, null);
-                _SystemDb.DeleteSystemSettings(context);
 
                 _FTextDb.Delete(context, context.CurrentClientId);
 
