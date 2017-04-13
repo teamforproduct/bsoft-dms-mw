@@ -417,53 +417,9 @@
     <Compile Include="Infrastructure\ExceptionHandlingAttribute.cs" />
     <Compile Include="Infrastructure\ModelValidationErrorHandlerFilterAttribute .cs" />
     <Compile Include="Infrastructure\NoBufferPolicySelector.cs" />
-    <Compile Include="Migrations\201606162106554_InitialMigration.cs" />
-    <Compile Include="Migrations\201606162106554_InitialMigration.Designer.cs">
-      <DependentUpon>201606162106554_InitialMigration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201611072147542_User_Settings.cs" />
-    <Compile Include="Migrations\201611072147542_User_Settings.Designer.cs">
-      <DependentUpon>201611072147542_User_Settings.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201611082050340_LockoutAgentUser.cs" />
-    <Compile Include="Migrations\201611082050340_LockoutAgentUser.Designer.cs">
-      <DependentUpon>201611082050340_LockoutAgentUser.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201611292159454_AddFileNameToLanguages1.cs" />
-    <Compile Include="Migrations\201611292159454_AddFileNameToLanguages1.Designer.cs">
-      <DependentUpon>201611292159454_AddFileNameToLanguages1.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201611292202410_AddFileNameToLanguages2.cs" />
-    <Compile Include="Migrations\201611292202410_AddFileNameToLanguages2.Designer.cs">
-      <DependentUpon>201611292202410_AddFileNameToLanguages2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201612071529206_Users_LastChangeDate.cs" />
-    <Compile Include="Migrations\201612071529206_Users_LastChangeDate.Designer.cs">
-      <DependentUpon>201612071529206_Users_LastChangeDate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201701302106109_Fingerprint.cs" />
-    <Compile Include="Migrations\201701302106109_Fingerprint.Designer.cs">
-      <DependentUpon>201701302106109_Fingerprint.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201702161918125_AspNetUserContexts.cs" />
-    <Compile Include="Migrations\201702161918125_AspNetUserContexts.Designer.cs">
-      <DependentUpon>201702161918125_AspNetUserContexts.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201702161742311_SystemSearchQueryLogs.cs" />
-    <Compile Include="Migrations\201702161742311_SystemSearchQueryLogs.Designer.cs">
-      <DependentUpon>201702161742311_SystemSearchQueryLogs.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201703301041021_UserFingerPrintIndexOff.cs" />
-    <Compile Include="Migrations\201703301041021_UserFingerPrintIndexOff.Designer.cs">
-      <DependentUpon>201703301041021_UserFingerPrintIndexOff.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201704070550425_UserContexts.cs" />
-    <Compile Include="Migrations\201704070550425_UserContexts.Designer.cs">
-      <DependentUpon>201704070550425_UserContexts.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201704070558303_UserContexts1.cs" />
-    <Compile Include="Migrations\201704070558303_UserContexts1.Designer.cs">
-      <DependentUpon>201704070558303_UserContexts1.cs</DependentUpon>
+    <Compile Include="Migrations\201704131341247_Initial.cs" />
+    <Compile Include="Migrations\201704131341247_Initial.Designer.cs">
+      <DependentUpon>201704131341247_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
@@ -642,47 +598,13 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201606162106554_InitialMigration.resx">
-      <DependentUpon>201606162106554_InitialMigration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611072147542_User_Settings.resx">
-      <DependentUpon>201611072147542_User_Settings.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611082050340_LockoutAgentUser.resx">
-      <DependentUpon>201611082050340_LockoutAgentUser.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611292159454_AddFileNameToLanguages1.resx">
-      <DependentUpon>201611292159454_AddFileNameToLanguages1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611292202410_AddFileNameToLanguages2.resx">
-      <DependentUpon>201611292202410_AddFileNameToLanguages2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201612071529206_Users_LastChangeDate.resx">
-      <DependentUpon>201612071529206_Users_LastChangeDate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201701302106109_Fingerprint.resx">
-      <DependentUpon>201701302106109_Fingerprint.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201702161742311_SystemSearchQueryLogs.resx">
-      <DependentUpon>201702161742311_SystemSearchQueryLogs.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201702161918125_AspNetUserContexts.resx">
-      <DependentUpon>201702161918125_AspNetUserContexts.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201703301041021_UserFingerPrintIndexOff.resx">
-      <DependentUpon>201703301041021_UserFingerPrintIndexOff.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201704070550425_UserContexts.resx">
-      <DependentUpon>201704070550425_UserContexts.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201704070558303_UserContexts1.resx">
-      <DependentUpon>201704070558303_UserContexts1.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201704131341247_Initial.resx">
+      <DependentUpon>201704131341247_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

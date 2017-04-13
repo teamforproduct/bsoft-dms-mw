@@ -502,7 +502,7 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<AdminLanguages>();
             // Эту функциюнужно синхронизить с ApplicationDbImportData.GetAdminLanguages
-            items.Add(new AdminLanguages { Id = 570, Code = "ru_RU", Name = "Русский", IsDefault = true });
+            items.Add(new AdminLanguages { Id = 570, Code = "ru_RU", Name = "Русский",  IsDefault = true });
             items.Add(new AdminLanguages { Id = 045, Code = "en_US", Name = "English", IsDefault = false });
             items.Add(new AdminLanguages { Id = 720, Code = "uk_UA", Name = "Українська", IsDefault = false });
             items.Add(new AdminLanguages { Id = 090, Code = "be_BY", Name = "Беларуский", IsDefault = false });
@@ -513,6 +513,9 @@ namespace BL.Database.DatabaseContext
 
             return items;
         }
+
+
+
         public static List<SystemAccessTypes> GetSystemAccessTypes()
         {
             var items = new List<SystemAccessTypes>();

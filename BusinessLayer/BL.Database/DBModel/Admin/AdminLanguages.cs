@@ -11,6 +11,7 @@ namespace BL.Database.DBModel.Admin
         {
             this.LanguageValues = new HashSet<AdminLanguageValues>();
         }
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
         [MaxLength(400)]
