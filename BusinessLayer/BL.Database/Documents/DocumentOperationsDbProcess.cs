@@ -3322,7 +3322,7 @@ namespace BL.Database.Documents
             {
                 var paperDb = new DocumentPapers { Id = paper.Id };
                 dbContext.DocumentPapersSet.Attach(paperDb);
-                var entry = dbContext.Entry(paper);
+                var entry = dbContext.Entry(paperDb);
                 entry.Property(e => e.LastPaperEventId).IsModified = true;
                 dbContext.SaveChanges();
                 dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.ClientId == context.CurrentClientId).Where(x => x.PaperId == paper.Id && x.EventTypeId == (int)EnumEventTypes.AddNewPaper));
