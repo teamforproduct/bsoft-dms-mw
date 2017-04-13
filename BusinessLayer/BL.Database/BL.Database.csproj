@@ -284,13 +284,9 @@
     <Compile Include="Helper\ConnectionHelper.cs" />
     <Compile Include="Helper\IConnectionHelper.cs" />
     <Compile Include="Helper\Paging.cs" />
-    <Compile Include="Migrations\201704110936260_Initial.cs" />
-    <Compile Include="Migrations\201704110936260_Initial.Designer.cs">
-      <DependentUpon>201704110936260_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201704131125529_RefactorSystemTables.cs" />
-    <Compile Include="Migrations\201704131125529_RefactorSystemTables.Designer.cs">
-      <DependentUpon>201704131125529_RefactorSystemTables.cs</DependentUpon>
+    <Compile Include="Migrations\201704131234170_Initial.cs" />
+    <Compile Include="Migrations\201704131234170_Initial.Designer.cs">
+      <DependentUpon>201704131234170_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -368,11 +364,8 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201704110936260_Initial.resx">
-      <DependentUpon>201704110936260_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201704131125529_RefactorSystemTables.resx">
-      <DependentUpon>201704131125529_RefactorSystemTables.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201704131234170_Initial.resx">
+      <DependentUpon>201704131234170_Initial.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
