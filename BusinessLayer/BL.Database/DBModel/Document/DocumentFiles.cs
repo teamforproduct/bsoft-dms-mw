@@ -1,9 +1,7 @@
-﻿using System;
+﻿using BL.Database.DBModel.Dictionary;
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using BL.Database.DBModel.Dictionary;
-using System.Collections.Generic;
-using BL.Database.DBModel.System;
 
 namespace BL.Database.DBModel.Document
 {

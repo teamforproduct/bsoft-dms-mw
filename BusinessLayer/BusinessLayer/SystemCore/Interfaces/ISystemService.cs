@@ -34,9 +34,6 @@ namespace BL.Logic.SystemCore.Interfaces
         void RefreshSystemActions(IContext context);
         void RefreshSystemObjects(IContext context);
 
-        int AddSystemDate(IContext ctx, DateTime date);
-        DateTime GetSystemDate(IContext ctx);
-
         void RefreshModuleFeature(IContext context);
     }
 }

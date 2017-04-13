@@ -16,8 +16,6 @@ namespace BL.Database.Common
             return item == null ? null : new AdminRoleTypes
             {
                 Id = item.Id,
-                LastChangeDate = item.LastChangeDate,
-                LastChangeUserId = item.LastChangeUserId,
                 Code = item.Code,
                 Name = item.Name
             };

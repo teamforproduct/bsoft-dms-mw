@@ -446,11 +446,11 @@ namespace DMS_WebAPI.Utilities
             //TODO Автоматическое определение сервера
             // определяю сервер для клиента пока первый попавшийся
             // сервер может определяться более сложным образом: с учетом нагрузки, количества клиентов
-            var server = _webDb.GetServers(new FilterAdminServers()).FirstOrDefault();
+            var server = _webDb.GetServers(new FilterAdminServers()).LastOrDefault();
             if (server == null) throw new ServerIsNotFound();
 
 
-            if (string.IsNullOrEmpty(model.Password)) model.Password = "admin_" + model.ClientCode;
+            //if (string.IsNullOrEmpty(model.Password)) model.Password = "admin_" + model.ClientCode;
 
             using (var transaction = Transactions.GetTransaction())
             {

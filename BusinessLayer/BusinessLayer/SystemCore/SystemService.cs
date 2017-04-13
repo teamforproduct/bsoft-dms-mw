@@ -189,15 +189,10 @@ namespace BL.Logic.SystemCore
             if (intAction.Id != dbAction.Id) throw new Exception("EqualsAction");
 
             return (
-              intAction.API == dbAction.API
-              & intAction.Category == dbAction.Category
+              intAction.Category == dbAction.Category
               & intAction.Code == dbAction.Code
               & intAction.Description == dbAction.Description
-              & intAction.GrantId == dbAction.GrantId
-              & intAction.IsGrantable == dbAction.IsGrantable
-              & intAction.IsGrantableByRecordId == dbAction.IsGrantableByRecordId
-              & intAction.IsVisible == dbAction.IsVisible
-              & intAction.IsVisibleInMenu == dbAction.IsVisibleInMenu
+              & (int)intAction.PermissionId == dbAction.PermissionId
               & (int)intAction.ObjectId == dbAction.ObjectId);
 
         }
@@ -224,16 +219,6 @@ namespace BL.Logic.SystemCore
                 }
             }
 
-        }
-
-        public int AddSystemDate(IContext ctx, DateTime date)
-        {
-            return _systemDb.AddSystemDate(ctx, date);
-        }
-
-        public DateTime GetSystemDate(IContext ctx)
-        {
-            return _systemDb.GetSystemDate(ctx);
         }
 
         public void RefreshModuleFeature(IContext context)

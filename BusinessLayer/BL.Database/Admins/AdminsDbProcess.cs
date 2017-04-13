@@ -73,11 +73,6 @@ namespace BL.Database.Admins
                     Id = x.Id,
                     Code = x.Code,
                     Description = x.Description,
-                    GrantId = x.GrantId,
-                    IsGrantable = x.IsGrantable,
-                    IsGrantableByRecordId = x.IsGrantableByRecordId,
-                    IsVisible = x.IsVisible,
-                    IsVisibleInMenu = x.IsVisibleInMenu,
                     PermissionId = x.PermissionId,
                     ObjectId = (EnumObjects)x.ObjectId,
                 }).ToList();
@@ -1798,13 +1793,7 @@ namespace BL.Database.Admins
                         Description = x.Description,
                         PermissionId = x.PermissionId,
                         Code = x.Code,
-                        API = x.API,
                         Category = x.Category,
-                        GrantId = x.GrantId,
-                        IsVisible = x.IsVisible,
-                        IsGrantable = x.IsGrantable,
-                        IsGrantableByRecordId = x.IsGrantableByRecordId,
-                        IsVisibleInMenu = x.IsVisibleInMenu,
                         ObjectId = (EnumObjects)x.ObjectId
                     }).ToList();
                 });

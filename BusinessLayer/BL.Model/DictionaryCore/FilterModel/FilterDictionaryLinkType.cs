@@ -2,7 +2,7 @@
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
-    public class FilterDictionaryLinkType : BaseFilterNameIsActive
+    public class FilterDictionaryLinkType : BaseFilterName
     {
   
     }

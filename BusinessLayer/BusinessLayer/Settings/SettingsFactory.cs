@@ -1,8 +1,4 @@
-﻿using BL.CrossCutting.DependencyInjection;
-using BL.CrossCutting.Interfaces;
-using BL.Logic.DictionaryCore.AgentEmployee;
-using BL.Model.Enums;
-using BL.Model.Exception;
+﻿using BL.Model.Enums;
 using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Logic.Settings
@@ -143,7 +139,7 @@ namespace BL.Logic.Settings
                     break;
 
                 case EnumSystemSettings.CLEARTRASHDOCUMENTS_TIMEOUT_MINUTE_FOR_CLEAR:
-                    res.Value = "360";
+                    res.Value = "60";
                     res.ValueType = EnumValueTypes.Number;
                     res.SettingTypeId = 2;
                     break;

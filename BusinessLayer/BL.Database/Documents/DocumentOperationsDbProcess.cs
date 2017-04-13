@@ -425,11 +425,14 @@ namespace BL.Database.Documents
                 {
                     var qry = dbContext.SystemActionsSet
                         .Where(filterObjectsContains)
-                        .Where(x => x.IsVisibleInMenu &&
-                                    (!x.IsGrantable ||
-                                        //x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
+                        .Where(x =>  (//x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
                                         x.Permission.RolePermissions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
                                         y.Role.UserRoles.Any(z => z.PositionExecutor.AgentId == context.CurrentAgentId)))
+                        //.Where(x => x.IsVisibleInMenu &&
+                        //            (!x.IsGrantable ||
+                        //                //x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
+                        //                x.Permission.RolePermissions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
+                        //                y.Role.UserRoles.Any(z => z.PositionExecutor.AgentId == context.CurrentAgentId)))
                         );
 
                     var qryActLst = qry.Select(a => new InternalSystemActionForDocument
@@ -438,7 +441,6 @@ namespace BL.Database.Documents
                         Object = (EnumObjects)a.ObjectId,
                         ActionCode = a.Code,
                         ObjectCode = a.Object.Code,
-                        API = a.API,
                         Description = a.Description,
                         Category = a.Category
                     });

@@ -2,7 +2,6 @@
 using BL.Database.DBModel.Dictionary;
 using BL.Database.DBModel.System;
 using BL.Model.Common;
-using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
 using System;
@@ -499,6 +498,21 @@ namespace BL.Database.DatabaseContext
         }
 
 
+        public static List<AdminLanguages> GetAdminLanguages()
+        {
+            var items = new List<AdminLanguages>();
+            // Эту функциюнужно синхронизить с ApplicationDbImportData.GetAdminLanguages
+            items.Add(new AdminLanguages { Id = 570, Code = "ru_RU", Name = "Русский", IsDefault = true });
+            items.Add(new AdminLanguages { Id = 045, Code = "en_US", Name = "English", IsDefault = false });
+            items.Add(new AdminLanguages { Id = 720, Code = "uk_UA", Name = "Українська", IsDefault = false });
+            items.Add(new AdminLanguages { Id = 090, Code = "be_BY", Name = "Беларуский", IsDefault = false });
+            items.Add(new AdminLanguages { Id = 790, Code = "cs_CZ", Name = "Čeština", IsDefault = false });
+            items.Add(new AdminLanguages { Id = 481, Code = "de_DE", Name = "Deutsch", IsDefault = false });
+            items.Add(new AdminLanguages { Id = 745, Code = "fr_FR", Name = "Français", IsDefault = false });
+            items.Add(new AdminLanguages { Id = 740, Code = "pl_PL", Name = "Polszczyzna", IsDefault = false });
+
+            return items;
+        }
         public static List<SystemAccessTypes> GetSystemAccessTypes()
         {
             var items = new List<SystemAccessTypes>();
@@ -1072,12 +1086,6 @@ namespace BL.Database.DatabaseContext
                 ObjectId = (int)objId,
                 Code = code,
                 Description = description,
-                API = "",
-                IsGrantable = isGrantable,
-                IsGrantableByRecordId = isGrantableByRecordId,
-                IsVisible = isVisible,
-                IsVisibleInMenu = isVisibleInMenu,
-                GrantId = grantId,
                 Category = category,
                 PermissionId = permissionId
             };
@@ -1103,8 +1111,6 @@ namespace BL.Database.DatabaseContext
                 Id = (int)id,
                 Code = null,
                 Name = name,
-                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
-                LastChangeDate = DateTime.UtcNow,
             };
         }
 
@@ -1140,8 +1146,6 @@ namespace BL.Database.DatabaseContext
                 Id = (int)id,
                 Code = id.ToString(),
                 Name = name,
-                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
-                LastChangeDate = DateTime.UtcNow,
             };
         }
 
@@ -1149,17 +1153,52 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<SystemUIElements>();
 
-            items.Add(new SystemUIElements { Id = 2, Order = 10, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "DocumentSubject", TypeCode = "textarea", Description = "Тематика документа", Label = "Тематика документа", Hint = "Введите тематику документа", ValueTypeId = 1, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "DocumentSubject", ValueDescriptionFieldCode = "DocumentSubject", Format = null });
-            items.Add(new SystemUIElements { Id = 3, Order = 20, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "Description", TypeCode = "textarea", Description = "Краткое содержание", Label = "Краткое содержание", Hint = "Введите краткое содержание", ValueTypeId = 1, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "Description", ValueDescriptionFieldCode = "Description", Format = null });
-            items.Add(new SystemUIElements { Id = 4, Order = 30, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "SenderAgent", TypeCode = "select", Description = "Контрагент, от которого получен документ", Label = "Организация", Hint = "Выберите из словаря контрагента, от которого получен документ", ValueTypeId = 2, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = "DictionaryAgents", SelectFilter = "{'IsCompany' : 'True'}", SelectFieldCode = "Id", SelectDescriptionFieldCode = "Name", ValueFieldCode = "SenderAgentId", ValueDescriptionFieldCode = "SenderAgentName", Format = null });
-            items.Add(new SystemUIElements { Id = 5, Order = 40, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "SenderAgentPerson", TypeCode = "select", Description = "Контактное лицо в организации", Label = "Контакт", Hint = "Выберите из словаря контактное лицо в организации, от которой получен документ", ValueTypeId = 2, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = "DictionaryAgentPersons", SelectFilter = "{'CompanyIDs' : '@SenderAgentId'}", SelectFieldCode = "Id", SelectDescriptionFieldCode = "FullName", ValueFieldCode = "SenderAgentPersonId", ValueDescriptionFieldCode = "SenderAgentPersonName", Format = null });
-            items.Add(new SystemUIElements { Id = 6, Order = 50, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "SenderNumber", TypeCode = "input", Description = "Входящий номер документа", Label = "Входящий номер документа", Hint = "Введите входящий номер документа", ValueTypeId = 1, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "SenderNumber", ValueDescriptionFieldCode = "SenderNumber", Format = null });
-            items.Add(new SystemUIElements { Id = 7, Order = 60, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "SenderDate", TypeCode = "input", Description = "Дата входящего документа", Label = "Дата входящего документа", Hint = "Введите дату входящего документа", ValueTypeId = 3, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "SenderDate", ValueDescriptionFieldCode = "SenderDate", Format = null });
-            items.Add(new SystemUIElements { Id = 8, Order = 70, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "Addressee", TypeCode = "input", Description = "Кому адресован документ", Label = "Кому адресован документ", Hint = "Введите кому адресован документ", ValueTypeId = 1, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "Addressee", ValueDescriptionFieldCode = "Addressee", Format = null });
-            items.Add(new SystemUIElements { Id = 9, Order = 80, ActionId = (int)EnumDocumentActions.ModifyDocument, Code = "AccessLevel", TypeCode = "select", Description = "Уровень доступа", Label = "Уровень доступа", Hint = "Выберите из словаря уровень доступа", ValueTypeId = 2, IsMandatory = false, IsReadOnly = false, IsVisible = false, SelectAPI = "AdminAccessLevels", SelectFilter = null, SelectFieldCode = "Id", SelectDescriptionFieldCode = "Name", ValueFieldCode = "AccessLevelId", ValueDescriptionFieldCode = "AccessLevelName", Format = null });
+            //items.Add(GetSystemUIElement(10, EnumUIElements.DocumentSubject, "textarea", ));
+            //items.Add(GetSystemUIElement(20, EnumUIElements.Description, "textarea", ));
+            //items.Add(GetSystemUIElement(30, EnumUIElements.SenderAgent, "select", ));
+            //items.Add(GetSystemUIElement(40, EnumUIElements.SenderAgentPerson, "select", ));
+            //items.Add(GetSystemUIElement(50, EnumUIElements.SenderNumber, "input", ));
+            //items.Add(GetSystemUIElement(60, EnumUIElements.SenderDate, "input", ));
+            //items.Add(GetSystemUIElement(70, EnumUIElements.Addressee, "input", ));
+            //items.Add(GetSystemUIElement(80, EnumUIElements.AccessLevel, "select", ));
+
+
+
+            //items.Add(new SystemUIElements {  ValueTypeId = 1, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "DocumentSubject", ValueDescriptionFieldCode = "DocumentSubject", Format = null });
+            //items.Add(new SystemUIElements {  ValueTypeId = 1, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "Description", ValueDescriptionFieldCode = "Description", Format = null });
+            //items.Add(new SystemUIElements {  ValueTypeId = 2, SelectAPI = "DictionaryAgents", SelectFilter = "{'IsCompany' : 'True'}", SelectFieldCode = "Id", SelectDescriptionFieldCode = "Name", ValueFieldCode = "SenderAgentId", ValueDescriptionFieldCode = "SenderAgentName", Format = null });
+            //items.Add(new SystemUIElements {  ValueTypeId = 2, SelectAPI = "DictionaryAgentPersons", SelectFilter = "{'CompanyIDs' : '@SenderAgentId'}", SelectFieldCode = "Id", SelectDescriptionFieldCode = "FullName", ValueFieldCode = "SenderAgentPersonId", ValueDescriptionFieldCode = "SenderAgentPersonName", Format = null });
+            //items.Add(new SystemUIElements {  ValueTypeId = 1, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "SenderNumber", ValueDescriptionFieldCode = "SenderNumber", Format = null });
+            //items.Add(new SystemUIElements {  ValueTypeId = 3, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "SenderDate", ValueDescriptionFieldCode = "SenderDate", Format = null });
+            //items.Add(new SystemUIElements {  ValueTypeId = 1, SelectAPI = null, SelectFilter = null, SelectFieldCode = null, SelectDescriptionFieldCode = null, ValueFieldCode = "Addressee", ValueDescriptionFieldCode = "Addressee", Format = null });
+            //items.Add(new SystemUIElements {  ValueTypeId = 2, SelectAPI = "AdminAccessLevels", SelectFilter = null, SelectFieldCode = "Id", SelectDescriptionFieldCode = "Name", ValueFieldCode = "AccessLevelId", ValueDescriptionFieldCode = "AccessLevelName", Format = null });
             //TODO add meta for templates!!!!
 
             return items;
+        }
+
+        private static SystemUIElements GetSystemUIElement(int order, EnumUIElements id, string typeCode, EnumValueTypes valType)
+        {
+            string label = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Label");
+            string descr = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Description");
+            string hint = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString()) + ".Hint";
+
+            return new SystemUIElements()
+            {
+                Id = (int)id,
+                Code = id.ToString(),
+                ActionId = (int)EnumDocumentActions.ModifyDocument,
+                TypeCode = typeCode,
+                Description = descr,
+                Label = label,
+                Hint = hint,
+                ValueTypeId = (int)valType,
+                IsMandatory = false,
+                IsReadOnly = false,
+                IsVisible = false,
+
+                Order = order,
+            };
         }
 
         public static List<SystemValueTypes> GetSystemValueTypes()
@@ -1180,22 +1219,44 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<DictionaryFileTypes>();
 
-            items.Add(new DictionaryFileTypes { Id = 0, Name = "Main", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionaryFileTypes { Id = 1, Name = "Additional", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionaryFileTypes { Id = 2, Name = "SubscribePdf", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
+            items.Add(GetDictionaryFileType(EnumFileTypes.Main));
+            items.Add(GetDictionaryFileType(EnumFileTypes.Additional));
+            items.Add(GetDictionaryFileType(EnumFileTypes.SubscribePdf));
 
             return items;
+        }
+
+        private static DictionaryFileTypes GetDictionaryFileType(EnumFileTypes id)
+        {
+            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            return new DictionaryFileTypes()
+            {
+                Id = (int)id,
+                Code = id.ToString(),
+                Name = name,
+            };
         }
 
         public static List<DictionarySigningTypes> GetDictionarySigningTypes()
         {
             var items = new List<DictionarySigningTypes>();
 
-            items.Add(new DictionarySigningTypes { Id = 0, Name = "Hash", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionarySigningTypes { Id = 1, Name = "InternalSign", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
-            items.Add(new DictionarySigningTypes { Id = 2, Name = "CertificateSign", LastChangeUserId = (int)EnumSystemUsers.AdminUser, LastChangeDate = DateTime.UtcNow });
+            items.Add(GetDictionarySigningType(EnumSigningTypes.Hash));
+            items.Add(GetDictionarySigningType(EnumSigningTypes.InternalSign));
+            items.Add(GetDictionarySigningType(EnumSigningTypes.CertificateSign));
 
             return items;
+        }
+
+        private static DictionarySigningTypes GetDictionarySigningType(EnumSigningTypes id)
+        {
+            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            return new DictionarySigningTypes()
+            {
+                Id = (int)id,
+                Code = id.ToString(),
+                Name = name,
+            };
         }
 
         public static List<DictionaryDocumentDirections> GetDictionaryDocumentDirections()
@@ -1217,8 +1278,6 @@ namespace BL.Database.DatabaseContext
                 Id = (int)id,
                 Code = ((int)id).ToString(),
                 Name = name,
-                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
-                LastChangeDate = DateTime.UtcNow,
             };
         }
 
@@ -1305,8 +1364,6 @@ namespace BL.Database.DatabaseContext
                 TargetDescription = null,
                 ImportanceEventTypeId = (int)importanceEventTypeId,
                 WaitDescription = waitDescription,
-                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
-                LastChangeDate = DateTime.UtcNow,
             };
         }
 
@@ -1332,8 +1389,6 @@ namespace BL.Database.DatabaseContext
                 Id = (int)id,
                 Code = null,
                 Name = name,
-                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
-                LastChangeDate = DateTime.UtcNow,
             };
         }
 
@@ -1362,9 +1417,6 @@ namespace BL.Database.DatabaseContext
                 Id = (int)id,
                 Name = name,
                 IsExecute = IsExecute,
-                IsActive = IsActive,
-                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
-                LastChangeDate = DateTime.UtcNow,
             };
         }
 
@@ -1397,8 +1449,6 @@ namespace BL.Database.DatabaseContext
                 IsImportant = isImportant,
                 SubordinationTypeId = subordinationTypeId,
                 Order = order,
-                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
-                LastChangeDate = DateTime.UtcNow,
             };
         }
 
@@ -1420,8 +1470,6 @@ namespace BL.Database.DatabaseContext
                 Id = (int)id,
                 Code = id.ToString(),
                 Name = name,
-                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
-                LastChangeDate = DateTime.UtcNow,
             };
         }
 
@@ -1443,8 +1491,6 @@ namespace BL.Database.DatabaseContext
                 Id = (int)id,
                 Code = id.ToString(),
                 Name = name,
-                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
-                LastChangeDate = DateTime.UtcNow,
             };
         }
 
@@ -1466,8 +1512,6 @@ namespace BL.Database.DatabaseContext
                 Id = (int)id,
                 Code = id.ToString(),
                 Name = name,
-                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
-                LastChangeDate = DateTime.UtcNow,
             };
         }
 
@@ -1494,8 +1538,6 @@ namespace BL.Database.DatabaseContext
                 Code = id.ToString(),
                 Name = name,
                 IsSuccess = isSuccess,
-                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
-                LastChangeDate = DateTime.UtcNow,
             };
         }
 
@@ -1503,18 +1545,19 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<DictionaryPositionExecutorTypes>();
 
-            items.Add(GetDictionaryPositionExecutorType(EnumPositionExecutionTypes.Personal));
+            items.Add(GetDictionaryPositionExecutorType(EnumPositionExecutionTypes.Personal, true));
             items.Add(GetDictionaryPositionExecutorType(EnumPositionExecutionTypes.IO));
             items.Add(GetDictionaryPositionExecutorType(EnumPositionExecutionTypes.Referent));
 
             return items;
         }
 
-        private static DictionaryPositionExecutorTypes GetDictionaryPositionExecutorType(EnumPositionExecutionTypes id)
+        private static DictionaryPositionExecutorTypes GetDictionaryPositionExecutorType(EnumPositionExecutionTypes id, bool WithoutSuffix = false)
         {
             string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
             string description = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Description");
-            string suffix = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Suffix");
+            string suffix = WithoutSuffix ? string.Empty : GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Suffix");
+
             return new DictionaryPositionExecutorTypes()
             {
                 Id = (int)id,
@@ -1522,8 +1565,6 @@ namespace BL.Database.DatabaseContext
                 Name = name,
                 Description = description,
                 Suffix = suffix,
-                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
-                LastChangeDate = DateTime.UtcNow,
             };
         }
 
@@ -1549,8 +1590,6 @@ namespace BL.Database.DatabaseContext
                 Id = (int)id,
                 Name = name,
                 IsImportant = IsImportant,
-                LastChangeUserId = (int)EnumSystemUsers.AdminUser,
-                LastChangeDate = DateTime.UtcNow,
             };
         }
 
@@ -1620,15 +1659,15 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<SystemFormats>();
 
-            items.Add(GetSystemFormats(EnumSystemFormats.Year, "yyyy"));
-            items.Add(GetSystemFormats(EnumSystemFormats.Day, "dd"));
-            items.Add(GetSystemFormats(EnumSystemFormats.Month, "MM"));
-            items.Add(GetSystemFormats(EnumSystemFormats.Year2, "yy"));
+            items.Add(GetSystemFormat(EnumSystemFormats.Year, "yyyy"));
+            items.Add(GetSystemFormat(EnumSystemFormats.Day, "dd"));
+            items.Add(GetSystemFormat(EnumSystemFormats.Month, "MM"));
+            items.Add(GetSystemFormat(EnumSystemFormats.Year2, "yy"));
 
             return items;
         }
 
-        private static SystemFormats GetSystemFormats(EnumSystemFormats id, string code)
+        private static SystemFormats GetSystemFormat(EnumSystemFormats id, string code)
         {
             string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
             string description = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Description");
@@ -1640,6 +1679,29 @@ namespace BL.Database.DatabaseContext
                 Description = description,
             };
         }
+        public static List<DictionarySettingTypes> GetDictionarySettingTypes()
+        {
+            var items = new List<DictionarySettingTypes>();
+
+            items.Add(GetDictionarySettingType(EnumSettingTypes.DocumentFlow, 10));
+            items.Add(GetDictionarySettingType(EnumSettingTypes.Mail, 20));
+            items.Add(GetDictionarySettingType(EnumSettingTypes.Report, 30));
+            items.Add(GetDictionarySettingType(EnumSettingTypes.General, 99));
+            return items;
+        }
+
+        private static DictionarySettingTypes GetDictionarySettingType(EnumSettingTypes id, int order)
+        {
+            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            return new DictionarySettingTypes()
+            {
+                Id = (int)id,
+                Code = id.ToString(),
+                Name = name,
+                Order = order,
+            };
+        }
+
 
     }
 

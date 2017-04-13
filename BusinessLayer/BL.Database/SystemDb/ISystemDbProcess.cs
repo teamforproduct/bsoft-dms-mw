@@ -111,9 +111,6 @@ namespace BL.Database.SystemDb
 
         IEnumerable<int> GetDocumentIdsForClearTrashDocuments(IContext context, int timeMinForClearTrashDocuments);
 
-        int AddSystemDate(IContext ctx, DateTime date);
-        DateTime GetSystemDate(IContext ctx);
-
         void RefreshModuleFeature(IContext context);
 
     }
