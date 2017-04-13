@@ -11,11 +11,9 @@ namespace BL.Database.Migrations
                 "DMS.AdminAccessLevels",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Int(nullable: false),
                         Code = c.String(maxLength: 2000),
                         Name = c.String(maxLength: 400),
-                        LastChangeUserId = c.Int(nullable: false),
-                        LastChangeDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .Index(t => t.Name, unique: true);
@@ -377,14 +375,12 @@ namespace BL.Database.Migrations
                 "DMS.DicPositionExecutorTypes",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Int(nullable: false),
                         Code = c.String(maxLength: 400),
                         Name = c.String(maxLength: 400),
                         Suffix = c.String(maxLength: 400),
                         Description = c.String(maxLength: 400),
                         IsActive = c.Boolean(nullable: false),
-                        LastChangeUserId = c.Int(nullable: false),
-                        LastChangeDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .Index(t => t.Code, unique: true)
@@ -487,32 +483,27 @@ namespace BL.Database.Migrations
                 "DMS.SystemActions",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Int(nullable: false),
                         PermissionId = c.Int(),
                         ObjectId = c.Int(nullable: false),
                         Code = c.String(maxLength: 400),
-                        API = c.String(maxLength: 2000),
                         Description = c.String(maxLength: 2000),
                         Category = c.String(maxLength: 2000),
-                        IsGrantable = c.Boolean(nullable: false),
-                        IsGrantableByRecordId = c.Boolean(nullable: false),
-                        IsVisible = c.Boolean(nullable: false),
-                        IsVisibleInMenu = c.Boolean(nullable: false),
-                        GrantId = c.Int(),
+                        SystemActions_Id = c.Int(),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("DMS.SystemActions", t => t.GrantId)
+                .ForeignKey("DMS.SystemActions", t => t.SystemActions_Id)
                 .ForeignKey("DMS.SystemObjects", t => t.ObjectId)
                 .ForeignKey("DMS.SystemPermissions", t => t.PermissionId)
                 .Index(t => t.PermissionId)
                 .Index(t => new { t.ObjectId, t.Code }, unique: true, name: "IX_ObjectCode")
-                .Index(t => t.GrantId);
+                .Index(t => t.SystemActions_Id);
             
             CreateTable(
                 "DMS.SystemObjects",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Int(nullable: false),
                         Code = c.String(maxLength: 400),
                         Description = c.String(maxLength: 2000),
                     })
@@ -523,7 +514,7 @@ namespace BL.Database.Migrations
                 "DMS.SystemFields",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Int(nullable: false),
                         ObjectId = c.Int(nullable: false),
                         Code = c.String(maxLength: 400),
                         Description = c.String(maxLength: 2000),
@@ -539,7 +530,7 @@ namespace BL.Database.Migrations
                 "DMS.SystemValueTypes",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Int(nullable: false),
                         Code = c.String(maxLength: 400),
                         Description = c.String(maxLength: 2000),
                     })
@@ -579,8 +570,6 @@ namespace BL.Database.Migrations
                         Id = c.Int(nullable: false),
                         Code = c.String(maxLength: 400),
                         Name = c.String(maxLength: 400),
-                        LastChangeUserId = c.Int(nullable: false),
-                        LastChangeDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .Index(t => t.Code, unique: true)
@@ -786,11 +775,9 @@ namespace BL.Database.Migrations
                 "DMS.DictionaryDocumentDirections",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Int(nullable: false),
                         Code = c.String(maxLength: 400),
                         Name = c.String(maxLength: 400),
-                        LastChangeUserId = c.Int(nullable: false),
-                        LastChangeDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .Index(t => t.Code, unique: true)
@@ -1022,14 +1009,12 @@ namespace BL.Database.Migrations
                 "DMS.DictionarySendTypes",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Int(nullable: false),
                         Code = c.String(maxLength: 2000),
                         Name = c.String(maxLength: 2000),
                         Order = c.Int(nullable: false),
                         IsImportant = c.Boolean(nullable: false),
                         SubordinationTypeId = c.Int(nullable: false),
-                        LastChangeUserId = c.Int(nullable: false),
-                        LastChangeDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.DictionarySubordinationTypes", t => t.SubordinationTypeId)
@@ -1040,11 +1025,9 @@ namespace BL.Database.Migrations
                 "DMS.DictionarySubordinationTypes",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Int(nullable: false),
                         Code = c.String(maxLength: 400),
                         Name = c.String(maxLength: 400),
-                        LastChangeUserId = c.Int(nullable: false),
-                        LastChangeDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .Index(t => t.Code, unique: true)
@@ -1164,11 +1147,9 @@ namespace BL.Database.Migrations
                 "DMS.DictionaryStageTypes",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Int(nullable: false),
                         Code = c.String(maxLength: 2000),
                         Name = c.String(maxLength: 2000),
-                        LastChangeUserId = c.Int(nullable: false),
-                        LastChangeDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .Index(t => t.Name, unique: true);
@@ -1227,15 +1208,13 @@ namespace BL.Database.Migrations
                 "DMS.DictionaryEventTypes",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Int(nullable: false),
                         Code = c.String(maxLength: 2000),
                         Name = c.String(maxLength: 2000),
                         SourceDescription = c.String(maxLength: 2000),
                         TargetDescription = c.String(maxLength: 2000),
                         WaitDescription = c.String(maxLength: 2000),
                         ImportanceEventTypeId = c.Int(nullable: false),
-                        LastChangeUserId = c.Int(nullable: false),
-                        LastChangeDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("DMS.DictionaryImportanceEventTypes", t => t.ImportanceEventTypeId)
@@ -1246,11 +1225,9 @@ namespace BL.Database.Migrations
                 "DMS.DictionaryImportanceEventTypes",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Int(nullable: false),
                         Code = c.String(maxLength: 2000),
                         Name = c.String(maxLength: 2000),
-                        LastChangeUserId = c.Int(nullable: false),
-                        LastChangeDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .Index(t => t.Name, unique: true);
@@ -1308,10 +1285,9 @@ namespace BL.Database.Migrations
                 "DMS.DictionaryFileTypes",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Int(nullable: false),
+                        Code = c.String(maxLength: 400),
                         Name = c.String(maxLength: 400),
-                        LastChangeUserId = c.Int(nullable: false),
-                        LastChangeDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .Index(t => t.Name, unique: true);
@@ -1354,12 +1330,9 @@ namespace BL.Database.Migrations
                 "DMS.DictionaryResultTypes",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Int(nullable: false),
                         Name = c.String(maxLength: 2000),
                         IsExecute = c.Boolean(nullable: false),
-                        IsActive = c.Boolean(nullable: false),
-                        LastChangeUserId = c.Int(nullable: false),
-                        LastChangeDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .Index(t => t.Name, unique: true);
@@ -1442,12 +1415,9 @@ namespace BL.Database.Migrations
                 "DMS.DictionaryLinkTypes",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Int(nullable: false),
                         Name = c.String(maxLength: 400),
                         IsImportant = c.Boolean(nullable: false),
-                        IsActive = c.Boolean(nullable: false),
-                        LastChangeUserId = c.Int(nullable: false),
-                        LastChangeDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .Index(t => t.Name, unique: true);
@@ -1496,11 +1466,9 @@ namespace BL.Database.Migrations
                 "DMS.DicRegJournalAccessTypes",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Int(nullable: false),
                         Code = c.String(maxLength: 400),
                         Name = c.String(maxLength: 400),
-                        LastChangeUserId = c.Int(nullable: false),
-                        LastChangeDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .Index(t => t.Code, unique: true)
@@ -1781,10 +1749,9 @@ namespace BL.Database.Migrations
                 "DMS.DictionarySigningTypes",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Int(nullable: false),
+                        Code = c.String(maxLength: 400),
                         Name = c.String(maxLength: 400),
-                        LastChangeUserId = c.Int(nullable: false),
-                        LastChangeDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .Index(t => t.Name, unique: true);
@@ -1793,12 +1760,10 @@ namespace BL.Database.Migrations
                 "DMS.DictionarySubscriptionStates",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Int(nullable: false),
                         Code = c.String(maxLength: 400),
                         Name = c.String(maxLength: 400),
                         IsSuccess = c.Boolean(nullable: false),
-                        LastChangeUserId = c.Int(nullable: false),
-                        LastChangeDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .Index(t => t.Code, unique: true)
@@ -1913,12 +1878,10 @@ namespace BL.Database.Migrations
                 "DMS.DictionarySettingTypes",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Int(nullable: false),
                         Code = c.String(maxLength: 400),
                         Name = c.String(maxLength: 400),
                         Order = c.Int(nullable: false),
-                        LastChangeUserId = c.Int(nullable: false),
-                        LastChangeDate = c.DateTime(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
                 .Index(t => t.Code, unique: true)
@@ -2076,19 +2039,10 @@ namespace BL.Database.Migrations
                 .Index(t => new { t.RecordId, t.PropertyLinkId }, unique: true, name: "IX_RecordId");
             
             CreateTable(
-                "DMS.SystemDates",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        Date = c.DateTime(nullable: false),
-                    })
-                .PrimaryKey(t => t.Id);
-            
-            CreateTable(
                 "DMS.SystemFormats",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Int(nullable: false),
                         Code = c.String(maxLength: 400),
                         Name = c.String(maxLength: 2000),
                         Description = c.String(maxLength: 2000),
@@ -2100,7 +2054,7 @@ namespace BL.Database.Migrations
                 "DMS.SystemFormulas",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Int(nullable: false),
                         Code = c.String(maxLength: 400),
                         Name = c.String(maxLength: 2000),
                         Description = c.String(maxLength: 2000),
@@ -2113,7 +2067,7 @@ namespace BL.Database.Migrations
                 "DMS.SystemPatterns",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Int(nullable: false),
                         Code = c.String(maxLength: 400),
                         Name = c.String(maxLength: 2000),
                         Description = c.String(maxLength: 2000),
@@ -2140,7 +2094,7 @@ namespace BL.Database.Migrations
                 "DMS.SystemUIElements",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
+                        Id = c.Int(nullable: false),
                         ActionId = c.Int(nullable: false),
                         Code = c.String(maxLength: 400),
                         TypeCode = c.String(maxLength: 400),
@@ -2365,7 +2319,7 @@ namespace BL.Database.Migrations
             DropForeignKey("DMS.SystemFields", "ValueTypeId", "DMS.SystemValueTypes");
             DropForeignKey("DMS.SystemFields", "ObjectId", "DMS.SystemObjects");
             DropForeignKey("DMS.SystemActions", "ObjectId", "DMS.SystemObjects");
-            DropForeignKey("DMS.SystemActions", "GrantId", "DMS.SystemActions");
+            DropForeignKey("DMS.SystemActions", "SystemActions_Id", "DMS.SystemActions");
             DropForeignKey("DMS.SystemPermissions", "AccessTypeId", "DMS.SystemAccessTypes");
             DropForeignKey("DMS.AdminPositionRoles", "RoleId", "DMS.AdminRoles");
             DropForeignKey("DMS.AdminPositionRoles", "PositionId", "DMS.DictionaryPositions");
@@ -2663,7 +2617,7 @@ namespace BL.Database.Migrations
             DropIndex("DMS.SystemFields", new[] { "ValueTypeId" });
             DropIndex("DMS.SystemFields", "IX_ObjectCode");
             DropIndex("DMS.SystemObjects", new[] { "Code" });
-            DropIndex("DMS.SystemActions", new[] { "GrantId" });
+            DropIndex("DMS.SystemActions", new[] { "SystemActions_Id" });
             DropIndex("DMS.SystemActions", "IX_ObjectCode");
             DropIndex("DMS.SystemActions", new[] { "PermissionId" });
             DropIndex("DMS.SystemAccessTypes", new[] { "Code" });
@@ -2736,7 +2690,6 @@ namespace BL.Database.Migrations
             DropTable("DMS.SystemPatterns");
             DropTable("DMS.SystemFormulas");
             DropTable("DMS.SystemFormats");
-            DropTable("DMS.SystemDates");
             DropTable("DMS.PropertyValues");
             DropTable("DMS.PropertyLinks");
             DropTable("DMS.Properties");

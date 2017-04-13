@@ -65,7 +65,7 @@ namespace DMS_WebAPI.Infrastructure
                 if (exc is DmsExceptions)
                 {
                     m = "##l@DmsExceptions:" + exc.GetType().Name + "@l##";
-                    d = string.Join(" ", (exc as DmsExceptions).Errors);
+                    if ((exc as DmsExceptions).Errors != null) d = string.Join(" ", (exc as DmsExceptions).Errors);
                 }
                 else m = exc.Message;
 
