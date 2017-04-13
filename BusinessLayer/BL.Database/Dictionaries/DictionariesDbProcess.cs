@@ -4404,12 +4404,6 @@ namespace BL.Database.Dictionaries
                         qry = qry.Where(filterContains);
                     }
 
-                    // Тоько активные/неактивные
-                    if (filter.IsActive != null)
-                    {
-                        qry = qry.Where(x => filter.IsActive == x.IsActive);
-                    }
-
                     // Поиск по наименованию
                     if (!string.IsNullOrEmpty(filter.Name))
                     {
@@ -5549,8 +5543,6 @@ namespace BL.Database.Dictionaries
                     IsActive = x.IsActive,
                     Code = x.Code,
                     Name = x.Name,
-                    LastChangeUserId = x.LastChangeUserId,
-                    LastChangeDate = x.LastChangeDate
                 }).ToList();
 
                 transaction.Complete();
@@ -6069,11 +6061,6 @@ namespace BL.Database.Dictionaries
                         qry = qry.Where(filterContains);
                     }
 
-                    // Тоько активные/неактивные
-                    if (filter.IsActive != null)
-                    {
-                        qry = qry.Where(x => filter.IsActive == x.IsActive);
-                    }
 
                     // Поиск по наименованию
                     if (!string.IsNullOrEmpty(filter.Name))

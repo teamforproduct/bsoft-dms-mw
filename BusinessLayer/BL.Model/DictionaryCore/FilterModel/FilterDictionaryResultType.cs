@@ -2,7 +2,7 @@
 
 namespace BL.Model.DictionaryCore.FilterModel
 {
-    public class FilterDictionaryResultType : BaseFilterNameIsActive
+    public class FilterDictionaryResultType : BaseFilterName
     {
      
     }

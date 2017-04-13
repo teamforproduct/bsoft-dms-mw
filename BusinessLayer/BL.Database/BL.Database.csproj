@@ -248,7 +248,6 @@
     <Compile Include="DBModel\Document\Documents.cs" />
     <Compile Include="DBModel\System\SystemUIElements.cs" />
     <Compile Include="DBModel\System\SystemPatterns.cs" />
-    <Compile Include="DBModel\System\SystemDate.cs" />
     <Compile Include="DBModel\System\SystemValueTypes.cs" />
     <Compile Include="DBModel\Template\TemplateDocumentSendListAccessGroups.cs" />
     <Compile Include="DBModel\Template\TemplateDocumentPapers.cs" />
@@ -288,6 +287,10 @@
     <Compile Include="Migrations\201704110936260_Initial.cs" />
     <Compile Include="Migrations\201704110936260_Initial.Designer.cs">
       <DependentUpon>201704110936260_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704131125529_RefactorSystemTables.cs" />
+    <Compile Include="Migrations\201704131125529_RefactorSystemTables.Designer.cs">
+      <DependentUpon>201704131125529_RefactorSystemTables.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -367,6 +370,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201704110936260_Initial.resx">
       <DependentUpon>201704110936260_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704131125529_RefactorSystemTables.resx">
+      <DependentUpon>201704131125529_RefactorSystemTables.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

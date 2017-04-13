@@ -18,7 +18,7 @@ namespace DMS_WebAPI.Models
         public static List<AdminLanguages> GetAdminLanguages()
         {
             var items = new List<AdminLanguages>();
-
+            // Эту функциюнужно синхронизить с DmsDbImportData.GetAdminLanguages
             items.Add(new AdminLanguages { Id = 570, Code = "ru_RU", Name = "Русский", IsDefault = true });
             items.Add(new AdminLanguages { Id = 045, Code = "en_US", Name = "English", IsDefault = false });
             items.Add(new AdminLanguages { Id = 720, Code = "uk_UA", Name = "Українська", IsDefault = false });

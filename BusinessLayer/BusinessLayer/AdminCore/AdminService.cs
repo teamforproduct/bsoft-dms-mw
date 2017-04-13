@@ -948,10 +948,11 @@ namespace BL.Logic.AdminCore
                     //    );
                     var filter = GetFilterPermissionsAccessByContext(context, model.PositionId.HasValue, null, actionId.Value);
                     res = _adminDb.ExistsPermissionsAccess(context, filter);
-                    if (!res)
-                    {
-                        actionId = data.Actions.Where(x => x.Id == actionId.Value).Select(x => x.GrantId).FirstOrDefault();
-                    }
+                    actionId = null;
+                    //if (!res)
+                    //{
+                    //    actionId = data.Actions.Where(x => x.Id == actionId.Value).Select(x => x.GrantId).FirstOrDefault();
+                    //}
                 }
             }
             else

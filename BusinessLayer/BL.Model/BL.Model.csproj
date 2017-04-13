@@ -168,6 +168,8 @@
     <Compile Include="Enums\EnumEventAccessGroupsTypes.cs" />
     <Compile Include="Enums\EnumEventAccessTypes.cs" />
     <Compile Include="Enums\EnumEntityTypes.cs" />
+    <Compile Include="Enums\EnumSettingTypes.cs" />
+    <Compile Include="Enums\EnumUIElements.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="FullTextSearch\FilterFullTextIndexCash.cs" />
     <Compile Include="Enums\EnumSortPositionExecutors.cs" />
