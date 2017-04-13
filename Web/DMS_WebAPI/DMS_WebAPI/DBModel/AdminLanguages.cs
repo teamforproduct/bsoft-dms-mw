@@ -14,6 +14,7 @@ namespace DMS_WebAPI.DBModel
         /// <summary>
         /// Цифровой код языка
         /// </summary>
+        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
         
         /// <summary>

@@ -53,7 +53,7 @@ namespace BL.Database.Helper
             //return @"Data Source=109.197.217.79\SQLEXPRESS,1433;Initial Catalog=IRF_DMS;Persist Security Info=True;User ID=sa;Password=Harm1969";
             //return new SqlConnection(@"Data Source=109.197.217.79\SQLEXPRESS,1433;Initial Catalog=PROD_IRF_DMS_3;User ID=sa;Password=Harm1969;Application Name=EntityFramework");
             //return new SqlConnection(@"Data Source=10.88.12.22,1433\SQLEXPRESS;Initial Catalog=DEV_IRF_DMS;User ID=bsoft;Password=TME3ZAf2MMqsPY;Application Name=EntityFramework");
-            return new SqlConnection(@"Data Source=10.88.12.22,1433\SQLEXPRESS;Initial Catalog=PROD_IRF_DMS_N;User ID=bsoft;Password=TME3ZAf2MMqsPY;Application Name=EntityFramework");
+            return new SqlConnection(@"Data Source=10.88.12.22,1433\SQLEXPRESS;Initial Catalog=PROD_IRF_DMS;User ID=bsoft;Password=TME3ZAf2MMqsPY;Application Name=EntityFramework");
 
         }
         //TODO remove in release version

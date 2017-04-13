@@ -284,9 +284,9 @@
     <Compile Include="Helper\ConnectionHelper.cs" />
     <Compile Include="Helper\IConnectionHelper.cs" />
     <Compile Include="Helper\Paging.cs" />
-    <Compile Include="Migrations\201704131234170_Initial.cs" />
-    <Compile Include="Migrations\201704131234170_Initial.Designer.cs">
-      <DependentUpon>201704131234170_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\201704131325178_Initial.cs" />
+    <Compile Include="Migrations\201704131325178_Initial.Designer.cs">
+      <DependentUpon>201704131325178_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -364,8 +364,8 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201704131234170_Initial.resx">
-      <DependentUpon>201704131234170_Initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201704131325178_Initial.resx">
+      <DependentUpon>201704131325178_Initial.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

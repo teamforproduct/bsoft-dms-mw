@@ -3,7 +3,7 @@ namespace DMS_WebAPI.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class InitialMigration : DbMigration
+    public partial class Initial : DbMigration
     {
         public override void Up()
         {
@@ -11,25 +11,14 @@ namespace DMS_WebAPI.Migrations
                 "dbo.AdminLanguages",
                 c => new
                     {
-                        Id = c.Int(nullable: false, identity: true),
-                        Code = c.String(maxLength: 2000),
-                        Name = c.String(maxLength: 2000),
+                        Id = c.Int(nullable: false),
+                        Code = c.String(maxLength: 200),
+                        Name = c.String(maxLength: 200),
+                        FileName = c.String(maxLength: 200),
                         IsDefault = c.Boolean(nullable: false),
                     })
-                .PrimaryKey(t => t.Id);
-            
-            CreateTable(
-                "dbo.AdminLanguageValues",
-                c => new
-                    {
-                        Id = c.Int(nullable: false, identity: true),
-                        LanguageId = c.Int(nullable: false),
-                        Label = c.String(maxLength: 2000),
-                        Value = c.String(maxLength: 2000),
-                    })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.AdminLanguages", t => t.LanguageId, cascadeDelete: true)
-                .Index(t => t.LanguageId);
+                .Index(t => t.FileName, unique: true);
             
             CreateTable(
                 "dbo.AdminServers",
@@ -127,6 +116,14 @@ namespace DMS_WebAPI.Migrations
                 c => new
                     {
                         Id = c.String(nullable: false, maxLength: 128),
+                        IsChangePasswordRequired = c.Boolean(nullable: false),
+                        IsEmailConfirmRequired = c.Boolean(nullable: false),
+                        IsLockout = c.Boolean(nullable: false),
+                        IsFingerprintEnabled = c.Boolean(nullable: false),
+                        ControlQuestionId = c.Int(),
+                        ControlAnswer = c.String(),
+                        CreateDate = c.DateTime(nullable: false),
+                        LastChangeDate = c.DateTime(nullable: false),
                         Email = c.String(maxLength: 256),
                         EmailConfirmed = c.Boolean(nullable: false),
                         PasswordHash = c.String(),
@@ -140,6 +137,8 @@ namespace DMS_WebAPI.Migrations
                         UserName = c.String(nullable: false, maxLength: 256),
                     })
                 .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.SystemControlQuestions", t => t.ControlQuestionId)
+                .Index(t => t.ControlQuestionId)
                 .Index(t => t.UserName, unique: true, name: "UserNameIndex");
             
             CreateTable(
@@ -154,6 +153,16 @@ namespace DMS_WebAPI.Migrations
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.AspNetUsers", t => t.UserId, cascadeDelete: true)
                 .Index(t => t.UserId);
+            
+            CreateTable(
+                "dbo.SystemControlQuestions",
+                c => new
+                    {
+                        Id = c.Int(nullable: false),
+                        Name = c.String(maxLength: 200),
+                    })
+                .PrimaryKey(t => t.Id)
+                .Index(t => t.Name, unique: true, name: "IX_FileName");
             
             CreateTable(
                 "dbo.AspNetUserLogins",
@@ -181,6 +190,23 @@ namespace DMS_WebAPI.Migrations
                 .Index(t => t.RoleId);
             
             CreateTable(
+                "dbo.AspNetUserFingerprints",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        UserId = c.String(maxLength: 128),
+                        Name = c.String(maxLength: 2000),
+                        Fingerprint = c.String(maxLength: 2000),
+                        Browser = c.String(maxLength: 2000),
+                        Platform = c.String(maxLength: 2000),
+                        IsActive = c.Boolean(nullable: false),
+                        LastChangeDate = c.DateTime(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id)
+                .ForeignKey("dbo.AspNetUsers", t => t.UserId)
+                .Index(t => new { t.UserId, t.Fingerprint }, unique: true, name: "IX_UserFingerprint");
+            
+            CreateTable(
                 "dbo.AspNetUserClients",
                 c => new
                     {
@@ -193,6 +219,24 @@ namespace DMS_WebAPI.Migrations
                 .ForeignKey("dbo.AspNetUsers", t => t.UserId)
                 .Index(t => t.UserId)
                 .Index(t => t.ClientId);
+            
+            CreateTable(
+                "dbo.AspNetUserContexts",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Token = c.String(maxLength: 550),
+                        UserId = c.String(maxLength: 128),
+                        UserName = c.String(maxLength: 256),
+                        ClientId = c.Int(nullable: false),
+                        CurrentPositionsIdList = c.String(maxLength: 400),
+                        DatabaseId = c.Int(nullable: false),
+                        IsChangePasswordRequired = c.Boolean(nullable: false),
+                        LoginLogId = c.Int(),
+                        LoginLogInfo = c.String(maxLength: 2000),
+                        LastChangeDate = c.DateTime(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id);
             
             CreateTable(
                 "dbo.AspNetRoles",
@@ -213,23 +257,27 @@ namespace DMS_WebAPI.Migrations
             DropForeignKey("dbo.AspNetUserClients", "ClientId", "dbo.AspNetClients");
             DropForeignKey("dbo.AspNetClientServers", "ServerId", "dbo.AdminServers");
             DropForeignKey("dbo.AspNetUserServers", "UserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.AspNetUserFingerprints", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserRoles", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.AspNetUsers", "ControlQuestionId", "dbo.SystemControlQuestions");
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserServers", "ServerId", "dbo.AdminServers");
             DropForeignKey("dbo.AspNetUserServers", "ClientId", "dbo.AspNetClients");
             DropForeignKey("dbo.AspNetClientLicences", "LicenceId", "dbo.AspNetLicences");
             DropForeignKey("dbo.AspNetClientLicences", "ClientId", "dbo.AspNetClients");
             DropForeignKey("dbo.AspNetClientServers", "ClientId", "dbo.AspNetClients");
-            DropForeignKey("dbo.AdminLanguageValues", "LanguageId", "dbo.AdminLanguages");
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
             DropIndex("dbo.AspNetUserClients", new[] { "ClientId" });
             DropIndex("dbo.AspNetUserClients", new[] { "UserId" });
+            DropIndex("dbo.AspNetUserFingerprints", "IX_UserFingerprint");
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "UserId" });
             DropIndex("dbo.AspNetUserLogins", new[] { "UserId" });
+            DropIndex("dbo.SystemControlQuestions", "IX_FileName");
             DropIndex("dbo.AspNetUserClaims", new[] { "UserId" });
             DropIndex("dbo.AspNetUsers", "UserNameIndex");
+            DropIndex("dbo.AspNetUsers", new[] { "ControlQuestionId" });
             DropIndex("dbo.AspNetUserServers", new[] { "ClientId" });
             DropIndex("dbo.AspNetUserServers", new[] { "ServerId" });
             DropIndex("dbo.AspNetUserServers", new[] { "UserId" });
@@ -237,11 +285,14 @@ namespace DMS_WebAPI.Migrations
             DropIndex("dbo.AspNetClientLicences", new[] { "ClientId" });
             DropIndex("dbo.AspNetClientServers", new[] { "ServerId" });
             DropIndex("dbo.AspNetClientServers", new[] { "ClientId" });
-            DropIndex("dbo.AdminLanguageValues", new[] { "LanguageId" });
+            DropIndex("dbo.AdminLanguages", new[] { "FileName" });
             DropTable("dbo.AspNetRoles");
+            DropTable("dbo.AspNetUserContexts");
             DropTable("dbo.AspNetUserClients");
+            DropTable("dbo.AspNetUserFingerprints");
             DropTable("dbo.AspNetUserRoles");
             DropTable("dbo.AspNetUserLogins");
+            DropTable("dbo.SystemControlQuestions");
             DropTable("dbo.AspNetUserClaims");
             DropTable("dbo.AspNetUsers");
             DropTable("dbo.AspNetUserServers");
@@ -250,7 +301,6 @@ namespace DMS_WebAPI.Migrations
             DropTable("dbo.AspNetClients");
             DropTable("dbo.AspNetClientServers");
             DropTable("dbo.AdminServers");
-            DropTable("dbo.AdminLanguageValues");
             DropTable("dbo.AdminLanguages");
         }
     }
