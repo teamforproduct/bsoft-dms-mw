@@ -13,7 +13,7 @@ namespace BL.Database.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201704131325178_Initial"; }
+            get { return "201704131456040_Initial"; }
         }
         
         string IMigrationMetadata.Source
