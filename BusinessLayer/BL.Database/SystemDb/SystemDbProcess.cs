@@ -193,42 +193,6 @@ namespace BL.Database.SystemDb
             }
         }
 
-        public int AddSystemDate(IContext ctx, DateTime date)
-        {
-            var dbContext = ctx.DbContext as DmsContext;
-            using (var transaction = Transactions.GetTransaction())
-            {
-                var item = new SystemDate
-                {
-                    Date = date,
-                };
-                dbContext.SystemDateSet.Attach(item);
-                dbContext.Entry(item).State = EntityState.Added;
-
-                dbContext.SaveChanges();
-                transaction.Complete();
-                return item.Id;
-            }
-        }
-
-        public DateTime GetSystemDate(IContext ctx)
-        {
-            var dbContext = ctx.DbContext as DmsContext;
-            using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = dbContext.SystemDateSet.ToList();
-
-                var res = DateTime.UtcNow.AddYears(-50);
-
-                if (qry?.Count > 0)
-                    res = qry.LastOrDefault().Date;
-
-                transaction.Complete();
-
-                return res;
-            }
-        }
-
         public void RefreshModuleFeature(IContext ctx)
         {
             var dbContext = ctx.DbContext as DmsContext;
@@ -1012,21 +976,21 @@ namespace BL.Database.SystemDb
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = dbContext.Database.BeginTransaction())
             {
-                dbContext.Database.ExecuteSqlCommand("SET IDENTITY_INSERT [DMS].[SystemActions] ON");
+                //dbContext.Database.ExecuteSqlCommand("SET IDENTITY_INSERT [DMS].[SystemActions] ON");
 
-                dbContext.Database.ExecuteSqlCommand(
-                String.Format(@"INSERT INTO[DMS].[SystemActions]
-                (Id, ObjectId, Code, API, [Description], IsGrantable, IsGrantableByRecordId, IsVisible, IsVisibleInMenu,  GrantId, Category, PermissionId) 
-                VALUES
-                ({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11})",
-                item.Id, item.ObjectId, "'" + item.Code + "'", "'" + item.API + "'", "'" + item.Description + "'", item.IsGrantable ? 1 : 0, item.IsGrantableByRecordId ? 1 : 0, item.IsVisible ? 1 : 0, item.IsVisibleInMenu ? 1 : 0, item.GrantId.ToString() == string.Empty ? "null" : item.GrantId.ToString(), item.Category ?? "null", item.PermissionId.ToString() == string.Empty ? "null" : item.PermissionId.ToString())
-                );
+                //dbContext.Database.ExecuteSqlCommand(
+                //String.Format(@"INSERT INTO[DMS].[SystemActions]
+                //(Id, ObjectId, Code, API, [Description], IsGrantable, IsGrantableByRecordId, IsVisible, IsVisibleInMenu,  GrantId, Category, PermissionId) 
+                //VALUES
+                //({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11})",
+                //item.Id, item.ObjectId, "'" + item.Code + "'", "'" + item.API + "'", "'" + item.Description + "'", item.IsGrantable ? 1 : 0, item.IsGrantableByRecordId ? 1 : 0, item.IsVisible ? 1 : 0, item.IsVisibleInMenu ? 1 : 0, item.GrantId.ToString() == string.Empty ? "null" : item.GrantId.ToString(), item.Category ?? "null", item.PermissionId.ToString() == string.Empty ? "null" : item.PermissionId.ToString())
+                //);
 
-                //dbContext.SystemActionsSet.Add(item);
+                dbContext.SystemActionsSet.Add(item);
 
-                //dbContext.SaveChanges();
+                dbContext.SaveChanges();
 
-                dbContext.Database.ExecuteSqlCommand("SET IDENTITY_INSERT [DMS].[SystemActions] OFF");
+                //dbContext.Database.ExecuteSqlCommand("SET IDENTITY_INSERT [DMS].[SystemActions] OFF");
 
                 transaction.Commit();
             }
@@ -1082,12 +1046,7 @@ namespace BL.Database.SystemDb
                     Id = x.Id,
                     Code = x.Code,
                     Description = x.Description,
-                    API = x.API,
                     Category = x.Category,
-                    GrantId = x.GrantId,
-                    IsGrantable = x.IsGrantable,
-                    IsGrantableByRecordId = x.IsGrantableByRecordId,
-                    IsVisible = x.IsVisible,
                     ObjectId = (EnumObjects)x.ObjectId
                 }).ToList();
 
@@ -1138,20 +1097,6 @@ namespace BL.Database.SystemDb
                     qry = qry.Where(filterContains);
                 }
 
-                if (filter.IsGrantable.HasValue)
-                {
-                    qry = qry.Where(x => x.IsGrantable == filter.IsGrantable);
-                }
-
-                if (filter.IsGrantableByRecordId.HasValue)
-                {
-                    qry = qry.Where(x => x.IsGrantableByRecordId == filter.IsGrantableByRecordId);
-                }
-
-                if (filter.IsVisible.HasValue)
-                {
-                    qry = qry.Where(x => x.IsVisible == filter.IsVisible);
-                }
             }
 
             return qry;

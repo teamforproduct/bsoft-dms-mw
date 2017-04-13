@@ -50,6 +50,7 @@ namespace BL.Model.DocumentCore.InternalModel
         /// Признак дополнительный файл или основной
         /// </summary>
         public string TypeName { get; set; }
+
         /// <summary>
         /// Описание файла
         /// </summary>

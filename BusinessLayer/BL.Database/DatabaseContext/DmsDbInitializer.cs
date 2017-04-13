@@ -6,7 +6,7 @@ namespace BL.Database.DatabaseContext
     {
         protected override void Seed(DmsContext context)
         {
-            //context.AdminLanguagesSet.AddRange(DmsDbImportData.GetAdminLanguages());
+            context.AdminLanguagesSet.AddRange(DmsDbImportData.GetAdminLanguages());
             //context.AdminLanguageValuesSet.AddRange(DmsDbImportData.GetAdminLanguageValues());
 
             // ModuleFeatures последовательность вызовов важна!!!
@@ -23,6 +23,7 @@ namespace BL.Database.DatabaseContext
             context.SystemActionsSet.AddRange(DmsDbImportData.GetSystemActions());
             context.SystemUIElementsSet.AddRange(DmsDbImportData.GetSystemUIElements());
             context.SystemValueTypesSet.AddRange(DmsDbImportData.GetSystemValueTypes());
+            context.SystemFormatsSet.AddRange(DmsDbImportData.GetSystemFormats());
             context.SystemFormulasSet.AddRange(DmsDbImportData.GetSystemFormulas());
             context.SystemPatternsSet.AddRange(DmsDbImportData.GetSystemPatterns());
             context.DictionaryDocumentDirectionsSet.AddRange(DmsDbImportData.GetDictionaryDocumentDirections());
@@ -38,6 +39,7 @@ namespace BL.Database.DatabaseContext
             context.DictionaryLinkTypesSet.AddRange(DmsDbImportData.GetDictionaryLinkTypes());
             context.DictionaryFileTypesSet.AddRange(DmsDbImportData.GetDictionaryFileTypes());
             context.DictionarySigningTypesSet.AddRange(DmsDbImportData.GetDictionarySigningTypes());
+            context.DictionarySettingTypesSet.AddRange(DmsDbImportData.GetDictionarySettingTypes());
             base.Seed(context);
         }
     }

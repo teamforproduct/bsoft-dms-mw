@@ -1,9 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using BL.Database.DBModel.Admin;
-using BL.Model.Enums;
-using BL.CrossCutting.Interfaces;
-using System;
+﻿using BL.CrossCutting.Interfaces;
 using BL.Database.DBModel.System;
 using BL.Model.SystemCore.InternalModel;
 
@@ -18,16 +13,11 @@ namespace BL.Database.Common
             return item == null ? null : new SystemActions
             {
                 Id = item.Id,
-                API = item.API,
                 Category = item.Category,
                 Code = item.Code,
                 Description = item.Description,
-                GrantId = item.GrantId,
-                IsGrantable = item.IsGrantable,
-                IsGrantableByRecordId = item.IsGrantableByRecordId,
-                IsVisible = item.IsVisible,
-                IsVisibleInMenu = item.IsVisibleInMenu,
                 ObjectId = (int)item.ObjectId,
+                PermissionId = item.PermissionId,
             };
         }
 
