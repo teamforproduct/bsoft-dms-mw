@@ -58,7 +58,7 @@ namespace BL.Database.Common
                         filterContains = filterContains.And(x => x.IsInWork == true).Expand();
                     if (isVerifyExecutorPosition.HasValue && isVerifyExecutorPosition.Value)
                         filterContains = filterContains.And(x => x.PositionId == x.Document.ExecutorPositionId).Expand();
-                    if (isVerifyExecutorPosition.HasValue && !isVerifyExecutorPosition.Value)
+                    if (isVerifyExecutorPosition.HasValue && isVerifyExecutorPosition.Value)
                         filterContains = filterContains.And(x => x.PositionId == context.CurrentPositionId).Expand();
                     qry = qry.Where(x => x.Accesses.AsQueryable().Where(filterContains).Any());
                 }
