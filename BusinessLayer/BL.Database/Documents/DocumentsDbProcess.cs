@@ -686,16 +686,14 @@ namespace BL.Database.Documents
                         docIds = res.LinkedDocuments.Select(x => x.Id).ToList();
                     }
                 }
-
-                res.SendLists = CommonQueries.GetDocumentSendList(context,
-                    new FilterDocumentSendList {DocumentId = new List<int> {documentId}});
+                var sendListDbProcess = DmsResolver.Current.Get<IDocumentSendListsDbProcess>();
+                res.SendLists = sendListDbProcess.GetSendLists(context, documentId);
 
                 res.SendListStageMax = (res.SendLists == null) || !res.SendLists.Any()
                     ? 0
                     : res.SendLists.Max(x => x.Stage);
 
-                res.RestrictedSendLists =
-                    DmsResolver.Current.Get<IDocumentSendListsDbProcess>().GetRestrictedSendLists(context, documentId);
+                res.RestrictedSendLists = sendListDbProcess.GetRestrictedSendLists(context, documentId);
 
                 res.DocumentTags = CommonQueries.GetDocumentTags(context,
                     new FilterDocumentTag {DocumentId = docIds, CurrentPositionsId = context.CurrentPositionsIdList});

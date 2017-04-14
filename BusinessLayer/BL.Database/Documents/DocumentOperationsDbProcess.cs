@@ -685,15 +685,15 @@ namespace BL.Database.Documents
                 item.OnWait = null;
             }
         }
-        private void SetAccessGroups(IContext context, List<FrontDocumentEvent> events)
+        private void SetAccessGroups(IContext context, List<FrontDocumentEvent> items)
         {
             var dbContext = context.DbContext as DmsContext;
             var qryAcc = dbContext.DocumentEventAccessGroupsSet.AsQueryable();
-            var ids = events.Select(x => x.Id).ToList();
-            var filterEvContains = PredicateBuilder.New<DocumentEventAccessGroups>(false);
-            filterEvContains = ids.Aggregate(filterEvContains,
+            var ids = items.Select(x => x.Id).ToList();
+            var filterContains = PredicateBuilder.New<DocumentEventAccessGroups>(false);
+            filterContains = ids.Aggregate(filterContains,
                 (current, value) => current.Or(e => e.EventId == value).Expand());
-            qryAcc = qryAcc.Where(filterEvContains);
+            qryAcc = qryAcc.Where(filterContains);
             var accGroups = qryAcc.GroupBy(x => x.EventId).Select(x => new
             {
                 EventId = x.Key,
@@ -704,7 +704,7 @@ namespace BL.Database.Documents
                     Name = y.Agent.Name ?? y.Company.Agent.Name ?? y.Department.Name ?? y.Position.Name ?? y.StandartSendList.Name,
                 }).ToList(),
             }).ToList();
-            events.ForEach(x => x.AccessGroups = accGroups.Where(y => y.EventId == x.Id).Select(y => y.AccessGroups).FirstOrDefault());
+            items.ForEach(x => x.AccessGroups = accGroups.Where(y => y.EventId == x.Id).Select(y => y.AccessGroups).FirstOrDefault());
         }
         public IEnumerable<FrontDocumentWait> GetDocumentWaits(IContext context, FilterBase filter, UIPaging paging)
         {
@@ -2665,38 +2665,7 @@ namespace BL.Database.Documents
             }
             return res;
         }
-        public IEnumerable<InternalDocumentSendList> AddByStandartSendListDocumentSendListPrepare(IContext context, ModifyDocumentSendListByStandartSendList model)
-        {
-            //TODO DELETE!!!!
-            var dbContext = context.DbContext as DmsContext;
-            using (var transaction = Transactions.GetTransaction())
-            {
-
-                var items = dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendList.ClientId == context.CurrentClientId).Where(x => x.StandartSendListId == model.StandartSendListId)
-                 .Select(x => new InternalDocumentSendList
-                 {
-                     //ClientId = x.ClientId,
-                     //EntityTypeId = x.EntityTypeId,
-                     DocumentId = model.DocumentId,
-                     Stage = x.Stage,
-                     //StageType = (EnumStageTypes)x.StageTypeId,
-                     SendType = (EnumSendTypes)x.SendTypeId,
-                     SourcePositionId = context.CurrentPositionId,
-                     SourceAgentId = context.CurrentAgentId,
-                     TargetPositionId = x.TargetPositionId,
-                     Description = x.Description,
-                     DueDate = x.DueDate,
-                     DueDay = x.DueDay,
-                     IsInitial = model.IsInitial,
-                     AccessLevel = (EnumDocumentAccesses)(x.AccessLevelId ?? (int)EnumDocumentAccesses.PersonalRefIO),
-                     LastChangeUserId = context.CurrentAgentId,
-                     LastChangeDate = DateTime.UtcNow,
-                 }).ToList();
-                transaction.Complete();
-                return items;
-            }
-        }
-        public void ModifyDocumentSendListAddDescription(IContext context, InternalDocumentSendList sendList)
+         public void ModifyDocumentSendListAddDescription(IContext context, InternalDocumentSendList sendList)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())

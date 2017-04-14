@@ -158,6 +158,7 @@
     <Compile Include="DictionaryCore\IncomingModel\AddEmployeeInOrg.cs" />
     <Compile Include="DictionaryCore\InternalModel\SortPositoin.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentEventAccess.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontDocumentSendListAccessGroup.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentEventAccessGroup.cs" />
     <Compile Include="DocumentCore\IncomingModel\AccessGroup.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentSendListAccessGroup.cs" />

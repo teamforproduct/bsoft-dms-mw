@@ -65,7 +65,6 @@ namespace BL.Database.Documents.Interfaces
 
         IEnumerable<int> AddDocumentSendList(IContext context, IEnumerable<InternalDocumentSendList> model, IEnumerable<InternalDocumentTask> task = null, IEnumerable<InternalDocumentEvent> paperEvents = null);
 
-        IEnumerable<InternalDocumentSendList> AddByStandartSendListDocumentSendListPrepare(IContext context, ModifyDocumentSendListByStandartSendList model);
 
         void ModifyDocumentSendListAddDescription(IContext context, InternalDocumentSendList sendList);
 

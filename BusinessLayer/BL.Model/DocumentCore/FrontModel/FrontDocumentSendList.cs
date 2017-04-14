@@ -126,5 +126,6 @@ namespace BL.Model.DocumentCore.FrontModel
 
         public FrontDocumentEvent StartEvent { get; set; }
         public FrontDocumentEvent CloseEvent { get; set; }
+        public IEnumerable<FrontDocumentSendListAccessGroup> AccessGroups { get; set; }
     }
 }

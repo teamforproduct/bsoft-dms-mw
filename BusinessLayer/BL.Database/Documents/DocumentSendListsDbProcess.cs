@@ -87,12 +87,36 @@ namespace BL.Database.Documents
             }
         }
 
-        public IEnumerable<FrontDocumentSendList> GetSendLists(IContext ctx, int documentId)
+        private void SetAccessGroups(IContext context, List<FrontDocumentSendList> items)
         {
-            var dbContext = ctx.DbContext as DmsContext;
+            var dbContext = context.DbContext as DmsContext;
+            var qryAcc = dbContext.DocumentSendListAccessGroupsSet.AsQueryable();
+            var ids = items.Select(x => x.Id).ToList();
+            var filterContains = PredicateBuilder.New<DocumentSendListAccessGroups>(false);
+            filterContains = ids.Aggregate(filterContains,
+                (current, value) => current.Or(e => e.SendListId == value).Expand());
+            qryAcc = qryAcc.Where(filterContains);
+            var accGroups = qryAcc.GroupBy(x => x.SendListId).Select(x => new
+            {
+                EventId = x.Key,
+                AccessGroups = x.Select(y => new FrontDocumentSendListAccessGroup
+                {
+                    AccessType = (EnumEventAccessTypes)y.AccessTypeId,
+                    AccessGroupType = (EnumEventAccessGroupTypes)y.AccessGroupTypeId,
+                    Name = y.Agent.Name ?? y.Company.Agent.Name ?? y.Department.Name ?? y.Position.Name ?? y.StandartSendList.Name,
+                }).ToList(),
+            }).ToList();
+            items.ForEach(x => x.AccessGroups = accGroups.Where(y => y.EventId == x.Id).Select(y => y.AccessGroups).FirstOrDefault());
+        }
+
+
+        public IEnumerable<FrontDocumentSendList> GetSendLists(IContext context, int documentId)
+        {
+            var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var res = CommonQueries.GetDocumentSendList(ctx, new FilterDocumentSendList { DocumentId = new List<int> { documentId } });
+                var res = CommonQueries.GetDocumentSendList(context, new FilterDocumentSendList { DocumentId = new List<int> { documentId } }).ToList();
+                SetAccessGroups(context, res);
                 transaction.Complete();
                 return res;
             }
@@ -104,6 +128,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var res = CommonQueries.GetDocumentSendList(ctx, new FilterDocumentSendList { Id = new List<int> { id } }).FirstOrDefault();
+                SetAccessGroups(ctx, new List<FrontDocumentSendList> { res });
                 transaction.Complete();
                 return res;
             }
