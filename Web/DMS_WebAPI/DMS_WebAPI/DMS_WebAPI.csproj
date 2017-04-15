@@ -398,16 +398,14 @@
     <Compile Include="Controllers\WebAPI\ServersController.cs" />
     <Compile Include="DatabaseContext\ApplicationDbImportData.cs" />
     <Compile Include="DBModel\AspNetUserContexts.cs" />
+    <Compile Include="DBModel\AspNetUserClientServer.cs" />
     <Compile Include="DBModel\SystemControlQuestions.cs" />
     <Compile Include="DBModel\AdminLanguages.cs" />
     <Compile Include="DBModel\AdminServers.cs" />
-    <Compile Include="DBModel\AspNetClientServers.cs" />
     <Compile Include="DBModel\AspNetClientLicences.cs" />
     <Compile Include="DBModel\AspNetLicences.cs" />
     <Compile Include="DBModel\AspNetClients.cs" />
-    <Compile Include="DBModel\AspNetUserClients.cs" />
     <Compile Include="DBModel\AspNetUserFingerprints.cs" />
-    <Compile Include="DBModel\AspNetUserServers.cs" />
     <Compile Include="DependencyInjection\ApiModel.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

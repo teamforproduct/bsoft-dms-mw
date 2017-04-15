@@ -92,7 +92,7 @@ namespace BL.Logic.AdminCore
 
         public void ChangeLoginAgentUser(IContext context, ChangeLoginAgentUser model)
         {
-            var user = new InternalDictionaryAgentUser { Id = model.Id, UserName = model.NewUserName };
+            var user = new InternalDictionaryAgentUser { Id = model.Id, UserName = model.NewEmail };
             CommonDocumentUtilities.SetLastChange(context, user);
             _dictDb.SetAgentUserUserName(context, user);
         }

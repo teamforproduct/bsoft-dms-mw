@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace BL.Model.Users
+﻿namespace BL.Model.Users
 {
     public class ChangeLogin
     {
@@ -8,12 +6,5 @@ namespace BL.Model.Users
         /// Новый логин
         /// </summary>
         public string NewEmail { get; set; }
-
-
-        /// <summary>
-        /// Новый логин
-        /// </summary>
-        [IgnoreDataMember]
-        public string NewUserName { get; set; }
     }
 }

@@ -72,18 +72,16 @@ namespace DMS_WebAPI.Providers
         /// <returns></returns>
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
-            var userEmail = context.UserName;
-
             string clientCode = GetClientCodeFromBody(context.Request.Body);
-
+            // код клиента - обязательный параметр
             if (string.IsNullOrEmpty(clientCode)) throw new ClientRequired();
 
+            // Если передали несуществующие код клиента. дальше не пускаю
             var webService = DmsResolver.Current.Get<WebAPIService>();
+            if (!webService.ExistsClients(new FilterAspNetClients { Code = clientCode })) throw new ClientIsNotFound(); // TODO может тут нужен ThrowErrorGrantResourceOwnerCredentials - не знаю - и зачем не понимаю
 
-            // TODO может тут нужен ThrowErrorGrantResourceOwnerCredentials - не знаю - и зачем не понимаю
-            if (!webService.ExistsClients(new FilterAspNetClients { Code = clientCode })) throw new ClientIsNotFound();
-
-            ApplicationUser user = await webService.GetUser(userEmail, context.Password, clientCode);
+            // Нахожу пользователя по логину и паролю
+            ApplicationUser user = await webService.GetUser(context.UserName, context.Password);
 
             //context.SetError("invalid_grant", new UserNameOrPasswordIsIncorrect().Message); return;
             // Эта штука возвращает в респонсе {"error":"invalid_grant","error_description":"Привет!!"} - на фронте всплывает красный тостер с error_description
@@ -155,20 +153,21 @@ namespace DMS_WebAPI.Providers
         private void ThrowErrorGrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context, Exception ex)
         {
             string message = GetBrowswerInfo(context);
-            var dbWeb = DmsResolver.Current.Get<WebAPIDbProcess>();
-            var server = dbWeb.GetServerByUser(null, new SetUserServer { ClientId = -1, ServerId = -1, ClientCode = GetClientCodeFromBody(context.Request.Body) });
+            var clientCode = GetClientCodeFromBody(context.Request.Body);
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            var server = webService.GetClientServer(clientCode);
+
             var ctx = new AdminContext(server);
             var logger = DmsResolver.Current.Get<ILogger>();
             var errorInfo = new AuthError
             {
-                ClientCode = GetClientCodeFromBody(context.Request.Body),
+                ClientCode = clientCode,
                 EMail = context.UserName,
                 FingerPrint = GetFingerprintFromBody(context.Request.Body)
             };
-            ctx.CurrentClientId = dbWeb.GetClientId(errorInfo.ClientCode);
             int? agentId = null;
             var dbService = DmsResolver.Current.Get<WebAPIService>();
-            var user = dbService.GetUser(errorInfo.EMail, errorInfo.ClientCode);
+            var user = dbService.GetUser(errorInfo.EMail);
             if (user != null)
             {
                 var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(ctx, user.Id);
@@ -211,15 +210,11 @@ namespace DMS_WebAPI.Providers
                 // Получаю ID WEb-пользователя
                 var userId = context.Identity.GetUserId();
 
-                var dbWeb = DmsResolver.Current.Get<WebAPIDbProcess>();
+                var clientCode = GetClientCodeFromBody(context.Request.Body);
 
+                var webService = DmsResolver.Current.Get<WebAPIService>();
 
-                // Предполагаю, что один пользователь всегда привязан только к одному клиенту 
-                var client = dbWeb.GetClientByUser(userId);
-                if (client == null) throw new ClientIsNotFound();
-
-                // Предполагаю, что один пользователь всегда привязан только к одному серверу 
-                var server = dbWeb.GetServerByUser(userId, new SetUserServer { ClientId = client.Id, ServerId = -1 });
+                var server = webService.GetClientServer(clientCode);
                 if (server == null) throw new DatabaseIsNotFound();
 
                 var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
@@ -233,10 +228,10 @@ namespace DMS_WebAPI.Providers
                 var userContexts = DmsResolver.Current.Get<UserContexts>();
 
                 // Создаю пользовательский контекст
-                var ctx = userContexts.Set(token, userId, user.UserName, user.IsChangePasswordRequired, client.Code);
+                var ctx = userContexts.Set(token, userId, user.UserName, user.IsChangePasswordRequired, clientCode);
 
                 // Добавляю в пользовательский контекст сервер
-                userContexts.Set(token, server, client.Id);
+                userContexts.Set(token, server);
 
                 // Получаю информацию о браузере
                 string message = GetBrowswerInfo(context);
@@ -276,9 +271,9 @@ namespace DMS_WebAPI.Providers
             var message = $"{ip}; {bc.Browser} {bc.Version}; {bc.Platform}; {mobile}";
             if (isIncludeFingerPrintInfo && context != null)
             {
-                var dbWeb = DmsResolver.Current.Get<WebAPIDbProcess>();
+                var webService = DmsResolver.Current.Get<WebAPIService>();
                 var fingerprint = GetFingerprintFromBody(context.Request.Body);
-                var fps = dbWeb.GetUserFingerprints(new FilterAspNetUserFingerprint { FingerprintExact = fingerprint });
+                var fps = webService.GetUserFingerprints(new FilterAspNetUserFingerprint { FingerprintExact = fingerprint });
                 if (fps.Any())
                 {
                     var fp = fps.First();

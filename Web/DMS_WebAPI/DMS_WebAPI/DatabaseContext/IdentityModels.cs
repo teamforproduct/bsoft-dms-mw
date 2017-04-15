@@ -20,8 +20,10 @@ namespace DMS_WebAPI.Models
             // Add custom user claims here
             return userIdentity;
         }
+        [ForeignKey("UserId")]
+        public virtual ICollection<AspNetUserClientServer> UserServers { get; set; }
 
-        public virtual ICollection<AspNetUserServers> UserServers { get; set; }
+        [ForeignKey("UserId")]
         public virtual ICollection<AspNetUserFingerprints> UserFingerprints { get; set; }
 
         public bool IsChangePasswordRequired { get; set; }
@@ -100,9 +102,7 @@ namespace DMS_WebAPI.Models
 
         public virtual DbSet<AspNetClients> AspNetClientsSet { get; set; }
         public virtual DbSet<AspNetClientLicences> AspNetClientLicencesSet { get; set; }
-        public virtual DbSet<AspNetClientServers> AspNetClientServersSet { get; set; }
-        public virtual DbSet<AspNetUserServers> AspNetUserServersSet { get; set; }
-        public virtual DbSet<AspNetUserClients> AspNetUserClientsSet { get; set; }
+        public virtual DbSet<AspNetUserClientServer> AspNetUserClientServerSet { get; set; }
         public virtual DbSet<AspNetUserFingerprints> AspNetUserFingerprintsSet { get; set; }
         public virtual DbSet<AspNetUserContexts> AspNetUserContextsSet { get; set; }
         public virtual DbSet<AspNetLicences> AspNetLicencesSet { get; set; }

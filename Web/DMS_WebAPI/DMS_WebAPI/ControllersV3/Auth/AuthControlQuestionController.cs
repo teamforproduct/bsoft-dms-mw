@@ -55,7 +55,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
 
             var webService = DmsResolver.Current.Get<WebAPIService>();
 
-            ApplicationUser user = await webService.GetUser(model.UserName, model.Password, model.Client_Id);
+            ApplicationUser user = await webService.GetUser(model.UserName, model.Password);
 
             if (user == null) throw new UserNameOrPasswordIsIncorrect();
 

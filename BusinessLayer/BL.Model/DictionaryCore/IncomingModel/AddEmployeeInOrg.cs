@@ -44,6 +44,8 @@ namespace BL.Model.DictionaryCore.IncomingModel
         //[EmailAddress]
         public string Login { get; set; }
 
+        public string Phone { get; set; }
+
         /// <summary>
         /// Профиль пользователя. Язык интерфейса.
         /// </summary>

@@ -5,8 +5,9 @@ namespace BL.Model.WebAPI.Filters
 {
     public class FilterAdminServers
     {
-        public List<int> ServerIds { get; set; }
-        public List<int> ClientIds { get; set; }
+        public List<int> ServerIDs { get; set; }
+        public List<int> ClientIDs { get; set; }
         public List<EnumDatabaseType> ServerTypes { get; set; }
+        public string ClientCode { get; set; }
     }
 }

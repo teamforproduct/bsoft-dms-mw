@@ -1,6 +1,4 @@
-﻿using BL.Model.Database;
-using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.WebAPI.IncomingModel
 {
@@ -10,8 +8,6 @@ namespace BL.Model.WebAPI.IncomingModel
         public string UserName { get; set; }
         [Required]
         public string Password { get; set; }
-        [Required]
-        public string Client_Id { get; set; }
     }
 }
 

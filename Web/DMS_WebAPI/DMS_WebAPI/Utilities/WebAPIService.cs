@@ -48,15 +48,6 @@ namespace DMS_WebAPI.Utilities
 
         private string FormRoleName(string roleName, string clientCode) => $"{clientCode.Trim()}_{roleName.Trim()}";
 
-        private string FormUserName(string userEmail, string clientCode) => $"{clientCode.Trim()}_{userEmail.Trim()}";
-
-        private string FormUserName(string userEmail, int clientId)
-        {
-            var client = _webDb.GetClient(clientId);
-            if (client == null) throw new ClientIsNotFound();
-            return FormUserName(userEmail, client.Code);
-        }
-
         public ApplicationUserManager UserManager
         {
             get
@@ -85,21 +76,9 @@ namespace DMS_WebAPI.Utilities
             return UserManager.FindByName(userName);
         }
 
-        public ApplicationUser GetUser(string userEmail, string clientCode)
+        public async Task<ApplicationUser> GetUser(string userName, string userPassword)
         {
-            var userName = FormUserName(userEmail, clientCode);
-            return GetUser(userName);
-        }
-
-        public ApplicationUser GetUser(string userEmail, int clientId)
-        {
-            var userName = FormUserName(userEmail, clientId);
-            return GetUser(userName);
-        }
-
-        public async Task<ApplicationUser> GetUser(string userEmail, string userPassword, string clientCode)
-        {
-            return await UserManager.FindAsync(FormUserName(userEmail, clientCode), userPassword);
+            return await UserManager.FindAsync(userName, userPassword);
         }
 
         public async Task<ApplicationUser> GetUserByIdAsync(string id)
@@ -112,18 +91,6 @@ namespace DMS_WebAPI.Utilities
             return await UserManager.FindByNameAsync(userName);
         }
 
-        public async Task<ApplicationUser> GetUserAsync(string userEmail, string clientCode)
-        {
-            var userName = FormUserName(userEmail, clientCode);
-            return await GetUserAsync(userName);
-        }
-
-        public async Task<ApplicationUser> GetUserAsync(string userEmail, int clientId)
-        {
-            var userName = FormUserName(userEmail, clientId);
-            return await GetUserAsync(userName);
-        }
-
         public async Task<ApplicationUser> GetUserAsync(IContext context, int agentId)
         {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -132,8 +99,6 @@ namespace DMS_WebAPI.Utilities
             return await GetUserByIdAsync(userId);
         }
 
-
-        public bool ExistsUser(string userName) => GetUser(userName) != null;
 
         public FrontAgentEmployeeUser GetUserInfo(IContext context)
         {
@@ -176,10 +141,7 @@ namespace DMS_WebAPI.Utilities
         {
 
             string userId = string.Empty;
-            model.UserName = FormUserName(model.Login, context.CurrentClientId);
-
-            // Проверяю не используется ли логин
-            if (ExistsUser(model.UserName)) throw new UserNameAlreadyExists(model.Login);
+            model.UserName = model.Login;
 
             // пробую создать сотрудника
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -187,9 +149,10 @@ namespace DMS_WebAPI.Utilities
 
             if (tmpItem > 0)
             {
-                userId = AddUser(new AddWebUser
+                userId = AddUserToClient(new AddWebUser
                 {
                     Email = model.Login,
+                    Phone = model.Phone,
                     // Для нового пользователя высылается письмо с линком на страницу "введите новый пароль"
                     Password = "k~WPop8V%W~11hG~~VGR",
 
@@ -271,27 +234,27 @@ namespace DMS_WebAPI.Utilities
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             tmpService.ExecuteAction(EnumDictionaryActions.DeleteAgentEmployee, context, agentId);
 
-            DeleteUser(user.Id);
+            DeleteUserInClient(context.CurrentClientId, new List<string> { user.Id });
 
         }
 
         private string AddUser(string userName, string userPassword, string userEmail, string userPhone = "")
         {
+            var now = DateTime.UtcNow;
+
+            var user = new ApplicationUser()
+            {
+                UserName = userName.Trim(),
+                Email = userEmail.Trim(),
+                PhoneNumber = userPhone.Trim(),
+                IsChangePasswordRequired = true,
+                IsEmailConfirmRequired = true,
+                CreateDate = now,
+                LastChangeDate = now,
+            };
+
             using (var transaction = Transactions.GetTransaction())
             {
-                if (ExistsUser(userName)) throw new UserNameAlreadyExists(userEmail);
-
-                var user = new ApplicationUser()
-                {
-                    UserName = userName.Trim(),
-                    Email = userEmail.Trim(),
-                    PhoneNumber = userPhone.Trim(),
-                    IsChangePasswordRequired = true,
-                    IsEmailConfirmRequired = true,
-                    CreateDate = DateTime.UtcNow,
-                    LastChangeDate = DateTime.UtcNow,
-                };
-
                 IdentityResult result = UserManager.Create(user, userPassword);
 
                 if (!result.Succeeded) throw new UserCouldNotBeAdded(userEmail, result.Errors);
@@ -302,59 +265,43 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        private string DeleteUser(string userId)
-        {
-            using (var transaction = Transactions.GetTransaction())
-            {
-                DeleteUserClients(new FilterAspNetUserClients { UserIds = new List<string> { userId } });
-                DeleteUserServers(new FilterAspNetUserServers { UserIds = new List<string> { userId } });
 
-                var user = GetUserById(userId);
 
-                IdentityResult result = UserManager.Delete(user);
-
-                if (!result.Succeeded) throw new UserCouldNotBeDeleted(user.Email, result.Errors);
-
-                transaction.Complete();
-
-                return user.Id;
-            }
-        }
-
-        public void DeleteUserClients(FilterAspNetUserClients filter)
-        {
-            try
-            {
-                _webDb.DeleteUserClients(filter);
-            }
-            catch (Exception) { throw; }
-        }
-
-        public void DeleteUserServers(FilterAspNetUserServers filter)
-        {
-            try
-            {
-                _webDb.DeleteUserServers(filter);
-            }
-            catch (Exception) { throw; }
-        }
-
-        public string AddUser(AddWebUser model)
+        public string AddUserToClient(AddWebUser model)
         {
             var userId = string.Empty;
 
+            // Решено для разных клиентов не создавать дубликаты юзеров
+            // Один пользователь может работать на разных клиентов
+            // Один клиент имеет выделенное место в базе согластно алгоритму
+            var user = GetUser(model.Email);
+
             using (var transaction = Transactions.GetTransaction())
             {
-                userId = AddUser(FormUserName(model.Email, model.ClientId), model.Password, model.Email, "");
+                if (user != null)
+                {
+                    userId = user.Id;
+                    // Если пользователь существует, то проверяю не пытаются ли его залинковать с тем же клиентом
+                    var uc = _webDb.GetUserClientServerList(new FilterAspNetUserClientServer
+                    {
+                        ClientIDs = new List<int> { model.ClientId },
+                        UserIDs = new List<string> { userId }
+                    }).FirstOrDefault();
 
-                _webDb.AddUserClient(new ModifyAspNetUserClient { UserId = userId, ClientId = model.ClientId });
-                _webDb.AddUserServer(new ModifyAspNetUserServer { UserId = userId, ClientId = model.ClientId, ServerId = model.ServerId });
+                    if (uc != null) throw new UserNameAlreadyExists(user.UserName);
+                }
+                else userId = AddUser(model.Email, model.Password, model.Email, model.Phone);
+
+                // линкую пользователя с клиентом
+                _webDb.AddUserClientServer(new SetUserClientServer { UserId = userId, ClientId = model.ClientId, ServerId = model.ServerId });
 
                 transaction.Complete();
             }
 
-            // Выслать письмо с ссылкой на пароль
 
+            // Тут, конечно, рановато высылать письмо, пользователя еще не назначили
+
+            // Если пользователь уже был в базе, то ему нужно выслать только ссылку на нового клиента, а если нет то ссылку на смену пароля
             RestorePasswordAgentUserAsync(new RestorePasswordAgentUser
             {
                 ClientCode = _webDb.GetClientCode(model.ClientId),
@@ -363,6 +310,47 @@ namespace DMS_WebAPI.Utilities
             }, new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "restore-password").ToString(), null, "Ostrean. Приглашение", RenderPartialView.RestorePasswordAgentUserVerificationEmail);
 
             return userId;
+        }
+
+        private void DeleteUserInClient(int clientId, List<string> userIDs)
+        {
+            if (userIDs?.Count() == 0)
+            {
+                userIDs = _webDb.GetUserClientServerList(new FilterAspNetUserClientServer { ClientIDs = new List<int> { clientId } }).Select(x => x.UserId).ToList();
+            };
+
+            using (var transaction = Transactions.GetTransaction())
+            {
+                // Удаляю связь пользователя с клиентом
+                _webDb.DeleteUserClientServer(new FilterAspNetUserClientServer
+                {
+                    UserIDs = userIDs,
+                    ClientIDs = new List<int> { clientId }
+                }
+                );
+
+                // пользователи, которые завязаны на других клиентов удалять нельзя, но в списке для удаления
+                var safeList = _webDb.GetUserClientServerList(new FilterAspNetUserClientServer { UserIDs = userIDs }).Select(x => x.UserId).ToList();
+
+                if (safeList?.Count() > 0) userIDs.RemoveAll(x => safeList.Contains(x));
+
+                if (userIDs?.Count() > 0)
+                {
+                    _webDb.DeleteUserContexts(new FilterAspNetUserContext { UserIDs = userIDs });
+                    _webDb.DeleteUserFingerprints(new FilterAspNetUserFingerprint { UserIDs = userIDs });
+
+                    foreach (var userId in userIDs)
+                    {
+                        var user = GetUserById(userId);
+
+                        IdentityResult result = UserManager.Delete(user);
+
+                        if (!result.Succeeded) throw new UserCouldNotBeDeleted(user.Email, result.Errors);
+                    }
+                }
+
+                transaction.Complete();
+            }
         }
 
         private string AddRole(string roleName)
@@ -383,61 +371,6 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        //public string AddFirstAdmin(AddFirstAdminClient model)
-        //{
-        //    #region Verification client code 
-        //    var client = _webDb.GetClients(new FilterAspNetClients { Code = model.ClientCode, VerificationCode = model.VerificationCode }).FirstOrDefault();
-
-        //    if (client == null) throw new ClientVerificationCodeIncorrect();
-
-        //    #endregion Verification client code 
-
-        //    try
-        //    {
-        //        //using (var dbContext = new ApplicationDbContext())
-        //        using (var transaction = Transactions.GetTransaction())
-        //        {
-        //            var clientId = _webDb.GetClientId(model.ClientCode);
-        //            var serverId = _webDb.GetServerIdByClientId(clientId);
-
-        //            #region Create user   
-        //            var userId = AddUser(new AddWebUser
-        //            {
-        //                Email = model.Admin.Email,
-        //                Password = model.Admin.Password,
-        //                ClientId = clientId,
-        //                ServerId = serverId,
-        //            });
-        //            #endregion
-
-        //            #region add user to role admin
-        //            var roleName = FormRoleNameAdmin(model.ClientCode);
-
-        //            AddRole(roleName);
-
-        //            UserManager.AddToRole(userId, roleName);
-
-        //            #endregion
-
-        //            transaction.Complete();
-
-        //            return userId;
-        //        }
-        //    }
-        //    catch (UserNameAlreadyExists)
-        //    {
-        //        throw new UserNameAlreadyExists(model.Admin.Email);
-        //    }
-        //    catch (ClientNameAlreadyExists)
-        //    {
-        //        throw new ClientNameAlreadyExists();
-        //    }
-        //    catch
-        //    {
-        //        throw new DictionaryRecordCouldNotBeAdded();
-        //    }
-        //}
-
         public string AddClientSaaS(AddClientSaaS model)
         {
             // Проверка уникальности доменного имени
@@ -454,16 +387,13 @@ namespace DMS_WebAPI.Utilities
 
             using (var transaction = Transactions.GetTransaction())
             {
-                // Создаю клиента
+                // Создаю запись о клиенте
                 model.ClientId = _webDb.AddClient(new ModifyAspNetClient
                 {
                     Name = model.ClientCode,
                     Code = model.ClientCode,
                 });
 
-
-                // Линкую клиента на сервер
-                _webDb.AddClientServer(new ModifyAspNetClientServer { ClientId = model.ClientId, ServerId = server.Id });
 
                 // Линкую клиента на лицензию
 
@@ -504,7 +434,6 @@ namespace DMS_WebAPI.Utilities
             var clientService = DmsResolver.Current.Get<IClientService>();
             clientService.AddDictionary(ctx, model);
 
-            // !!! посмотреть отправку писем или возвращать ссылку без письма
             AddUserEmployeeInOrg(ctx, new AddEmployeeInOrg
             {
                 FirstName = model.Name,
@@ -514,7 +443,7 @@ namespace DMS_WebAPI.Utilities
                 DepartmentName = languages.GetTranslation(ctx.CurrentEmployee.LanguageId, "##l@Clients:" + "MyDepartment" + "@l##"),
                 PositionName = languages.GetTranslation(ctx.CurrentEmployee.LanguageId, "##l@Clients:" + "MyPosition" + "@l##"),
                 LanguageId = ctx.CurrentEmployee.LanguageId,
-                //Phone = model.PhoneNumber,
+                Phone = model.PhoneNumber,
                 Login = model.Email,
                 Role = Roles.Admin,
             });
@@ -535,29 +464,23 @@ namespace DMS_WebAPI.Utilities
 
             var clients = new List<int> { Id };
 
-            var servers = _webDb.GetServers(new FilterAdminServers() { ClientIds = clients });
+            var server = _webDb.GetClientServer(Id);
+            var ctx = new AdminContext(server);
 
             var clientService = DmsResolver.Current.Get<IClientService>();
-
-            foreach (var server in servers)
-            {
-                server.ClientId = Id;
-                var ctx = new AdminContext(server);
-                clientService.Delete(ctx);
-            }
+            clientService.Delete(ctx);
 
             using (var transaction = Transactions.GetTransaction())
             {
-                _webDb.DeleteUserClients(new FilterAspNetUserClients { ClientIds = clients });
-                _webDb.DeleteUserContexts(new FilterAspNetUserContext { ClientIDs = clients });
-                _webDb.DeleteUserServers(new FilterAspNetUserServers { ClientIDs = clients });
-
                 _webDb.DeleteClientLicence(new FilterAspNetClientLicences { ClientIds = clients });
-                _webDb.DeleteClientServer(new FilterAspNetClientServers { ClientIds = clients });
                 _webDb.DeleteClient(Id);
+
+                DeleteUserInClient(Id, null);
 
                 transaction.Complete();
             }
+
+           
 
             //_webDb.DeleteUserFingerprints(new FilterAspNetUserFingerprint { UserIDs = users });
             //пользователя пока не удаляю
@@ -620,30 +543,6 @@ namespace DMS_WebAPI.Utilities
 
                 #endregion Create client 1
 
-                #region Create DB
-
-                if (model.Server.Id <= 0)
-                {
-                    model.Server.Id = _webDb.AddServer(model.Server);
-                }
-
-                _webDb.AddClientServer(new ModifyAspNetClientServer { ClientId = clientId, ServerId = model.Server.Id });
-
-                #endregion Create DB
-
-                #region Create user                        
-
-                #endregion Create user
-                //var userId = AddFirstAdmin(new AddFirstAdminClient
-                //{
-                //    ClientCode = model.Client.Code,
-                //    Admin = new ModifyAspNetUser
-                //    {
-                //        Email = model.Admin.Email,
-                //        Password = model.Admin.Password,
-                //    }
-                //});
-
                 transaction.Complete();
 
                 return clientId;
@@ -658,17 +557,15 @@ namespace DMS_WebAPI.Utilities
         {
             var userContexts = DmsResolver.Current.Get<UserContexts>();
 
-            var userContext = userContexts.Get();
-
-            model.NewUserName = FormUserName(model.NewEmail, userContext.CurrentClientId);
+            var context = userContexts.Get();
 
             // VerifyAccessCommand
             var admService = DmsResolver.Current.Get<IAdminService>();
-            admService.ChangeLoginAgentUser(userContext, model);
+            admService.ChangeLoginAgentUser(context, model);
 
-            var user = GetUser(userContext, model.Id);
+            var user = GetUser(context, model.Id);
 
-            user.UserName = model.NewUserName;
+            user.UserName = model.NewEmail;
             user.Email = model.NewEmail;
             user.IsEmailConfirmRequired = model.IsVerificationRequired;
             user.LastChangeDate = DateTime.UtcNow;
@@ -697,7 +594,7 @@ namespace DMS_WebAPI.Utilities
 
                 var languages = DmsResolver.Current.Get<ILanguages>();
 
-                mailService.SendMessage(userContext, model.NewEmail, languages.GetTranslation("##l@EmailSubject:EmailConfirmation@l##"), htmlContent);
+                mailService.SendMessage(context, model.NewEmail, languages.GetTranslation("##l@EmailSubject:EmailConfirmation@l##"), htmlContent);
             }
 
         }
@@ -737,7 +634,7 @@ namespace DMS_WebAPI.Utilities
         {
             if (query == null) query = new NameValueCollection();
 
-            var user = await GetUserAsync(model.Email, model.ClientCode);
+            var user = await GetUserAsync(model.Email);
 
             if (user == null) throw new UserIsNotDefined();
 
@@ -763,12 +660,7 @@ namespace DMS_WebAPI.Utilities
             var htmlContent = callbackurl.RenderPartialViewToString(renderPartialView);
 
 
-
-
-            var client = _webDb.GetClient(model.ClientCode);
-
-            var db = _webDb.GetServersByAdmin(new FilterAdminServers { ClientIds = new List<int> { client.Id } }).First();
-
+            var db = GetClientServer(model.ClientCode);
             var ctx = new AdminContext(db);
             var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
             mailService.SendMessage(ctx, model.Email, emailSubject, htmlContent);
@@ -778,7 +670,7 @@ namespace DMS_WebAPI.Utilities
         {
             if (query == null) query = new NameValueCollection();
 
-            var user = GetUser(model.Email, model.ClientCode);
+            var user = GetUser(model.Email);
 
             if (user == null) throw new UserIsNotDefined();
 
@@ -796,9 +688,7 @@ namespace DMS_WebAPI.Utilities
 
             var htmlContent = callbackurl.RenderPartialViewToString(renderPartialView);
 
-            var client = _webDb.GetClient(model.ClientCode);
-
-            var db = _webDb.GetServersByAdmin(new FilterAdminServers { ClientIds = new List<int> { client.Id } }).First();
+            var db = _webDb.GetClientServer(model.ClientCode);
 
             var ctx = new AdminContext(db);
             var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
@@ -1046,14 +936,24 @@ namespace DMS_WebAPI.Utilities
 
         }
 
+        public DatabaseModel GetClientServer(int clientId)
+        {
+            return _webDb.GetClientServer(clientId);
+        }
+
+        public DatabaseModel GetClientServer(string clientCode)
+        {
+            return _webDb.GetClientServer(clientCode);
+        }
+
         public bool ExistsClients(FilterAspNetClients filter)
         {
             return _webDb.ExistsClients(filter);
         }
 
-        public DatabaseModel GetServerByUser(string userId, SetUserServer setUserServer)
+        public DatabaseModel GetServer(int Id)
         {
-            return _webDb.GetServerByUser(userId, setUserServer);
+            return _webDb.GetServer(Id);
         }
 
     }
