@@ -43,19 +43,24 @@ namespace DMS_WebAPI.Utilities
 
             if (filter != null)
             {
-                if (filter.ClientIds?.Count > 0)
+                if (!string.IsNullOrEmpty(filter.ClientCode))
                 {
-                    var filterContains = PredicateBuilder.New<AspNetClientServers>(false);
-                    filterContains = filter.ClientIds.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.ClientId == value).Expand());
-
-                    qry = qry.Where(x => x.ClientServers.AsQueryable().Any(filterContains));
+                    qry = qry.Where(x => x.Clients.AsQueryable().Any(y => y.Client.Code == filter.ClientCode));
                 }
 
-                if (filter.ServerIds?.Count > 0)
+                if (filter.ClientIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.New<AspNetUserClientServer>(false);
+                    filterContains = filter.ClientIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.ClientId == value).Expand());
+
+                    qry = qry.Where(x => x.Clients.AsQueryable().Any(filterContains));
+                }
+
+                if (filter.ServerIDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.New<AdminServers>(false);
-                    filterContains = filter.ServerIds.Aggregate(filterContains,
+                    filterContains = filter.ServerIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
                     qry = qry.Where(filterContains);
@@ -76,7 +81,7 @@ namespace DMS_WebAPI.Utilities
 
         public FrontAdminServer GetServer(int id)
         {
-            return GetServers(new FilterAdminServers { ServerIds = new List<int> { id } }).FirstOrDefault();
+            return GetServers(new FilterAdminServers { ServerIDs = new List<int> { id } }).FirstOrDefault();
         }
 
         public IEnumerable<FrontAdminServer> GetServers(FilterAdminServers filter)
@@ -106,18 +111,19 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public IEnumerable<DatabaseModel> GetServersByAdmin(FilterAdminServers filter)
+        public IEnumerable<DatabaseModel> GetServersByAdminContext(FilterAdminServers filter)
         {
             using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var itemsDb = GetServersQuery(dbContext, filter);
 
+                // перемножаю серверы на клиентов
                 var itemsRes = (from server in itemsDb
-                                join client in dbContext.AspNetClientServersSet on server.Id equals client.ServerId
+                                join ucs in dbContext.AspNetUserClientServerSet on server.Id equals ucs.ServerId
                                 select new
                                 {
                                     Server = server,
-                                    ClientId = client.ClientId
+                                    ClientId = ucs.ClientId
                                 }).ToList();
 
                 var items = itemsRes.Select(x => new DatabaseModel
@@ -139,71 +145,19 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public IEnumerable<FrontAdminServerByUser> GetServersByUser(IContext ctx)
+        public DatabaseModel GetClientServer(string clientCode)
         {
-            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
-            {
-                var userClients = GetUserClientsQuery(dbContext, new FilterAspNetUserClients { UserIds = new List<string> { ctx.CurrentEmployee.UserId }, ClientCode = ctx.CurrentEmployee.ClientCode })
-                                    .Select(x => x.ClientId);
-
-                var userServers = GetUserServersQuery(dbContext, new FilterAspNetUserServers { UserIds = new List<string> { ctx.CurrentEmployee.UserId } });
-
-                userServers = userServers.Where(x => userClients.Contains(x.ClientId));
-
-                var items = userServers.Select(x => new FrontAdminServerByUser
-                {
-                    Id = x.Server.Id,
-                    Name = x.Server.Name,
-                    ClientId = x.Client.Id,
-                    ClientName = x.Client.Name
-                }).ToList();
-                transaction.Complete();
-                return items;
-            }
+            var clientId = GetClientId(clientCode);
+            return GetClientServer(clientId);
         }
 
-        public DatabaseModel GetServerByUser(string userId, SetUserServer setUserServer)
+        public DatabaseModel GetClientServer(int clientId)
         {
-            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
-            {
-                var filterClients = new FilterAspNetUserClients();
-                var filterServers = new FilterAspNetUserServers();
-
-                if (!string.IsNullOrEmpty(userId))
-                {
-                    filterClients.UserIds = new List<string> { userId };
-                    filterServers.UserIds = new List<string> { userId };
-                }
-                if (setUserServer.ClientId > 0) filterClients.ClientIds = new List<int> { setUserServer.ClientId };
-                filterClients.ClientCode = setUserServer.ClientCode;
-
-                if (setUserServer.ServerId > 0) filterServers.ServerIds = new List<int> { setUserServer.ServerId };
-
-                var userClients = GetUserClientsQuery(dbContext, filterClients).Select(x => x.ClientId);
-
-                var userServers = GetUserServersQuery(dbContext, filterServers);
-
-                userServers = userServers.Where(x => userClients.Contains(x.ClientId));
-
-                var item = userServers.Select(x => new DatabaseModel
-                {
-                    Id = x.Server.Id,
-                    Address = x.Server.Address,
-                    Name = x.Server.Name,
-                    ServerTypeName = x.Server.ServerType,
-                    //ServerType = (DatabaseType)Enum.Parse(typeof(DatabaseType), x.Server.ServerType),
-                    DefaultDatabase = x.Server.DefaultDatabase,
-                    IntegrateSecurity = x.Server.IntegrateSecurity,
-                    UserName = x.Server.UserName,
-                    UserPassword = x.Server.UserPassword,
-                    ConnectionString = x.Server.ConnectionString,
-                    DefaultSchema = x.Server.DefaultSchema,
-                }).FirstOrDefault();
-
-                item.ServerType = (EnumDatabaseType)Enum.Parse(typeof(EnumDatabaseType), item.ServerTypeName);
-                transaction.Complete();
-                return item;
-            }
+            // тут подразумевается, что клиентские данные могут рассполагатся только на одном из серверов   
+            var res = GetServers(new FilterAdminServers { ClientIDs = new List<int> { clientId } }).FirstOrDefault();
+            //!!!!!!!!!!!!!!!!!!!!!!
+            res.ClientId = clientId;
+            return res;
         }
 
         public int AddServer(ModifyAdminServer model)
@@ -598,64 +552,64 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public IEnumerable<FrontAspNetClient> GetClientsByUser(IContext ctx)
-        {
-            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
-            {
-                var userClients = GetUserClientsQuery(dbContext, new FilterAspNetUserClients { UserIds = new List<string> { ctx.CurrentEmployee.UserId }, ClientCode = ctx.CurrentEmployee.ClientCode })
-                                    .AsQueryable();
+        //public IEnumerable<FrontAspNetClient> GetClientsByUser(IContext ctx)
+        //{
+        //    using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+        //    {
+        //        var userClients = GetUserClientsQuery(dbContext, new FilterAspNetUserClients { UserIds = new List<string> { ctx.CurrentEmployee.UserId }, ClientCode = ctx.CurrentEmployee.ClientCode })
+        //                            .AsQueryable();
 
-                var itemsRes = from userClient in userClients
-                               join client in dbContext.AspNetClientsSet on userClient.ClientId equals client.Id
-                               select new
-                               {
-                                   Client = client
-                               };
-
-
-                var items = itemsRes.Select(x => new FrontAspNetClient
-                {
-                    Id = x.Client.Id,
-                    Name = x.Client.Name,
-                    Code = x.Client.Code,
-                }).ToList();
-                transaction.Complete();
-                return items;
-            }
-        }
-
-        public FrontAspNetClient GetClientByUser(string userId, int clientId = -1)
-        {
-            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
-            {
-                var filter = new FilterAspNetUserClients { UserIds = new List<string> { userId } };
-
-                if (clientId > 0)
-                {
-                    filter.ClientIds = new List<int> { clientId };
-                }
-
-                var userClients = GetUserClientsQuery(dbContext, filter).AsQueryable();
+        //        var itemsRes = from userClient in userClients
+        //                       join client in dbContext.AspNetClientsSet on userClient.ClientId equals client.Id
+        //                       select new
+        //                       {
+        //                           Client = client
+        //                       };
 
 
-                var itemsRes = from userClient in userClients
-                               join client in dbContext.AspNetClientsSet on userClient.ClientId equals client.Id
-                               select new
-                               {
-                                   Client = client,
-                               };
+        //        var items = itemsRes.Select(x => new FrontAspNetClient
+        //        {
+        //            Id = x.Client.Id,
+        //            Name = x.Client.Name,
+        //            Code = x.Client.Code,
+        //        }).ToList();
+        //        transaction.Complete();
+        //        return items;
+        //    }
+        //}
+
+        //public FrontAspNetClient GetClientByUser(string userId, int clientId = -1)
+        //{
+        //    using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+        //    {
+        //        var filter = new FilterAspNetUserClients { UserIds = new List<string> { userId } };
+
+        //        if (clientId > 0)
+        //        {
+        //            filter.ClientIds = new List<int> { clientId };
+        //        }
+
+        //        var userClients = GetUserClientsQuery(dbContext, filter).AsQueryable();
 
 
-                var item = itemsRes.Select(x => new FrontAspNetClient
-                {
-                    Id = x.Client.Id,
-                    Name = x.Client.Name,
-                    Code = x.Client.Code,
-                }).FirstOrDefault();
-                transaction.Complete();
-                return item;
-            }
-        }
+        //        var itemsRes = from userClient in userClients
+        //                       join client in dbContext.AspNetClientsSet on userClient.ClientId equals client.Id
+        //                       select new
+        //                       {
+        //                           Client = client,
+        //                       };
+
+
+        //        var item = itemsRes.Select(x => new FrontAspNetClient
+        //        {
+        //            Id = x.Client.Id,
+        //            Name = x.Client.Name,
+        //            Code = x.Client.Code,
+        //        }).FirstOrDefault();
+        //        transaction.Complete();
+        //        return item;
+        //    }
+        //}
 
         public int AddClient(ModifyAspNetClient model)
         {
@@ -701,129 +655,22 @@ namespace DMS_WebAPI.Utilities
 
         public void DeleteClient(int id)
         {
-                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var item = new AspNetClients
                 {
-                    var item = new AspNetClients
-                    {
-                        Id = id
-                    };
-                    dbContext.AspNetClientsSet.Attach(item);
+                    Id = id
+                };
+                dbContext.AspNetClientsSet.Attach(item);
 
-                    dbContext.Entry(item).State = EntityState.Deleted;
+                dbContext.Entry(item).State = EntityState.Deleted;
 
-                    dbContext.SaveChanges();
-                    transaction.Complete();
-                }
+                dbContext.SaveChanges();
+                transaction.Complete();
+            }
         }
 
         #endregion Clients
-
-        #region ClientServers
-
-        private IQueryable<AspNetClientServers> GetClientServersQuery(ApplicationDbContext dbContext, FilterAspNetClientServers filter)
-        {
-            var qry = dbContext.AspNetClientServersSet.AsQueryable();
-
-            if (filter != null)
-            {
-                if (filter.ClientServerIds?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.New<AspNetClientServers>(false);
-                    filterContains = filter.ClientServerIds.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Id == value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                if (filter.ClientIds?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.New<AspNetClientServers>(false);
-                    filterContains = filter.ClientIds.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.ClientId == value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-                if (filter.ServerIds?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.New<AspNetClientServers>(false);
-                    filterContains = filter.ServerIds.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.ServerId == value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-            }
-
-            return qry;
-        }
-
-        public FrontAspNetClientServer GetClientServer(int id)
-        {
-            return GetClientServers(new FilterAspNetClientServers { ClientServerIds = new List<int> { id } }).FirstOrDefault();
-        }
-
-        public int GetServerIdByClientId(int clientId)
-        {
-            var clientServer = GetClientServers(new FilterAspNetClientServers { ClientIds = new List<int> { clientId } }).FirstOrDefault();
-
-            if (clientServer == null)
-            {
-                var clientCode = GetClientCode(clientId);
-                throw new ClientServerIsNotSet(clientCode);
-            }
-
-            return clientServer.ServerId;
-        }
-
-        public IEnumerable<FrontAspNetClientServer> GetClientServers(FilterAspNetClientServers filter)
-        {
-            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = GetClientServersQuery(dbContext, filter);
-
-                var itemsRes = qry;
-
-                var items = itemsRes.Select(x => new FrontAspNetClientServer
-                {
-                    Id = x.Id,
-                    ClientId = x.ClientId,
-                    ServerId = x.ServerId,
-                    ClientName = x.Client.Name,
-                    ServerName = x.Server.Name
-                }).ToList();
-                transaction.Complete();
-                return items;
-            }
-        }
-
-        public int AddClientServer(ModifyAspNetClientServer model)
-        {
-            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
-            {
-                var item = new AspNetClientServers
-                {
-                    ClientId = model.ClientId,
-                    ServerId = model.ServerId,
-                };
-                dbContext.AspNetClientServersSet.Add(item);
-                dbContext.SaveChanges();
-
-                model.Id = item.Id;
-                transaction.Complete();
-                return model.Id;
-            }
-        }
-
-        public void DeleteClientServer(FilterAspNetClientServers filter)
-        {
-            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = GetClientServersQuery(dbContext, filter);
-                qry.Delete();
-                transaction.Complete();
-            }
-        }
-
-        #endregion ClientServers
 
         #region Licences
 
@@ -974,197 +821,64 @@ namespace DMS_WebAPI.Utilities
 
         #endregion Licences
 
-        #region [+] UserClients ...
 
-        private IQueryable<AspNetUserClients> GetUserClientsQuery(ApplicationDbContext dbContext, FilterAspNetUserClients filter)
-        {
-            var qry = dbContext.AspNetUserClientsSet.AsQueryable();
+        #region UserClientServers
 
-            if (filter != null)
-            {
-                if (filter.UserClientIds?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.New<AspNetUserClients>(false);
-                    filterContains = filter.UserClientIds.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Id == value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                if (filter.ClientIds?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.New<AspNetUserClients>(false);
-                    filterContains = filter.ClientIds.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.ClientId == value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                if (filter.UserIds?.Count > 0)
-                {
-                    var filterContains = PredicateBuilder.New<AspNetUserClients>(false);
-                    filterContains = filter.UserIds.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.UserId == value).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                if (!string.IsNullOrEmpty(filter.ClientCode))
-                {
-                    qry = qry.Where(x => filter.ClientCode.Equals(x.Client.Code));
-                }
-            }
-
-            return qry;
-        }
-
-        public FrontAspNetUserClient GetUserClient(int id)
-        {
-            return GetUserClients(new FilterAspNetUserClients { UserClientIds = new List<int> { id } }).FirstOrDefault();
-        }
-
-        public IEnumerable<FrontAspNetUserClient> GetUserClients(FilterAspNetUserClients filter)
+        public IEnumerable<FrontAspNetUserClientServer> GetUserClientServerList(FilterAspNetUserClientServer filter)
         {
             using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                var itemsDb = GetUserClientsQuery(dbContext, filter);
+                var qry = GetUserClientServerQuery(dbContext, filter);
 
-                var itemsRes = itemsDb;
-
-                var items = itemsRes.Select(x => new FrontAspNetUserClient
+                var res = qry.Select(x => new FrontAspNetUserClientServer
                 {
                     Id = x.Id,
                     ClientId = x.ClientId,
                     UserId = x.UserId,
+                    ServerId = x.ServerId,
                     ClientName = x.Client.Name,
-                    UserName = x.User.UserName
+                    UserName = x.User.UserName,
+                    ServerName = x.Server.Name,
                 }).ToList();
                 transaction.Complete();
-                return items;
+                return res;
             }
         }
 
-        private int AddUserClient(string userId, int clientId)
+        private IQueryable<AspNetUserClientServer> GetUserClientServerQuery(ApplicationDbContext dbContext, FilterAspNetUserClientServer filter)
         {
-            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
-            {
-                var dbModel = new AspNetUserClients
-                {
-                    UserId = userId,
-                    ClientId = clientId
-                };
-                dbContext.AspNetUserClientsSet.Add(dbModel);
-                dbContext.SaveChanges();
-                transaction.Complete();
-                return dbModel.Id;
-            }
-        }
-
-        public int AddUserClient(ModifyAspNetUserClient model)
-        {
-            try
-            {
-                var si = new SystemInfo();
-
-                LicenceInfo lic = GetClientLicenceActive(model.ClientId);
-
-                if (lic == null)
-                {
-                    throw new LicenceError();
-                }
-
-                var regCode = si.GetRegCode(lic);
-
-                if (lic.IsNamedLicence)
-                {
-                    lic.NamedNumberOfConnectionsNow++;
-                }
-
-                new Licences().Verify(regCode, lic, null, true);
-
-                model.Id = AddUserClient(model.UserId, model.ClientId);
-
-                return model.Id;
-            }
-            catch
-            {
-                throw new DictionaryRecordCouldNotBeAdded();
-            }
-        }
-
-        public void DeleteUserClient(int id)
-        {
-            try
-            {
-                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
-                {
-                    var item = new AspNetUserClients
-                    {
-                        Id = id
-                    };
-                    dbContext.AspNetUserClientsSet.Attach(item);
-
-                    dbContext.Entry(item).State = EntityState.Deleted;
-
-                    dbContext.SaveChanges();
-                    transaction.Complete();
-                }
-            }
-            catch
-            {
-                throw new DictionaryRecordCouldNotBeAdded();
-            }
-        }
-
-        public void DeleteUserClients(FilterAspNetUserClients filter)
-        {
-            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = GetUserClientsQuery(dbContext, filter);
-                dbContext.AspNetUserClientsSet.RemoveRange(qry);
-                dbContext.SaveChanges();
-                transaction.Complete();
-            }
-        }
-
-        #endregion UserClients
-
-        #region UserServers
-
-        private IQueryable<AspNetUserServers> GetUserServersQuery(ApplicationDbContext dbContext, FilterAspNetUserServers filter)
-        {
-            var qry = dbContext.AspNetUserServersSet.AsQueryable();
+            var qry = dbContext.AspNetUserClientServerSet.AsQueryable();
 
             if (filter != null)
             {
-                if (filter.UserServerIds?.Count > 0)
+                if (filter.UserServerIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.New<AspNetUserServers>(false);
-                    filterContains = filter.UserServerIds.Aggregate(filterContains,
+                    var filterContains = PredicateBuilder.New<AspNetUserClientServer>(false);
+                    filterContains = filter.UserServerIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
                     qry = qry.Where(filterContains);
                 }
                 if (filter.ClientIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.New<AspNetUserServers>(false);
+                    var filterContains = PredicateBuilder.New<AspNetUserClientServer>(false);
                     filterContains = filter.ClientIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ClientId == value).Expand());
 
                     qry = qry.Where(filterContains);
                 }
-                if (filter.UserIds?.Count > 0)
+                if (filter.UserIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.New<AspNetUserServers>(false);
-                    filterContains = filter.UserIds.Aggregate(filterContains,
+                    var filterContains = PredicateBuilder.New<AspNetUserClientServer>(false);
+                    filterContains = filter.UserIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.UserId == value).Expand());
 
                     qry = qry.Where(filterContains);
                 }
-                if (filter.ServerIds?.Count > 0)
+                if (filter.ServerIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.New<AspNetUserServers>(false);
-                    filterContains = filter.ServerIds.Aggregate(filterContains,
+                    var filterContains = PredicateBuilder.New<AspNetUserClientServer>(false);
+                    filterContains = filter.ServerIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ServerId == value).Expand());
 
                     qry = qry.Where(filterContains);
@@ -1174,59 +888,30 @@ namespace DMS_WebAPI.Utilities
             return qry;
         }
 
-        public FrontAspNetUserServer GetUserServer(int id)
-        {
-            return GetUserServers(new FilterAspNetUserServers { UserServerIds = new List<int> { id } }).FirstOrDefault();
-        }
-
-        public IEnumerable<FrontAspNetUserServer> GetUserServers(FilterAspNetUserServers filter)
+        public int AddUserClientServer(SetUserClientServer model)
         {
             using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                var itemsDb = GetUserServersQuery(dbContext, filter);
-
-                var itemsRes = itemsDb;
-
-                var items = itemsRes.Select(x => new FrontAspNetUserServer
+                var item = new AspNetUserClientServer
                 {
-                    Id = x.Id,
-                    ClientId = x.ClientId,
-                    UserId = x.UserId,
-                    ServerId = x.ServerId,
-                    ClientName = x.Client.Name,
-                    UserName = x.User.UserName,
-                    ServerName = x.Server.Name
-                }).ToList();
-                transaction.Complete();
-                return items;
-            }
-        }
-
-        public int AddUserServer(ModifyAspNetUserServer model)
-        {
-            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
-            {
-                var item = new AspNetUserServers
-                {
-                    ClientId = model.ClientId,
                     UserId = model.UserId,
                     ServerId = model.ServerId,
+                    ClientId = model.ClientId,
                 };
-                dbContext.AspNetUserServersSet.Add(item);
+                dbContext.AspNetUserClientServerSet.Add(item);
                 dbContext.SaveChanges();
 
-                model.Id = item.Id;
                 transaction.Complete();
-                return model.Id;
+                return item.Id;
             }
         }
 
-        public void DeleteUserServers(FilterAspNetUserServers filter)
+        public void DeleteUserClientServer(FilterAspNetUserClientServer filter)
         {
             using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetUserServersQuery(dbContext, filter);
-                dbContext.AspNetUserServersSet.RemoveRange(qry);
+                var qry = GetUserClientServerQuery(dbContext, filter);
+                dbContext.AspNetUserClientServerSet.RemoveRange(qry);
                 dbContext.SaveChanges();
                 transaction.Complete();
             }

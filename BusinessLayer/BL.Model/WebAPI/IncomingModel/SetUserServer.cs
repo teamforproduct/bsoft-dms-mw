@@ -1,12 +1,9 @@
-﻿using BL.Model.Database;
-using System.Runtime.Serialization;
-
-namespace BL.Model.WebAPI.IncomingModel
+﻿namespace BL.Model.WebAPI.IncomingModel
 {
-    public class SetUserServer
+    public class SetUserClientServer
     {
         public int ServerId { get; set; }
         public int ClientId { get; set; }
-        public string ClientCode { get; set; }
+        public string UserId { get; set; }
     }
 }

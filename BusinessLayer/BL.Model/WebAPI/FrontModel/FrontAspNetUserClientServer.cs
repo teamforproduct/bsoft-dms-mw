@@ -1,8 +1,6 @@
-﻿using BL.Model.Database;
-
-namespace BL.Model.WebAPI.FrontModel
+﻿namespace BL.Model.WebAPI.FrontModel
 {
-    public class FrontAspNetUserServer
+    public class FrontAspNetUserClientServer
     {
         public int Id { get; set; }
         public int ServerId { get; set; }

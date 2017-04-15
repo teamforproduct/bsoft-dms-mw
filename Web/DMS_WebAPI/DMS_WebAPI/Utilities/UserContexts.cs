@@ -125,6 +125,8 @@ namespace DMS_WebAPI.Utilities
                 }
             };
 
+            var dbWeb = DmsResolver.Current.Get<WebAPIDbProcess>();
+            context.CurrentClientId = dbWeb.GetClientId(clientCode);
             context.IsChangePasswordRequired = IsChangePasswordRequired;
             context.UserName = userName;
 
@@ -141,10 +143,9 @@ namespace DMS_WebAPI.Utilities
         /// </summary>
         /// <param name="token">new server parameters</param>
         /// <param name="db">new server parameters</param>
-        /// <param name="clientId">clientId</param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public void Set(string token, DatabaseModel db, int clientId)
+        public void Set(string token, DatabaseModel db)
         {
             token = token.ToLower();
 
@@ -154,14 +155,11 @@ namespace DMS_WebAPI.Utilities
 
             var context = GetInternal(token);
 
-            var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
-            context.ClientLicence = dbProc.GetClientLicenceActive(clientId);
+            var dbWeb = DmsResolver.Current.Get<WebAPIDbProcess>();
+            
+            context.ClientLicence = dbWeb.GetClientLicenceActive(context.CurrentClientId);
 
-            db.ClientId = clientId;
-
-            VerifyNumberOfConnectionsByNew(context, clientId, new List<DatabaseModel> { db });
-
-            context.CurrentClientId = clientId;
+            VerifyNumberOfConnectionsByNew(context, context.CurrentClientId, new List<DatabaseModel> { db });
 
             context.CurrentDB = db;
 
@@ -169,6 +167,7 @@ namespace DMS_WebAPI.Utilities
 
             if (agentUser != null)
             {
+                // эти проверки уже есть на получении токена
                 // проверка активности сотрудника
                 if (!agentUser.IsActive)
                 {
@@ -241,33 +240,6 @@ namespace DMS_WebAPI.Utilities
             // Сохраняю текущий контекст
             var webService = DmsResolver.Current.Get<WebAPIService>();
             webService.SaveUserContexts(context);
-        }
-
-        /// <summary>
-        /// Set client
-        /// </summary>
-        /// <param name="client">new client parameters</param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
-        public void Set(FrontAspNetClient client)
-        {
-            string token = TokenLower;
-
-            if (!Contains(token)) throw new UserUnauthorized();
-
-            var context = GetInternal(token);
-
-            var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
-            context.ClientLicence = dbProc.GetClientLicenceActive(client.Id);
-
-            var dbs = dbProc.GetServersByAdmin(new BL.Model.WebAPI.Filters.FilterAdminServers { ClientIds = new List<int> { client.Id } });
-
-            VerifyNumberOfConnectionsByNew(context, client.Id, dbs);
-
-            context.CurrentClientId = client.Id;
-
-            // KeepAlive: Продление жизни пользовательского контекста
-            KeepAlive(token);
         }
 
         /// <summary>
@@ -531,11 +503,11 @@ namespace DMS_WebAPI.Utilities
             {
                 var clientCode = webService.GetClientCode(item.ClientId);
                 if (string.IsNullOrEmpty( clientCode)) continue;
-                var server = webService.GetServerByUser(item.UserId, new SetUserServer { ClientId = item.ClientId, ServerId = -1 });
+                var server = webService.GetClientServer(item.ClientId);
                 if (server == null) continue;
 
                 Set(item.Token, item.UserId, item.UserName, item.IsChangePasswordRequired, clientCode);
-                Set(item.Token, server, item.ClientId);
+                Set(item.Token, server);
                 Set(item.Token, item.LoginLogId, item.LoginLogInfo);
                 SetUserPositions(item.Token, item.CurrentPositionsIdList.Split(',').Select(n => Convert.ToInt32(n)).ToList());
             }

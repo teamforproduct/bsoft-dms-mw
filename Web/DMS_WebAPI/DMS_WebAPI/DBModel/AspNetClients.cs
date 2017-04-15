@@ -7,9 +7,7 @@ namespace DMS_WebAPI.DBModel
     {
         public AspNetClients()
         {
-            this.ClientServers = new HashSet<AspNetClientServers>();
             this.Licences = new HashSet<AspNetClientLicences>();
-            this.UserServers = new HashSet<AspNetUserServers>();
         }
         public int Id { get; set; }
         [MaxLength(2000)]
@@ -21,8 +19,6 @@ namespace DMS_WebAPI.DBModel
         [MaxLength(2000)]
         public string VerificationCode { get; set; }
 
-        public virtual ICollection<AspNetClientServers> ClientServers { get; set; }
         public virtual ICollection<AspNetClientLicences> Licences { get; set; }
-        public virtual ICollection<AspNetUserServers> UserServers { get; set; }
     }
 }

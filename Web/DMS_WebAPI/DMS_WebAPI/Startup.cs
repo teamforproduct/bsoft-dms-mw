@@ -37,7 +37,7 @@ namespace DMS_WebAPI
 
             var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
 
-            var dbs = dbProc.GetServersByAdmin(new FilterAdminServers { ServerTypes = new List<EnumDatabaseType> { EnumDatabaseType.SQLServer } });
+            var dbs = dbProc.GetServersByAdminContext(new FilterAdminServers { ServerTypes = new List<EnumDatabaseType> { EnumDatabaseType.SQLServer } });
 
 #if !DEBUG
             var userContexts = DmsResolver.Current.Get<UserContexts>();

@@ -24,6 +24,7 @@ namespace BL.Logic.DictionaryCore
             if (Model.PositionId == null && string.IsNullOrEmpty(Model.PositionName)) throw new PositionRequired();
 
             employee.Login = Model.Login;
+            employee.Phone = Model.Phone;
             employee.FirstName = Model.FirstName;
             employee.MiddleName = Model.MiddleName;
             employee.LastName = Model.LastName;

@@ -1,16 +1,12 @@
 ﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
 using BL.Logic.SystemServices.FullTextSearch;
-using BL.Model.Database;
 using BL.Model.SystemCore;
 using BL.Model.WebAPI.FrontModel;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Threading.Tasks;
 using System.Web.Http;
-using BL.Database.DatabaseContext;
-using Ninject;
-using Ninject.Parameters;
 
 namespace DMS_WebAPI.ControllersV3.System
 {
@@ -34,9 +30,7 @@ namespace DMS_WebAPI.ControllersV3.System
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
-                var clientServer = dbProc.GetClientServer(context.CurrentClientId);
-                DatabaseModel srv = dbProc.GetServer(clientServer.ServerId);
-                srv.ClientId = clientServer.ClientId;
+                var srv = dbProc.GetClientServer(context.CurrentClientId);
 
                 var ctx = new AdminContext(srv);
                 var ftService = DmsResolver.Current.Get<IFullTextSearchService>();

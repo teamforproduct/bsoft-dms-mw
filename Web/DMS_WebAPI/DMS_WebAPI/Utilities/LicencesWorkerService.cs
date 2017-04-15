@@ -2,6 +2,8 @@
 using System.Threading.Tasks;
 using System.Threading;
 using BL.CrossCutting.DependencyInjection;
+using System.Collections.Generic;
+using BL.Model.Database;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -53,12 +55,9 @@ namespace DMS_WebAPI.Utilities
 
                 foreach (var client in clients)
                 {
-                    var dbs =
-                        webProc.GetServersByAdmin(new BL.Model.WebAPI.Filters.FilterAdminServers
-                        {
-                            ClientIds = new System.Collections.Generic.List<int> {client.Id}
-                        });
-                    userContext.VerifyLicence(client.Id, dbs);
+                    var db =webProc.GetClientServer( client.Id);
+                        
+                    userContext.VerifyLicence(client.Id, new List<DatabaseModel> { db });
                 }
 
 //                DmsResolver.Current.Get<UserContexts>().RemoveByTimeout();
