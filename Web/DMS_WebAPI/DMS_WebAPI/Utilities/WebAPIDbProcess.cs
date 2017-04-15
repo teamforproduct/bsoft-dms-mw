@@ -8,7 +8,6 @@ using BL.Model.Common;
 using BL.Model.Database;
 using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.Model.SystemCore;
 using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
@@ -20,9 +19,6 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using BL.Database.DatabaseContext;
-using Ninject;
-using Ninject.Parameters;
 
 namespace DMS_WebAPI.Utilities
 {

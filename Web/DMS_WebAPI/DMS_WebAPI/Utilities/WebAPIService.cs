@@ -99,6 +99,20 @@ namespace DMS_WebAPI.Utilities
             return await GetUserByIdAsync(userId);
         }
 
+        public bool ExistsUser(string userName, int clientId)
+        {
+            var user = GetUser(userName);
+
+            if (user == null) return false;
+
+            var ucs = _webDb.GetUserClientServerList(new FilterAspNetUserClientServer
+            {
+                ClientIDs = new List<int> { clientId },
+                UserIDs = new List<string> { user.Id }
+            }).FirstOrDefault();
+
+            return (ucs != null);
+        }
 
         public FrontAgentEmployeeUser GetUserInfo(IContext context)
         {
@@ -143,6 +157,9 @@ namespace DMS_WebAPI.Utilities
             string userId = string.Empty;
             model.UserName = model.Login;
 
+            // проверяю нет ли уже сотрудника с указанным имененм у клиента
+            if (ExistsUser(model.UserName, context.CurrentClientId)) throw new UserNameAlreadyExists(model.UserName);
+
             // пробую создать сотрудника
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddAgentEmployee, context, model);
@@ -159,7 +176,6 @@ namespace DMS_WebAPI.Utilities
                     // Предполагаю, что человек, который создает пользователей. создает их в тойже базе и в том же клиенте
                     ClientId = context.CurrentClientId,
                     ServerId = context.CurrentDB.Id,
-
                 });
             }
 
@@ -480,7 +496,7 @@ namespace DMS_WebAPI.Utilities
                 transaction.Complete();
             }
 
-           
+
 
             //_webDb.DeleteUserFingerprints(new FilterAspNetUserFingerprint { UserIDs = users });
             //пользователя пока не удаляю
