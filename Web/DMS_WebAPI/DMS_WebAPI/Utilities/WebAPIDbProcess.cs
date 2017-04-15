@@ -45,7 +45,7 @@ namespace DMS_WebAPI.Utilities
             {
                 if (!string.IsNullOrEmpty(filter.ClientCode))
                 {
-                    qry = qry.Where(x => x.Clients.AsQueryable().Any(y => y.Client.Code == filter.ClientCode));
+                    qry = qry.Where(x => x.ClientUsers.AsQueryable().Any(y => y.Client.Code == filter.ClientCode));
                 }
 
                 if (filter.ClientIDs?.Count > 0)
@@ -54,7 +54,7 @@ namespace DMS_WebAPI.Utilities
                     filterContains = filter.ClientIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ClientId == value).Expand());
 
-                    qry = qry.Where(x => x.Clients.AsQueryable().Any(filterContains));
+                    qry = qry.Where(x => x.ClientUsers.AsQueryable().Any(filterContains));
                 }
 
                 if (filter.ServerIDs?.Count > 0)
@@ -115,15 +115,18 @@ namespace DMS_WebAPI.Utilities
         {
             using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                var itemsDb = GetServersQuery(dbContext, filter);
+                var servers = GetServersQuery(dbContext, filter).ToList();
+
+                // 
+                var clientServers = GetUserClientServerQuery(dbContext, null).Select(x => new { ServerId = x.ServerId, ClientId = x.ClientId }).Distinct().ToList();
 
                 // перемножаю серверы на клиентов
-                var itemsRes = (from server in itemsDb
-                                join ucs in dbContext.AspNetUserClientServerSet on server.Id equals ucs.ServerId
+                var itemsRes = (from server in servers
+                                join clientServer in clientServers on server.Id equals clientServer.ServerId
                                 select new
                                 {
                                     Server = server,
-                                    ClientId = ucs.ClientId
+                                    ClientId = clientServer.ClientId
                                 }).ToList();
 
                 var items = itemsRes.Select(x => new DatabaseModel

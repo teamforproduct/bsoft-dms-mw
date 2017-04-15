@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DMS_WebAPI.DBModel
 {
@@ -7,7 +8,7 @@ namespace DMS_WebAPI.DBModel
     {
         public AspNetClients()
         {
-            this.Licences = new HashSet<AspNetClientLicences>();
+            this.ClientLicences = new HashSet<AspNetClientLicences>();
         }
         public int Id { get; set; }
         [MaxLength(2000)]
@@ -19,6 +20,8 @@ namespace DMS_WebAPI.DBModel
         [MaxLength(2000)]
         public string VerificationCode { get; set; }
 
-        public virtual ICollection<AspNetClientLicences> Licences { get; set; }
+
+        [ForeignKey("ClientId")]
+        public virtual ICollection<AspNetClientLicences> ClientLicences { get; set; }
     }
 }

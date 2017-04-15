@@ -415,14 +415,6 @@
     <Compile Include="Infrastructure\ExceptionHandlingAttribute.cs" />
     <Compile Include="Infrastructure\ModelValidationErrorHandlerFilterAttribute .cs" />
     <Compile Include="Infrastructure\NoBufferPolicySelector.cs" />
-    <Compile Include="Migrations\201704131341247_Initial.cs" />
-    <Compile Include="Migrations\201704131341247_Initial.Designer.cs">
-      <DependentUpon>201704131341247_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201704150520059_Refactor.cs" />
-    <Compile Include="Migrations\201704150520059_Refactor.Designer.cs">
-      <DependentUpon>201704150520059_Refactor.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -601,14 +593,6 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201704131341247_Initial.resx">
-      <DependentUpon>201704131341247_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201704150520059_Refactor.resx">
-      <DependentUpon>201704150520059_Refactor.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

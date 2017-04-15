@@ -21,10 +21,13 @@ namespace DMS_WebAPI.Models
             return userIdentity;
         }
         [ForeignKey("UserId")]
-        public virtual ICollection<AspNetUserClientServer> UserServers { get; set; }
+        public virtual ICollection<AspNetUserClientServer> ClientServer { get; set; }
 
         [ForeignKey("UserId")]
-        public virtual ICollection<AspNetUserFingerprints> UserFingerprints { get; set; }
+        public virtual ICollection<AspNetUserFingerprints> Fingerprints { get; set; }
+
+        [ForeignKey("UserId")]
+        public virtual ICollection<AspNetUserContexts> Contexts { get; set; }
 
         public bool IsChangePasswordRequired { get; set; }
         public bool IsEmailConfirmRequired { get; set; }
