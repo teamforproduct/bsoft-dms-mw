@@ -1,11 +1,8 @@
-﻿using BL.Model.Common;
-using BL.Model.DictionaryCore.IncomingModel;
-using System.Collections.Generic;
-using System;
+﻿using BL.Model.AdminCore.FrontModel;
 using BL.Model.Enums;
-using System.Runtime.Serialization;
-using BL.Model.AdminCore.FrontModel;
 using BL.Model.Extensions;
+using System;
+using System.Collections.Generic;
 
 namespace BL.Model.DictionaryCore.FrontModel
 {
@@ -90,6 +87,11 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Краткое название (как приставка к названию должности) типа исполнителя
         /// </summary>
         public string PositionExecutorTypeSuffix { get; set; }
+
+        /// <summary>
+        /// Департамент
+        /// </summary>
+        public string DepartmentCode { get; set; }
 
         /// <summary>
         /// Департамент

@@ -15,5 +15,10 @@ namespace BL.Model.AdminCore.FrontModel
         public int PositionExecutorId { get; set; }
 
         public bool IsChecked { get; set; }
+
+        /// <summary>
+        /// Признак, роль по умолчанию (заводская) - true, пользовательская - false
+        /// </summary>
+        public bool IsDefault { get; set; }
     }
 }

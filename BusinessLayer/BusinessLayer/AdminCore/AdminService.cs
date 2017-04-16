@@ -258,10 +258,13 @@ namespace BL.Logic.AdminCore
 
             if (executors.Count() > 0)
             {
+                // роли у назначения
                 var userRoles = _adminDb.GetInternalUserRoles(context, new FilterAdminUserRole { PositionExecutorIDs = executors.Select(x => x.AssignmentId).ToList() });
 
+                // создаю структуру из TreeItem для постоения дерева и накладываю параметры из userRoles
                 foreach (var executor in executors)
                 {
+                    // дерево - группа
                     var e = new FrontDIPUserRolesExecutor()
                     {
                         Id = executor.AssignmentId,
@@ -270,10 +273,13 @@ namespace BL.Logic.AdminCore
                         StartDate = executor.StartDate,
                         EndDate = executor.EndDate,
                         ExecutorTypeName = executor.PositionExecutorTypeName,
+                        DepartmentCode = executor.DepartmentCode,
+                        DepartmentName = executor.DepartmentName,
                         IsActive = executor.IsActive ?? true,
                         ObjectId = (int)EnumObjects.DictionaryPositionExecutors,
                     };
 
+                    // дерево - листья
                     var roles = new List<TreeItem>();
 
                     foreach (var role in executor.PositionRoles)
@@ -287,6 +293,7 @@ namespace BL.Logic.AdminCore
                             IsActive = true,
                             ObjectId = (int)EnumObjects.AdminRoles,
                             IsChecked = userRoles.Where(x => x.RoleId == role.RoleId & x.PositionExecutorId == e.Id).Any(),
+                            IsDefault = userRoles.Where(x => x.RoleId == role.RoleId & x.RoleTypeId.HasValue).Any(),
                         };
 
                         if ((filter?.IsChecked == true) & !r.IsChecked) continue;

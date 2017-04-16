@@ -987,6 +987,7 @@ namespace BL.Database.Admins
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate,
 
+                    RoleTypeId = x.Role.RoleTypeId,
                     PositionId = x.PositionExecutor.PositionId,
                     StartDate = x.PositionExecutor.StartDate,
                     EndDate = x.PositionExecutor.EndDate > maxDateTime ? (DateTime?)null : x.PositionExecutor.EndDate,

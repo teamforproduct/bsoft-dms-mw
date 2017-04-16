@@ -31,7 +31,7 @@ namespace BL.Model.AdminCore.InternalModel
         public int PositionExecutorId { get; set; }
 
 
-
+        public int? RoleTypeId { get; set; }
 
 
         #region [+] Выноска параметров ...

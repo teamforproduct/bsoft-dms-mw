@@ -1,11 +1,6 @@
-﻿using BL.Model.Common;
-using BL.Model.DictionaryCore.IncomingModel;
-using BL.Model.Enums;
-using BL.Model.Extensions;
+﻿using BL.Model.Extensions;
 using BL.Model.Tree;
 using System;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.FrontModel
 {
@@ -22,5 +17,8 @@ namespace BL.Model.DictionaryCore.FrontModel
         public string ExecutorTypeName { get; set; }
 
         public int PositionId { get; set; }
+
+        public string DepartmentCode { get; set; }
+        public string DepartmentName { get; set; }
     }
 }
