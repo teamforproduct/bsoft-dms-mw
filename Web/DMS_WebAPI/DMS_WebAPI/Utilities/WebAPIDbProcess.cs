@@ -154,6 +154,7 @@ namespace DMS_WebAPI.Utilities
         {
             // тут подразумевается, что клиентские данные могут рассполагатся только на одном из серверов   
             var res = GetServers(new FilterAdminServers { ClientIDs = new List<int> { clientId } }).FirstOrDefault();
+            if (res == null) throw new ServerIsNotFound();
             //!!!!!!!!!!!!!!!!!!!!!!
             res.ClientId = clientId;
             return res;
