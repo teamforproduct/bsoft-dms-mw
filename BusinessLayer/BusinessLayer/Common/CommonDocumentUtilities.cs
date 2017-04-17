@@ -93,7 +93,6 @@ namespace BL.Logic.Common
             document.LinkId = null;
             SetLastChange(context, document);
         }
-
         public static void SetTaskAtrributesForNewDocument(IContext context, IEnumerable<InternalDocumentTask> tasks, InternalDictionaryPositionExecutorForDocument _executorPositionExecutor)
         {
             foreach (var t in tasks)
@@ -121,7 +120,6 @@ namespace BL.Logic.Common
                 SetLastChange(context, t);
             }
         }
-
         public static void SetSendListAtrributesForNewDocument(IContext context, IEnumerable<InternalDocumentSendList> sendLists, bool? isInitial)
         {
             foreach (var sl in sendLists)
@@ -168,7 +166,6 @@ namespace BL.Logic.Common
                 SetLastChange(context, sl);
             }
         }
-
         public static void SetLastChange(IContext context, LastChangeInfo document)
         {
             if (document != null)
@@ -181,7 +178,6 @@ namespace BL.Logic.Common
         {
             documents.ToList().ForEach(x => SetLastChange(context, x));
         }
-
         public static void SetAccessess(IContext context, InternalDocumentEvent ev, List<AccessGroup> accessGroups, bool isVeryfyDocumentAccess = false)
         {
             if (ev != null)
@@ -279,7 +275,6 @@ namespace BL.Logic.Common
                 ev.Accesses = accesses;
             }
         }
-
         public static void SetAccessess(IContext context, InternalDocumentSendList sl, List<AccessGroup> accessGroups)
         {
             if (sl != null)
@@ -304,6 +299,31 @@ namespace BL.Logic.Common
                 }).ToList();
                 SetLastChange(context, sl.AccessGroups);
             }
+        }
+        public static void SetSendListAtrributes(IContext context, InternalDocumentSendList sendList, ModifyDocumentSendList model, int? taskId)
+        {
+            sendList.Stage = model.Stage.Value;
+            sendList.StageType = model.StageType;
+            sendList.SendType = model.SendType;
+            sendList.TargetPositionId = model.TargetPositionId;
+            sendList.TargetPositionExecutorAgentId = null;
+            sendList.TargetPositionExecutorTypeId = null;
+            sendList.TargetAgentId = model.TargetAgentId;
+            sendList.Description = model.Description;
+            sendList.DueDate = model.DueDate;
+            sendList.DueDay = model.DueDay;
+            sendList.AccessLevel = model.AccessLevel;
+            sendList.IsInitial = model.IsInitial;
+            sendList.TaskId = taskId;
+            sendList.IsWorkGroup = model.IsWorkGroup;
+            sendList.IsAddControl = model.IsAddControl;
+            sendList.SelfDueDate = model.SelfDueDate;
+            sendList.SelfDueDay = model.SelfDueDay;
+            sendList.SelfDescription = model.SelfDescription;
+            sendList.SelfAttentionDate = model.SelfAttentionDate;
+            sendList.SelfAttentionDay = model.SelfAttentionDay;
+            CommonDocumentUtilities.SetAccessess(context, sendList, model.TargetAccessGroups);
+            CommonDocumentUtilities.SetLastChange(context, sendList);
         }
         #endregion Set
 

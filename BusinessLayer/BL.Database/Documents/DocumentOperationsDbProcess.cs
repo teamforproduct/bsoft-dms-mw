@@ -425,7 +425,7 @@ namespace BL.Database.Documents
                 {
                     var qry = dbContext.SystemActionsSet
                         .Where(filterObjectsContains)
-                        .Where(x =>  (//x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
+                        .Where(x => (//x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
                                         x.Permission.RolePermissions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
                                         y.Role.UserRoles.Any(z => z.PositionExecutor.AgentId == context.CurrentAgentId)))
                         //.Where(x => x.IsVisibleInMenu &&
@@ -2643,7 +2643,7 @@ namespace BL.Database.Documents
 
                 if (sendList?.Any(x => x.Stage.HasValue) ?? false)
                 {
-                    var sendListsDb = ModelConverter.GetDbDocumentSendLists(sendList.Where((x => x.Stage.HasValue))).ToList();
+                    var sendListsDb = ModelConverter.GetDbDocumentSendLists(sendList.Where((x => x.Stage.HasValue)), true).ToList();
                     dbContext.DocumentSendListsSet.AddRange(sendListsDb);
                     dbContext.SaveChanges();
                     res = sendListsDb.Select(x => x.Id).ToList();
@@ -2665,12 +2665,12 @@ namespace BL.Database.Documents
             }
             return res;
         }
-         public void ModifyDocumentSendListAddDescription(IContext context, InternalDocumentSendList sendList)
+        public void ModifyDocumentSendListAddDescription(IContext context, InternalDocumentSendList sendList)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var sendListDb = ModelConverter.GetDbDocumentSendList(sendList);
+                var sendListDb = ModelConverter.GetDbDocumentSendList(sendList, true);
                 dbContext.DocumentSendListsSet.Attach(sendListDb);
                 var entry = dbContext.Entry(sendListDb);
                 entry.Property(e => e.AddDescription).IsModified = true;
@@ -2690,8 +2690,12 @@ namespace BL.Database.Documents
                     dbContext.SaveChanges();
                     sendList.TaskId = taskDb.Id;
                 }
-                var sendListDb = ModelConverter.GetDbDocumentSendList(sendList);
-
+                //TODO MayBe divide delete and add?
+                dbContext.DocumentSendListAccessGroupsSet.RemoveRange(
+                    dbContext.DocumentSendListAccessGroupsSet.Where(x => x.ClientId == context.CurrentClientId)
+                        .Where(x => x.SendListId == sendList.Id));
+                dbContext.SaveChanges();
+                var sendListDb = ModelConverter.GetDbDocumentSendList(sendList, false);
                 dbContext.DocumentSendListsSet.Attach(sendListDb);
                 var entry = dbContext.Entry(sendListDb);
                 entry.Property(e => e.Stage).IsModified = true;
@@ -2720,6 +2724,12 @@ namespace BL.Database.Documents
                 entry.Property(e => e.LastChangeUserId).IsModified = true;
                 entry.Property(e => e.LastChangeDate).IsModified = true;
                 dbContext.SaveChanges();
+                if (sendList.AccessGroups?.Any() ?? false)
+                {
+                    var accessesDb = ModelConverter.GetDbDocumentSendListAccessGroups(sendList.AccessGroups);
+                    dbContext.DocumentSendListAccessGroupsSet.AddRange(accessesDb);
+                    dbContext.SaveChanges();
+                }
 
                 if (delPaperEvents?.Any() ?? false)
                 {

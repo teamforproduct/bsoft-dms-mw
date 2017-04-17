@@ -1358,7 +1358,7 @@ namespace BL.Database.Documents
                             x.TaskId = (taskId == 0 ? null : (int?) taskId);
                         }
                     });
-                    sendListsDb = ModelConverter.GetDbDocumentSendLists(sendLists).ToList();
+                    sendListsDb = ModelConverter.GetDbDocumentSendLists(sendLists,true).ToList();
                     dbContext.DocumentSendListsSet.AddRange(sendListsDb);
                     dbContext.SaveChanges();
 

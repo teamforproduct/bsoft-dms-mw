@@ -311,7 +311,7 @@ namespace BL.Database.Common
             return subscriptions?.Any() ?? false ? subscriptions.Select(GetDbDocumentSubscription) : null;
         }
 
-        public static DocumentSendLists GetDbDocumentSendList(InternalDocumentSendList sendList)
+        public static DocumentSendLists GetDbDocumentSendList(InternalDocumentSendList sendList, bool isIncludeAccessGroups)
         {
             return sendList == null ? null :
                 new DocumentSendLists
@@ -349,16 +349,16 @@ namespace BL.Database.Common
                     TargetPositionExecutorAgentId = sendList.TargetPositionExecutorAgentId,
                     TargetPositionExecutorTypeId = sendList.TargetPositionExecutorTypeId,
 
-                    AccessGroups = GetDbDocumentSendListAccessGroups(sendList.AccessGroups)?.ToList(),
+                    AccessGroups = isIncludeAccessGroups ? GetDbDocumentSendListAccessGroups(sendList.AccessGroups)?.ToList() : null,
 
                     LastChangeUserId = sendList.LastChangeUserId,
                     LastChangeDate = sendList.LastChangeDate
                 };
         }
 
-        public static IEnumerable<DocumentSendLists> GetDbDocumentSendLists(IEnumerable<InternalDocumentSendList> sendLists)
+        public static IEnumerable<DocumentSendLists> GetDbDocumentSendLists(IEnumerable<InternalDocumentSendList> sendLists, bool isIncludeAccessGroups)
         {
-            return sendLists?.Any() ?? false ? sendLists.Select(GetDbDocumentSendList) : null;
+            return sendLists?.Any() ?? false ? sendLists.Select(x=>GetDbDocumentSendList(x,isIncludeAccessGroups)) : null;
         }
 
         public static DocumentRestrictedSendLists GetDbDocumentRestrictedSendList(InternalDocumentRestrictedSendList sendList)

@@ -91,26 +91,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             _document.SendLists = tmpSendList;
             
             var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task); //TODO исправление от кого????
-            _sendList.Stage = Model.Stage.Value;
-            _sendList.StageType = Model.StageType;
-            _sendList.SendType = Model.SendType;
-            _sendList.TargetPositionId = Model.TargetPositionId;
-            _sendList.TargetPositionExecutorAgentId = null;
-            _sendList.TargetPositionExecutorTypeId = null;
-            _sendList.TargetAgentId = Model.TargetAgentId;
-            _sendList.Description = Model.Description;
-            _sendList.DueDate = Model.DueDate;
-            _sendList.DueDay = Model.DueDay;
-            _sendList.AccessLevel = Model.AccessLevel;
-            _sendList.IsInitial = Model.IsInitial;
-            _sendList.TaskId = taskId;
-            _sendList.IsWorkGroup = Model.IsWorkGroup;
-            _sendList.IsAddControl = Model.IsAddControl;
-            _sendList.SelfDueDate = Model.SelfDueDate;
-            _sendList.SelfDueDay = Model.SelfDueDay;
-            _sendList.SelfDescription = Model.SelfDescription;
-            _sendList.SelfAttentionDate = Model.SelfAttentionDate;
-            _sendList.SelfAttentionDay = Model.SelfAttentionDay;
+            CommonDocumentUtilities.SetSendListAtrributes(_context, _sendList, Model, taskId);
             CommonDocumentUtilities.VerifySendLists(_document);
 
             return true;
@@ -130,7 +111,8 @@ namespace BL.Logic.DocumentCore.SendListCommands
             {
                 _sendList.AddDescription = "##l@DmsExceptions:SubordinationForDueDateHasBeenViolated@l##";
             }
-            CommonDocumentUtilities.SetLastChange(_context, _sendList);
+
+            #region Paper
             var delPaperEvents = new List<int?>();
             if (_document.PaperEvents?.Any() ?? false)
             {
@@ -157,7 +139,8 @@ namespace BL.Logic.DocumentCore.SendListCommands
                 addPaperEvents.AddRange(Model.PaperEvents.Where(x => delPaperEvents.Contains(x.Id) || !_document.PaperEvents.Select(y => y.PaperId).ToList().Contains(x.Id))
                                                             .Select(model => CommonDocumentUtilities.GetNewDocumentPaperEvent(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, model.Id, EnumEventTypes.MoveDocumentPaper, model.Description, _sendList.TargetPositionId, _sendList.TargetAgentId, _sendList.SourcePositionId, _sendList.SourceAgentId, false, false)));
             addPaperEvents.ForEach(x => { x.SendListId = _sendList.Id; });
-//            using (var transaction = Transactions.GetTransaction())
+            #endregion Paper
+            //            using (var transaction = Transactions.GetTransaction())
             {
                 _operationDb.ModifyDocumentSendList(_context, _sendList, _document.Tasks, addPaperEvents, delPaperEvents);
                 if (Model.IsLaunchItem ?? false)
