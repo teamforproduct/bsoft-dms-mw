@@ -33,5 +33,10 @@ namespace BL.Model.AdminCore.FrontModel
         /// </summary>
         public bool IsChecked { get; set; }
 
+        /// <summary>
+        /// Заводская
+        /// </summary>
+        public bool IsDefault { get; set; }
+
     }
 }

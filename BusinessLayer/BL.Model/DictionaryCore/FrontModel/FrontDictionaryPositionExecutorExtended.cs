@@ -1,5 +1,4 @@
 ﻿using BL.Model.AdminCore.FrontModel;
-using BL.Model.Enums;
 using BL.Model.Extensions;
 using System;
 using System.Collections.Generic;
@@ -23,30 +22,9 @@ namespace BL.Model.DictionaryCore.FrontModel
         public bool? IsActive { get; set; }
 
         /// <summary>
-        /// Сотрудник-пользователь-агент (Id совпадают)
-        /// </summary>
-        public int? AgentId { get; set; }
-
-        /// <summary>
         /// Должность
         /// </summary>
         public int? PositionId { get; set; }
-
-        /// <summary>
-        /// Тип исполнения: 
-        /// </summary>
-        public EnumPositionExecutionTypes? PositionExecutorTypeId { get; set; }
-
-        /// <summary>
-        /// Уровень доступа к документам: лично, референт, ио
-        /// При создании документов всегда указывается уровень доступа для ио и референтов
-        /// </summary>
-        public EnumAccessLevels? AccessLevelId { get; set; }
-
-        /// <summary>
-        /// Описание
-        /// </summary>
-        public string Description { get; set; }
 
         /// <summary>
         /// Дата начала исполнения должности
@@ -83,11 +61,6 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Департамент
         /// </summary>
         public string DepartmentCodeName { get; set; }
-
-        /// <summary>
-        /// Уровень доступа: лично, референт, ио
-        /// </summary>
-        public string AccessLevelName { get; set; }
 
         /// <summary>
         ///  Роли должности

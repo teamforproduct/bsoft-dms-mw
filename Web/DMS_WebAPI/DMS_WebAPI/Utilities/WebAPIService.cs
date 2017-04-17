@@ -159,36 +159,52 @@ namespace DMS_WebAPI.Utilities
             string userId = string.Empty;
             model.UserName = model.Login;
 
+            var employeeId = -1;
+
             // проверяю нет ли уже сотрудника с указанным имененм у клиента
             if (ExistsUser(model.UserName, context.CurrentClientId)) throw new UserNameAlreadyExists(model.UserName);
 
             // пробую создать сотрудника
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddAgentEmployee, context, model);
 
-            if (tmpItem > 0)
+            try
             {
-                userId = AddUserToClient(new AddWebUser
-                {
-                    Email = model.Login,
-                    Phone = model.Phone,
-                    // Для нового пользователя высылается письмо с линком на страницу "введите новый пароль"
-                    Password = "k~WPop8V%W~11hG~~VGR",
+                employeeId = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddAgentEmployee, context, model);
 
-                    // Предполагаю, что человек, который создает пользователей. создает их в тойже базе и в том же клиенте
-                    ClientId = context.CurrentClientId,
-                    ServerId = context.CurrentDB.Id,
+                if (employeeId > 0)
+                {
+                    userId = AddUserToClient(new AddWebUser
+                    {
+                        Email = model.Login,
+                        Phone = model.Phone,
+                        // Для нового пользователя высылается письмо с линком на страницу "введите новый пароль"
+                        Password = "k~WPop8V%W~11hG~~VGR",
+
+                        // Предполагаю, что человек, который создает пользователей. создает их в тойже базе и в том же клиенте
+                        ClientId = context.CurrentClientId,
+                        ServerId = context.CurrentDB.Id,
+                    });
+                }
+
+                // обновляю сотрудника 
+                tmpService.SetAgentUserUserId(context, new InternalDictionaryAgentUser
+                {
+                    Id = employeeId,
+                    UserId = userId
                 });
+
+                return employeeId;
+            }
+            catch (Exception e)
+            {
+                if (employeeId > 0) tmpService.ExecuteAction(EnumDictionaryActions.DeleteAgentEmployee, context, employeeId);
+
+                if (!string.IsNullOrEmpty(userId)) DeleteUsersInClient(context.CurrentClientId, new List<string> { userId });
+
+                throw e;
             }
 
-            // обновляю сотрудника 
-            tmpService.SetAgentUserUserId(context, new InternalDictionaryAgentUser
-            {
-                Id = tmpItem,
-                UserId = userId
-            });
-
-            return tmpItem;
+            
 
         }
 

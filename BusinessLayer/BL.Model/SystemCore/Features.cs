@@ -80,6 +80,7 @@
         public const string Favourite = "Favourite";
 
         public const string OnlineUsers = "OnlineUsers";
+        public const string AddInOrg = "AddInOrg";
 
         public static int GetId(string Name)
         {
@@ -155,7 +156,8 @@
                 case OnlineUsers:           res = 1620; break;
                 case Accounts:              res = 1630; break;
                 case Banks:                 res = 1640; break;
-                case SendLists:              res = 1650; break;
+                case SendLists:             res = 1650; break;
+                case AddInOrg:              res = 1660; break;
 
                 default: throw new System.Exception();
             }

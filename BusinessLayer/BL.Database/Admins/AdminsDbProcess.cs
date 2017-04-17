@@ -860,7 +860,8 @@ namespace BL.Database.Admins
                     Id = x.Id,
                     RoleId = x.Id,
                     RoleName = x.Name,
-                    IsChecked = x.PositionRoles.Where(y => y.RoleId == x.Id).Where(y => filter.PositionIDs.Contains(y.PositionId)).Any()
+                    IsChecked = x.PositionRoles.Where(y => y.RoleId == x.Id).Where(y => filter.PositionIDs.Contains(y.PositionId)).Any(),
+                    IsDefault = x.PositionRoles.Where(y => y.RoleId == x.Id).Where(y => y.Role.RoleTypeId.HasValue).Any(),
                 }).ToList();
 
                 transaction.Complete();
