@@ -66,27 +66,18 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Агент
         /// </summary>
-        public string AgentName { get; set; }
+        public string ExecutorName { get; set; }
+
+        /// <summary>
+        /// Тип исполнения
+        /// </summary>
+        public string PositionExecutorSuffix { get; set; }
 
         /// <summary>
         /// Должность
         /// </summary>
         public string PositionName { get; set; }
 
-        /// <summary>
-        /// Должность
-        /// </summary>
-        public string PositionFullName { get; set; }
-
-        /// <summary>
-        /// Тип исполнителя
-        /// </summary>
-        public string PositionExecutorTypeName { get; set; }
-
-        /// <summary>
-        /// Краткое название (как приставка к названию должности) типа исполнителя
-        /// </summary>
-        public string PositionExecutorTypeSuffix { get; set; }
 
         /// <summary>
         /// Департамент

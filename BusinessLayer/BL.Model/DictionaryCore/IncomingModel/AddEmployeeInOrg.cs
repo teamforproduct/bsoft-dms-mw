@@ -55,5 +55,17 @@ namespace BL.Model.DictionaryCore.IncomingModel
         [IgnoreDataMember]
         public Roles Role { get; set; }
 
+        /// <summary>
+        /// Тип исполнения
+        /// </summary>
+        [Required]
+        public EnumPositionExecutionTypes ExecutorType { get; set; }
+
+        /// <summary>
+        /// Уровень доступа
+        /// </summary>
+        [Required]
+        public EnumAccessLevels AccessLevel { get; set; }
+
     }
 }

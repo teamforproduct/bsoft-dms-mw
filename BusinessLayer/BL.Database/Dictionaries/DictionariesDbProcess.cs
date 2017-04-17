@@ -5369,8 +5369,8 @@ namespace BL.Database.Dictionaries
                     StartDate = x.StartDate,
                     EndDate = x.EndDate > maxDateTime ? (DateTime?)null : x.EndDate,
                     PositionName = x.Position.Name,
-                    PositionExecutorTypeName = x.PositionExecutorType.Name,
-                    PositionExecutorTypeSuffix = x.PositionExecutorType.Suffix,
+                    PositionExecutorSuffix = x.Position.ExecutorType.Suffix,
+                    ExecutorName = x.Position.ExecutorAgent.Name,
                     DepartmentCodeName = x.Position.Department.FullPath + " " + x.Position.Department.Name,
                     PositionRoles = x.Position.PositionRoles
                         .Where(y => y.PositionId == x.PositionId)

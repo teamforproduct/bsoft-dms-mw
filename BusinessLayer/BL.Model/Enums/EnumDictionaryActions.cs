@@ -237,7 +237,6 @@
         /// </summary>
         ModifyAgentEmployeeLanguage = 212002,
 
-        AddAgentEmployeeInOrg = 212003,
 
         #endregion AgentEmployee
 
@@ -325,17 +324,17 @@
         /// <summary>
         /// Добавить запись в справочнике "Компании"
         /// </summary>
-        AddAgentClientCompany = 218001,
+        AddOrg = 218001,
 
         /// <summary>
         /// Изменить запись в справочнике "Компании"
         /// </summary>
-        ModifyAgentClientCompany = 218005,
+        ModifyOrg = 218005,
 
         /// <summary>
         /// Удалить запись в справочнике "Компании"
         /// </summary>
-        DeleteAgentClientCompany = 218009,
+        DeleteOrg = 218009,
         #endregion DictionaryCompanies
 
 

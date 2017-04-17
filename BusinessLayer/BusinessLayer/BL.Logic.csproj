@@ -216,7 +216,6 @@
     <Compile Include="DictionaryCore\AgentCompany\BaseDictionaryAgentCompanyCommand.cs" />
     <Compile Include="DictionaryCore\AgentCompany\ModifyDictionaryAgentCompanyCommand.cs" />
     <Compile Include="DictionaryCore\AgentContact\BaseDictionaryContactCommand.cs" />
-    <Compile Include="DictionaryCore\AgentEmployee\AddEmployeeInOrgCommand.cs" />
     <Compile Include="DictionaryCore\AgentPeople\ModifyDictionaryAgentEmployeePassportCommand.cs" />
     <Compile Include="DictionaryCore\AgentEmployee\AddDictionaryAgentEmployeeCommand.cs" />
     <Compile Include="DictionaryCore\AgentEmployee\DeleteDictionaryAgentEmployeeCommand.cs" />

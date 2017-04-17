@@ -71,9 +71,6 @@ namespace BL.Logic.DictionaryCore
                 case EnumDictionaryActions.AddAgentEmployee:
                     cmd = DmsResolver.Current.Get<AddDictionaryAgentEmployeeCommand>();
                     break;
-                case EnumDictionaryActions.AddAgentEmployeeInOrg:
-                    cmd = DmsResolver.Current.Get<AddEmployeeInOrgCommand>();
-                    break;
                 case EnumDictionaryActions.DeleteAgentEmployee:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAgentEmployeeCommand>();
                     break;
@@ -273,13 +270,13 @@ namespace BL.Logic.DictionaryCore
 
                 // Компании
                 #region DictionaryCompanies
-                case EnumDictionaryActions.AddAgentClientCompany:
+                case EnumDictionaryActions.AddOrg:
                     cmd = DmsResolver.Current.Get<AddDictionaryAgentClientCompanyCommand>();
                     break;
-                case EnumDictionaryActions.ModifyAgentClientCompany:
+                case EnumDictionaryActions.ModifyOrg:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryAgentClientCompanyCommand>();
                     break;
-                case EnumDictionaryActions.DeleteAgentClientCompany:
+                case EnumDictionaryActions.DeleteOrg:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAgentClientCompanyCommand>();
                     break;
                 #endregion DictionaryCompanies

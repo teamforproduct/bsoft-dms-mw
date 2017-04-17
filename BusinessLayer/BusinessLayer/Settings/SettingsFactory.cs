@@ -144,6 +144,15 @@ namespace BL.Logic.Settings
                     res.SettingTypeId = 2;
                     break;
 
+                case EnumSystemSettings.OLDPDFDELETEPERIOD:
+                    res.Value = "30";
+                    res.ValueType = EnumValueTypes.Number;
+                    res.SettingTypeId = 2;
+                    break;
+
+                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                    // После добавления настройке не забудь указать в процедуре создания клиента ClientService.GetSystemSettings //
+                    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
                     //default:
                     //throw new CommandNotDefinedError(act.ToString());

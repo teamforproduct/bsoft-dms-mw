@@ -27,5 +27,7 @@
         SUBORDINATIONS_SEND_ALL_FOR_EXECUTION,
         SUBORDINATIONS_SEND_ALL_FOR_INFORMING,
         OLDPDFDELETEPERIOD,
+
+        // При добавлении новых настроек не забудь добавить значения по умолчанию в SettingsFactory
     }
 }

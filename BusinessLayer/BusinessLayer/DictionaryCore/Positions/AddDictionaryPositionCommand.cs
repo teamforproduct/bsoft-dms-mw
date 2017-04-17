@@ -47,7 +47,8 @@ namespace BL.Logic.DictionaryCore
                 { SetAllSubordinations(new SetSubordinations { IsChecked = true, PositionId = model.Id, SubordinationTypeId = EnumSubordinationTypes.Informing }); }
 
                 // базовые роли
-                SetDefaultRoles(model.Id, new List<Roles> { Roles.User });
+                Roles role = Model.Role ?? Roles.User;
+                SetDefaultRoles(model.Id, new List<Roles> { role });
 
                 var frontObj = _dictDb.GetPositions(_context, new FilterDictionaryPosition { IDs = new List<int> { model.Id } }).FirstOrDefault();
                 _logger.Information(_context, null, (int)EnumObjects.DictionaryPositions, (int)CommandType, frontObj.Id, frontObj);

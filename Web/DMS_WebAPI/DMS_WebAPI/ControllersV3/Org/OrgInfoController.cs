@@ -101,7 +101,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumDictionaryActions.AddAgentClientCompany, model);
+                var tmpItem = Action.Execute(context, EnumDictionaryActions.AddOrg, model);
                 return GetById(context, tmpItem);
             });
         }
@@ -117,7 +117,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDictionaryActions.ModifyAgentClientCompany, model);
+                Action.Execute(context, EnumDictionaryActions.ModifyOrg, model);
                 return GetById(context, model.Id);
             });
         }
@@ -133,7 +133,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDictionaryActions.DeleteAgentClientCompany, Id);
+                Action.Execute(context, EnumDictionaryActions.DeleteOrg, Id);
                 var tmpItem = new FrontDeleteModel(Id);
                 var res = new JsonResult(tmpItem, this);
                 return res;

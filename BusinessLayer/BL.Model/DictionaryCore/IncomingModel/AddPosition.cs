@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BL.Model.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.IncomingModel
@@ -23,6 +24,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         [IgnoreDataMember]
         public int? ParentId { get; set; }
 
+
         /// <summary>
         /// Наименование должности
         /// </summary>
@@ -46,6 +48,9 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// </summary>
         [Required]
         public int Order { get; set; }
+
+        [IgnoreDataMember]
+        public Roles? Role { get; set; }
 
     }
 }

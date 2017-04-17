@@ -32,12 +32,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using BL.Model.DictionaryCore.FrontModel.Employees;
+using BL.Model.AdminCore.IncomingModel;
 
 namespace DMS_WebAPI.Utilities
 {
     internal class WebAPIService
     {
         private readonly WebAPIDbProcess _webDb;
+        private AddAgentEmployeeUser employee;
 
         public WebAPIService(WebAPIDbProcess webDb)
         {
@@ -192,23 +194,99 @@ namespace DMS_WebAPI.Utilities
 
         public int AddUserEmployeeInOrg(IContext context, AddEmployeeInOrg model)
         {
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            var dicService = DmsResolver.Current.Get<IDictionaryService>();
+            var admService = DmsResolver.Current.Get<IAdminService>();
+            var employee = new AddAgentEmployeeUser();
+            int assignmentId = -1;
+            int empoyeeId = -1;
+            int orgId = -1;
+            int depId = -1;
+            int posId = -1;
 
-            var tmpEmployee = (AddAgentEmployeeUser)tmpService.ExecuteAction(EnumDictionaryActions.AddAgentEmployeeInOrg, context, model);
+            if (model.OrgId == null && string.IsNullOrEmpty(model.OrgName)) throw new OrgRequired();
 
-            var empId = AddUserEmployee(context, tmpEmployee);
+            if (model.DepartmentId == null && string.IsNullOrEmpty(model.DepartmentName)) throw new DepartmentRequired();
 
-            var ass = new AddPositionExecutor();
-            ass.AccessLevelId = EnumAccessLevels.Personally;
-            ass.AgentId = empId;
-            ass.IsActive = true;
-            ass.PositionId = model.PositionId ?? -1;
-            ass.StartDate = DateTime.UtcNow;
-            ass.PositionExecutorTypeId = EnumPositionExecutionTypes.Personal;
+            if (model.PositionId == null && string.IsNullOrEmpty(model.PositionName)) throw new PositionRequired();
 
-            var assignmentId = tmpService.ExecuteAction(EnumDictionaryActions.AddExecutor, context, ass);
+            employee.Login = model.Login;
+            employee.Phone = model.Phone;
+            employee.FirstName = model.FirstName;
+            employee.MiddleName = model.MiddleName;
+            employee.LastName = model.LastName;
+            employee.IsActive = true;
+            employee.LanguageId = model.LanguageId;
 
-            return empId;
+            try
+            {  // тут возникает проблама транзакционности: если возникнет проблема при назначении сотрудника, то 
+                using (var transaction = Transactions.GetTransaction())
+                {
+                    if (model.OrgId == null && !string.IsNullOrEmpty(model.OrgName))
+                    {
+                        var org = new AddOrg();
+                        org.FullName = model.OrgName;
+                        org.Name = model.OrgName;
+                        org.IsActive = true;
+
+                        orgId = (int)dicService.ExecuteAction(EnumDictionaryActions.AddOrg, context, org);
+                    }
+
+                    if (model.DepartmentId == null && !string.IsNullOrEmpty(model.DepartmentName))
+                    {
+                        var dep = new AddDepartment();
+                        dep.CompanyId = orgId;
+                        dep.FullName = model.DepartmentName;
+                        dep.Name = model.DepartmentName;
+                        dep.IsActive = true;
+                        dep.Index = model.DepartmentIndex;
+
+                        depId = (int)dicService.ExecuteAction(EnumDictionaryActions.AddDepartment, context, dep);
+                    }
+
+                    if (model.PositionId == null && !string.IsNullOrEmpty(model.PositionName))
+                    {
+                        var pos = new AddPosition();
+                        pos.DepartmentId = depId;
+                        pos.FullName = model.PositionName;
+                        pos.Name = model.PositionName;
+                        pos.IsActive = true;
+                        pos.Role = model.Role;
+
+                        // Создается должность. + доступы к журналам, рассылка и роль
+                        posId = (int)dicService.ExecuteAction(EnumDictionaryActions.AddPosition, context, pos);
+                    }
+
+                    transaction.Complete();
+                }
+
+                empoyeeId = AddUserEmployee(context, employee);
+
+                var ass = new AddPositionExecutor();
+                ass.AccessLevelId = model.AccessLevel;
+                ass.AgentId = empoyeeId;
+                ass.IsActive = true;
+                ass.PositionId = posId;
+                ass.StartDate = DateTime.UtcNow;
+                ass.PositionExecutorTypeId = model.ExecutorType;
+
+                assignmentId = (int)dicService.ExecuteAction(EnumDictionaryActions.AddExecutor, context, ass);
+
+                return empoyeeId;
+            }
+            catch (Exception e)
+            {
+                if (assignmentId > 0) dicService.ExecuteAction(EnumDictionaryActions.DeleteExecutor, context, assignmentId);
+
+                if (empoyeeId > 0) DeleteUserEmployee(context, empoyeeId);
+
+                if (posId > 0) dicService.ExecuteAction(EnumDictionaryActions.DeletePosition, context, posId);
+
+                if (depId > 0) dicService.ExecuteAction(EnumDictionaryActions.DeleteDepartment, context, depId);
+
+                if (orgId > 0) dicService.ExecuteAction(EnumDictionaryActions.DeleteOrg, context, orgId);
+
+                throw e;
+            }
         }
 
         public int UpdateUserEmployee(IContext context, ModifyAgentEmployee model)
@@ -250,8 +328,7 @@ namespace DMS_WebAPI.Utilities
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             tmpService.ExecuteAction(EnumDictionaryActions.DeleteAgentEmployee, context, agentId);
 
-            DeleteUserInClient(context.CurrentClientId, new List<string> { user.Id });
-
+            DeleteUsersInClient(context.CurrentClientId, new List<string> { user.Id });
         }
 
         private string AddUser(string userName, string userPassword, string userEmail, string userPhone = "")
@@ -328,24 +405,24 @@ namespace DMS_WebAPI.Utilities
             return userId;
         }
 
-        private void DeleteUserInClient(int clientId, List<string> userIDs)
+        private void DeleteUsersInClient(int clientId, List<string> userIDs)
         {
             if (userIDs?.Count() == 0)
             {
+                // запоминаю пользователей клиента, которых потенциально нужно удалить
                 userIDs = _webDb.GetUserClientServerList(new FilterAspNetUserClientServer { ClientIDs = new List<int> { clientId } }).Select(x => x.UserId).ToList();
             };
 
             using (var transaction = Transactions.GetTransaction())
             {
-                // Удаляю связь пользователя с клиентом
+                // Удаляю связи пользователя с клиентом
                 _webDb.DeleteUserClientServer(new FilterAspNetUserClientServer
                 {
                     UserIDs = userIDs,
                     ClientIDs = new List<int> { clientId }
-                }
-                );
+                });
 
-                // пользователи, которые завязаны на других клиентов удалять нельзя, но в списке для удаления
+                // пользователи, которые завязаны на других клиентов удалять нельзя, но они в списке для удаления
                 var safeList = _webDb.GetUserClientServerList(new FilterAspNetUserClientServer { UserIDs = userIDs }).Select(x => x.UserId).ToList();
 
                 if (safeList?.Count() > 0) userIDs.RemoveAll(x => safeList.Contains(x));
@@ -458,6 +535,8 @@ namespace DMS_WebAPI.Utilities
                 OrgName = languages.GetTranslation(ctx.CurrentEmployee.LanguageId, "##l@Clients:" + "MyCompany" + "@l##"),
                 DepartmentName = languages.GetTranslation(ctx.CurrentEmployee.LanguageId, "##l@Clients:" + "MyDepartment" + "@l##"),
                 PositionName = languages.GetTranslation(ctx.CurrentEmployee.LanguageId, "##l@Clients:" + "MyPosition" + "@l##"),
+                ExecutorType = EnumPositionExecutionTypes.Personal,
+                AccessLevel = EnumAccessLevels.Personally,
                 LanguageId = ctx.CurrentEmployee.LanguageId,
                 Phone = model.PhoneNumber,
                 Login = model.Email,
@@ -491,7 +570,7 @@ namespace DMS_WebAPI.Utilities
                 _webDb.DeleteClientLicence(new FilterAspNetClientLicences { ClientIds = clients });
                 _webDb.DeleteClient(Id);
 
-                DeleteUserInClient(Id, null);
+                DeleteUsersInClient(Id, null);
 
                 transaction.Complete();
             }
