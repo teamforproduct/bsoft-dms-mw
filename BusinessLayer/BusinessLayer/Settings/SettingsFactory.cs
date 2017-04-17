@@ -8,7 +8,9 @@ namespace BL.Logic.Settings
         public static InternalSystemSetting GetDefaultSetting(EnumSystemSettings key)
         {
             var res = new InternalSystemSetting();
-
+            // TODO многие дефолтные параметры настроек зашиты по в коде 
+            // Пока так, нужно осмыслить как поделить настройки на клиентозависимые, теоретически все настройки могут быть клиентозависимыми 
+            // и регулировать это можно через отдельный параметр 
             switch (key)
             {
                 case EnumSystemSettings.MAILSERVER_TYPE:
@@ -17,27 +19,27 @@ namespace BL.Logic.Settings
                     res.SettingTypeId = 4;
                     break;
                 case EnumSystemSettings.MAILSERVER_NAME:
-                    res.Value = "";
+                    res.Value = "mail.irf.com.ua";
                     res.ValueType = EnumValueTypes.Text;
                     res.SettingTypeId = 4;
                     break;
                 case EnumSystemSettings.MAILSERVER_LOGIN:
-                    res.Value = "";
+                    res.Value = "docum@ostrean.com";
                     res.ValueType = EnumValueTypes.Text;
                     res.SettingTypeId = 4;
                     break;
                 case EnumSystemSettings.MAILSERVER_PASSWORD:
-                    res.Value = "";
+                    res.Value = "123QWEasdZXC_";
                     res.ValueType = EnumValueTypes.Password;
                     res.SettingTypeId = 4;
                     break;
                 case EnumSystemSettings.MAILSERVER_PORT:
-                    res.Value = "";
+                    res.Value = "465";
                     res.ValueType = EnumValueTypes.Number;
                     res.SettingTypeId = 4;
                     break;
                 case EnumSystemSettings.MAILSERVER_SYSTEMMAIL:
-                    res.Value = "";
+                    res.Value = "noreply@ostrean.com";
                     res.ValueType = EnumValueTypes.Text;
                     res.SettingTypeId = 4;
                     break;

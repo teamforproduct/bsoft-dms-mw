@@ -204,7 +204,7 @@ namespace DMS_WebAPI.Utilities
                 throw e;
             }
 
-            
+
 
         }
 
@@ -275,8 +275,10 @@ namespace DMS_WebAPI.Utilities
                     transaction.Complete();
                 }
 
+                // Создаю сотрудника-пользователя
                 empoyeeId = AddUserEmployee(context, employee);
 
+                // назначаю сотрудника на должность
                 var ass = new AddPositionExecutor();
                 ass.AccessLevelId = model.AccessLevel;
                 ass.AgentId = empoyeeId;
@@ -410,14 +412,43 @@ namespace DMS_WebAPI.Utilities
 
             // Тут, конечно, рановато высылать письмо, пользователя еще не назначили
 
-            // Если пользователь уже был в базе, то ему нужно выслать только ссылку на нового клиента, а если нет то ссылку на смену пароля
-            RestorePasswordAgentUserAsync(new RestorePasswordAgentUser
-            {
-                ClientCode = _webDb.GetClientCode(model.ClientId),
-                Email = model.Email,
-                FirstEntry = "true"
-            }, new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "restore-password").ToString(), null, "Ostrean. Приглашение", RenderPartialView.RestorePasswordAgentUserVerificationEmail);
 
+
+            // Если пользователь уже был в базе, то ему нужно выслать только ссылку на нового клиента, а если нет то ссылку на смену пароля
+            if (user == null)
+            {
+                var tmp = new RestorePasswordAgentUser
+                {
+                    ClientCode = _webDb.GetClientCode(model.ClientId),
+                    Email = model.Email,
+                    FirstEntry = "true"
+                };
+
+                // http://docum.ostrean.com/restore-password
+                var uri = new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "restore-password").ToString();
+
+                RestorePasswordAgentUserAsync(tmp, uri, null, "Ostrean. Приглашение", RenderPartialView.RestorePasswordAgentUserVerificationEmail);
+            }
+
+            else
+            {
+                var clientCode = _webDb.GetClientCode(model.ClientId);
+                var we = new WelcomeEmailModel()
+                {
+                    UserName = user.UserName,
+                    UserEmail = user.Email,
+                    ClientUrl = clientCode + ".ostrean.com",
+                    CabinetUrl = clientCode + ".ostrean.com/cabinet/",
+                    OstreanEmail = "info@ostrean.com",
+                    SpamUrl = "noreplay@ostrean.com",
+                };
+
+                var htmlContent = we.RenderPartialViewToString(RenderPartialView.WelcomeEmail);
+                var db = GetClientServer(model.ClientId);
+                var ctx = new AdminContext(db);
+                var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
+                mailService.SendMessage(ctx, model.Email, "Ostrean. Приглашение", htmlContent);
+            }
             return userId;
         }
 
@@ -488,7 +519,7 @@ namespace DMS_WebAPI.Utilities
             //TODO Автоматическое определение сервера
             // определяю сервер для клиента пока первый попавшийся
             // сервер может определяться более сложным образом: с учетом нагрузки, количества клиентов
-            var server = _webDb.GetServers(new FilterAdminServers()).LastOrDefault();
+            var server = _webDb.GetServers(new FilterAdminServers()).FirstOrDefault();
             if (server == null) throw new ServerIsNotFound();
 
 
@@ -541,7 +572,18 @@ namespace DMS_WebAPI.Utilities
             }
 
             var clientService = DmsResolver.Current.Get<IClientService>();
-            clientService.AddDictionary(ctx, model);
+
+
+            try
+            {
+                clientService.AddDictionary(ctx, model);
+
+            }
+            catch (Exception e)
+            {
+                if (model.ClientId > 0) DeleteClient(model.ClientId);
+                throw e;
+            }
 
             AddUserEmployeeInOrg(ctx, new AddEmployeeInOrg
             {
@@ -766,8 +808,10 @@ namespace DMS_WebAPI.Utilities
             newQuery.Add(query);
 
             builder.Query = newQuery.ToString();// string.Join("&", nvc.AllKeys.Select(key => string.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(nvc[key]))));
+            // сылка на восстановление пароля
             string callbackurl = builder.ToString();
 
+            // html с подставленной ссылкой
             var htmlContent = callbackurl.RenderPartialViewToString(renderPartialView);
 
 
