@@ -91,12 +91,7 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// <summary>
         /// Департамент
         /// </summary>
-        public string DepartmentCode { get; set; }
-
-        /// <summary>
-        /// Департамент
-        /// </summary>
-        public string DepartmentName { get; set; }
+        public string DepartmentCodeName { get; set; }
 
         /// <summary>
         /// Уровень доступа: лично, референт, ио

@@ -273,8 +273,7 @@ namespace BL.Logic.AdminCore
                         StartDate = executor.StartDate,
                         EndDate = executor.EndDate,
                         ExecutorTypeName = executor.PositionExecutorTypeName,
-                        DepartmentCode = executor.DepartmentCode,
-                        DepartmentName = executor.DepartmentName,
+                        DepartmentCodeName = executor.DepartmentCodeName,
                         IsActive = executor.IsActive ?? true,
                         ObjectId = (int)EnumObjects.DictionaryPositionExecutors,
                     };

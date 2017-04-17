@@ -18,7 +18,6 @@ namespace BL.Model.DictionaryCore.FrontModel
 
         public int PositionId { get; set; }
 
-        public string DepartmentCode { get; set; }
-        public string DepartmentName { get; set; }
+        public string DepartmentCodeName { get; set; }
     }
 }
