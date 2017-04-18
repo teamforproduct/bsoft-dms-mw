@@ -10,6 +10,7 @@ using DMS_WebAPI.Models;
 using DMS_WebAPI.Utilities;
 using Microsoft.Owin;
 using Owin;
+using System;
 using System.Collections.Generic;
 using System.Web;
 
@@ -23,12 +24,11 @@ namespace DMS_WebAPI
         {
             var filePath = HttpContext.Current.Server.MapPath("~/SiteErrors.txt");
 
-            FileLogger.AppendTextToFile("STARTUP BEGIN!!!", filePath);
+            FileLogger.AppendTextToFile("STARTUP BEGIN!!! " + DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC", filePath); 
 
             ApplicationDbContext.CreateDatabaseIfNotExists();
 
             // configuring authentication
-            FileLogger.AppendTextToFile("ConfigureAuth", filePath);
             ConfigureAuth(app);
             
             // Проверка на целостность Actions в процедуре импорта 
@@ -36,7 +36,6 @@ namespace DMS_WebAPI
             Properties.Settings.Default["ServerPath"] = HttpContext.Current.Server.MapPath("~/");
             Properties.Settings.Default.Save();
             // Проверка на целостность переводов
-            FileLogger.AppendTextToFile("CheckLanguages", filePath);
             ApplicationDbImportData.CheckLanguages();
             
 
@@ -45,11 +44,10 @@ namespace DMS_WebAPI
 
             var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
 
-            FileLogger.AppendTextToFile("GetServersByAdminContext", filePath);
             var dbs = dbProc.GetServersByAdminContext(new FilterAdminServers { ServerTypes = new List<EnumDatabaseType> { EnumDatabaseType.SQLServer } });
 
 
-            FileLogger.AppendTextToFile("StartWorkers", filePath);
+            FileLogger.AppendTextToFile("StartWorkers " + DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC", filePath);
             //#if !DEBUG
             // Сервис бекграундной обработки задач/экшенов/команд. 
             var queueWorker = DmsResolver.Current.Get<IQueueWorkerService>();
@@ -96,7 +94,7 @@ namespace DMS_WebAPI
             licencesService.Initialize();
 #endif
 
-            FileLogger.AppendTextToFile("STARTUP END!!!", filePath);
+            FileLogger.AppendTextToFile("STARTUP END!!! " + DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC", filePath);
         }
     }
 }
