@@ -427,7 +427,7 @@ namespace DMS_WebAPI.Utilities
                 // http://docum.ostrean.com/restore-password
                 var uri = new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "restore-password").ToString();
 
-                RestorePasswordAgentUserAsync(tmp, uri, null, "Ostrean. Приглашение", RenderPartialView.RestorePasswordAgentUserVerificationEmail);
+                RestorePasswordAgentUserAsync(tmp, uri, null, "Ostrean. Приглашение");
             }
 
             else
@@ -786,7 +786,7 @@ namespace DMS_WebAPI.Utilities
 
         }
 
-        public async Task RestorePasswordAgentUserAsync(RestorePasswordAgentUser model, string baseUrl, NameValueCollection query, string emailSubject, string renderPartialView)
+        public async Task RestorePasswordAgentUserAsync(RestorePasswordAgentUser model, string baseUrl, NameValueCollection query, string emailSubject)
         {
             if (query == null) query = new NameValueCollection();
 
@@ -814,8 +814,18 @@ namespace DMS_WebAPI.Utilities
             // сылка на восстановление пароля
             string callbackurl = builder.ToString();
 
+            var m = new WelcomeEmailModel()
+            {
+                CabinetUrl = "ostrean.com/cabinet",
+                ClientUrl = callbackurl,
+                OstreanEmail = "info@ostrean.com",
+                SpamUrl = "noreplay@ostrean.com",
+                UserEmail = user.Email,
+                UserName = user.UserName,
+            };
+
             // html с подставленной ссылкой
-            var htmlContent = callbackurl.RenderPartialViewToString(renderPartialView);
+            var htmlContent = m.RenderPartialViewToString(RenderPartialView.WelcomeEmail);
 
 
             var db = GetClientServer(model.ClientCode);
