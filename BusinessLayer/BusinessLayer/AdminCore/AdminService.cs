@@ -155,7 +155,7 @@ namespace BL.Logic.AdminCore
         //    return _adminDb.GetRole(context, new FilterAdminPositionRole() { IDs = new List<int> { id } }).FirstOrDefault();
         //}
 
-        public IEnumerable<ListItem> GetMainRoles(IContext context, FullTextSearch ftSearch, FilterAdminRole filter, UIPaging paging)
+        public IEnumerable<FrontMainRoles> GetMainRoles(IContext context, FullTextSearch ftSearch, FilterAdminRole filter, UIPaging paging)
         {
             return FTS.Get(context, Modules.Role, ftSearch, filter, paging, null, _adminDb.GetMainRoles, _adminDb.GetRoleIDs);
         }

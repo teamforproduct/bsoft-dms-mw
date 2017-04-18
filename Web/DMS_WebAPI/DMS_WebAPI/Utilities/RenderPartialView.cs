@@ -11,6 +11,7 @@ namespace DMS_WebAPI.Utilities
         public static string ControllerName { get { return "WebPartialViewController"; } }
         public static string PartialViewNameChangeLoginAgentUserVerificationEmail { get { return "~/Views/WebPartialView/ChangeLoginAgentUserVerificationEmail.cshtml"; } }
         public static string RestorePasswordAgentUserVerificationEmail { get { return "~/Views/WebPartialView/RestorePasswordAgentUserVerificationEmail.cshtml"; } }
+        public static string WelcomeEmail { get { return "~/Views/WebPartialView/WelcomeEmail.cshtml"; } }
         public static string RenderPartialViewToString<T>(this T model, string partialViewName) where T : class
         {
             using (var controller = new WebPartialViewController())

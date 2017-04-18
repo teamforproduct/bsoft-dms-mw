@@ -42,7 +42,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Info + "/Main")]
-        [ResponseType(typeof(List<ListItem>))]
+        [ResponseType(typeof(List<FrontMainRoles>))]
         public async Task<IHttpActionResult> GetMain([FromUri]FullTextSearch ftSearch, [FromUri]FilterAdminRole filter, [FromUri]UIPaging paging)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>

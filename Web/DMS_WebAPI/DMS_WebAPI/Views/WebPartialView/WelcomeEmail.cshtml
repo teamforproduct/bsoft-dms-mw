@@ -1,0 +1,88 @@
+﻿@model DMS_WebAPI.Models.WelcomeEmailModel
+
+@{
+    ViewBag.Title = "Добро пожаловать в Острин!";
+    var text = "Здравствуйте, " + Model.UserName + "!Ваш Острин готов и ждет указаний.Осталось всего три шага до реализации ваших грандиозных планов:";
+}
+
+<table border="0" cellspacing="0" cellpadding="2" width="100%">
+  <tbody>
+    <tr>
+      <td>
+        <div id="viewmessagebody">
+          <div id="viewmessagebody_BODY">
+            <div style="background-color: #f9f8f6;width: 100%;min-width: 100%;">
+              <div style="background-color: #f9f8f6;padding: 40px 0;width: 100%;min-width: 100%;">
+                <table style="margin: 0 auto;border-collapse: collapse;" cellpadding="0" cellspacing="0" border="0" align="center">
+                  <tbody>
+                    <tr>
+
+                      <td>
+                        <table width="615px" style="margin: 0;text-align: center;border-collapse: collapse;" cellpadding="0" cellspacing="0" border="0">
+                          <tbody>
+                            <tr>
+                              <td colspan="4">
+                                <h1 style="font-family: Georgia, serif;font-size: 30px;font-weight: normal;margin: 28px 0 11px">Добро пожаловать в Острин!</h1>
+                              </td>
+                            </tr>
+                            <tr style="background-color: #fff;border-bottom: 3px solid #c7ccb3;">
+                              <td colspan="4">
+                                <p style="font-family: Arial, Helvetica, sans-serif;font-size: 13px;margin:13px 0 16px;line-height: 1.6;">@text</p>
+                              </td>
+                            </tr>
+                            <tr style="background-color: #f2f4eb;font-family: Arial, Helvetica, sans-serif;line-height: 1.65;">
+                              <td colspan="4">
+                                <div style="font-size: 24px;font-weight: bold;">Вход в Острин</div>
+                                <div style="font-size: 13px">
+                                  Ваш Острин: <span style="text-decoration: underline;"><a href='@Model.ClientUrl'>@Model.ClientUrl</a></span><br>
+                                  Логин: <span>@Model.UserEmail</span>
+                                </div>
+                                <a href='@Model.ClientUrl' title="Перейти в Острин" style="display: block;margin: 8px 0 2px;outline: none;" target="_blank">
+                                  <img src="http://ostrean.com//img//logo-uht3Hsnf1B.png" width="209" height="48" alt="Перейти в Острин" style="border: none;">
+                                </a>
+                              </td>
+                            </tr>
+
+                            <tr style="background-color: #fff;font-size: 13px;font-family: Arial, Helvetica, sans-serif;line-height: 1.5;background-position: 50% 0;background-repeat: no-repeat;">
+                              <td colspan="4" style="padding: 0 42px;">
+                                <h2 style="font-family: Georgia, serif;font-size: 24px;font-weight: normal;margin: 35px 0 2px;line-height: 1.25">Для вас создан личный кабинет на сайте Острина</h2>
+                                <p style="margin: 0 0 26px">Чтобы вы могли контролировать состояние заказов и конфигурацию своего Острина, докупать к Острину новые модули и лицензии, мы создали для вас личный кабинет:</p>
+                                <p style="margin: 0 0 44px;line-height: 1.6;">
+                                  Вход: @Html.ActionLink(@Model.CabinetUrl, @Model.CabinetUrl)<br>
+                                  Ваш логин: @Model.UserEmail<br>
+                                  Ваш пароль: 9519Ea36
+                                </p>
+                              </td>
+                            </tr>
+
+                            <tr style="background-color: #fff;font-family: Arial, Helvetica, sans-serif;line-height: 1.5;">
+                              <td colspan="4" style="padding: 0 42px 36px">
+                                <p style="font-size: 13px;color: #000;margin: 19px 0 0;">
+                                  Желаем успешной работы. Спасибо, что выбрали нас! Команда Острина!
+                                </p>
+                                <p style="font-size: 11px;color: #999;margin: 3px 0 0;">
+                                  P. S. Приглашаем подписаться на нашу рассылку «<a href="@Model.SpamUrl" style="color: #999 !important" target="_blank">Большие планы</a>». Полезные и содержательные статьи каждую неделю. Присоединяйтесь к 95 000 читателей!
+                                </p>
+                                <p style="font-size: 11px;color: #666;margin: 4px 0 0;line-height: 1.75;">
+                                  Если у вас возникли вопросы, то звоните по телефону <span class="js-phone-number">8 800 555-56-37</span> или <span class="js-phone-number">+7 495 134-21-32</span> или пишите на почту <a href="@Model.OstreanEmail" style="color: #666 !important" target="_blank">@Model.OstreanEmail</a>, а также следите за нашими новостями в социальных сетях
+                                </p>
+                              </td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+
+                    </tr>
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </td>
+    </tr>
+  </tbody>
+</table>
+

@@ -511,7 +511,7 @@ namespace BL.Database.Admins
             }
         }
 
-        public IEnumerable<ListItem> GetMainRoles(IContext ctx, IBaseFilter filter, UIPaging paging, UISorting sorting)
+        public IEnumerable<FrontMainRoles> GetMainRoles(IContext ctx, IBaseFilter filter, UIPaging paging, UISorting sorting)
         {
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
@@ -520,12 +520,13 @@ namespace BL.Database.Admins
 
                 qry = qry.OrderBy(x => x.Name);
 
-                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<ListItem>();
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontMainRoles>();
 
-                var res = qry.Select(x => new ListItem
+                var res = qry.Select(x => new FrontMainRoles
                 {
                     Id = x.Id,
                     Name = x.Name,
+                    IsDefault = x.RoleTypeId.HasValue,
                 }).ToList();
                 transaction.Complete();
                 return res;
