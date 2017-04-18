@@ -35,7 +35,7 @@ namespace DMS_WebAPI.Utilities
         {
             var res = _cacheContexts.AsQueryable()
                 .Where(x => x.Value.StoreObject is IContext)
-                .Where(x=> x.Value.LastUsage > DateTime.UtcNow.AddMinutes(-1))
+                .Where(x => x.Value.LastUsage > DateTime.UtcNow.AddMinutes(-1))
                 .Select(x => new FrontSystemSession
                 {
                     //Token = x.Key,
@@ -66,9 +66,14 @@ namespace DMS_WebAPI.Utilities
         {
             string token = TokenLower;
 
+            // пробую восстановить контекст из базы
+            if (!Contains(token))
+            {
+                Restore(token);
+            }
+
+
             if (!Contains(token)) throw new UserUnauthorized();
-            // TODO добавить восстановление контекста из базы, если нет в коллекции
-            // жизнь контекста должна совпадать с жизнью овиновского токена
 
             var ctx = GetInternal(token);
 
@@ -156,7 +161,7 @@ namespace DMS_WebAPI.Utilities
             var context = GetInternal(token);
 
             var dbWeb = DmsResolver.Current.Get<WebAPIDbProcess>();
-            
+
             context.ClientLicence = dbWeb.GetClientLicenceActive(context.CurrentClientId);
 
             VerifyNumberOfConnectionsByNew(context, context.CurrentClientId, new List<DatabaseModel> { db });
@@ -315,7 +320,7 @@ namespace DMS_WebAPI.Utilities
         /// Удаляет пользовательский контекст из коллекции
         /// </summary>
         /// <returns>Typed setting value.</returns>
-        public IContext Remove(string token = null)
+        public IContext Remove(string token = null, bool removeFromBase = true)
         {
             if (string.IsNullOrEmpty(token)) token = TokenLower;
 
@@ -327,10 +332,15 @@ namespace DMS_WebAPI.Utilities
             // удаляю пользовательский контекст из коллекции
             _cacheContexts.Remove(token);
 
-            var webService = DmsResolver.Current.Get<WebAPIService>();
-            webService.DeleteUserContext(token);
+            if (removeFromBase)
+            {
+                //HttpContext.Current.GetOwinContext().Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
 
-            //HttpContext.Current.GetOwinContext().Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
+                var webService = DmsResolver.Current.Get<WebAPIService>();
+                webService.DeleteUserContext(token);
+            }
+
+            
 
             return ctx;
         }
@@ -359,7 +369,7 @@ namespace DMS_WebAPI.Utilities
             var keys = _cacheContexts.Where(x => x.Value.LastUsage.AddMinutes(_TIME_OUT_MIN) <= now).Select(x => x.Key).ToArray();
             foreach (var key in keys)
             {
-                Remove(key);
+                Remove(key, removeFromBase: false);
             }
         }
 
@@ -494,6 +504,21 @@ namespace DMS_WebAPI.Utilities
             storeInfo.LastUsage = DateTime.UtcNow;
         }
 
+        private void Restore(string token)
+        {
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            var list = webService.GetUserContexts(new BL.Model.WebAPI.Filters.FilterAspNetUserContext() { TokenExact = token }).FirstOrDefault();
+
+            var clientCode = webService.GetClientCode(item.ClientId);
+            var server = webService.GetClientServer(item.ClientId);
+            if (server == null) continue;
+
+            Set(item.Token, item.UserId, item.UserName, item.IsChangePasswordRequired, clientCode);
+            Set(item.Token, server);
+            Set(item.Token, item.LoginLogId, item.LoginLogInfo);
+            SetUserPositions(item.Token, item.CurrentPositionsIdList.Split(',').Select(n => Convert.ToInt32(n)).ToList());
+        }
+
         public void Load()
         {
             var webService = DmsResolver.Current.Get<WebAPIService>();
@@ -502,7 +527,7 @@ namespace DMS_WebAPI.Utilities
             foreach (var item in list)
             {
                 var clientCode = webService.GetClientCode(item.ClientId);
-                if (string.IsNullOrEmpty( clientCode)) continue;
+                if (string.IsNullOrEmpty(clientCode)) continue;
                 var server = webService.GetClientServer(item.ClientId);
                 if (server == null) continue;
 

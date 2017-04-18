@@ -821,6 +821,91 @@ namespace DMS_WebAPI.Utilities
 
         #endregion Licences
 
+        #region ClientServers
+
+        public IEnumerable<FrontAspNetClientServer> GetClientServerList(FilterAspNetClientServer filter)
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetClientServerQuery(dbContext, filter);
+
+                var res = qry.Select(x => new FrontAspNetClientServer
+                {
+                    Id = x.Id,
+                    ClientId = x.ClientId,
+                    ServerId = x.ServerId,
+                    ClientName = x.Client.Name,
+                    ServerName = x.Server.Name,
+                }).ToList();
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        private IQueryable<AspNetClientServers> GetClientServerQuery(ApplicationDbContext dbContext, FilterAspNetClientServer filter)
+        {
+            var qry = dbContext.AspNetClientServersSet.AsQueryable();
+
+            if (filter != null)
+            {
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.New<AspNetClientServers>(false);
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.ClientIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.New<AspNetClientServers>(false);
+                    filterContains = filter.ClientIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.ClientId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.ServerIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.New<AspNetClientServers>(false);
+                    filterContains = filter.ServerIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.ServerId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+            }
+
+            return qry;
+        }
+
+        public int AddClientServer(SetClientServer model)
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var item = new AspNetClientServers
+                {
+                    ServerId = model.ServerId,
+                    ClientId = model.ClientId,
+                };
+                dbContext.AspNetClientServersSet.Add(item);
+                dbContext.SaveChanges();
+
+                transaction.Complete();
+                return item.Id;
+            }
+        }
+
+        public void DeleteClientServer(FilterAspNetClientServer filter)
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetClientServerQuery(dbContext, filter);
+                dbContext.AspNetClientServersSet.RemoveRange(qry);
+                dbContext.SaveChanges();
+                transaction.Complete();
+            }
+        }
+
+        #endregion
 
         #region UserClientServers
 
@@ -917,7 +1002,7 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        #endregion UserServers
+        #endregion
 
         #region UserFingerprint
 

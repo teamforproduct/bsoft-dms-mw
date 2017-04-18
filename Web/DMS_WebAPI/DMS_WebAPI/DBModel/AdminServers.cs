@@ -60,5 +60,8 @@ namespace DMS_WebAPI.DBModel
         [ForeignKey("ServerId")]
         public virtual ICollection<AspNetUserClientServer> ClientUsers { get; set; }
 
+        [ForeignKey("ServerId")]
+        public virtual ICollection<AspNetClientServers> ClientServers { get; set; }
+
     }
 }

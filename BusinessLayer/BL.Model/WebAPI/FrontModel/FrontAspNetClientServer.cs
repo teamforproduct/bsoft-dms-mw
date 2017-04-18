@@ -1,8 +1,4 @@
-﻿using BL.Model.Database;
-using BL.Model.SystemCore;
-using System;
-
-namespace BL.Model.WebAPI.FrontModel
+﻿namespace BL.Model.WebAPI.FrontModel
 {
     public class FrontAspNetClientServer
     {

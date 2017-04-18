@@ -9,6 +9,7 @@ namespace DMS_WebAPI.DBModel
         public AspNetClients()
         {
             this.ClientLicences = new HashSet<AspNetClientLicences>();
+            this.ClientServers = new HashSet<AspNetClientServers>();
         }
         public int Id { get; set; }
         [MaxLength(2000)]
@@ -23,5 +24,8 @@ namespace DMS_WebAPI.DBModel
 
         [ForeignKey("ClientId")]
         public virtual ICollection<AspNetClientLicences> ClientLicences { get; set; }
+
+        [ForeignKey("ClientId")]
+        public virtual ICollection<AspNetClientServers> ClientServers { get; set; }
     }
 }
