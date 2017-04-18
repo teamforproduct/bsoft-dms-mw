@@ -59,10 +59,10 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 ex = new PlanPointHasAlredyBeenLaunched();
             }
-            else if (!Model.TargetPositionId.HasValue && !Model.TargetAgentId.HasValue)
-            {
-                ex = new TaskIsNotDefined();
-            }
+            //else if (!Model.TargetPositionId.HasValue && !Model.TargetAgentId.HasValue)   //TODO Change verification
+            //{
+            //    ex = new TaskIsNotDefined();
+            //}
 
             if (Model.TargetPositionId.HasValue
                 && (_document.RestrictedSendLists?.Any() ?? false)
@@ -92,19 +92,14 @@ namespace BL.Logic.DocumentCore.Commands
         }
         public override object Execute()
         {
-            if (Model.TargetPositionId.HasValue)
-            {
-                _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
-            }
-
             _document.Subscriptions = null;
-
             if (Model.IsAddControl)
             {
                 _document.Waits=CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromSourceToSource);
             }
-            
-            Model.CloseEvent = Model.StartEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
+            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
+            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.AccessLevel, newEvent.Accesses);
+            Model.CloseEvent = Model.StartEvent = newEvent;
             CommonDocumentUtilities.SetLastChange(_context, Model);
             _document.SendLists = new List<InternalDocumentSendList> { Model };
 

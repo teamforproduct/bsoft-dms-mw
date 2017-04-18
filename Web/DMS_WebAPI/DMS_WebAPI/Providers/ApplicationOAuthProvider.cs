@@ -105,6 +105,8 @@ namespace DMS_WebAPI.Providers
                 var rememberFingerprint = GetRememberFingerprintFromBody(context.Request.Body);
                 var fingerprint = GetFingerprintFromBody(context.Request.Body);
 
+                if (string.IsNullOrEmpty(fingerprint?.Trim())) ThrowErrorGrantResourceOwnerCredentials(context, new FingerprintRequired());
+
                 if (!string.IsNullOrEmpty(answer))  // переданы расширенные параметры получения токена с ответом на секретный вопрос
                 {
                     // Проверка ответа на секретный вопрос
@@ -123,8 +125,6 @@ namespace DMS_WebAPI.Providers
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(fingerprint)) ThrowErrorGrantResourceOwnerCredentials(context, new FingerprintRequired());
-
                     if (!webService.ExistsUserFingerprints(new FilterAspNetUserFingerprint
                     {
                         UserIDs = new List<string> { user.Id },
@@ -151,6 +151,8 @@ namespace DMS_WebAPI.Providers
             //     a fragment on the redirect url, or producing an OAuth2 access code or token response.
             context.Request.Context.Authentication.SignIn(cookiesIdentity);
         }
+
+
 
         private void ThrowErrorGrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context, Exception ex)
         {

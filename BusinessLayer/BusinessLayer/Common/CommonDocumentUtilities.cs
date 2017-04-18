@@ -328,7 +328,7 @@ namespace BL.Logic.Common
         #endregion Set
 
         #region GetNew
-        public static InternalDocumentAccess GetNewDocumentAccess(IContext context, int entityTypeId, int? documentId = null, EnumDocumentAccesses? accessLevel = null, int? positionId = null)
+        public static InternalDocumentAccess GetNewDocumentAccess(IContext context, int entityTypeId, int? documentId, EnumDocumentAccesses? accessLevel = null, int? positionId = null, int? agentId = null)
         {
             var res = new InternalDocumentAccess
             {
@@ -338,18 +338,34 @@ namespace BL.Logic.Common
                 AccessLevel = accessLevel ?? EnumDocumentAccesses.PersonalRefIO,
                 IsInWork = true,
                 IsFavourite = false,
-                PositionId = positionId ?? context.CurrentPositionId
+                PositionId = positionId ?? context.CurrentPositionId,
+                AgentId = agentId,
             };
             SetLastChange(context, res);
             return res;
         }
-
-        public static IEnumerable<InternalDocumentAccess> GetNewDocumentAccesses(IContext context, int entityTypeId, int? documentId = null, EnumDocumentAccesses? accessLevel = null, int? positionId = null)
+        public static IEnumerable<InternalDocumentAccess> GetNewDocumentAccesses(IContext context, int entityTypeId, int? documentId, EnumDocumentAccesses? accessLevel = null, int? positionId = null, int? agentId = null)
         {
             return new List<InternalDocumentAccess>
             {
-                GetNewDocumentAccess(context,entityTypeId,documentId,accessLevel,positionId),
+                GetNewDocumentAccess(context,entityTypeId,documentId,accessLevel,positionId,agentId),
             };
+        }
+        public static IEnumerable<InternalDocumentAccess> GetNewDocumentAccesses(IContext context, int entityTypeId, EnumDocumentAccesses accessLevel, IEnumerable<InternalDocumentEventAccess> accesses)
+        {
+            var res = accesses.Select(x => new InternalDocumentAccess
+            {
+                DocumentId = x.DocumentId,
+                ClientId = context.CurrentClientId,
+                EntityTypeId = entityTypeId,
+                AccessLevel = accessLevel,
+                IsInWork = true,
+                IsFavourite = false,
+                PositionId = x.PositionId,
+                AgentId = x.AgentId,
+            }).ToList();
+            SetLastChange(context, res);
+            return res;
         }
 
         public static InternalDocumentEvent GetNewDocumentEvent(IContext context, InternalDocumentSendList model, EnumEventTypes? eventType = null)
@@ -1081,7 +1097,7 @@ namespace BL.Logic.Common
 
         public static List<int> GetSourcePositionsForSubordinationVeification(IContext context, InternalDocumentSendList sendList, InternalDocument document, bool isTakeSendList = false)
         {
-            var res = new List<int> { sendList.SourcePositionId };
+            var res = new List<int> { sendList.SourcePositionId.Value };
             if (document.Events?.Any() ?? false)
             {
                 res.AddRange(document.Events.Select(x => x.SourcePositionId.Value));

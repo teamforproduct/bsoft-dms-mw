@@ -153,9 +153,9 @@ namespace BL.Database.SystemDb
                     ObjectType = EnumObjects.DocumentAccesses,    //!!!сервисные цели
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
                     Filter = (x.Main.PositionId.HasValue
-                                ? (x.Main.AccessLevelId == (int)EnumAccessLevels.PersonallyAndIOAndReferents
+                                ? (x.Main.AccessLevelId == (int)EnumDocumentAccesses.PersonalRefIO
                                     ?  FullTextFilterTypes.AccessPosition30
-                                    : x.Main.AccessLevelId == (int)EnumAccessLevels.PersonallyAndReferents
+                                    : x.Main.AccessLevelId == (int)EnumDocumentAccesses.PersonalRef
                                         ? FullTextFilterTypes.AccessPosition20
                                         : FullTextFilterTypes.AccessPosition10
                                   )

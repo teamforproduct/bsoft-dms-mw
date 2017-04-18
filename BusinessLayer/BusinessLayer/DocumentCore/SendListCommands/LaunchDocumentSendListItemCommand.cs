@@ -56,10 +56,17 @@ namespace BL.Logic.DocumentCore.SendListCommands
         {
             _document = _operationDb.LaunchDocumentSendListItemPrepare(_context, Model);
             _sendList = _document?.SendLists.FirstOrDefault();
-            if (_sendList == null || !CanBeDisplayed(_sendList.SourcePositionId))
+            
+            if (_sendList == null)
             {
                 throw new CouldNotPerformOperation();
             }
+            _sendList.SourcePositionId = _sendList.AccessGroups.Where(x => x.AccessType == EnumEventAccessTypes.Source).Select(x => x.PositionId).FirstOrDefault();
+            if (!_sendList.SourcePositionId.HasValue || !CanBeDisplayed(_sendList.SourcePositionId.Value))
+            {
+                throw new CouldNotPerformOperation();
+            }
+
             _context.SetCurrentPosition(_sendList.SourcePositionId);
             _admin.VerifyAccess(_context, CommandType);
 
