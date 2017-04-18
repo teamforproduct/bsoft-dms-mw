@@ -9,5 +9,6 @@ namespace BL.Logic.SystemServices.TempStorage
         object GetStoreObject(int objectId);
         object ExtractStoreObject(EnumObjects ownerType, int ownerId, int objectId);
         object ExtractStoreObject(int objectId);
+        void RemoveStoreObject(int objectId);
     }
 }

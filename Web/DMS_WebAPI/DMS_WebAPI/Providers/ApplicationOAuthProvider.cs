@@ -74,16 +74,17 @@ namespace DMS_WebAPI.Providers
         {
             string clientCode = GetClientCodeFromBody(context.Request.Body);
             // код клиента - обязательный параметр
-            if (string.IsNullOrEmpty(clientCode)) throw new ClientRequired();
+            if (string.IsNullOrEmpty(clientCode?.Trim())) throw new ClientRequired();
 
             // Если передали несуществующие код клиента. дальше не пускаю
             var webService = DmsResolver.Current.Get<WebAPIService>();
             if (!webService.ExistsClients(new FilterAspNetClients { Code = clientCode })) throw new ClientIsNotFound(); // TODO может тут нужен ThrowErrorGrantResourceOwnerCredentials - не знаю - и зачем не понимаю
 
+            // проверить принадлежность пользователя к клиенту
+            if (!webService.ExistsUser(context.UserName, clientCode)) throw new UserIsNotDefined();
+
             // Нахожу пользователя по логину и паролю
             ApplicationUser user = await webService.GetUser(context.UserName, context.Password);
-
-            // TODO проверить принадлежность пользователя к клиенту
 
             //context.SetError("invalid_grant", new UserNameOrPasswordIsIncorrect().Message); return;
             // Эта штука возвращает в респонсе {"error":"invalid_grant","error_description":"Привет!!"} - на фронте всплывает красный тостер с error_description
@@ -105,6 +106,8 @@ namespace DMS_WebAPI.Providers
                 var rememberFingerprint = GetRememberFingerprintFromBody(context.Request.Body);
                 var fingerprint = GetFingerprintFromBody(context.Request.Body);
 
+                if (string.IsNullOrEmpty(fingerprint?.Trim())) ThrowErrorGrantResourceOwnerCredentials(context, new FingerprintRequired());
+
                 if (!string.IsNullOrEmpty(answer))  // переданы расширенные параметры получения токена с ответом на секретный вопрос
                 {
                     // Проверка ответа на секретный вопрос
@@ -123,8 +126,6 @@ namespace DMS_WebAPI.Providers
                 }
                 else
                 {
-                    if (string.IsNullOrEmpty(fingerprint)) ThrowErrorGrantResourceOwnerCredentials(context, new FingerprintRequired());
-
                     if (!webService.ExistsUserFingerprints(new FilterAspNetUserFingerprint
                     {
                         UserIDs = new List<string> { user.Id },
@@ -151,6 +152,8 @@ namespace DMS_WebAPI.Providers
             //     a fragment on the redirect url, or producing an OAuth2 access code or token response.
             context.Request.Context.Authentication.SignIn(cookiesIdentity);
         }
+
+
 
         private void ThrowErrorGrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context, Exception ex)
         {

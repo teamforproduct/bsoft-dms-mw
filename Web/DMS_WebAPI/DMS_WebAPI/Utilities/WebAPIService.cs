@@ -101,6 +101,14 @@ namespace DMS_WebAPI.Utilities
             return await GetUserByIdAsync(userId);
         }
 
+        public bool ExistsUser(string userName, string clientCode)
+        {
+            var clientId = GetClientId(clientCode);
+
+            return ExistsUser(userName, clientId);
+
+        }
+
         public bool ExistsUser(string userName, int clientId)
         {
             var user = GetUser(userName);
@@ -314,11 +322,11 @@ namespace DMS_WebAPI.Utilities
             if (user == null) throw new UserIsNotDefined();
 
             var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpStore = DmsResolver.Current.Get<ITempStorageService>();
 
             if (model.ImageId.HasValue)
             {
-                var tmpStore = DmsResolver.Current.Get<ITempStorageService>();
-                var avaFile = tmpStore.ExtractStoreObject(model.ImageId.Value);
+                var avaFile = tmpStore.GetStoreObject(model.ImageId.Value);
                 if (avaFile is string)
                 {
                     model.PostedFileData = avaFile as string;
@@ -333,6 +341,10 @@ namespace DMS_WebAPI.Utilities
                 ChangeLockoutAgentUserAsync(context, new ChangeLockoutAgentUser { IsLockout = model.IsActive, Id = model.Id, IsKillSessions = true });
             }
 
+            if (model.ImageId.HasValue)
+            {
+                tmpStore.RemoveStoreObject(model.ImageId.Value);
+            }
 
             return model.Id;
         }
@@ -427,7 +439,7 @@ namespace DMS_WebAPI.Utilities
                 // http://docum.ostrean.com/restore-password
                 var uri = new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "restore-password").ToString();
 
-                RestorePasswordAgentUserAsync(tmp, uri, null, "Ostrean. Приглашение", RenderPartialView.RestorePasswordAgentUserVerificationEmail);
+                RestorePasswordAgentUserAsync(tmp, uri, null, "Ostrean. Приглашение");
             }
 
             else
@@ -786,7 +798,7 @@ namespace DMS_WebAPI.Utilities
 
         }
 
-        public async Task RestorePasswordAgentUserAsync(RestorePasswordAgentUser model, string baseUrl, NameValueCollection query, string emailSubject, string renderPartialView)
+        public async Task RestorePasswordAgentUserAsync(RestorePasswordAgentUser model, string baseUrl, NameValueCollection query, string emailSubject)
         {
             if (query == null) query = new NameValueCollection();
 
@@ -814,8 +826,18 @@ namespace DMS_WebAPI.Utilities
             // сылка на восстановление пароля
             string callbackurl = builder.ToString();
 
+            var m = new WelcomeEmailModel()
+            {
+                CabinetUrl = "ostrean.com/cabinet",
+                ClientUrl = callbackurl,
+                OstreanEmail = "info@ostrean.com",
+                SpamUrl = "noreplay@ostrean.com",
+                UserEmail = user.Email,
+                UserName = user.UserName,
+            };
+
             // html с подставленной ссылкой
-            var htmlContent = callbackurl.RenderPartialViewToString(renderPartialView);
+            var htmlContent = m.RenderPartialViewToString(RenderPartialView.WelcomeEmail);
 
 
             var db = GetClientServer(model.ClientCode);
@@ -1086,6 +1108,11 @@ namespace DMS_WebAPI.Utilities
         public void DeleteUserContext(string token)
         {
             _webDb.DeleteUserContext(token);
+        }
+
+        public int GetClientId(string clientCode)
+        {
+            return _webDb.GetClientId(clientCode);
         }
 
         public string GetClientCode(int clientId)

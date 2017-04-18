@@ -72,6 +72,12 @@ namespace BL.Logic.SystemServices.TempStorage
             return obj?.StoreObject;
         }
 
+        public void RemoveStoreObject(int objectId)
+        {
+            var obj = storeObjects.FirstOrDefault(x => x.Id == objectId);
+            if (obj != null) storeObjects.Remove(obj);
+        }
+
         private void OnSinchronize(object state)
         {
             storeObjects.RemoveAll(x => (DateTime.Now - x.LastUsage).TotalMinutes > timeToStore);
