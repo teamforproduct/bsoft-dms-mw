@@ -110,13 +110,23 @@ namespace BL.Database.Dictionaries
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var dbModel = DictionaryModelConverter.GetDbAgentImage(ctx, User);
-                dbContext.DictionaryAgentsSet.Attach(dbModel);
-                var entity = dbContext.Entry(dbModel);
-                entity.Property(x => x.Image).IsModified = true;
-                entity.Property(x => x.LastChangeDate).IsModified = true;
-                entity.Property(x => x.LastChangeUserId).IsModified = true;
-                dbContext.SaveChanges();
+                var dbModel = dbContext.DictionaryAgentsSet.FirstOrDefault(x => x.Id == User.Id);
+
+                if (dbModel != null)
+                {
+                    dbModel.LastChangeDate = User.LastChangeDate;
+                    dbModel.LastChangeUserId = User.LastChangeUserId;
+                    dbModel.Image = User.Image;
+                    dbContext.SaveChanges();
+
+                }
+                //var dbModel = DictionaryModelConverter.GetDbAgentImage(ctx, User);
+                //dbContext.DictionaryAgentsSet.Attach(dbModel);
+                //var entity = dbContext.Entry(dbModel);
+                //entity.Property(x => x.Image).IsModified = true;
+                //entity.Property(x => x.LastChangeDate).IsModified = true;
+                //entity.Property(x => x.LastChangeUserId).IsModified = true;
+//                dbContext.SaveChanges();
                 transaction.Complete();
             }
         }

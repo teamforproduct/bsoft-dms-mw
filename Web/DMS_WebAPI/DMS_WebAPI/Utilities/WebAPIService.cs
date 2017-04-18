@@ -314,11 +314,11 @@ namespace DMS_WebAPI.Utilities
             if (user == null) throw new UserIsNotDefined();
 
             var tmpItem = DmsResolver.Current.Get<IDictionaryService>();
+            var tmpStore = DmsResolver.Current.Get<ITempStorageService>();
 
             if (model.ImageId.HasValue)
             {
-                var tmpStore = DmsResolver.Current.Get<ITempStorageService>();
-                var avaFile = tmpStore.ExtractStoreObject(model.ImageId.Value);
+                var avaFile = tmpStore.GetStoreObject(model.ImageId.Value);
                 if (avaFile is string)
                 {
                     model.PostedFileData = avaFile as string;
@@ -333,6 +333,10 @@ namespace DMS_WebAPI.Utilities
                 ChangeLockoutAgentUserAsync(context, new ChangeLockoutAgentUser { IsLockout = model.IsActive, Id = model.Id, IsKillSessions = true });
             }
 
+            if (model.ImageId.HasValue)
+            {
+                tmpStore.RemoveStoreObject(model.ImageId.Value);
+            }
 
             return model.Id;
         }
