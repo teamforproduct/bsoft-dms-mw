@@ -355,9 +355,9 @@ namespace DMS_WebAPI.Utilities
 
             var user = new ApplicationUser()
             {
-                UserName = userName.Trim(),
-                Email = userEmail.Trim(),
-                PhoneNumber = userPhone.Trim(),
+                UserName = userName?.Trim(),
+                Email = userEmail?.Trim(),
+                PhoneNumber = userPhone?.Trim(),
                 IsChangePasswordRequired = true,
                 IsEmailConfirmRequired = true,
                 CreateDate = now,

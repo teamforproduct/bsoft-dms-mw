@@ -83,6 +83,8 @@ namespace DMS_WebAPI.Providers
             // Нахожу пользователя по логину и паролю
             ApplicationUser user = await webService.GetUser(context.UserName, context.Password);
 
+            // TODO проверить принадлежность пользователя к клиенту
+
             //context.SetError("invalid_grant", new UserNameOrPasswordIsIncorrect().Message); return;
             // Эта штука возвращает в респонсе {"error":"invalid_grant","error_description":"Привет!!"} - на фронте всплывает красный тостер с error_description
             // Эта штука доступна только в OAuthGrantResourceOwnerCredentialsContext в OAuthTokenEndpointResponseContext я ее уже не обнаружил
