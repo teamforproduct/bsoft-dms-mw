@@ -101,6 +101,14 @@ namespace DMS_WebAPI.Utilities
             return await GetUserByIdAsync(userId);
         }
 
+        public bool ExistsUser(string userName, string clientCode)
+        {
+            var clientId = GetClientId(clientCode);
+
+            return ExistsUser(userName, clientId);
+
+        }
+
         public bool ExistsUser(string userName, int clientId)
         {
             var user = GetUser(userName);
@@ -1100,6 +1108,11 @@ namespace DMS_WebAPI.Utilities
         public void DeleteUserContext(string token)
         {
             _webDb.DeleteUserContext(token);
+        }
+
+        public int GetClientId(string clientCode)
+        {
+            return _webDb.GetClientId(clientCode);
         }
 
         public string GetClientCode(int clientId)
