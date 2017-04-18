@@ -83,7 +83,7 @@ namespace DMS_WebAPI.ControllersV3.System
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ITempStorageService>();
-                tmpService.ExtractStoreObject(Id);
+                tmpService.RemoveStoreObject(Id);
                 var tmpItem = new FrontDeleteModel(Id);
                 var res = new JsonResult(tmpItem, this);
                 return res;
