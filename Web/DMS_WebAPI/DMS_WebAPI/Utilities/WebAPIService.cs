@@ -551,7 +551,11 @@ namespace DMS_WebAPI.Utilities
 
                 // Линкую клиента на лицензию
 
-
+                _webDb.AddClientServer(new SetClientServer
+                {
+                    ClientId = model.ClientId,
+                    ServerId = server.Id,
+                });
 
 
                 // Создаю первого пользователя
@@ -642,6 +646,8 @@ namespace DMS_WebAPI.Utilities
                 _webDb.DeleteClientLicence(new FilterAspNetClientLicences { ClientIds = clients });
 
                 DeleteUsersInClient(Id, null);
+
+                _webDb.DeleteClientServer(new FilterAspNetClientServer { ClientIDs = clients });
 
                 _webDb.DeleteClient(Id);
 
@@ -1077,10 +1083,8 @@ namespace DMS_WebAPI.Utilities
                 Token = context.CurrentEmployee.Token,
                 ClientId = context.CurrentClientId,
                 CurrentPositionsIdList = string.Join(",", context.CurrentPositionsIdList),
-                DatabaseId = context.CurrentDB.Id,
                 IsChangePasswordRequired = context.IsChangePasswordRequired,
                 UserId = context.CurrentEmployee.UserId,
-                UserName = context.UserName,
                 LoginLogId = context.LoginLogId,
                 LoginLogInfo = context.LoginLogInfo,
                 LastChangeDate = DateTime.UtcNow,

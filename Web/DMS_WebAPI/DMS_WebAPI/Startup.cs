@@ -39,11 +39,6 @@ namespace DMS_WebAPI
 
             var dbs = dbProc.GetServersByAdminContext(new FilterAdminServers { ServerTypes = new List<EnumDatabaseType> { EnumDatabaseType.SQLServer } });
 
-#if !DEBUG
-            var userContexts = DmsResolver.Current.Get<UserContexts>();
-            userContexts.Load();
-#endif
-
 
 //#if !DEBUG
             // Сервис бекграундной обработки задач/экшенов/команд. 

@@ -31,7 +31,7 @@ using System.Linq;
 
 namespace BL.Database.Admins
 {
-    public class AdminsDbProcess : CoreDb.CoreDb//, IAdminsDbProcess
+    public class AdminsDbProcess : CoreDb.CoreDb
     {
         private readonly ICacheService _cacheService;
 
@@ -84,14 +84,6 @@ namespace BL.Database.Admins
                     PermissionId = x.PermissionId
                 }).ToList();
 
-                // pss Таблица подлежит удалению - пустая
-                //res.ActionAccess = dbContext.AdminRoleActionsSet.Where(x => x.Role.ClientId == ctx.CurrentClientId).Select(x => new InternalAdminRoleAction
-                //{
-                //    Id = x.Id,
-                //    RecordId = x.RecordId,
-                //    RoleId = x.RoleId,
-                //    ActionId = x.ActionId
-                //}).ToList();
                 transaction.Complete();
                 return res;
             }

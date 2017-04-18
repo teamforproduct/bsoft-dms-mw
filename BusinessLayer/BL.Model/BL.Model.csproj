@@ -649,6 +649,7 @@
     <Compile Include="Users\ChangePasswordAgentUser.cs" />
     <Compile Include="Users\Employee.cs" />
     <Compile Include="Users\CurrentPosition.cs" />
+    <Compile Include="WebAPI\Filters\FilterAspNetClientServer.cs" />
     <Compile Include="WebAPI\Filters\FilterAspNetLicences.cs" />
     <Compile Include="WebAPI\Filters\FilterAspNetClientServers.cs" />
     <Compile Include="WebAPI\Filters\FilterAspNetClients.cs" />
@@ -668,6 +669,7 @@
     <Compile Include="WebAPI\FrontModel\FrontAspNetUserControlQuestion.cs" />
     <Compile Include="WebAPI\FrontModel\FrontAspNetUserClientServer.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetUserControlQuestion.cs" />
+    <Compile Include="WebAPI\IncomingModel\SetClientServer.cs" />
     <Compile Include="WebAPI\IncomingModel\SetUserLanguage.cs" />
     <Compile Include="WebAPI\IncomingModel\UserAuth.cs" />
     <Compile Include="WebAPI\IncomingModel\AddAspNetClient.cs" />
