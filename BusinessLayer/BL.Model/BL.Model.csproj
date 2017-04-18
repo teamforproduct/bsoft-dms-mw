@@ -155,6 +155,7 @@
     <Compile Include="Common\AutocompleteItem.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgentPeoples.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgentUsers.cs" />
+    <Compile Include="DictionaryCore\FrontModel\FrontRoles.cs" />
     <Compile Include="DictionaryCore\IncomingModel\AddEmployeeInOrg.cs" />
     <Compile Include="DictionaryCore\InternalModel\SortPositoin.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentEventAccess.cs" />

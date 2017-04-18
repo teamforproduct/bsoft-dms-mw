@@ -454,13 +454,15 @@ namespace DMS_WebAPI.Utilities
 
         private void DeleteUsersInClient(int clientId, List<string> userIDs)
         {
-            if (userIDs?.Count() == 0)
+            if (userIDs == null)
             {
                 // запоминаю пользователей клиента, которых потенциально нужно удалить
                 userIDs = _webDb.GetUserClientServerList(new FilterAspNetUserClientServer { ClientIDs = new List<int> { clientId } }).Select(x => x.UserId).ToList();
             };
 
-            using (var transaction = Transactions.GetTransaction())
+            if (userIDs.Count() == 0) return;
+
+            //using (var transaction = Transactions.GetTransaction())
             {
                 // Удаляю связи пользователя с клиентом
                 _webDb.DeleteUserClientServer(new FilterAspNetUserClientServer
@@ -489,7 +491,7 @@ namespace DMS_WebAPI.Utilities
                     }
                 }
 
-                transaction.Complete();
+                //transaction.Complete();
             }
         }
 
@@ -623,14 +625,15 @@ namespace DMS_WebAPI.Utilities
             var clientService = DmsResolver.Current.Get<IClientService>();
             clientService.Delete(ctx);
 
-            using (var transaction = Transactions.GetTransaction())
+            //using (var transaction = Transactions.GetTransaction())
             {
                 _webDb.DeleteClientLicence(new FilterAspNetClientLicences { ClientIds = clients });
-                _webDb.DeleteClient(Id);
 
                 DeleteUsersInClient(Id, null);
 
-                transaction.Complete();
+                _webDb.DeleteClient(Id);
+
+                //transaction.Complete();
             }
 
 

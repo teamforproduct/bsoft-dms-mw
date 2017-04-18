@@ -157,7 +157,7 @@ namespace BL.Logic.ClientCore
                 _DictDb.DeleteDepartments(context, null);
                 _DictDb.DeleteAgentOrg(context, null);
 
-
+                // Перед удалением агентов нужно удалить логи
                 _SystemDb.DeleteSystemLogs(context, null);
                 _SystemDb.DeleteSystemSearchQueryLogs(context, null);
                 _SystemDb.DeleteSystemSettings(context);
@@ -181,6 +181,9 @@ namespace BL.Logic.ClientCore
                 _DictDb.DeleteAgents(context, null);
 
                 _FTextDb.Delete(context, context.CurrentClientId);
+
+                // Удаляю, то что накопилось во время удаленя агентов
+                _SystemDb.DeleteSystemLogs(context, null);
 
                 transaction.Complete();
             }
