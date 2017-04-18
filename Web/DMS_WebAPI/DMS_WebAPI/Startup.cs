@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Helpers;
 using BL.Logic.SystemServices.AutoPlan;
 using BL.Logic.SystemServices.ClearTrashDocuments;
 using BL.Logic.SystemServices.FullTextSearch;
@@ -20,27 +21,36 @@ namespace DMS_WebAPI
     {
         public void Configuration(IAppBuilder app)
         {
+            var filePath = HttpContext.Current.Server.MapPath("~/SiteErrors.txt");
+
+            FileLogger.AppendTextToFile("STARTUP BEGIN!!!", filePath);
+
             ApplicationDbContext.CreateDatabaseIfNotExists();
 
             // configuring authentication
+            FileLogger.AppendTextToFile("ConfigureAuth", filePath);
             ConfigureAuth(app);
+            
             // Проверка на целостность Actions в процедуре импорта 
             //var systemService = DmsResolver.Current.Get<ISystemService>();
             Properties.Settings.Default["ServerPath"] = HttpContext.Current.Server.MapPath("~/");
             Properties.Settings.Default.Save();
             // Проверка на целостность переводов
+            FileLogger.AppendTextToFile("CheckLanguages", filePath);
             ApplicationDbImportData.CheckLanguages();
+            
 
-
-        //Database.SetInitializer(new CreateDatabaseIfNotExists<ApplicationDbContext>());
-        //var tt = Database.Exists("DefaultConnection");
+            //Database.SetInitializer(new CreateDatabaseIfNotExists<ApplicationDbContext>());
+            //var tt = Database.Exists("DefaultConnection");
 
             var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
 
+            FileLogger.AppendTextToFile("GetServersByAdminContext", filePath);
             var dbs = dbProc.GetServersByAdminContext(new FilterAdminServers { ServerTypes = new List<EnumDatabaseType> { EnumDatabaseType.SQLServer } });
 
 
-//#if !DEBUG
+            FileLogger.AppendTextToFile("StartWorkers", filePath);
+            //#if !DEBUG
             // Сервис бекграундной обработки задач/экшенов/команд. 
             var queueWorker = DmsResolver.Current.Get<IQueueWorkerService>();
             queueWorker.Initialize(dbs);
@@ -85,6 +95,8 @@ namespace DMS_WebAPI
             var licencesService = DmsResolver.Current.Get<LicencesWorkerService>();
             licencesService.Initialize();
 #endif
+
+            FileLogger.AppendTextToFile("STARTUP END!!!", filePath);
         }
     }
 }
