@@ -2901,6 +2901,27 @@ namespace BL.Database.Documents
                                         }
                                     }
                     }).FirstOrDefault();
+                if (doc?.SendLists?.Any() ?? false)
+                {
+                    var sendLists = doc?.SendLists.First();
+                    sendLists.AccessGroups = dbContext.DocumentSendListAccessGroupsSet.Where(x => x.ClientId == context.CurrentClientId)
+                         .Where(x => x.DocumentId == id)
+                         .Select(x => new InternalDocumentSendListAccessGroup
+                         {
+                             Id = x.Id,
+                             ClientId = x.ClientId,
+                             EntityTypeId = x.EntityTypeId,
+                             DocumentId = x.DocumentId,
+                             SendListId = x.SendListId,
+                             AccessGroupType = (EnumEventAccessGroupTypes)x.AccessGroupTypeId,
+                             AccessType = (EnumEventAccessTypes)x.AccessTypeId,
+                             AgentId = x.AgentId,
+                             CompanyId = x.CompanyId,
+                             DepartmentId = x.DepartmentId,
+                             PositionId = x.PositionId,
+                             StandartSendListId = x.StandartSendListId,
+                         }).ToList();
+                }
                 transaction.Complete();
                 return doc;
 

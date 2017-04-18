@@ -341,7 +341,7 @@ namespace BL.Database.Common
                     CloseEventId = sendList.CloseEventId,
 
                     SourceAgentId = sendList.SourceAgentId,
-                    SourcePositionId = sendList.SourcePositionId,
+                    //SourcePositionId = sendList.SourcePositionId,
                     SourcePositionExecutorAgentId = sendList.SourcePositionExecutorAgentId,
                     SourcePositionExecutorTypeId = sendList.SourcePositionExecutorTypeId,
                     TargetAgentId = sendList.TargetAgentId,

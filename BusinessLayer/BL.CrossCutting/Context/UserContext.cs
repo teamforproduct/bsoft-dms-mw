@@ -180,9 +180,9 @@ namespace BL.CrossCutting.Context
         {
             return CurrentPositionsAccessLevel
                         .Select(x => $"{x.Key}{FullTextFilterTypes.AccessPosition30}{addFilter}")
-                        .Concat(CurrentPositionsAccessLevel.Where(x => x.Value <= (int)EnumAccessLevels.PersonallyAndReferents)
+                        .Concat(CurrentPositionsAccessLevel.Where(x => x.Value <= (int)EnumDocumentAccesses.PersonalRef)
                         .Select(x => $"{x.Key}{FullTextFilterTypes.AccessPosition20}{addFilter}"))
-                        .Concat(CurrentPositionsAccessLevel.Where(x => x.Value <= (int)EnumAccessLevels.Personally)
+                        .Concat(CurrentPositionsAccessLevel.Where(x => x.Value <= (int)EnumDocumentAccesses.Personal)
                         .Select(x => $"{x.Key}{FullTextFilterTypes.AccessPosition10}{addFilter}"))
                         .ToList();
         }

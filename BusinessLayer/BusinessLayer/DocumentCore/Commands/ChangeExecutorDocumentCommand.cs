@@ -99,7 +99,7 @@ namespace BL.Logic.DocumentCore.Commands
 
             _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.ChangeExecutor, Model.EventDate, Model.Description, null, null, Model.PositionId);
 
-            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, Model.AccessLevel, Model.PositionId);
+            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.AccessLevel, Document.Events.First().Accesses);
 
             if (Model.PaperEvents?.Any() ?? false)
             {
