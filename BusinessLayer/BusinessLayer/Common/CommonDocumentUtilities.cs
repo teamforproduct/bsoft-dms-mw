@@ -392,6 +392,7 @@ namespace BL.Logic.Common
                 CreateDate = DateTime.UtcNow,
             };
             SetLastChange(context, res);
+            SetAccessess(context, res, ConvertToAccessGroup(model.AccessGroups.ToList()), false);
             return res;
         }
 
@@ -479,6 +480,11 @@ namespace BL.Logic.Common
 
         public static InternalDocumentWait GetNewDocumentWait(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes eventType, EnumEventCorrespondentType? eventCorrespondentType = null, bool? isTakeMainDueDate = null)
         {
+            var accessess = eventCorrespondentType == EnumEventCorrespondentType.FromSourceToSource
+                            ? new List<AccessGroup> { ConvertToAccessGroup(sendListModel.AccessGroups.First(x => x.AccessType == EnumEventAccessTypes.Source)) }
+                            : eventCorrespondentType == EnumEventCorrespondentType.FromTargetToTarget
+                            ? new List<AccessGroup> { ConvertToAccessGroup(sendListModel.AccessGroups.First(x => x.AccessType == EnumEventAccessTypes.Target), EnumEventAccessTypes.Source) }
+                            : ConvertToAccessGroup (sendListModel.AccessGroups.ToList());
             var res = new InternalDocumentWait
             {
                 ClientId = context.CurrentClientId,
@@ -502,10 +508,11 @@ namespace BL.Logic.Common
                                 context, sendListModel.EntityTypeId, sendListModel.DocumentId, eventType, null,
                                 ((eventType == EnumEventTypes.ControlOn && !string.IsNullOrEmpty(sendListModel.SelfDescription)) ? sendListModel.SelfDescription : sendListModel.Description),
                                 null, sendListModel.TaskId, 
-                                eventCorrespondentType == EnumEventCorrespondentType.FromSourceToSource ? sendListModel.SourcePositionId : sendListModel.TargetPositionId,
+                                eventCorrespondentType == EnumEventCorrespondentType.FromSourceToSource ? sendListModel.SourcePositionId : sendListModel.TargetPositionId, //TODO del
                                 null,
-                                eventCorrespondentType == EnumEventCorrespondentType.FromTargetToTarget ? sendListModel.TargetPositionId : sendListModel.SourcePositionId,
-                                sendListModel.SourceAgentId
+                                eventCorrespondentType == EnumEventCorrespondentType.FromTargetToTarget ? sendListModel.TargetPositionId : sendListModel.SourcePositionId,//TODO del
+                                sendListModel.SourceAgentId,
+                                accessess
                             )
             };
             SetLastChange(context, res);
@@ -1162,6 +1169,25 @@ namespace BL.Logic.Common
                 }
                 throw ex;
             }
+        }
+
+        public static List<AccessGroup> ConvertToAccessGroup (List<InternalDocumentSendListAccessGroup> accessGroups)
+        {
+            return accessGroups.Select(x => new AccessGroup
+            {
+                AccessGroupType = x.AccessGroupType,
+                AccessType = x.AccessType,
+                RecordId = x.AgentId ?? x.CompanyId ?? x.DepartmentId ?? x.PositionId ?? x.StandartSendListId
+            }).ToList();
+        }
+        public static AccessGroup ConvertToAccessGroup(InternalDocumentSendListAccessGroup accessGroup, EnumEventAccessTypes? accessType = null)
+        {
+            return new AccessGroup
+            {
+                AccessGroupType = accessGroup.AccessGroupType,
+                AccessType = accessType ?? accessGroup.AccessType,
+                RecordId = accessGroup.AgentId ?? accessGroup.CompanyId ?? accessGroup.DepartmentId ?? accessGroup.PositionId ?? accessGroup.StandartSendListId
+            };
         }
 
         #endregion Misc

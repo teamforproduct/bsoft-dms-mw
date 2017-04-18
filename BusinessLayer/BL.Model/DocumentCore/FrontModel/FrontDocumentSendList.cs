@@ -109,7 +109,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public string SendTypeName { get; set; }
         public string SendTypeCode { get; set; }
         public bool SendTypeIsImportant { get; set; }
-        public int SourceAgentId { get; set; }
+        public int? SourceAgentId { get; set; }
         public string SourcePositionName { get; set; }
         public int? SourcePositionExecutorAgentId { get; set; }
         public string SourcePositionExecutorAgentName { get; set; }

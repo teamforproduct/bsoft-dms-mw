@@ -2905,7 +2905,7 @@ namespace BL.Database.Documents
                 {
                     var sendLists = doc?.SendLists.First();
                     sendLists.AccessGroups = dbContext.DocumentSendListAccessGroupsSet.Where(x => x.ClientId == context.CurrentClientId)
-                         .Where(x => x.DocumentId == id)
+                         .Where(x => x.SendListId == id)
                          .Select(x => new InternalDocumentSendListAccessGroup
                          {
                              Id = x.Id,
