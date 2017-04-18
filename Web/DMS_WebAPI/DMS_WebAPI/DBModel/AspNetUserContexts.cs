@@ -16,15 +16,12 @@ namespace DMS_WebAPI.DBModel
 
         [MaxLength(128)]
         public string UserId { get; set; }
-        // Убрать - как только восстановление будет по факту обращения
-        [MaxLength(256)]
-        public string UserName { get; set; }
+  
         public int ClientId { get; set; }
 
         [MaxLength(400)]
         public string CurrentPositionsIdList { get; set; }
-        // Убрать - это поле вычисляется по клиенту
-        public int DatabaseId { get; set; }
+  
         public bool IsChangePasswordRequired { get; set; }
         public int? LoginLogId { get; set; }
 

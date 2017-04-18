@@ -41,16 +41,16 @@ namespace DMS_WebAPI.Utilities
             {
                 if (!string.IsNullOrEmpty(filter.ClientCode))
                 {
-                    qry = qry.Where(x => x.ClientUsers.AsQueryable().Any(y => y.Client.Code == filter.ClientCode));
+                    qry = qry.Where(x => x.ClientServers.AsQueryable().Any(y => y.Client.Code == filter.ClientCode));
                 }
 
                 if (filter.ClientIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.New<AspNetUserClientServer>(false);
+                    var filterContains = PredicateBuilder.New<AspNetClientServers>(false);
                     filterContains = filter.ClientIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ClientId == value).Expand());
 
-                    qry = qry.Where(x => x.ClientUsers.AsQueryable().Any(filterContains));
+                    qry = qry.Where(x => x.ClientServers.AsQueryable().Any(filterContains));
                 }
 
                 if (filter.ServerIDs?.Count > 0)
@@ -111,14 +111,11 @@ namespace DMS_WebAPI.Utilities
         {
             using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                var servers = GetServersQuery(dbContext, filter).ToList();
-
-                // 
-                var clientServers = GetUserClientServerQuery(dbContext, null).Select(x => new { ServerId = x.ServerId, ClientId = x.ClientId }).Distinct().ToList();
+                var servers = GetServersQuery(dbContext, filter);
 
                 // перемножаю серверы на клиентов
                 var itemsRes = (from server in servers
-                                join clientServer in clientServers on server.Id equals clientServer.ServerId
+                                join clientServer in dbContext.AspNetClientServersSet on server.Id equals clientServer.ServerId
                                 select new
                                 {
                                     Server = server,

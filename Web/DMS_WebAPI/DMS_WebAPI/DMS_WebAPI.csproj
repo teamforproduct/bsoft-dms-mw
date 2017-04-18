@@ -398,6 +398,7 @@
     <Compile Include="Controllers\WebAPI\ClientLicencesController.cs" />
     <Compile Include="Controllers\WebAPI\ServersController.cs" />
     <Compile Include="DatabaseContext\ApplicationDbImportData.cs" />
+    <Compile Include="DBModel\AspNetClientServers.cs" />
     <Compile Include="DBModel\AspNetUserContexts.cs" />
     <Compile Include="DBModel\AspNetUserClientServer.cs" />
     <Compile Include="DBModel\SystemControlQuestions.cs" />
@@ -419,6 +420,10 @@
     <Compile Include="Migrations\201704151030180_UserClientServer_Unique.cs" />
     <Compile Include="Migrations\201704151030180_UserClientServer_Unique.Designer.cs">
       <DependentUpon>201704151030180_UserClientServer_Unique.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704182042103_ClientServers.cs" />
+    <Compile Include="Migrations\201704182042103_ClientServers.Designer.cs">
+      <DependentUpon>201704182042103_ClientServers.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
@@ -604,6 +609,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201704151030180_UserClientServer_Unique.resx">
       <DependentUpon>201704151030180_UserClientServer_Unique.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704182042103_ClientServers.resx">
+      <DependentUpon>201704182042103_ClientServers.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
