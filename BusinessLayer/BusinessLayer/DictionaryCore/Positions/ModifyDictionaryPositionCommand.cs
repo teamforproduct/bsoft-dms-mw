@@ -1,13 +1,13 @@
-﻿using BL.CrossCutting.Helpers;
+﻿using System.Collections.Generic;
+using System.Linq;
+using BL.CrossCutting.Helpers;
 using BL.Logic.Common;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
-using System.Collections.Generic;
-using System.Linq;
 
-namespace BL.Logic.DictionaryCore
+namespace BL.Logic.DictionaryCore.Positions
 {
     public class ModifyDictionaryPositionCommand : BaseDictionaryPositionCommand
     {
