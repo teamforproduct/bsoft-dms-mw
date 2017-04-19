@@ -15,6 +15,9 @@ using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.WebAPI.IncomingModel;
 using Ninject;
 using Ninject.Parameters;
+using BL.Model.Enums;
+using BL.Model.SystemCore.Filters;
+using DMS_WebAPI.Providers;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -195,6 +198,7 @@ namespace DMS_WebAPI.Utilities
                 throw new UserAccessIsDenied();
             }
 
+
             KeepAlive(token);
 
         }
@@ -204,10 +208,10 @@ namespace DMS_WebAPI.Utilities
         /// Добавляет к существующему пользовательскому контексту информации по логу
         /// </summary>
         /// <param name="token">new server parameters</param>
-        /// <param name="loginLogId">clientId</param>
-        /// <param name="loginLogInfo">clientId</param>
+        /// <param name="browberInfo">clientId</param>
+        /// <param name="fingerPrint">clientId</param>
         /// <returns></returns>
-        public void Set(string token, int? loginLogId, string loginLogInfo)
+        public void Set(string token, string browberInfo, string fingerPrint, bool IsRestore = false)
         {
             token = token.ToLower();
 
@@ -215,8 +219,21 @@ namespace DMS_WebAPI.Utilities
 
             var context = GetInternal(token);
 
-            context.LoginLogId = loginLogId;
-            context.LoginLogInfo = loginLogInfo;
+            var logger = DmsResolver.Current.Get<ILogger>();
+
+            context.LoginLogInfo = IsRestore ? "Restore Session; " : "" + browberInfo;
+            context.LoginLogId = logger.Information(context, context.LoginLogInfo, (int)EnumObjects.System, (int)EnumSystemActions.Login, logDate: context.CreateDate, isCopyDate1: true);
+
+            if (!string.IsNullOrEmpty(fingerPrint))
+                logger.DeleteSystemLogs(context, new FilterSystemLog
+                {
+                    ObjectIDs = new List<int> { (int)EnumObjects.System },
+                    ActionIDs = new List<int> { (int)EnumSystemActions.Login },
+                    LogLevels = new List<int> { (int)EnumLogTypes.Error },
+                    ExecutorAgentIDs = new List<int> { context.CurrentAgentId },
+                    LogDateFrom = DateTime.UtcNow.AddMinutes(-60),
+                    ObjectLog = $"\"FingerPrint\":\"{fingerPrint}\"",
+                });
 
             KeepAlive(token);
         }
@@ -524,14 +541,19 @@ namespace DMS_WebAPI.Utilities
 
             if (user == null) return;
 
+            // Получаю информацию о браузере
+            var message = HttpContext.Current.Request.Browser.Info();
+
+            var fingerPrint = HttpContext.Current.Request.InputStream.GetFingerprint();
+
 
             // Залипуха от многопоточности. Пока ныряли в базу другой поток уже мог начать восстанавливать контекст
             // TODO - это нужно решать по правильному
             if (Contains(token)) return;
 
-            Set(item.Token, item.UserId, user.UserName, item.IsChangePasswordRequired, clientCode);
+            Set(item.Token, item.UserId, user.UserName, user.IsChangePasswordRequired, clientCode);
             Set(item.Token, server);
-            Set(item.Token, item.LoginLogId, item.LoginLogInfo);
+            Set(item.Token, message, fingerPrint, true);
             SetUserPositions(item.Token, item.CurrentPositionsIdList.Split(',').Select(n => Convert.ToInt32(n)).ToList());
         }
 
