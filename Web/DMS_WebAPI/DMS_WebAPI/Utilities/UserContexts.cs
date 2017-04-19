@@ -520,6 +520,11 @@ namespace DMS_WebAPI.Utilities
 
             if (user == null) return;
 
+
+            // Залипуха от многопоточности. Пока ныряли в базу другой поток уже мог начать восстанавливать контекст
+            // TODO - это нужно решать по правильному
+            if (Contains(token)) return;
+
             Set(item.Token, item.UserId, user.UserName, item.IsChangePasswordRequired, clientCode);
             Set(item.Token, server);
             Set(item.Token, item.LoginLogId, item.LoginLogInfo);
