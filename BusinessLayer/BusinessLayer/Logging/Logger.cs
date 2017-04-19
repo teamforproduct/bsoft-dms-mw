@@ -260,7 +260,8 @@ namespace BL.Logic.Logging
             int loggerLevel = 0;//TODO Get it from settings
             if ((int)info.LogType >= loggerLevel)
             {
-                info.Date = DateTime.UtcNow;
+                if (!info.Date.HasValue)
+                    info.Date = DateTime.UtcNow;
                 if (info.IsCopyDate1 && !info.Date1.HasValue)
                 {
                     info.Date1 = info.Date;
@@ -283,7 +284,7 @@ namespace BL.Logic.Logging
             });
         }
 
-        public int? Information(IContext ctx, string message, int? objectId = null, int? actionId = null, int? recordId = null, object logObject = null, bool isCopyDate1 = false)
+        public int? Information(IContext ctx, string message, int? objectId = null, int? actionId = null, int? recordId = null, object logObject = null, DateTime? logDate = null, bool isCopyDate1 = false)
         {
             var js = new JavaScriptSerializer();
             var frontObjJson = logObject != null ? js.Serialize(logObject) : null;
@@ -296,6 +297,7 @@ namespace BL.Logic.Logging
                 RecordId = recordId,
                 LogObject = frontObjJson,
                 LogTrace = (logObject != null ? logObject.GetType().ToString() : null),
+                Date = logDate,
                 IsCopyDate1 = isCopyDate1,
             });
         }

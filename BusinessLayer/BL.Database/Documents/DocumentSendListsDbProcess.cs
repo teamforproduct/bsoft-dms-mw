@@ -103,6 +103,7 @@ namespace BL.Database.Documents
                 {
                     AccessType = (EnumEventAccessTypes)y.AccessTypeId,
                     AccessGroupType = (EnumEventAccessGroupTypes)y.AccessGroupTypeId,
+                    RecordId = y.AgentId ?? y.CompanyId ?? y.DepartmentId ?? y.PositionId ?? y.StandartSendListId,
                     Name = y.Agent.Name ?? y.Company.Agent.Name ?? y.Department.Name ?? y.Position.Name ?? y.StandartSendList.Name,
                 }).ToList(),
             }).ToList();

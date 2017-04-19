@@ -599,7 +599,7 @@ namespace BL.Database.SystemDb
                 {
                     ClientId = log.ClientId,
                     ExecutorAgentId = log.AgentId,
-                    LogDate = log.Date,
+                    LogDate = log.Date.Value,
                     LogDate1 = log.Date1,
                     LogLevel = (int)log.LogType,
                     LogException = log.LogException.Truncate(2000),

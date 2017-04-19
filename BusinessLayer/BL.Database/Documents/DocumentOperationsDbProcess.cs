@@ -499,6 +499,7 @@ namespace BL.Database.Documents
                 item.Accesses = dbContext.DocumentEventAccessesSet.Where(x => x.EventId == item.Id).Select(y => new FrontDocumentEventAccess
                 {
                     AccessType = (EnumEventAccessTypes)y.AccessTypeId,
+                    RecordId = y.PositionId ?? y.AgentId,
                     Name = y.Agent.Name + (y.PositionExecutorType.Suffix != null ? " (" + y.PositionExecutorType.Suffix + ")" : null),
                 }).ToList();
         }
@@ -701,6 +702,7 @@ namespace BL.Database.Documents
                 {
                     AccessType = (EnumEventAccessTypes)y.AccessTypeId,
                     AccessGroupType = (EnumEventAccessGroupTypes)y.AccessGroupTypeId,
+                    RecordId = y.AgentId ?? y.CompanyId ?? y.DepartmentId ?? y.PositionId ?? y.StandartSendListId,
                     Name = y.Agent.Name ?? y.Company.Agent.Name ?? y.Department.Name ?? y.Position.Name ?? y.StandartSendList.Name,
                 }).ToList(),
             }).ToList();
