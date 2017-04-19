@@ -232,7 +232,8 @@ namespace DMS_WebAPI.Utilities
         public void SetUserPositions(string token, List<int> positionsIdList)
         {
             var context = GetInternal(token);
-            context.DbContext = DmsResolver.Current.Kernel.Get<DmsContext>(new ConstructorArgument("dbModel", context.CurrentDB));
+            var dbCtx = DmsResolver.Current.Kernel.Get<DmsContext>(new ConstructorArgument("dbModel", context.CurrentDB));
+            context.DbContext = dbCtx;
 
             context.CurrentPositionsIdList = positionsIdList;
             context.CurrentPositionsAccessLevel = DmsResolver.Current.Get<IAdminService>().GetCurrentPositionsAccessLevel(context);
@@ -244,6 +245,9 @@ namespace DMS_WebAPI.Utilities
             // Сохраняю текущий контекст
             var webService = DmsResolver.Current.Get<WebAPIService>();
             webService.SaveUserContexts(context);
+           
+            context.DbContext = null;
+            dbCtx.Dispose();
         }
 
         /// <summary>
