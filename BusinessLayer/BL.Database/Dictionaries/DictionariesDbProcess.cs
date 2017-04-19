@@ -23,6 +23,7 @@ using LinqKit;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 
 namespace BL.Database.Dictionaries
@@ -4462,6 +4463,7 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var dbModel = DictionaryModelConverter.GetDbPosition(ctx, position);
+                dbContext.CheckEntityIfExists(dbModel);
                 dbContext.DictionaryPositionsSet.Attach(dbModel);
                 //pss нельзя модифицировать поля, которые проставляет вертушка
                 //dbContext.Entry(dd).State = System.Data.Entity.EntityState.Modified;
@@ -4490,15 +4492,14 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 // Attach стал стреляться при внедрении ctx.DbContext as DmsContext;
+                var dbModel = DictionaryModelConverter.GetDbPosition(ctx, new InternalDictionaryPosition() { Id = positionId, Order = order });
+                //dbContext.DictionaryPositionsSet.Where(x => x.Id == positionId).Update(x => new DictionaryPositions { Order = order });
 
-                //var dbModel = DictionaryModelConverter.GetDbPosition(ctx, new InternalDictionaryPosition() { Id = positionId, Order = order });
-                //dbContext.DictionaryPositionsSet.Attach(dbModel);
-                //var entity = dbContext.Entry(dbModel);
-                //entity.Property(x => x.Order).IsModified = true;
+                dbContext.CheckEntityIfExists(dbModel);
+                dbContext.DictionaryPositionsSet.Attach(dbModel);
+                var entity = dbContext.Entry(dbModel);
+                entity.Property(x => x.Order).IsModified = true;
 
-                var qry = GetPositionsQuery(ctx, dbContext, new FilterDictionaryPosition { IDs = new List<int> { positionId } });
-                var dbModel = qry.FirstOrDefault();
-                dbModel.Order = order;
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryPositions, EnumOperationType.UpdateFull);
@@ -4673,7 +4674,7 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.OrderBy(x => x.DepartmentId).ThenBy(x => x.Order).ThenBy(x => x.Name);
 
-                var filterMaxSubordinationTypeContains = PredicateBuilder.New<DBModel.Admin.AdminSubordinations>(false);
+                var filterMaxSubordinationTypeContains = PredicateBuilder.New<AdminSubordinations>(false);
                 if (filter.SubordinatedPositions?.Count() > 0)
                 {
                     filterMaxSubordinationTypeContains = filter.SubordinatedPositions.Aggregate(filterMaxSubordinationTypeContains,

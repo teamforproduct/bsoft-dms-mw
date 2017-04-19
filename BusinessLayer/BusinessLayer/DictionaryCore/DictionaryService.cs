@@ -742,14 +742,14 @@ namespace BL.Logic.DictionaryCore
 
             // список должностей, которые подчиненны томуже отделу
             // сортировка Order, Name
-            List<SortPositoin> positions = (List<SortPositoin>)_dictDb.GetPositionsForSort(context,
+            var positions = (List<SortPositoin>)_dictDb.GetPositionsForSort(context,
                 new FilterDictionaryPosition
                 {
                     DepartmentIDs = new List<int> { position.DepartmentId },
                     NotContainsIDs = new List<int> { model.PositionId }
                 });
 
-            SortPositoin sp = new SortPositoin() { Id = model.PositionId, NewOrder = model.Order };
+            var sp = new SortPositoin { Id = model.PositionId, NewOrder = model.Order };
 
             if (model.Order > positions.Count)
             {
@@ -770,7 +770,9 @@ namespace BL.Logic.DictionaryCore
                 item.NewOrder = ++i;
 
                 if (item.NewOrder != item.OldOrder)
-                { _dictDb.UpdatePositionOrder(context, item.Id, item.NewOrder); }
+                {
+                    _dictDb.UpdatePositionOrder(context, item.Id, item.NewOrder); 
+                }
             }
 
         }

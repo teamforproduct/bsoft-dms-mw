@@ -1,4 +1,6 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
+using System.Data.Entity.Core.Objects.DataClasses;
 using BL.Database.DBModel.Dictionary;
 using BL.Database.DBModel.Admin;
 using BL.Database.DBModel.Document;
@@ -15,7 +17,6 @@ using BL.Model.Database;
 
 namespace BL.Database.DatabaseContext
 {
-
 
     public class DmsContext : DbContext, IDmsDatabaseContext
     {
@@ -48,6 +49,22 @@ namespace BL.Database.DatabaseContext
         {
         }
 
+
+        public bool CheckEntityIfExists<T>(T entity) where T : class
+        {
+            var objContext = ((IObjectContextAdapter)this).ObjectContext;
+            var objSet = objContext.CreateObjectSet<T>();
+            var entityKey = objContext.CreateEntityKey(objSet.EntitySet.Name, entity);
+
+            object foundEntity;
+            var exists = objContext.TryGetObjectByKey(entityKey, out foundEntity);
+
+            if (exists)
+            {
+                objContext.Detach(foundEntity);
+            }
+            return exists;
+        }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
