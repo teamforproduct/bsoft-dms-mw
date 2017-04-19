@@ -119,6 +119,19 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         }
 
         /// <summary>
+        /// Возвращако количество открытых сессий
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("RemoveSessions")]
+        public async Task<IHttpActionResult> RemoveSessions()
+        {
+            DmsResolver.Current.Get<UserContexts>().Clear();
+            return new JsonResult(null, this);
+        }
+
+
+        /// <summary>
         /// Test
         /// </summary>
         /// <returns></returns>

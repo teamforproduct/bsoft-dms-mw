@@ -94,7 +94,7 @@ namespace DMS_WebAPI
             licencesService.Initialize();
 #endif
 
-            FileLogger.AppendTextToFile("STARTUP END!!! " + DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC", filePath);
+            FileLogger.AppendTextToFile("STARTUP END!!! " + DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC\r\n", filePath);
         }
     }
 }
