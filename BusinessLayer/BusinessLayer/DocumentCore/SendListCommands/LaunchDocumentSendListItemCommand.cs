@@ -62,6 +62,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
                 throw new CouldNotPerformOperation();
             }
             _sendList.SourcePositionId = _sendList.AccessGroups.Where(x => x.AccessType == EnumEventAccessTypes.Source).Select(x => x.PositionId).FirstOrDefault();
+            _sendList.TargetPositionId = _sendList.AccessGroups.Where(x => x.AccessType == EnumEventAccessTypes.Target).Select(x => x.PositionId).FirstOrDefault();
             if (!_sendList.SourcePositionId.HasValue || !CanBeDisplayed(_sendList.SourcePositionId.Value))
             {
                 throw new CouldNotPerformOperation();

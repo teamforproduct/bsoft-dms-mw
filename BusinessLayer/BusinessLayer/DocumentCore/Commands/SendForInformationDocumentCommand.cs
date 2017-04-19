@@ -93,15 +93,16 @@ namespace BL.Logic.DocumentCore.Commands
         public override object Execute()
         {
             _document.Subscriptions = null;
-            if (Model.IsAddControl)
-            {
-                _document.Waits=CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromSourceToSource);
-            }
-            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
+
+            var newEvent = Model.CloseEvent = Model.StartEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.AccessLevel, newEvent.Accesses);
-            Model.CloseEvent = Model.StartEvent = newEvent;
             CommonDocumentUtilities.SetLastChange(_context, Model);
             _document.SendLists = new List<InternalDocumentSendList> { Model };
+
+            if (Model.IsAddControl)
+            {
+                _document.Waits = CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromSourceToSource);
+            }
 
             _operationDb.SendBySendList(_context, _document);
 

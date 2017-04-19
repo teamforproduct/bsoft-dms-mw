@@ -63,7 +63,7 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 ex = new PlanPointHasAlredyBeenLaunched();
             }
-            else if (!Model.TargetPositionId.HasValue)
+            else if (!Model.TargetPositionId.HasValue || Model.AccessGroups.Count(x => x.AccessType == EnumEventAccessTypes.Target) > 1)
             {
                 ex = new TargetIsNotDefined();
             }
@@ -106,7 +106,7 @@ namespace BL.Logic.DocumentCore.Commands
         }
         public override object Execute()
         {
-            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
+            //_document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
             //var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, _eventType, EnumEventCorrespondentType.FromTargetToTarget);
             //_document.Waits = new List<InternalDocumentWait> { waitTarget };
 
@@ -118,21 +118,22 @@ namespace BL.Logic.DocumentCore.Commands
 
             _document.Subscriptions = null;
 
-            Model.CloseEvent = Model.StartEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
+            var newEvent = Model.CloseEvent = Model.StartEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
+            CommonDocumentUtilities.SetLastChange(_context, Model);
+            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.AccessLevel, newEvent.Accesses);
+            _document.SendLists = new List<InternalDocumentSendList> { Model };
 
-            var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromTargetToTarget, true);
-
+            var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromTargetToTarget, true, true); //TODO ? Can present copy
             waitTarget.OnEvent.AddDescription = $"##l@TaskExecutor:Initiator@l## - {Model.InitiatorPositionExecutorAgentName}({Model.InitiatorPositionName})";
-
-            ((List<InternalDocumentWait>)_document.Waits).Add(waitTarget);
+            _document.Waits = new List<InternalDocumentWait> { waitTarget };
 
             if (Model.IsAddControl)
             {
-                ((List<InternalDocumentWait>)_document.Waits).AddRange(CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromSourceToSource));
+                _document.Waits = _document.Waits.Concat(CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromSourceToSource));
             }
 
-            CommonDocumentUtilities.SetLastChange(_context, Model);
-            _document.SendLists = new List<InternalDocumentSendList> { Model };
+
+
 
             _operationDb.SendBySendList(_context, _document);
 

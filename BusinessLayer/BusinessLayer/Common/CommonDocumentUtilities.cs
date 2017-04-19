@@ -478,13 +478,15 @@ namespace BL.Logic.Common
             };
         }
 
-        public static InternalDocumentWait GetNewDocumentWait(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes eventType, EnumEventCorrespondentType? eventCorrespondentType = null, bool? isTakeMainDueDate = null)
+        public static InternalDocumentWait GetNewDocumentWait(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes eventType, EnumEventCorrespondentType? eventCorrespondentType = null, bool? isTakeMainDueDate = null, bool? isAddTargetCopy = null)
         {
             var accessess = eventCorrespondentType == EnumEventCorrespondentType.FromSourceToSource
                             ? new List<AccessGroup> { ConvertToAccessGroup(sendListModel.AccessGroups.First(x => x.AccessType == EnumEventAccessTypes.Source)) }
                             : eventCorrespondentType == EnumEventCorrespondentType.FromTargetToTarget
                             ? new List<AccessGroup> { ConvertToAccessGroup(sendListModel.AccessGroups.First(x => x.AccessType == EnumEventAccessTypes.Target), EnumEventAccessTypes.Source) }
                             : ConvertToAccessGroup (sendListModel.AccessGroups.ToList());
+            if (isAddTargetCopy ?? false)
+                accessess.AddRange(ConvertToAccessGroup(sendListModel.AccessGroups.Where(x => x.AccessType != EnumEventAccessTypes.Source && x.AccessType != EnumEventAccessTypes.Target).ToList()));
             var res = new InternalDocumentWait
             {
                 ClientId = context.CurrentClientId,
@@ -519,11 +521,11 @@ namespace BL.Logic.Common
             return res;
         }
 
-        public static IEnumerable<InternalDocumentWait> GetNewDocumentWaits(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes eventType, EnumEventCorrespondentType? eventCorrespondentType = null, bool? isTakeMainDueDate = null)
+        public static IEnumerable<InternalDocumentWait> GetNewDocumentWaits(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes eventType, EnumEventCorrespondentType? eventCorrespondentType = null, bool? isTakeMainDueDate = null, bool? isAddTargetCopy = null)
         {
             return new List<InternalDocumentWait>
             {
-                GetNewDocumentWait(context,sendListModel,eventType,eventCorrespondentType,isTakeMainDueDate)
+                GetNewDocumentWait(context,sendListModel,eventType,eventCorrespondentType,isTakeMainDueDate,isAddTargetCopy)
             };
         }
 
