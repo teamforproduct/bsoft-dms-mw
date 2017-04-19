@@ -111,12 +111,13 @@ namespace DMS_WebAPI.Utilities
         /// <param name="clientCode">доменное имя клиента</param>
         /// <param name="IsChangePasswordRequired">доменное имя клиента</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
+        /// <exception cref="TokenAlreadyExists"></exception>
         public IContext Set(string token, string userId, string userName, bool IsChangePasswordRequired, string clientCode)
         {
             token = token.ToLower();
 
-            if (Contains(token)) throw new ArgumentException();
+            if (Contains(token))
+                throw new TokenAlreadyExists();
 
             var context =
             new UserContext
@@ -148,7 +149,6 @@ namespace DMS_WebAPI.Utilities
         /// <param name="token">new server parameters</param>
         /// <param name="db">new server parameters</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
         public void Set(string token, DatabaseModel db)
         {
             token = token.ToLower();
@@ -207,7 +207,6 @@ namespace DMS_WebAPI.Utilities
         /// <param name="loginLogId">clientId</param>
         /// <param name="loginLogInfo">clientId</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
         public void Set(string token, int? loginLogId, string loginLogInfo)
         {
             token = token.ToLower();
@@ -256,7 +255,6 @@ namespace DMS_WebAPI.Utilities
         /// <param name="IsChangePasswordRequired"></param>
         /// <param name="userId">Id Web-пользователя</param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
         public void UpdateChangePasswordRequired(string userId, bool IsChangePasswordRequired)
         {
             var keys = _cacheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentEmployee.UserId == userId; } catch { } return false; }).Select(x => x.Key).ToArray();
@@ -525,6 +523,11 @@ namespace DMS_WebAPI.Utilities
             var user = webService.GetUserById(item.UserId);
 
             if (user == null) return;
+
+
+            // Залипуха от многопоточности. Пока ныряли в базу другой поток уже мог начать восстанавливать контекст
+            // TODO - это нужно решать по правильному
+            if (Contains(token)) return;
 
             Set(item.Token, item.UserId, user.UserName, item.IsChangePasswordRequired, clientCode);
             Set(item.Token, server);

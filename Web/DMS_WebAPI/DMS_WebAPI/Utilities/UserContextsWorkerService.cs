@@ -13,7 +13,7 @@ namespace DMS_WebAPI.Utilities
     {
         private Task _initializeThread;
         private Timer _timer;
-        private int _USER_CONTEXT_TIMEOUT_MIN = 60;//14*24*60; // 14 дней
+        private int _USER_CONTEXT_TIMEOUT_MIN = 1;
         public UserContextsWorkerService()
         {
         }
