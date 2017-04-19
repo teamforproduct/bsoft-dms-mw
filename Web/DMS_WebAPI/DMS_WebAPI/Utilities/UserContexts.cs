@@ -544,6 +544,8 @@ namespace DMS_WebAPI.Utilities
             // Получаю информацию о браузере
             var message = HttpContext.Current.Request.Browser.Info();
 
+
+            // Тут нет никакого фингерпринта, он передается один раз с токеном
             var fingerPrint = HttpContext.Current.Request.InputStream.GetFingerprint();
 
 
