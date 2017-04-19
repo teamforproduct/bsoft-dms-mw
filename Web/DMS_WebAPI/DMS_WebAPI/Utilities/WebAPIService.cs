@@ -1083,10 +1083,7 @@ namespace DMS_WebAPI.Utilities
                 Token = context.CurrentEmployee.Token,
                 ClientId = context.CurrentClientId,
                 CurrentPositionsIdList = string.Join(",", context.CurrentPositionsIdList),
-                IsChangePasswordRequired = context.IsChangePasswordRequired,
                 UserId = context.CurrentEmployee.UserId,
-                LoginLogId = context.LoginLogId,
-                LoginLogInfo = context.LoginLogInfo,
                 LastChangeDate = DateTime.UtcNow,
             };
 

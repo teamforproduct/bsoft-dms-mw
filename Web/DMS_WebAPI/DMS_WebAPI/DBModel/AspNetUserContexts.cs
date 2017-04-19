@@ -21,14 +21,7 @@ namespace DMS_WebAPI.DBModel
 
         [MaxLength(400)]
         public string CurrentPositionsIdList { get; set; }
-  
-        public bool IsChangePasswordRequired { get; set; }
-        public int? LoginLogId { get; set; }
-
-        // Убрать
-        [MaxLength(2000)]
-        public string LoginLogInfo { get; set; }
-
+        
         public DateTime LastChangeDate { get; set; }
     }
 }

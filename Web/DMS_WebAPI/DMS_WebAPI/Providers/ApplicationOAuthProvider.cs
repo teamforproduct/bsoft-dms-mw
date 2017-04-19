@@ -4,7 +4,6 @@ using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.Enums;
 using BL.Model.Exception;
-using BL.Model.SystemCore.Filters;
 using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
@@ -15,11 +14,8 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
-using Microsoft.Owin.Security.Provider;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
@@ -72,7 +68,7 @@ namespace DMS_WebAPI.Providers
         /// <returns></returns>
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
-            string clientCode = GetClientCodeFromBody(context.Request.Body);
+            string clientCode = context.Request.Body.GetClientCode();
             // код клиента - обязательный параметр
             if (string.IsNullOrEmpty(clientCode?.Trim())) throw new ClientRequired();
 
@@ -102,9 +98,9 @@ namespace DMS_WebAPI.Providers
             // Проверка Fingerprint: Если пользователь включил Fingerprint
             if (user.IsFingerprintEnabled)
             {
-                var answer = GetControlAnswerFromBody(context.Request.Body);
-                var rememberFingerprint = GetRememberFingerprintFromBody(context.Request.Body);
-                var fingerprint = GetFingerprintFromBody(context.Request.Body);
+                var answer = context.Request.Body.GetControlAnswer();
+                var rememberFingerprint = context.Request.Body.GetRememberFingerprint();
+                var fingerprint = context.Request.Body.GetFingerprint();
 
                 if (string.IsNullOrEmpty(fingerprint?.Trim())) ThrowErrorGrantResourceOwnerCredentials(context, new FingerprintRequired());
 
@@ -154,38 +150,6 @@ namespace DMS_WebAPI.Providers
         }
 
 
-
-        private void ThrowErrorGrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context, Exception ex)
-        {
-            string message = GetBrowswerInfo(context);
-            var clientCode = GetClientCodeFromBody(context.Request.Body);
-            var webService = DmsResolver.Current.Get<WebAPIService>();
-            var server = webService.GetClientServer(clientCode);
-
-            var ctx = new AdminContext(server);
-            var logger = DmsResolver.Current.Get<ILogger>();
-            var errorInfo = new AuthError
-            {
-                ClientCode = clientCode,
-                EMail = context.UserName,
-                FingerPrint = GetFingerprintFromBody(context.Request.Body)
-            };
-            int? agentId = null;
-            var dbService = DmsResolver.Current.Get<WebAPIService>();
-            var user = dbService.GetUser(errorInfo.EMail);
-            if (user != null)
-            {
-                var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(ctx, user.Id);
-                agentId = agentUser?.AgentId;
-            }
-
-            var exceptionText = (ex is DmsExceptions) ? "DmsExceptions:" + ex.GetType().Name : ex.Message;
-            var loginLogId = logger.Error(ctx, message, exceptionText, objectId: (int)EnumObjects.System, actionId: (int)EnumSystemActions.Login, logObject: errorInfo, agentId: agentId);
-
-            throw ex;
-        }
-
-
         /// <summary>
         /// Этап №3. Добавление параметров в Response
         /// </summary>
@@ -215,7 +179,7 @@ namespace DMS_WebAPI.Providers
                 // Получаю ID WEb-пользователя
                 var userId = context.Identity.GetUserId();
 
-                var clientCode = GetClientCodeFromBody(context.Request.Body);
+                var clientCode = context.Request.Body.GetClientCode();
 
                 var webService = DmsResolver.Current.Get<WebAPIService>();
 
@@ -239,61 +203,18 @@ namespace DMS_WebAPI.Providers
                 userContexts.Set(token, server);
 
                 // Получаю информацию о браузере
-                string message = GetBrowswerInfo(context);
+                var message = HttpContext.Current.Request.Browser.Info();
 
-                var logger = DmsResolver.Current.Get<ILogger>();
-                var loginLogId = logger.Information(ctx, message, (int)EnumObjects.System, (int)EnumSystemActions.Login, logDate: ctx.CreateDate, isCopyDate1: true);
-                var fingerPrint = GetFingerprintFromBody(context.Request.Body);
-                if (!string.IsNullOrEmpty(fingerPrint))
-                    logger.DeleteSystemLogs(ctx, new FilterSystemLog
-                    {
-                        ObjectIDs = new List<int> { (int)EnumObjects.System },
-                        ActionIDs = new List<int> { (int)EnumSystemActions.Login },
-                        LogLevels = new List<int> { (int)EnumLogTypes.Error },
-                        ExecutorAgentIDs = new List<int> { ctx.CurrentAgentId },
-                        LogDateFrom = DateTime.UtcNow.AddMinutes(-60),
-                        ObjectLog = $"\"FingerPrint\":\"{fingerPrint}\"",
-                    });
+                var fingerPrint = context.Request.Body.GetFingerprint();
 
                 // Добавляю в пользовательский контекст сведения о браузере
-                userContexts.Set(token, loginLogId, message);
+                userContexts.Set(token, message, fingerPrint);
 
                 context.AdditionalResponseParameters.Add("ChangePasswordRequired", user.IsChangePasswordRequired);
 
             }
 
             return Task.FromResult<object>(null);
-        }
-
-        private static string GetBrowswerInfo(BaseContext<OAuthAuthorizationServerOptions> context = null, bool isIncludeFingerPrintInfo = true)
-        {
-            HttpBrowserCapabilities bc = HttpContext.Current.Request.Browser;
-            var userAgent = HttpContext.Current.Request.UserAgent;
-            var mobile = userAgent.Contains("Mobile") ? "Mobile; " : string.Empty;
-            var ip = HttpContext.Current.Request.Headers["X-Real-IP"];
-            if (string.IsNullOrEmpty(ip))
-                ip = HttpContext.Current.Request.UserHostAddress;
-            var message = $"{ip}; {bc.Browser} {bc.Version}; {bc.Platform}; {mobile}";
-            if (isIncludeFingerPrintInfo && context != null)
-            {
-                var webService = DmsResolver.Current.Get<WebAPIService>();
-                var fingerprint = GetFingerprintFromBody(context.Request.Body);
-                var fps = webService.GetUserFingerprints(new FilterAspNetUserFingerprint { FingerprintExact = fingerprint });
-                if (fps.Any())
-                {
-                    var fp = fps.First();
-                    message = $"{message};{fp.Fingerprint};{fp.Name}";
-                }
-                else
-                    message = $"{message};{fingerprint.Substring(1, 8) + "..."};Not Saved";
-            }
-
-            //{HttpContext.Current.Request.UserHostAddress}
-            //var js = new JavaScriptSerializer();
-            //message += $"; {js.Serialize(HttpContext.Current.Request.Headers)}";
-            //message += $"; {HttpContext.Current.Request.Headers["X-Real-IP"]}";
-
-            return message;
         }
 
         public override Task ValidateClientRedirectUri(OAuthValidateClientRedirectUriContext context)
@@ -326,48 +247,34 @@ namespace DMS_WebAPI.Providers
             return new AuthenticationProperties(data);
         }
 
-        private static string GetClientCodeFromBody(Stream Body)
+        private void ThrowErrorGrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context, Exception ex)
         {
-            // ВНИМАНИЕ!!! в SoapUI параметр называется так client_id
-            return GetFromBody(Body, "client_id"); ;
-        }
+            string message = HttpContext.Current.Request.Browser.Info();
+            var clientCode = context.Request.Body.GetClientCode();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            var server = webService.GetClientServer(clientCode);
 
-        private static string GetFingerprintFromBody(Stream Body)
-        {
-            return GetFromBody(Body, "fingerprint");
-        }
-
-        private static string GetControlAnswerFromBody(Stream Body)
-        {
-            var res = GetFromBody(Body, "answer");
-            if (!string.IsNullOrEmpty(res)) res = res.Trim();
-            return res;
-        }
-
-        private static bool GetRememberFingerprintFromBody(Stream Body)
-        {
-            try { return bool.Parse(GetFromBody(Body, "remember_fingerprint")); } catch (Exception ex) { return false; }
-        }
-
-        private static string GetFromBody(Stream Body, string key)
-        {
-            var value = string.Empty;
-
-            try
+            var ctx = new AdminContext(server);
+            var logger = DmsResolver.Current.Get<ILogger>();
+            var errorInfo = new AuthError
             {
-                Body.Position = 0;
-                var body = new StreamReader(Body);
-                //var bodyStr = HttpUtility.UrlDecode(body.ReadToEnd());
-                var bodyStr = body.ReadToEnd();
-
-                var dic = HttpUtility.ParseQueryString(bodyStr);
-
-                value = dic[key] ?? string.Empty;
-
+                ClientCode = clientCode,
+                EMail = context.UserName,
+                FingerPrint = context.Request.Body.GetFingerprint()
+            };
+            int? agentId = null;
+            var dbService = DmsResolver.Current.Get<WebAPIService>();
+            var user = dbService.GetUser(errorInfo.EMail);
+            if (user != null)
+            {
+                var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(ctx, user.Id);
+                agentId = agentUser?.AgentId;
             }
-            catch (Exception ex) { }
 
-            return value;
+            var exceptionText = (ex is DmsExceptions) ? "DmsExceptions:" + ex.GetType().Name : ex.Message;
+            var loginLogId = logger.Error(ctx, message, exceptionText, objectId: (int)EnumObjects.System, actionId: (int)EnumSystemActions.Login, logObject: errorInfo, agentId: agentId);
+
+            throw ex;
         }
 
 
