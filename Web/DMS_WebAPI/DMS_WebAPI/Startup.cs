@@ -24,20 +24,20 @@ namespace DMS_WebAPI
         {
             var filePath = HttpContext.Current.Server.MapPath("~/SiteErrors.txt");
 
-            FileLogger.AppendTextToFile("STARTUP BEGIN!!! " + DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC", filePath); 
+            FileLogger.AppendTextToFile("STARTUP BEGIN!!! " + DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC", filePath);
 
             ApplicationDbContext.CreateDatabaseIfNotExists();
 
             // configuring authentication
             ConfigureAuth(app);
-            
+
             // Проверка на целостность Actions в процедуре импорта 
             //var systemService = DmsResolver.Current.Get<ISystemService>();
             Properties.Settings.Default["ServerPath"] = HttpContext.Current.Server.MapPath("~/");
             Properties.Settings.Default.Save();
             // Проверка на целостность переводов
             ApplicationDbImportData.CheckLanguages();
-            
+
 
             //Database.SetInitializer(new CreateDatabaseIfNotExists<ApplicationDbContext>());
             //var tt = Database.Exists("DefaultConnection");
@@ -48,11 +48,11 @@ namespace DMS_WebAPI
 
 
             FileLogger.AppendTextToFile("StartWorkers " + DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC", filePath);
-            //#if !DEBUG
+#if !DEBUG
             // Сервис бекграундной обработки задач/экшенов/команд. 
             var queueWorker = DmsResolver.Current.Get<IQueueWorkerService>();
             queueWorker.Initialize(dbs);
-//#endif
+#endif
 
             //foreach (var srv in DmsResolver.Current.GetAll<ISystemWorkerService>())
             //{
@@ -71,11 +71,12 @@ namespace DMS_WebAPI
 #endif
 
 
-//#if !DEBUG
+#if !DEBUG
             //TODO
             var autoPlanService = DmsResolver.Current.Get<IAutoPlanService>();
             autoPlanService.Initialize(dbs);
-//#endif
+#endif
+
 #if !DEBUG
             //TODO
             var clearTrashDocumentsService = DmsResolver.Current.Get<IClearTrashDocumentsService>();

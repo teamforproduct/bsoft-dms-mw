@@ -32,6 +32,12 @@ namespace BL.Model.Exception
         public IEnumerable<string> Errors { set; get; }
     }
 
+    public class TokenAlreadyExists : DmsExceptions
+    {
+        public TokenAlreadyExists() : base() { }
+        public TokenAlreadyExists(System.Exception ex) : base(ex) { }
+    }
+
     #region [+] LicenceError ... 
 
 
@@ -123,7 +129,7 @@ namespace BL.Model.Exception
         public ClientRequired() : base() { }
         public ClientRequired(System.Exception ex) : base(ex) { }
     }
-    
+
 
     public class ServerIsNotFound : DmsExceptions
     {
@@ -202,7 +208,7 @@ namespace BL.Model.Exception
     {
         public DatabaseError() : base() { }
         public DatabaseError(System.Exception ex) : base(ex) { }
-        public DatabaseError(IEnumerable<string> Errors) : base() { base.Errors = Errors;  }
+        public DatabaseError(IEnumerable<string> Errors) : base() { base.Errors = Errors; }
     }
 
     /// <summary>
@@ -309,7 +315,7 @@ namespace BL.Model.Exception
         public UserNameOrPasswordIsIncorrect() : base() { }
         public UserNameOrPasswordIsIncorrect(System.Exception ex) : base(ex) { }
     }
-   
+
     // НЕ переименовывать - есть if на фронте
     public class UserAnswerIsIncorrect : DmsExceptions
     {
@@ -513,7 +519,7 @@ namespace BL.Model.Exception
 
     public class ResetPasswordCodeInvalid : DmsExceptions
     {
-        public ResetPasswordCodeInvalid(IEnumerable<string> Errors) : base() { base.Errors = Errors;  }
+        public ResetPasswordCodeInvalid(IEnumerable<string> Errors) : base() { base.Errors = Errors; }
         public ResetPasswordCodeInvalid(System.Exception ex) : base(ex) { }
     }
 
