@@ -242,7 +242,7 @@ namespace DMS_WebAPI.Providers
                 string message = GetBrowswerInfo(context);
 
                 var logger = DmsResolver.Current.Get<ILogger>();
-                var loginLogId = logger.Information(ctx, message, (int)EnumObjects.System, (int)EnumSystemActions.Login, isCopyDate1: true);
+                var loginLogId = logger.Information(ctx, message, (int)EnumObjects.System, (int)EnumSystemActions.Login, logDate: ctx.CreateDate, isCopyDate1: true);
                 var fingerPrint = GetFingerprintFromBody(context.Request.Body);
                 if (!string.IsNullOrEmpty(fingerPrint))
                     logger.DeleteSystemLogs(ctx, new FilterSystemLog

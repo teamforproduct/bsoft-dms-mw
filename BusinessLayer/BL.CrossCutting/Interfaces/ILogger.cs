@@ -23,7 +23,7 @@ namespace BL.CrossCutting.Interfaces
         int? AddSearchQueryLog(IContext ctx, string module, string searchText);
         int? AddSearchQueryLog(IContext ctx, bool existsResults, string module, string searchText);
         int? Trace(IContext ctx, string message, params object[] args);
-        int? Information(IContext ctx, string message, int? objectId = null, int? actionId = null, int? recordId = null, object logObject = null, bool isCopyDate1 = false);
+        int? Information(IContext ctx, string message, int? objectId = null, int? actionId = null, int? recordId = null, object logObject = null, DateTime? logDate = null, bool isCopyDate1 = false);
         int? Warning(IContext ctx, string message, params object[] args);
         int? Error(IContext ctx, string message, params object[] args);
         int? Error(IContext ctx, Exception exception, string message = null, params object[] args);
