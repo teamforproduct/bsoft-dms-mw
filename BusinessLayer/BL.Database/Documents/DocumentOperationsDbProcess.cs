@@ -2151,20 +2151,25 @@ namespace BL.Database.Documents
                         .Where(x => x.DocumentId == sendList.DocumentId && x.Task.Id == sendList.TaskId
                                     && x.EventTypeId == (int)EnumEventTypes.SendForControl
                                     && x.SourcePositionId == sendList.SourcePositionId)
+                        .Select(x => new    {   eventC = x,
+                                                source = x.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source) ,
+                                                target = x.Accesses.Where(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source || y.AccessTypeId == (int)EnumEventAccessTypes.Target)
+                                                                    .OrderByDescending(y=> y.AccessTypeId).FirstOrDefault()
+                                            })
                         .Select(x => new InternalDocumentEvent
                         {
-                            Id = x.Id,
-                            ClientId = x.ClientId,
-                            EntityTypeId = x.EntityTypeId,
+                            Id = x.eventC.Id,
+                            ClientId = x.eventC.ClientId,
+                            EntityTypeId = x.eventC.EntityTypeId,
                             //ParentEventId = x.ParentEventId,
-                            SourcePositionId = x.SourcePositionId,
+                            SourcePositionId = x.source.PositionId,
                             //SourcePositionName = x.SourcePosition.Name,
                             //SourcePositionExecutorAgentName = x.SourcePosition.ExecutorAgent.Name + (x.SourcePosition.ExecutorType.Suffix != null ? " (" + x.SourcePosition.ExecutorType.Suffix + ")" : null),
-                            TargetPositionId = x.TargetPositionId,
-                            TargetPositionName = x.TargetPosition.Name,
-                            TargetPositionExecutorAgentId = x.TargetPosition.ExecutorAgentId,
-                            TargetPositionExecutorTypeId = x.TargetPosition.PositionExecutorTypeId,
-                            TargetPositionExecutorAgentName = x.TargetPosition.ExecutorAgent.Name + (x.TargetPosition.ExecutorType.Suffix != null ? " (" + x.TargetPosition.ExecutorType.Suffix + ")" : null),
+                            TargetPositionId = x.target.PositionId,
+                            TargetPositionName = x.target.Position.Name,
+                            TargetPositionExecutorAgentId = x.target.Position.ExecutorAgentId,
+                            TargetPositionExecutorTypeId = x.target.Position.PositionExecutorTypeId,
+                            TargetPositionExecutorAgentName = x.target.Position.ExecutorAgent.Name + (x.target.PositionExecutorType.Suffix != null ? " (" + x.target.PositionExecutorType.Suffix + ")" : null),
                         }).ToList();
 
                     var qryWaits = doc.Waits = dbContext.DocumentWaitsSet.Where(x => x.ClientId == context.CurrentClientId)
@@ -2173,27 +2178,34 @@ namespace BL.Database.Documents
                         .Select(x => new
                         {
                             waitRE = x,
-                            eventC = x.OnEvent.ChildEvents.Where(y => y.ParentEventId == x.OnEvent.Id && y.EventTypeId == (int)EnumEventTypes.InfoSendForResponsibleExecutionReportingControler).FirstOrDefault()
-                        }).Where(x => x.eventC == null && x.waitRE.OnEvent.SourcePositionId == sendList.SourcePositionId || x.eventC != null && x.eventC.SourcePositionId == sendList.SourcePositionId)
+                            sourceRE = x.OnEvent.Accesses.First(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source),
+                            targetRE = x.OnEvent.Accesses.Where(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source || y.AccessTypeId == (int)EnumEventAccessTypes.Target)
+                                                                    .OrderByDescending(y => y.AccessTypeId).FirstOrDefault(),
+                            eventCSourcePositionId = x.OnEvent.ChildEvents
+                                                        .Where(y => y.ParentEventId == x.OnEvent.Id && y.EventTypeId == (int)EnumEventTypes.InfoSendForResponsibleExecutionReportingControler)
+                                                        .FirstOrDefault()
+                                                        .Accesses.First(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
+                        }).Where(x => x.eventCSourcePositionId == null && x.waitRE.OnEvent.SourcePositionId == sendList.SourcePositionId 
+                                    || x.eventCSourcePositionId != null && x.eventCSourcePositionId == sendList.SourcePositionId)
                         .Select(x => new InternalDocumentWait
                         {
                             Id = x.waitRE.Id,
-                            ClientId = doc.ClientId,
-                            EntityTypeId = doc.EntityTypeId,
+                            ClientId = x.waitRE.ClientId,
+                            EntityTypeId = x.waitRE.EntityTypeId,
                             OnEvent = new InternalDocumentEvent
                             {
-                                ClientId = doc.ClientId,
-                                EntityTypeId = doc.EntityTypeId,
-                                SourcePositionId = x.eventC == null ? x.waitRE.OnEvent.SourcePositionId : x.eventC.SourcePositionId,
+                                ClientId = x.waitRE.ClientId,
+                                EntityTypeId = x.waitRE.EntityTypeId,
+                                SourcePositionId = x.eventCSourcePositionId == null ? x.waitRE.OnEvent.SourcePositionId : x.eventCSourcePositionId,
                                 //SourcePositionName = x.eventC == null ? x.waitRE.OnEvent.SourcePosition.Name : x.eventC.SourcePosition.Name,
                                 //SourcePositionExecutorAgentName = x.eventC == null
                                 //    ? x.waitRE.OnEvent.SourcePosition.ExecutorAgent.Name + (x.waitRE.OnEvent.SourcePosition.ExecutorType.Suffix != null ? " (" + x.waitRE.OnEvent.SourcePosition.ExecutorType.Suffix + ")" : null)
                                 //    : x.eventC.SourcePosition.ExecutorAgent.Name + (x.eventC.SourcePosition.ExecutorType.Suffix != null ? " (" + x.eventC.SourcePosition.ExecutorType.Suffix + ")" : null),
-                                TargetPositionId = x.waitRE.OnEvent.TargetPositionId,
-                                TargetPositionName = x.waitRE.OnEvent.TargetPosition.Name,
-                                TargetPositionExecutorAgentId = x.waitRE.OnEvent.TargetPosition.ExecutorAgentId,
-                                TargetPositionExecutorTypeId = x.waitRE.OnEvent.TargetPosition.PositionExecutorTypeId,
-                                TargetPositionExecutorAgentName = x.waitRE.OnEvent.TargetPosition.ExecutorAgent.Name + (x.waitRE.OnEvent.TargetPosition.ExecutorType.Suffix != null ? " (" + x.waitRE.OnEvent.TargetPosition.ExecutorType.Suffix + ")" : null),
+                                TargetPositionId = x.targetRE.PositionId,
+                                TargetPositionName = x.targetRE.Position.Name,
+                                TargetPositionExecutorAgentId = x.targetRE.Position.ExecutorAgentId,
+                                TargetPositionExecutorTypeId = x.targetRE.PositionExecutorTypeId,
+                                TargetPositionExecutorAgentName = x.targetRE.Position.ExecutorAgent.Name + (x.targetRE.PositionExecutorType.Suffix != null ? " (" + x.targetRE.PositionExecutorType.Suffix + ")" : null),
                             }
                         });
                     doc.Waits = qryWaits.ToList();

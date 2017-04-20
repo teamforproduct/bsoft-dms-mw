@@ -59,7 +59,7 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 ex = new PlanPointHasAlredyBeenLaunched();
             }
-            else if (!Model.TargetPositionId.HasValue)
+            else if (!Model.TargetPositionId.HasValue || Model.AccessGroups.Count(x => x.AccessType == EnumEventAccessTypes.Target) > 1)
             {
                 ex = new TargetIsNotDefined();
             }
@@ -98,17 +98,23 @@ namespace BL.Logic.DocumentCore.Commands
         }
         public override object Execute()
         {
+            _document.Subscriptions = null;
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
 
             var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, _eventType, EnumEventCorrespondentType.FromSourceToTarget);
+            var newEvent = Model.StartEvent = waitTarget.OnEvent;
+            CommonDocumentUtilities.SetLastChange(_context, Model);
+            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.AccessLevel, newEvent.Accesses);
+            _document.SendLists = new List<InternalDocumentSendList> { Model };
 
             if (_document.Events?.Any() ?? false)
             {
                 var eventControler = _document.Events.First();
-                waitTarget.OnEvent.SourcePositionId = eventControler.TargetPositionId;
-                waitTarget.OnEvent.SourcePositionExecutorAgentId = eventControler.TargetPositionExecutorAgentId;
-                waitTarget.OnEvent.SourcePositionExecutorTypeId = eventControler.TargetPositionExecutorTypeId;
-                if (Model.SourcePositionId != waitTarget.OnEvent.SourcePositionId)
+                var accessSource = waitTarget.OnEvent.Accesses.First(x => x.AccessType == EnumEventAccessTypes.Source);
+                accessSource.PositionId = eventControler.TargetPositionId;
+                accessSource.AgentId = eventControler.TargetPositionExecutorAgentId;
+                accessSource.PositionExecutorTypeId = eventControler.TargetPositionExecutorTypeId;
+                if (Model.SourcePositionId != eventControler.TargetPositionId)
                 {
                     _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model, EnumEventTypes.InfoSendForResponsibleExecutionReportingControler);
                     waitTarget.OnEvent.AddDescription = $"##l@TaskExecutor:Initiator@l## - {Model.InitiatorPositionExecutorAgentName}({Model.InitiatorPositionName}), ##l@TaskExecutor:Controler@l## - {eventControler.TargetPositionExecutorAgentName}({eventControler.TargetPositionName})";
@@ -118,18 +124,10 @@ namespace BL.Logic.DocumentCore.Commands
                 }
             }
             _document.Waits = new List<InternalDocumentWait> { waitTarget };
-
-            _document.Subscriptions = null;
-
             if (Model.IsAddControl)
             {
-                ((List<InternalDocumentWait>)_document.Waits).AddRange(CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromSourceToSource));
+                _document.Waits = _document.Waits.Concat(CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromSourceToSource));
             }
-
-            Model.StartEvent = waitTarget.OnEvent;
-            CommonDocumentUtilities.SetLastChange(_context, Model);
-            _document.SendLists = new List<InternalDocumentSendList> { Model };
-
 
             _operationDb.SendBySendList(_context, _document);
 
