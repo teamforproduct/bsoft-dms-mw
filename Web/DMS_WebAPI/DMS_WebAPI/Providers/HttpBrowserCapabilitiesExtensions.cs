@@ -26,14 +26,21 @@ namespace DMS_WebAPI.Providers
 
             var webService = DmsResolver.Current.Get<WebAPIService>();
             var fingerprint = HttpContext.Current.Request.InputStream.GetFingerprint();
-            var fps = webService.GetUserFingerprints(new FilterAspNetUserFingerprint { FingerprintExact = fingerprint });
-            if (fps.Any())
+
+            if (!string.IsNullOrEmpty(fingerprint))
             {
-                var fp = fps.First();
-                message = $"{message};{fp.Fingerprint};{fp.Name}";
+                var fps = webService.GetUserFingerprints(new FilterAspNetUserFingerprint { FingerprintExact = fingerprint });
+
+                if (fps.Any())
+                {
+                    var fp = fps.First();
+                    message = $"{message};{fp.Fingerprint};{fp.Name}";
+                }
+                else
+                {
+                    message = $"{message};{fingerprint.Substring(1, 8) + "..."};Not Saved";
+                }
             }
-            else
-                message = $"{message};{fingerprint.Substring(1, 8) + "..."};Not Saved";
             //{HttpContext.Current.Request.UserHostAddress}
             //var js = new JavaScriptSerializer();
             //message += $"; {js.Serialize(HttpContext.Current.Request.Headers)}";
