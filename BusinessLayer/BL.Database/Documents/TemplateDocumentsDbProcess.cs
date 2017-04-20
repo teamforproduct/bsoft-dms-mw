@@ -271,7 +271,7 @@ namespace BL.Database.Documents
                 if (template.Id > 0)
                 {
                     newTemplate.Id = template.Id;
-                    dbContext.TemplateDocumentsSet.Attach(newTemplate);
+                    dbContext.SafeAttach(newTemplate);
                     var entity = dbContext.Entry(newTemplate);
                     entity.State = System.Data.Entity.EntityState.Modified;
                 }
@@ -331,7 +331,7 @@ namespace BL.Database.Documents
                     .Select(y => new InternalTemplateDocumentRestrictedSendList()
                     {
                         PositionId = y.PositionId,
-                        AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
+                        AccessLevel = (EnumAccessLevels)y.AccessLevelId
                     }).ToList();
                 doc.SendLists = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(y => y.DocumentId == id)
                     .Select(y => new InternalTemplateDocumentSendList()
@@ -349,7 +349,7 @@ namespace BL.Database.Documents
                         Description = y.Description,
                         Stage = y.Stage,
                         DueDay = y.DueDay,
-                        AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
+                        AccessLevel = (EnumAccessLevels)y.AccessLevelId,
                     }).ToList();
                 doc.Files = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == id)
                     .Select(x => new InternalTemplateAttachedFile
@@ -609,7 +609,7 @@ namespace BL.Database.Documents
                     entityState = System.Data.Entity.EntityState.Modified;
                 }
 
-                dbContext.TemplateDocumentSendListsSet.Attach(newTemplate);
+                dbContext.SafeAttach(newTemplate);
                 var entity = dbContext.Entry(newTemplate);
                 entity.State = entityState;
 
@@ -754,7 +754,7 @@ namespace BL.Database.Documents
                     entityState = System.Data.Entity.EntityState.Modified;
                 }
 
-                dbContext.TemplateDocumentRestrictedSendListsSet.Attach(newTemplate);
+                dbContext.SafeAttach(newTemplate);
                 var entity = dbContext.Entry(newTemplate);
                 entity.State = entityState;
 
@@ -900,7 +900,7 @@ namespace BL.Database.Documents
                     entityState = System.Data.Entity.EntityState.Modified;
                 }
 
-                dbContext.TemplateDocumentAccessesSet.Attach(newTemplate);
+                dbContext.SafeAttach(newTemplate);
                 var entity = dbContext.Entry(newTemplate);
                 entity.State = entityState;
 
@@ -1018,7 +1018,7 @@ namespace BL.Database.Documents
                     entityState = System.Data.Entity.EntityState.Modified;
                 }
 
-                dbContext.TemplateDocumentTasksSet.Attach(newTemplate);
+                dbContext.SafeAttach(newTemplate);
                 var entity = dbContext.Entry(newTemplate);
                 entity.State = entityState;
                 dbContext.SaveChanges();
@@ -1175,7 +1175,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var itemDb = ModelConverter.GetDbTemplateDocumentPaper(item);
-                dbContext.TemplateDocumentPapersSet.Attach(itemDb);
+                dbContext.SafeAttach(itemDb);
                 var entry = dbContext.Entry(itemDb);
                 entry.Property(e => e.Name).IsModified = true;
                 entry.Property(e => e.Description).IsModified = true;
@@ -1429,7 +1429,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var fl = ModelConverter.GetDbTemplateFile(docFile);
-                dbContext.TemplateDocumentFilesSet.Attach(fl);
+                dbContext.SafeAttach(fl);
 
                 var entry = dbContext.Entry(fl);
                 entry.Property(x => x.TypeId).IsModified = true;
@@ -1449,7 +1449,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var fl = ModelConverter.GetDbTemplateFile(docFile);
-                dbContext.TemplateDocumentFilesSet.Attach(fl);
+                dbContext.SafeAttach(fl);
                 var entry = dbContext.Entry(fl);
                 entry.Property(x => x.IsPdfCreated).IsModified = true;
                 entry.Property(x => x.LastPdfAccessDate).IsModified = true;

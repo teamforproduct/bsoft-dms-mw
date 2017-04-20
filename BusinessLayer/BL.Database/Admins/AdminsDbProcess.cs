@@ -458,7 +458,7 @@ namespace BL.Database.Admins
             using (var transaction = Transactions.GetTransaction())
             {
                 AdminRoles dbModel = AdminModelConverter.GetDbRole(ctx, model);
-                dbContext.AdminRolesSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
@@ -1270,7 +1270,7 @@ namespace BL.Database.Admins
             using (var transaction = Transactions.GetTransaction())
             {
                 AdminSubordinations dbModel = AdminModelConverter.GetDbSubordination(ctx, model);
-                dbContext.AdminSubordinationsSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
                 transaction.Complete();

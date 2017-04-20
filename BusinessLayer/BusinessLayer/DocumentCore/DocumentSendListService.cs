@@ -77,7 +77,7 @@ namespace BL.Logic.DocumentCore
                     TargetPositionName = x.Position.Name,
                     TargetPositionExecutorAgentId = x.Position.ExecutorAgentId,
                     TargetPositionExecutorAgentName = x.Position.ExecutorAgentName,
-                    AccessLevel = EnumDocumentAccesses.PersonalRefIO,
+                    AccessLevel = EnumAccessLevels.PersonallyAndIOAndReferents,
                 }).ToList();
             data.Documents.ToList().ForEach(x=>x.SendLists = sendList.Where(y=>y.DocumentId == x.Id).ToList());
             var res = data.Documents.Where(x => x.SendLists.Any()).ToList();

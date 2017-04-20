@@ -17,7 +17,6 @@ using System.Text;
 using System;
 using BL.CrossCutting.DependencyInjection;
 using BL.Database.FileWorker;
-using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.FullTextSearch;
 using BL.Model.SystemCore;
@@ -1846,7 +1845,7 @@ namespace BL.Database.Common
 
             foreach (var item in modifyItems)
             {
-                dbContext.PropertyValuesSet.Attach(item);
+                dbContext.SafeAttach(item);
                 var entry = dbContext.Entry(item);
                 entry.Property(x => x.ValueString).IsModified = true;
                 entry.Property(x => x.ValueDate).IsModified = true;
@@ -1874,10 +1873,10 @@ namespace BL.Database.Common
             #endregion
 
             #region delete
-            foreach (var item in groupJoinItems.Where(x => x.values.Count() == 0).Select(x => x.propertyValueId))
+            foreach (var item in groupJoinItems.Where(x => !x.values.Any()).Select(x => x.propertyValueId))
             {
                 var itemAtt = dbContext.PropertyValuesSet.Attach(new PropertyValues { Id = item });
-                dbContext.Entry(itemAtt).State = System.Data.Entity.EntityState.Deleted;
+                dbContext.Entry(itemAtt).State = EntityState.Deleted;
             }
             #endregion
         }
@@ -2013,7 +2012,7 @@ namespace BL.Database.Common
 
                 SourcePositionName = y.SourcePosition.Name,
                 TargetPositionName = y.TargetPosition.Name,
-                AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
+                AccessLevel = (EnumAccessLevels)y.AccessLevelId,
                 AccessLevelName = y.AccessLevel.Name,
                 StartEvent = y.StartEvent == null
                                         ? null
@@ -2479,7 +2478,7 @@ namespace BL.Database.Common
                             LastChangeUserId = (int)EnumSystemUsers.AdminUser,
                             LastChangeDate = DateTime.UtcNow
                         };
-                        dbContext.DocumentSubscriptionsSet.Attach(subscriptionDb);
+                        dbContext.SafeAttach(subscriptionDb);
                         var entry = dbContext.Entry(subscriptionDb);
                         entry.Property(x => x.SubscriptionStateId).IsModified = true;
                         entry.Property(x => x.LastChangeUserId).IsModified = true;

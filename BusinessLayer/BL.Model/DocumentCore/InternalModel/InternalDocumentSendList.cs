@@ -39,7 +39,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public string AddDescription { get; set; }
         public DateTime? DueDate { get; set; }
         public int? DueDay { get; set; }
-        public EnumDocumentAccesses AccessLevel { get; set; }
+        public EnumAccessLevels AccessLevel { get; set; }
         public bool IsInitial { get; set; }
         public int? StartEventId { get; set; }
         public int? CloseEventId { get; set; }

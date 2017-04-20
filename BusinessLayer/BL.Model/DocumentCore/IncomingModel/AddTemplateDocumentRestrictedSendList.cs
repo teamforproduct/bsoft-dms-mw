@@ -22,6 +22,6 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// Уровень доступа
         /// </summary>
         [Required]
-        public EnumDocumentAccesses AccessLevel { get; set; }
+        public EnumAccessLevels AccessLevel { get; set; }
     }
 }
