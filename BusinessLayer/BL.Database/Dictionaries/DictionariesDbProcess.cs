@@ -4463,11 +4463,11 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var dbModel = DictionaryModelConverter.GetDbPosition(ctx, position);
-                dbContext.CheckEntityIfExists(dbModel);
-                dbContext.DictionaryPositionsSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
+                var entity = dbContext.Entry(dbModel);
                 //pss нельзя модифицировать поля, которые проставляет вертушка
                 //dbContext.Entry(dd).State = System.Data.Entity.EntityState.Modified;
-                var entity = dbContext.Entry(dbModel);
+                
                 entity.Property(x => x.ParentId).IsModified = true;
                 entity.Property(x => x.IsActive).IsModified = true;
                 entity.Property(x => x.Name).IsModified = true;
@@ -4491,13 +4491,11 @@ namespace BL.Database.Dictionaries
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                // Attach стал стреляться при внедрении ctx.DbContext as DmsContext;
                 var dbModel = DictionaryModelConverter.GetDbPosition(ctx, new InternalDictionaryPosition() { Id = positionId, Order = order });
                 //dbContext.DictionaryPositionsSet.Where(x => x.Id == positionId).Update(x => new DictionaryPositions { Order = order });
-
-                dbContext.CheckEntityIfExists(dbModel);
-                dbContext.DictionaryPositionsSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 var entity = dbContext.Entry(dbModel);
+                
                 entity.Property(x => x.Order).IsModified = true;
 
                 dbContext.SaveChanges();
