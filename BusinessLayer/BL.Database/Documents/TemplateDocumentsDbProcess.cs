@@ -331,7 +331,7 @@ namespace BL.Database.Documents
                     .Select(y => new InternalTemplateDocumentRestrictedSendList()
                     {
                         PositionId = y.PositionId,
-                        AccessLevel = (EnumDocumentAccesses)y.AccessLevelId
+                        AccessLevel = (EnumAccessLevels)y.AccessLevelId
                     }).ToList();
                 doc.SendLists = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(y => y.DocumentId == id)
                     .Select(y => new InternalTemplateDocumentSendList()
@@ -349,7 +349,7 @@ namespace BL.Database.Documents
                         Description = y.Description,
                         Stage = y.Stage,
                         DueDay = y.DueDay,
-                        AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
+                        AccessLevel = (EnumAccessLevels)y.AccessLevelId,
                     }).ToList();
                 doc.Files = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == id)
                     .Select(x => new InternalTemplateAttachedFile

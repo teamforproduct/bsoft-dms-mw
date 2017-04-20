@@ -30,7 +30,7 @@ namespace BL.Model.DocumentCore.Actions
         /// ИД уровня доступа
         /// </summary>
         [Required]
-        public EnumDocumentAccesses AccessLevel { get; set; }
+        public EnumAccessLevels AccessLevel { get; set; }
 
         /// <summary>
         /// Дата события

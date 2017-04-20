@@ -25,7 +25,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public int Stage { get; set; }
         public EnumStageTypes? StageType { get; set; }
         public int? DueDay { get; set; }
-        public EnumDocumentAccesses AccessLevel { get; set; }
+        public EnumAccessLevels AccessLevel { get; set; }
 
         public InternalTemplateDocumentSendList()
         {

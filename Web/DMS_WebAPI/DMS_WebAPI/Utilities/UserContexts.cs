@@ -261,7 +261,7 @@ namespace DMS_WebAPI.Utilities
             // Сохраняю текущий контекст
             var webService = DmsResolver.Current.Get<WebAPIService>();
             webService.SaveUserContexts(context);
-           
+
             context.DbContext = null;
             dbCtx.Dispose();
         }
@@ -344,7 +344,7 @@ namespace DMS_WebAPI.Utilities
 
             if (!Contains(token)) return null;
 
-            var ctx = GetInternal(token);
+            var ctx = new UserContext(GetInternal(token));
             var logger = DmsResolver.Current.Get<ILogger>();
             logger.UpdateLogDate1(ctx, ctx.LoginLogId.Value, _cacheContexts[token].LastUsage);
             // удаляю пользовательский контекст из коллекции
@@ -358,7 +358,7 @@ namespace DMS_WebAPI.Utilities
                 webService.DeleteUserContext(token);
             }
 
-            
+
 
             return ctx;
         }
@@ -531,7 +531,7 @@ namespace DMS_WebAPI.Utilities
 
             var clientCode = webService.GetClientCode(item.ClientId);
 
-            if (string.IsNullOrEmpty( clientCode)) return;
+            if (string.IsNullOrEmpty(clientCode)) return;
 
             var server = webService.GetClientServer(item.ClientId);
 

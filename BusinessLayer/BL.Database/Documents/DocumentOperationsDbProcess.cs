@@ -2591,7 +2591,7 @@ namespace BL.Database.Documents
                      //EntityTypeId = x.EntityTypeId,
                      DocumentId = model.DocumentId,
                      PositionId = x.TargetPositionId,
-                     AccessLevel = (EnumDocumentAccesses)(x.AccessLevelId ?? (int)EnumDocumentAccesses.PersonalRefIO)
+                     AccessLevel = (EnumAccessLevels)(x.AccessLevelId ?? (int)EnumAccessLevels.PersonallyAndIOAndReferents)
                  }).ToList();
                 transaction.Complete();
                 return items;
@@ -2897,7 +2897,7 @@ namespace BL.Database.Documents
                                             Description = x.Description,
                                             DueDay = x.DueDay,
                                             DueDate = x.DueDate,
-                                            AccessLevel = (EnumDocumentAccesses)x.AccessLevelId,
+                                            AccessLevel = (EnumAccessLevels)x.AccessLevelId,
                                             StartEventId = x.StartEventId,
                                             CloseEventId = x.CloseEventId
                                         }

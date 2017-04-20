@@ -94,7 +94,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// ИД уровня доступа
         /// </summary>
         [Required]
-        public EnumDocumentAccesses AccessLevel { get; set; }
+        public EnumAccessLevels AccessLevel { get; set; }
         /// <summary>
         /// Признак первоначальный пункт
         /// </summary>

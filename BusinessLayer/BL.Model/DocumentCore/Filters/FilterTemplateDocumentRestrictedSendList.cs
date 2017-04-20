@@ -24,6 +24,6 @@ namespace BL.Model.DocumentCore.Filters
         /// <summary>
         /// Уровень доступа
         /// </summary>
-        public EnumDocumentAccesses? AccessLevel { get; set; }
+        public EnumAccessLevels? AccessLevel { get; set; }
     }
 }

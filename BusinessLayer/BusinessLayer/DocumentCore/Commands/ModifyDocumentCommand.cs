@@ -72,12 +72,12 @@ namespace BL.Logic.DocumentCore.Commands
             _document.SenderDate = Model.SenderDate;
             _document.Addressee = Model.Addressee;
             _document.IsRegistered = _document.IsRegistered ?? false;
-            _document.AccessLevel = (EnumDocumentAccesses)Model.AccessLevelId;
+            _document.AccessLevel = (EnumAccessLevels)Model.AccessLevelId;
             if (_document.Accesses?.Count() > 0)
             {
                 var docAcc = _document.Accesses.First();
                 CommonDocumentUtilities.SetLastChange(_context, docAcc);
-                docAcc.AccessLevel = (EnumDocumentAccesses)Model.AccessLevelId;
+                docAcc.AccessLevel = (EnumAccessLevels)Model.AccessLevelId;
             }
 
             if (Model.Properties != null)

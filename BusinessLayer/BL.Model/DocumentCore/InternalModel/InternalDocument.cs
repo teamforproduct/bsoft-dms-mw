@@ -98,7 +98,7 @@ namespace BL.Model.DocumentCore.InternalModel
         /// <summary>
         /// ИД уровня доступа
         /// </summary>
-        public EnumDocumentAccesses? AccessLevel { get; set; }
+        public EnumAccessLevels? AccessLevel { get; set; }
 
         public int TemplateDocumentId { get; set; }
         public int? ExecutorPositionId { get; set; }

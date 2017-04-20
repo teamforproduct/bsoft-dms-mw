@@ -18,6 +18,5 @@
         PersonallyAndIOAndReferents = 30
 
         
-       //Внимание есть отличие от старой системы
     }
 }
