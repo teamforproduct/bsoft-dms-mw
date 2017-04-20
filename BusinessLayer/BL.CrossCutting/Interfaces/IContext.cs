@@ -21,6 +21,7 @@ namespace BL.CrossCutting.Interfaces
         LicenceInfo ClientLicence { get; set; }
         int CurrentClientId{ get; set; }
         DateTime CreateDate { get; }
+        DateTime LastChangeDate { get; set; }
         bool IsChangePasswordRequired { get; set; }
         int? LoginLogId { get; set; }
         string LoginLogInfo { get; set; }
