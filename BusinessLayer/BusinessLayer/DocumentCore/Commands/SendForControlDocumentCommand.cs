@@ -128,7 +128,7 @@ namespace BL.Logic.DocumentCore.Commands
             _document.Waits = new List<InternalDocumentWait> { waitTarget };
             if (Model.IsAddControl)
             {
-                _document.Waits = _document.Waits.Concat(CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromSourceToSource));
+                _document.Waits = _document.Waits.Concat(CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromSourceToSource, false));
             }
             _operationDb.SendBySendList(_context, _document);
 

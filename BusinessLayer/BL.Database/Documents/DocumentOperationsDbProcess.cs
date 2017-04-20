@@ -2178,13 +2178,12 @@ namespace BL.Database.Documents
                         .Select(x => new
                         {
                             waitRE = x,
-                            sourceRE = x.OnEvent.Accesses.First(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source),
+                            sourceRE = x.OnEvent.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source),
                             targetRE = x.OnEvent.Accesses.Where(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source || y.AccessTypeId == (int)EnumEventAccessTypes.Target)
                                                                     .OrderByDescending(y => y.AccessTypeId).FirstOrDefault(),
-                            eventCSourcePositionId = x.OnEvent.ChildEvents
-                                                        .Where(y => y.ParentEventId == x.OnEvent.Id && y.EventTypeId == (int)EnumEventTypes.InfoSendForResponsibleExecutionReportingControler)
-                                                        .FirstOrDefault()
-                                                        .Accesses.First(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
+                            eventCSourcePositionId = x.OnEvent
+                                                        .ChildEvents.FirstOrDefault(y => y.ParentEventId == x.OnEvent.Id && y.EventTypeId == (int)EnumEventTypes.InfoSendForResponsibleExecutionReportingControler)
+                                                        .Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
                         }).Where(x => x.eventCSourcePositionId == null && x.waitRE.OnEvent.SourcePositionId == sendList.SourcePositionId 
                                     || x.eventCSourcePositionId != null && x.eventCSourcePositionId == sendList.SourcePositionId)
                         .Select(x => new InternalDocumentWait
