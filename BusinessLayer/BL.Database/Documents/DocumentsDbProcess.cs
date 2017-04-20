@@ -1127,7 +1127,7 @@ namespace BL.Database.Documents
                             ClientId = doc.ClientId,
                             EntityTypeId = doc.EntityTypeId,
                             PositionId = y.PositionId,
-                            AccessLevel = (EnumDocumentAccesses) y.AccessLevelId
+                            AccessLevel = (EnumAccessLevels) y.AccessLevelId
                         }).ToList();
 
                 doc.SendLists =
@@ -1151,7 +1151,7 @@ namespace BL.Database.Documents
                             Description = y.Description,
                             Stage = y.Stage,
                             DueDay = y.DueDay,
-                            AccessLevel = (EnumDocumentAccesses) y.AccessLevelId,
+                            AccessLevel = (EnumAccessLevels) y.AccessLevelId,
                         }).ToList();
 
                 doc.DocumentFiles =
@@ -1227,7 +1227,7 @@ namespace BL.Database.Documents
                 }
 
                 doc.AccessLevel =
-                    (EnumDocumentAccesses)
+                    (EnumAccessLevels)
                         CommonQueries.GetDocumentAccessesesQry(context,documentId).Max(x => x.AccessLevelId);
                 doc.Tasks = dbContext.DocumentTasksSet.Where(x => x.ClientId == context.CurrentClientId)
                     .Where(x => x.DocumentId == documentId)
@@ -1263,7 +1263,7 @@ namespace BL.Database.Documents
                         Description = y.Description,
                         DueDate = y.DueDate,
                         DueDay = y.DueDay,
-                        AccessLevel = (EnumDocumentAccesses) y.AccessLevelId,
+                        AccessLevel = (EnumAccessLevels) y.AccessLevelId,
                         IsInitial = y.IsInitial,
                     }).ToList();
                 doc.RestrictedSendLists =
@@ -1274,7 +1274,7 @@ namespace BL.Database.Documents
                             ClientId = y.ClientId,
                             EntityTypeId = y.EntityTypeId,
                             PositionId = y.PositionId,
-                            AccessLevel = (EnumDocumentAccesses) y.AccessLevelId,
+                            AccessLevel = (EnumAccessLevels) y.AccessLevelId,
                         }).ToList();
                 doc.Papers = dbContext.DocumentPapersSet.Where(x => x.ClientId == context.CurrentClientId)
                     .Where(x => x.DocumentId == documentId)
@@ -1422,7 +1422,7 @@ namespace BL.Database.Documents
                         EntityTypeId = x.EntityTypeId,
                         DocumentId = x.DocumentId,
                         PositionId = x.PositionId,
-                        AccessLevel = (EnumDocumentAccesses) x.AccessLevelId,
+                        AccessLevel = (EnumAccessLevels) x.AccessLevelId,
                         IsInWork = x.IsInWork,
                     }).ToList();
                 transaction.Complete();

@@ -328,14 +328,14 @@ namespace BL.Logic.Common
         #endregion Set
 
         #region GetNew
-        public static InternalDocumentAccess GetNewDocumentAccess(IContext context, int entityTypeId, int? documentId, EnumDocumentAccesses? accessLevel = null, int? positionId = null, int? agentId = null)
+        public static InternalDocumentAccess GetNewDocumentAccess(IContext context, int entityTypeId, int? documentId, EnumAccessLevels? accessLevel = null, int? positionId = null, int? agentId = null)
         {
             var res = new InternalDocumentAccess
             {
                 DocumentId = documentId ?? 0,
                 ClientId = context.CurrentClientId,
                 EntityTypeId = entityTypeId,
-                AccessLevel = accessLevel ?? EnumDocumentAccesses.PersonalRefIO,
+                AccessLevel = accessLevel ?? EnumAccessLevels.PersonallyAndIOAndReferents,
                 IsInWork = true,
                 IsFavourite = false,
                 PositionId = positionId ?? context.CurrentPositionId,
@@ -344,14 +344,14 @@ namespace BL.Logic.Common
             SetLastChange(context, res);
             return res;
         }
-        public static IEnumerable<InternalDocumentAccess> GetNewDocumentAccesses(IContext context, int entityTypeId, int? documentId, EnumDocumentAccesses? accessLevel = null, int? positionId = null, int? agentId = null)
+        public static IEnumerable<InternalDocumentAccess> GetNewDocumentAccesses(IContext context, int entityTypeId, int? documentId, EnumAccessLevels? accessLevel = null, int? positionId = null, int? agentId = null)
         {
             return new List<InternalDocumentAccess>
             {
                 GetNewDocumentAccess(context,entityTypeId,documentId,accessLevel,positionId,agentId),
             };
         }
-        public static IEnumerable<InternalDocumentAccess> GetNewDocumentAccesses(IContext context, int entityTypeId, EnumDocumentAccesses accessLevel, IEnumerable<InternalDocumentEventAccess> accesses)
+        public static IEnumerable<InternalDocumentAccess> GetNewDocumentAccesses(IContext context, int entityTypeId, EnumAccessLevels accessLevel, IEnumerable<InternalDocumentEventAccess> accesses)
         {
             var res = accesses.Select(x => new InternalDocumentAccess
             {

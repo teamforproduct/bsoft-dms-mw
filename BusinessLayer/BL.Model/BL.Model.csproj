@@ -543,7 +543,6 @@
     <Compile Include="Enums\EnumValueTypes.cs" />
     <Compile Include="Enums\EnumSubordinationTypes.cs" />
     <Compile Include="Enums\EnumDocumentDirections.cs" />
-    <Compile Include="Enums\EnumDocumentAccesses.cs" />
     <Compile Include="Enums\EnumEventTypes.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryStandartSendList.cs" />
     <Compile Include="Enums\EnumImportanceEventTypes.cs" />

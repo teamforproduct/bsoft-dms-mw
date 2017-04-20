@@ -24,7 +24,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// ИД уровня доступа
         /// </summary>
-        public EnumDocumentAccesses AccessLevel { get; set; }
+        public EnumAccessLevels AccessLevel { get; set; }
         public string PositionName { get; set; }
         public string PositionExecutorAgentName { get; set; }
         public string AccessLevelName { get; set; }

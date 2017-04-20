@@ -2013,7 +2013,7 @@ namespace BL.Database.Common
 
                 SourcePositionName = y.SourcePosition.Name,
                 TargetPositionName = y.TargetPosition.Name,
-                AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
+                AccessLevel = (EnumAccessLevels)y.AccessLevelId,
                 AccessLevelName = y.AccessLevel.Name,
                 StartEvent = y.StartEvent == null
                                         ? null

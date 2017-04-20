@@ -34,7 +34,7 @@ namespace BL.Database.Documents
                     PositionId = y.PositionId,
                     PositionName = y.Position.Name,
                     PositionExecutorAgentName = y.Position.ExecutorAgent.Name + (y.Position.ExecutorType.Suffix != null ? " (" + y.Position.ExecutorType.Suffix + ")" : null),
-                    AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
+                    AccessLevel = (EnumAccessLevels)y.AccessLevelId,
                     AccessLevelName = y.AccessLevel.Name,
                     DepartmentName = y.Position.Department.Name,
                 }).FirstOrDefault();
@@ -56,7 +56,7 @@ namespace BL.Database.Documents
                     PositionId = y.PositionId,
                     PositionName = y.Position.Name,
                     PositionExecutorAgentName = y.Position.ExecutorAgent.Name + (y.Position.ExecutorType.Suffix != null ? " (" + y.Position.ExecutorType.Suffix + ")" : null),
-                    AccessLevel = (EnumDocumentAccesses)y.AccessLevelId,
+                    AccessLevel = (EnumAccessLevels)y.AccessLevelId,
                     AccessLevelName = y.AccessLevel.Name,
                     DepartmentName = y.Position.Department.Name,
                 }).ToList();
