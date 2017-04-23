@@ -33,6 +33,7 @@ using System.Threading.Tasks;
 using System.Web;
 using BL.Model.DictionaryCore.FrontModel.Employees;
 using BL.Model.AdminCore.IncomingModel;
+using System.Net.Http;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -297,6 +298,10 @@ namespace DMS_WebAPI.Utilities
 
                 assignmentId = (int)dicService.ExecuteAction(EnumDictionaryActions.AddExecutor, context, ass);
 
+
+                // Отправка приглашения
+
+
                 return empoyeeId;
             }
             catch (Exception e)
@@ -525,10 +530,29 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public string AddClientSaaS(AddClientSaaS model)
+        public async Task<string>  AddClientSaaS(AddClientSaaS model)
         {
             // Проверка уникальности доменного имени
             if (_webDb.ExistsClients(new FilterAspNetClients { Code = model.ClientCode })) throw new ClientCodeAlreadyExists(model.ClientCode);
+
+           var client = new HttpClient();
+
+            var responseString = await client.GetStringAsync("http://10.88.12.21:82/newhost.pl?fqdn=bsoft.ostrean.com");
+
+            switch (responseString)
+            {
+                case "Created":
+                    //- успешное выполнение
+                    break;
+                case "BadRequest":
+                    throw new ClientCodeRequired(); //- не указан параметр fqdn
+                case "PreconditionFailed":
+                    throw new ClientCodeInvalid(); //- параметр не соответствует маске[-0 - 9a - z].ostrean.com
+                case "Conflict":
+                    throw new ClientCodeAlreadyExists(model.ClientCode); //- такой субдомен уже существует
+                default:
+                    throw new ClientCreateException(new List<string> { responseString });
+            }
 
             //TODO Автоматическое определение сервера
             // определяю сервер для клиента пока первый попавшийся
@@ -605,9 +629,9 @@ namespace DMS_WebAPI.Utilities
 
             AddUserEmployeeInOrg(ctx, new AddEmployeeInOrg
             {
-                FirstName = model.Name,
+                FirstName = model.FirstName,
                 LastName = model.LastName,
-                //MiddleName = model.MiddleName,
+                MiddleName = model.MiddleName,
                 OrgName = languages.GetTranslation(ctx.CurrentEmployee.LanguageId, "##l@Clients:" + "MyCompany" + "@l##"),
                 DepartmentName = languages.GetTranslation(ctx.CurrentEmployee.LanguageId, "##l@Clients:" + "MyDepartment" + "@l##"),
                 PositionName = languages.GetTranslation(ctx.CurrentEmployee.LanguageId, "##l@Clients:" + "MyPosition" + "@l##"),

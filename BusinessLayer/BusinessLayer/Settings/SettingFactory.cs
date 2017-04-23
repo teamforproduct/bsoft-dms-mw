@@ -3,7 +3,7 @@ using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Logic.Settings
 {
-    public static class SettingsFactory
+    public static class SettingFactory
     {
         public static InternalSystemSetting GetDefaultSetting(EnumSystemSettings key)
         {

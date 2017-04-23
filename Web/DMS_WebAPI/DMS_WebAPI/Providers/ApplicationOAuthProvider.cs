@@ -70,7 +70,7 @@ namespace DMS_WebAPI.Providers
         {
             string clientCode = context.Request.Body.GetClientCode();
             // код клиента - обязательный параметр
-            if (string.IsNullOrEmpty(clientCode?.Trim())) throw new ClientRequired();
+            if (string.IsNullOrEmpty(clientCode?.Trim())) throw new ClientCodeRequired();
 
             // Если передали несуществующие код клиента. дальше не пускаю
             var webService = DmsResolver.Current.Get<WebAPIService>();

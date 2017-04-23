@@ -16,7 +16,7 @@ namespace BL.Database.FileWorker
     {
         private string GetStorePath(IContext ctx)
         {
-            var sett = DmsResolver.Current.Get<ISettings>();
+            var sett = DmsResolver.Current.Get<ISettingValues>();
             return sett.GetFileStorePath(ctx);
         }
 
@@ -550,23 +550,23 @@ namespace BL.Database.FileWorker
         {
             var path = GetStorePath(ctx);
             var templateReportFile = string.Empty;
-            var sett = DmsResolver.Current.Get<ISettings>();
+            var setVal = DmsResolver.Current.Get<ISettingValues>();
             switch (reportType)
             {
                 case EnumReportTypes.RegistrationCardIncomingDocument:
-                    templateReportFile = sett.GetReportRegistrationCardIncomingDocument(ctx);
+                    templateReportFile = setVal.GetReportRegistrationCardIncomingDocument(ctx);
                     break;
                 case EnumReportTypes.RegistrationCardInternalDocument:
-                    templateReportFile = sett.GetReportRegistrationCardInternalDocument(ctx);
+                    templateReportFile = setVal.GetReportRegistrationCardInternalDocument(ctx);
                     break;
                 case EnumReportTypes.RegistrationCardOutcomingDocument:
-                    templateReportFile = sett.GetReportRegistrationCardOutcomingDocument(ctx);
+                    templateReportFile = setVal.GetReportRegistrationCardOutcomingDocument(ctx);
                     break;
                 case EnumReportTypes.RegisterTransmissionDocuments:
-                    templateReportFile = sett.GetReportRegisterTransmissionDocuments(ctx);
+                    templateReportFile = setVal.GetReportRegisterTransmissionDocuments(ctx);
                     break;
                 case EnumReportTypes.DocumentForDigitalSignature:
-                    templateReportFile = sett.GetReportDocumentForDigitalSignature(ctx);
+                    templateReportFile = setVal.GetReportDocumentForDigitalSignature(ctx);
                     break;
             }
 

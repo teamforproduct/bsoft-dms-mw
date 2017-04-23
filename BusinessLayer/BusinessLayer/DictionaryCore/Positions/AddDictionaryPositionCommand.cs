@@ -91,13 +91,13 @@ namespace BL.Logic.DictionaryCore
 
         private bool GetSubordinationsSendAllForExecution()
         {
-            var tmpService = DmsResolver.Current.Get<ISettings>();
+            var tmpService = DmsResolver.Current.Get<ISettingValues>();
             return tmpService.GetSubordinationsSendAllForExecution(_context);
         }
 
         private bool GetSubordinationsSendAllForInforming()
         {
-            var tmpService = DmsResolver.Current.Get<ISettings>();
+            var tmpService = DmsResolver.Current.Get<ISettingValues>();
             return tmpService.GetSubordinationsSendAllForInforming(_context);
         }
     }

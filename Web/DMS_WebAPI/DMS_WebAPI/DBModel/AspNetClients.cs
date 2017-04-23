@@ -15,7 +15,8 @@ namespace DMS_WebAPI.DBModel
         [MaxLength(2000)]
         public string Name { get; set; }
 
-        [MaxLength(2000)]
+        [MaxLength(256)]
+        [Index("IX_Code", IsUnique = true)]
         public string Code { get; set; }
 
         [MaxLength(2000)]
