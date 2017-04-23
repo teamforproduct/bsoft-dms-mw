@@ -51,7 +51,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            _document.Events = new List<InternalDocumentEvent> { CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _document.Id, EnumEventTypes.AffixSigning, Model.EventDate, Model.Description, null, null, 
+            _document.Events = new List<InternalDocumentEvent> { CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _document.Id, EnumEventTypes.AffixSigning, Model.EventDate, Model.Description, null, null, null, 
               _context.CurrentPositionId, null, _context.CurrentPositionId) };
 
             var subscription = new InternalDocumentSubscription

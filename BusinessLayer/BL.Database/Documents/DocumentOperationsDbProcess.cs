@@ -1491,8 +1491,9 @@ namespace BL.Database.Documents
                                                 EntityTypeId = x.EntityTypeId,
                                                 DocumentId = x.OnEvent.DocumentId,
                                                 EventType = (EnumEventTypes)x.OnEvent.EventTypeId,
-                                                SourcePositionId = x.OnEvent.SourcePositionId,
-                                                TargetPositionId = x.OnEvent.TargetPositionId,
+                                                SourcePositionId = x.OnEvent.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
+                                                TargetPositionId = x.OnEvent.Accesses.Where(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source || y.AccessTypeId == (int)EnumEventAccessTypes.Target)
+                                                                    .OrderByDescending(y=> y.AccessTypeId).FirstOrDefault().PositionId,
                                                 TaskId = x.OnEvent.TaskId,
                                             }
                                         }

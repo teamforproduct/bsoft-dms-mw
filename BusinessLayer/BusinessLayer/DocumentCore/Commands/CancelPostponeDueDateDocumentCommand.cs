@@ -89,7 +89,7 @@ namespace BL.Logic.DocumentCore.Commands
         public override object Execute()
         {
             _docWait.ResultTypeId = (int)EnumResultTypes.CloseByRejecting;
-            _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, EnumEventTypes.CancelPostponeDueDate, Model.EventDate, Model.Description, null, _docWait.OnEvent.TaskId, _docWait.OnEvent.SourcePositionId, null, _docWait.OnEvent.TargetPositionId);
+            _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, EnumEventTypes.CancelPostponeDueDate, Model.EventDate, Model.Description, null, Model.EventId, _docWait.OnEvent.TaskId, _docWait.OnEvent.SourcePositionId, null, _docWait.OnEvent.TargetPositionId);
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
             _document.Waits = new List<InternalDocumentWait> { _docWait };
             _operationDb.CloseDocumentWait(_context, _document, GetIsUseInternalSign(), GetIsUseCertificateSign(), Model.ServerPath);

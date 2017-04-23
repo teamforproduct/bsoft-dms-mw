@@ -9,6 +9,8 @@ using System;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Helpers;
+using BL.Model.DocumentCore.IncomingModel;
+using System.Collections.Generic;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -77,7 +79,11 @@ namespace BL.Logic.DocumentCore.Commands
         public override object Execute()
         {
             _docWait.ResultTypeId = (int)EnumResultTypes.CloseByWithdrawing;
-            _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, null, _docWait.OnEvent.TaskId, _docWait.OnEvent.TargetPositionId, null, _docWait.OnEvent.SourcePositionId);
+            var evAcceesses = (Model.TargetCopyAccessGroups?.Where(x => x.AccessType == EnumEventAccessTypes.TargetCopy) ?? new List<AccessGroup>())
+                .Concat(new List<AccessGroup> { new AccessGroup { AccessType = EnumEventAccessTypes.Target, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = _docWait.OnEvent.TargetPositionId } })
+                .ToList();
+            _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, null, Model.EventId, _docWait.OnEvent.TaskId, 
+                _docWait.OnEvent.TargetPositionId, null, _docWait.OnEvent.SourcePositionId, null, evAcceesses, true); //TODO can include not in WG?
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
             var sendList = _document.SendLists.FirstOrDefault(x => x.IsInitial);
             if (sendList != null)

@@ -28,6 +28,10 @@ namespace BL.Model.DocumentCore.Actions
         /// </summary>
         public DateTime? EventDate { get { return _eventDate; } set { _eventDate = value.ToUTC(); } }
         private DateTime? _eventDate;
+        /// <summary>
+        /// ИД родительского события, если нужен ответ
+        /// </summary>
+        public int? ParentEventId { get; set; }
 
     }
 }
