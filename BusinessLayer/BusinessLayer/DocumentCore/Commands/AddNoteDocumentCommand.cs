@@ -55,7 +55,8 @@ namespace BL.Logic.DocumentCore.Commands
         {
 
             var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task); 
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.AddNote, Model.EventDate, Model.Description, null, Model.ParentEventId, taskId);
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.AddNote, Model.EventDate, Model.Description, null, Model.ParentEventId, taskId,
+                accessGroups: Model.TargetCopyAccessGroups, isVeryfyDocumentAccess: true);
             _operationDb.AddDocumentEvents(_context, _document);
             return null;
         }

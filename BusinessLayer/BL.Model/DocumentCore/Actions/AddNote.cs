@@ -2,6 +2,8 @@
 using BL.Model.Users;
 using System.ComponentModel.DataAnnotations;
 using BL.Model.Extensions;
+using System.Collections.Generic;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace BL.Model.DocumentCore.Actions
 {
@@ -32,6 +34,10 @@ namespace BL.Model.DocumentCore.Actions
         /// ИД родительского события, если нужен ответ
         /// </summary>
         public int? ParentEventId { get; set; }
+        /// <summary>
+        /// группы получателей копии
+        /// </summary>
+        public List<AccessGroup> TargetCopyAccessGroups { get; set; }
 
     }
 }

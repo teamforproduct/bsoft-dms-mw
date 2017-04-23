@@ -435,11 +435,11 @@ namespace BL.Logic.Common
             return res;
         }
 
-        public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvents(IContext context, int entityTypeId, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string addDescription = null, int? parentEventId = null, int? taskId = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, List<AccessGroup> accessGroups = null)
+        public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvents(IContext context, int entityTypeId, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string addDescription = null, int? parentEventId = null, int? taskId = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, List<AccessGroup> accessGroups = null, bool isVeryfyDocumentAccess = false)
         {
             return new List<InternalDocumentEvent>
             {
-                GetNewDocumentEvent(context,entityTypeId, documentId,eventType,eventDate,description,addDescription,parentEventId,taskId,targetPositionId,targetAgentId,sourcePositionId,sourceAgentId,accessGroups),
+                GetNewDocumentEvent(context,entityTypeId, documentId,eventType,eventDate,description,addDescription,parentEventId,taskId,targetPositionId,targetAgentId,sourcePositionId,sourceAgentId,accessGroups,isVeryfyDocumentAccess),
             };
         }
 
@@ -465,7 +465,8 @@ namespace BL.Logic.Common
                 DocumentId = controlOnModel.DocumentId,
                 DueDate = controlOnModel.DueDate,
                 AttentionDate = controlOnModel.AttentionDate,
-                OnEvent = eventType == null ? null : GetNewDocumentEvent(context, entityTypeId, controlOnModel.DocumentId, eventType.Value, controlOnModel.EventDate, controlOnModel.Description, null, controlOnModel.ParentEventId, taskId)
+                OnEvent = eventType == null ? null : GetNewDocumentEvent(context, entityTypeId, controlOnModel.DocumentId, eventType.Value, controlOnModel.EventDate, controlOnModel.Description, null, controlOnModel.ParentEventId, taskId,
+                        accessGroups: controlOnModel.TargetCopyAccessGroups, isVeryfyDocumentAccess: true)
             };
             SetLastChange(context, res);
             return res;

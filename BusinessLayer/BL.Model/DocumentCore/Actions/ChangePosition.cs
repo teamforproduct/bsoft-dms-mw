@@ -4,6 +4,7 @@ using BL.Model.Enums;
 using BL.Model.Users;
 using System.ComponentModel.DataAnnotations;
 using BL.Model.Extensions;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace BL.Model.DocumentCore.Actions
 {
@@ -36,6 +37,10 @@ namespace BL.Model.DocumentCore.Actions
         /// </summary>
         public DateTime? EventDate { get { return _eventDate; } set { _eventDate = value.ToUTC(); } }
         private DateTime? _eventDate;
+        /// <summary>
+        /// группы получателей копии
+        /// </summary>
+        public List<AccessGroup> TargetCopyAccessGroups { get; set; }
 
     }
 }
