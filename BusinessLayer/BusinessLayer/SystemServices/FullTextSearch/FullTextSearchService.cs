@@ -113,9 +113,9 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
             try
             {
-                var systemSetting = SettingsFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED);
+                var systemSetting = SettingFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED);
                 systemSetting.Value = false.ToString();
-                Settings.SaveSetting(ctx, systemSetting);
+                _settings.SaveSetting(ctx, systemSetting);
                 worker.StartUpdate();//initiate the update of FT
 
                 var currCashId = _systemDb.GetCurrentMaxCasheId(ctx);
