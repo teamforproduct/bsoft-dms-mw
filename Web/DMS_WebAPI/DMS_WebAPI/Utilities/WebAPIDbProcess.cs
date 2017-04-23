@@ -8,6 +8,7 @@ using BL.Model.Common;
 using BL.Model.Database;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.Model.SystemCore.InternalModel;
 using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
@@ -30,6 +31,60 @@ namespace DMS_WebAPI.Utilities
         }
 
         //        private TransactionScope GetTransaction() => new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted });
+
+        #region [+] Settings ...
+
+        public int MergeSetting(InternalGeneralSetting model)
+        {
+            var res = 0;
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var cset = dbContext.SystemSettingsSet.FirstOrDefault(x => x.Key == model.Key);
+                if (cset == null)
+                {
+                    var nsett = new SystemSettings
+                    {
+                        Key = model.Key,
+                        Value = model.Value,
+                        ValueTypeId = (int)model.ValueType,
+                        Name = model.Name,
+                        Description = model.Description,
+                        Order = model.Order,
+                    };
+                    dbContext.SystemSettingsSet.Add(nsett);
+                    dbContext.SaveChanges();
+                    res = nsett.Id;
+                }
+                else
+                {
+                    cset.Value = model.Value;
+
+                    if (model.ValueType > 0)
+                    {
+                        cset.ValueTypeId = (int)model.ValueType;
+                    }
+
+                    dbContext.SaveChanges();
+                    res = cset.Id;
+                }
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public string GetSettingValue(string key)
+        {
+            var res = string.Empty;
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                    res = dbContext.SystemSettingsSet.Where(x => x.Key == key)
+                            .Select(x => x.Value)
+                            .FirstOrDefault();
+                transaction.Complete();
+                return res;
+            }
+        }
+        #endregion
 
         #region Servers
 
@@ -69,6 +124,11 @@ namespace DMS_WebAPI.Utilities
                         (current, value) => current.Or(e => e.ServerType == value).Expand());
 
                     qry = qry.Where(filterContains);
+                }
+
+                if (!string.IsNullOrEmpty(filter.ServerNameExact))
+                {
+                    qry = qry.Where(x => x.Name == filter.ServerNameExact);
                 }
             }
 

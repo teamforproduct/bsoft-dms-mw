@@ -87,12 +87,14 @@
     <Compile Include="Helpers\CashService\CacheService.cs" />
     <Compile Include="Helpers\CashService\CasheBase.cs" />
     <Compile Include="Helpers\CashService\ICacheService.cs" />
-    <Compile Include="Helpers\IConvertToDataSet.cs" />
+    <Compile Include="Interfaces\IConvertToDataSet.cs" />
     <Compile Include="Helpers\ConvertToDataSet.cs" />
     <Compile Include="Helpers\Logger.cs" />
     <Compile Include="Helpers\Transactions.cs" />
+    <Compile Include="Helpers\TypedValues.cs" />
     <Compile Include="Helpers\VerifyLicence.cs" />
     <Compile Include="Interfaces\IDmsDatabaseContext.cs" />
+    <Compile Include="Interfaces\IGeneralSettings.cs" />
     <Compile Include="Interfaces\ISettingValue.cs" />
     <Compile Include="Interfaces\ISystemCommand.cs" />
     <Compile Include="Interfaces\ICommand.cs" />

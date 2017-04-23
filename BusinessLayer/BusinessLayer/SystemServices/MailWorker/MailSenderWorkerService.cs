@@ -56,7 +56,7 @@ namespace BL.Logic.SystemServices.MailWorker
                     var msSetting = new InternalSendMailServerParameters
                     {
                         DatabaseKey = keyValuePair.Key,
-                        CheckInterval = SettingValues.GetMailTimeoutMin(ctx),
+                        CheckInterval = SettingValues.GetMailSenderTimeoutMin(ctx),
                         ServerType = SettingValues.GetMailInfoServerType(ctx),
                         FromAddress = SettingValues.GetMailInfoSystemMail(ctx),
                         Login = SettingValues.GetMailInfoLogin(ctx),
@@ -141,7 +141,7 @@ namespace BL.Logic.SystemServices.MailWorker
             var msSetting = new InternalSendMailParameters(
                     new InternalSendMailServerParameters
                     {
-                        CheckInterval = SettingValues.GetMailTimeoutMin(ctx),
+                        CheckInterval = SettingValues.GetMailSenderTimeoutMin(ctx),
                         ServerType = SettingValues.GetMailInfoServerType(ctx),
                         FromAddress = SettingValues.GetMailInfoSystemMail(ctx),
                         Login = SettingValues.GetMailInfoLogin(ctx),

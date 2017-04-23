@@ -71,7 +71,7 @@ namespace DMS_WebAPI.Models
         {
             // Синхронизировать с DmsDbImportData
             var items = new List<SystemSettings>();
-            items.Add(GetSystemSettings(10, EnumGeneralSettings.CurrentServerId, "1", EnumValueTypes.Number));
+            items.Add(GetSystemSettings(10, EnumGeneralSettings.ServerForNewClient, string.Empty, EnumValueTypes.Text));
 
 
 

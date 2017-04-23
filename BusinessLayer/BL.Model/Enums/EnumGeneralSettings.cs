@@ -5,7 +5,9 @@
     /// </summary>
     public enum EnumGeneralSettings
     {
-        CurrentServerId,
+        ServerForNewClient,
+
+        MailSenderTimeoutMin,
 
         // При добавлении новых настроек не забудь добавить значения по умолчанию в SettingsFactory
     }

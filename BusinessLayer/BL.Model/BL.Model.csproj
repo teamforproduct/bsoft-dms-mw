@@ -179,6 +179,8 @@
     <Compile Include="FullTextSearch\FullTextIndexItemAccessInfo.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSearchQueryLog.cs" />
     <Compile Include="SystemCore\FullTextFilterTypes.cs" />
+    <Compile Include="SystemCore\IncomingModel\ModifyGeneralSetting.cs" />
+    <Compile Include="SystemCore\InternalModel\InternalGeneralSetting.cs" />
     <Compile Include="SystemCore\UISorting.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterAgentFavourite.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryTag.cs" />

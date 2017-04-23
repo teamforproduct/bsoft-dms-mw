@@ -8,13 +8,13 @@ using BL.Database.SystemDb;
 using BL.Model.SystemCore.Filters;
 using BL.Model.SystemCore.InternalModel;
 using BL.Model.Enums;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.Settings
 {
-    public class Setting : ISettings
+    public class Setting : TypedValues, ISettings
     {
 
-        #region [+] Управление настройками ...
         private readonly Dictionary<string, object> _cacheSettings = new Dictionary<string, object>();
 
         /// <summary>
@@ -186,119 +186,6 @@ namespace BL.Logic.Settings
         {
             return key + "_" + ctx.CurrentDB.Address + "_" + ctx.CurrentDB.DefaultDatabase + "_" + ctx.CurrentAgentId;
         }
-
-        public object GetTypedValue(string Value, EnumValueTypes ValueType)
-        {
-            object res;
-
-            if (string.IsNullOrEmpty(Value)) return null;
-
-            switch (ValueType)
-            {
-                case EnumValueTypes.Text:
-                case EnumValueTypes.Api:
-                case EnumValueTypes.Password:
-                    res = Value;
-                    break;
-                case EnumValueTypes.Number:
-                    res = Int32.Parse(Value);
-                    break;
-                case EnumValueTypes.Date:
-                    res = DateTime.Parse(Value);
-                    break;
-                case EnumValueTypes.Bool:
-                    res = Boolean.Parse(Value);
-                    break;
-                default:
-                    res = Value;
-                    break;
-            }
-
-            return res;
-        }
-
-        #endregion
-
-        //#region [+] Частные настройки ...
-        //public bool GetSubordinationsSendAllForExecution(IContext ctx) =>
-        //     GetSettingWithWriteDefaultIfEmpty<bool>(ctx, EnumSystemSettings.SUBORDINATIONS_SEND_ALL_FOR_EXECUTION);
-
-        //public bool GetSubordinationsSendAllForInforming(IContext ctx) =>
-        //     GetSettingWithWriteDefaultIfEmpty<bool>(ctx, EnumSystemSettings.SUBORDINATIONS_SEND_ALL_FOR_INFORMING);
-
-
-        //public int GetMailTimeoutMin(IContext ctx) =>
-        //     GetSetting<int>(ctx, EnumSystemSettings.MAILSERVER_TIMEOUT_MINUTE);
-
-        //public MailServerType GetMailInfoServerType(IContext ctx) =>
-        //     (MailServerType)GetSetting<int>(ctx, EnumSystemSettings.MAILSERVER_TYPE);
-
-        //public string GetMailInfoSystemMail(IContext ctx) =>
-        //     GetSetting<string>(ctx, EnumSystemSettings.MAILSERVER_SYSTEMMAIL);
-
-        //public string GetMailInfoName(IContext ctx) =>
-        //     GetSetting<string>(ctx, EnumSystemSettings.MAILSERVER_NAME);
-
-        //public string GetMailInfoLogin(IContext ctx) =>
-        //     GetSetting<string>(ctx, EnumSystemSettings.MAILSERVER_LOGIN);
-
-        //public string GetMailInfoPassword(IContext ctx) =>
-        //     GetSetting<string>(ctx, EnumSystemSettings.MAILSERVER_PASSWORD);
-
-        //public int GetMailInfoPort(IContext ctx) =>
-        //     GetSetting<int>(ctx, EnumSystemSettings.MAILSERVER_PORT);
-
-        //public bool GetDigitalSignatureIsUseCertificateSign(IContext ctx) =>
-        //     GetSettingWithWriteDefaultIfEmpty<bool>(ctx, EnumSystemSettings.DIGITAL_SIGNATURE_IS_USE_CERTIFICATE_SIGN);
-
-        //public bool GetDigitalSignatureIsUseInternalSign(IContext ctx) =>
-        //     GetSettingWithWriteDefaultIfEmpty<bool>(ctx, EnumSystemSettings.DIGITAL_SIGNATURE_IS_USE_INTERNAL_SIGN);
-
-        //public string GetFulltextDatastorePath(IContext ctx) =>
-        //     GetSettingWithWriteDefaultIfEmpty<string>(ctx, EnumSystemSettings.FULLTEXTSEARCH_DATASTORE_PATH);
-
-        //public int GetFulltextRefreshTimeout(IContext ctx) =>
-        //     GetSettingWithWriteDefaultIfEmpty<int>(ctx, EnumSystemSettings.FULLTEXTSEARCH_REFRESH_TIMEOUT);
-
-        //public bool GetFulltextWasInitialized(IContext ctx) =>
-        //     GetSettingWithWriteDefaultIfEmpty<bool>(ctx, EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED);
-
-        //public int GetFulltextRowLimit(IContext ctx) =>
-        //    GetSettingWithWriteDefaultIfEmpty<int>(ctx, EnumSystemSettings.FULLTEXTSEARCH_ROWLIMIT);
-
-        //public string GetFileStorePath(IContext ctx) =>
-        //     GetSettingWithWriteDefaultIfEmpty<string>(ctx, EnumSystemSettings.IRF_DMS_FILESTORE_PATH);
-
-        //public string GetReportDocumentForDigitalSignature(IContext ctx) =>
-        //     GetSettingWithWriteDefaultIfEmpty<string>(ctx, EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_DocumentForDigitalSignature);
-
-        //public string GetReportRegisterTransmissionDocuments(IContext ctx) =>
-        //     GetSettingWithWriteDefaultIfEmpty<string>(ctx, EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegisterTransmissionDocuments);
-
-        //public string GetReportRegistrationCardIncomingDocument(IContext ctx) =>
-        //     GetSettingWithWriteDefaultIfEmpty<string>(ctx, EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegistrationCardIncomingDocument);
-
-        //public string GetReportRegistrationCardInternalDocument(IContext ctx) =>
-        //     GetSettingWithWriteDefaultIfEmpty<string>(ctx, EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegistrationCardInternalDocument);
-
-        //public string GetReportRegistrationCardOutcomingDocument(IContext ctx) =>
-        //     GetSettingWithWriteDefaultIfEmpty<string>(ctx, EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegistrationCardOutcomingDocument);
-
-
-        //public int GetAutoplanTimeoutMinute(IContext ctx) =>
-        //     GetSettingWithWriteDefaultIfEmpty<int>(ctx, EnumSystemSettings.RUN_AUTOPLAN_TIMEOUT_MINUTE);
-
-        //public int GetClearTrashDocumentsTimeoutMinute(IContext ctx) =>
-        //     GetSettingWithWriteDefaultIfEmpty<int>(ctx, EnumSystemSettings.RUN_CLEARTRASHDOCUMENTS_TIMEOUT_MINUTE);
-
-        //public int GetClearOldPdfCopiesInDay(IContext ctx) =>
-        //     GetSettingWithWriteDefaultIfEmpty<int>(ctx, EnumSystemSettings.OLDPDFDELETEPERIOD);
-
-        //public int GetClearTrashDocumentsTimeoutMinuteForClear(IContext ctx) =>
-        //     GetSettingWithWriteDefaultIfEmpty<int>(ctx, EnumSystemSettings.CLEARTRASHDOCUMENTS_TIMEOUT_MINUTE_FOR_CLEAR);
-
-        //#endregion
-
 
     }
 }

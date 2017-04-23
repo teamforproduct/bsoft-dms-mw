@@ -530,12 +530,12 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public async Task<string>  AddClientSaaS(AddClientSaaS model)
+        public async Task<string> AddClientSaaS(AddClientSaaS model)
         {
             // Проверка уникальности доменного имени
             if (_webDb.ExistsClients(new FilterAspNetClients { Code = model.ClientCode })) throw new ClientCodeAlreadyExists(model.ClientCode);
 
-           var client = new HttpClient();
+            var client = new HttpClient();
 
             var responseString = await client.GetStringAsync("http://10.88.12.21:82/newhost.pl?fqdn=bsoft.ostrean.com");
 
@@ -554,11 +554,19 @@ namespace DMS_WebAPI.Utilities
                     throw new ClientCreateException(new List<string> { responseString });
             }
 
-            //TODO Автоматическое определение сервера
-            // определяю сервер для клиента пока первый попавшийся
             // сервер может определяться более сложным образом: с учетом нагрузки, количества клиентов
-            var server = _webDb.GetServers(new FilterAdminServers()).FirstOrDefault();
-            if (server == null) throw new ServerIsNotFound();
+            var settings = DmsResolver.Current.Get<ISettingValues>();
+            var dbName = settings.GetCurrentServerName();
+
+            var db = _webDb.GetServers(new FilterAdminServers { ServerNameExact = dbName }).FirstOrDefault();
+
+            if (db == null)
+            {
+                // определяю сервер для клиента пока первый попавшийся
+                db = _webDb.GetServers(new FilterAdminServers()).FirstOrDefault();
+            }
+
+            if (db == null) throw new ServerIsNotFound();
 
 
             //if (string.IsNullOrEmpty(model.Password)) model.Password = "admin_" + model.ClientCode;
@@ -578,7 +586,7 @@ namespace DMS_WebAPI.Utilities
                 _webDb.AddClientServer(new SetClientServer
                 {
                     ClientId = model.ClientId,
-                    ServerId = server.Id,
+                    ServerId = db.Id,
                 });
 
 
@@ -597,9 +605,9 @@ namespace DMS_WebAPI.Utilities
                 transaction.Complete();
             }
 
-            server.ClientId = model.ClientId;
+            db.ClientId = model.ClientId;
 
-            var ctx = new AdminContext(server);
+            var ctx = new AdminContext(db);
 
             var languages = DmsResolver.Current.Get<ILanguages>();
 
@@ -1130,7 +1138,7 @@ namespace DMS_WebAPI.Utilities
 
         }
 
-        public void UpdateUserContextLastChangeDate(string token , DateTime date)
+        public void UpdateUserContextLastChangeDate(string token, DateTime date)
         {
             _webDb.UpdateUserContextLastChangeDate(token, date);
         }

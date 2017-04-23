@@ -6,7 +6,7 @@ namespace BL.CrossCutting.Interfaces
     {
         bool GetSubordinationsSendAllForExecution(IContext ctx);
         bool GetSubordinationsSendAllForInforming(IContext ctx);
-        int GetMailTimeoutMin(IContext ctx);
+        int GetMailSenderTimeoutMin(IContext ctx);
         MailServerType GetMailInfoServerType(IContext ctx);
 
 
@@ -50,6 +50,8 @@ namespace BL.CrossCutting.Interfaces
         int GetClearTrashDocumentsTimeoutMinute(IContext ctx);
 
         int GetClearTrashDocumentsTimeoutMinuteForClear(IContext ctx);
+
+        string GetCurrentServerName();
 
     }
 }

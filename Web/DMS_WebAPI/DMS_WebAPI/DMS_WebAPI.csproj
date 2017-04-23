@@ -432,6 +432,10 @@
     <Compile Include="Migrations\201704192136139_refactor_userContexts.Designer.cs">
       <DependentUpon>201704192136139_refactor_userContexts.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201704232218400_generalSettings.cs" />
+    <Compile Include="Migrations\201704232218400_generalSettings.Designer.cs">
+      <DependentUpon>201704232218400_generalSettings.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -453,6 +457,7 @@
     <Compile Include="Results\JsonResult.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Utilities\GeneralSettings.cs" />
     <Compile Include="Utilities\WebApiHelper.cs" />
     <Compile Include="Utilities\DimanicAuthorizeAttribute.cs" />
     <Compile Include="Utilities\StringExtentions.cs" />
@@ -624,6 +629,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201704192136139_refactor_userContexts.resx">
       <DependentUpon>201704192136139_refactor_userContexts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704232218400_generalSettings.resx">
+      <DependentUpon>201704232218400_generalSettings.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
