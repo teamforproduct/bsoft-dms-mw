@@ -309,7 +309,8 @@
     <Compile Include="EncryptionCore\Certificate\ModifyEncryptionCertificateCommand.cs" />
     <Compile Include="EncryptionCore\Interfaces\IEncryptionService.cs" />
     <Compile Include="DocumentCore\Commands\SelfAffixSigningDocumentCommand.cs" />
-    <Compile Include="Settings\SettingsFactory.cs" />
+    <Compile Include="Settings\SettingValues.cs" />
+    <Compile Include="Settings\SettingFactory.cs" />
     <Compile Include="SystemCore\FullTextSearch.cs" />
     <Compile Include="SystemCore\Settings\SetSettingCommand.cs" />
     <Compile Include="SystemCore\Settings\BaseSettingCommand.cs" />

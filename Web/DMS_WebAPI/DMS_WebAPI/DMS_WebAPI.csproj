@@ -398,6 +398,7 @@
     <Compile Include="Controllers\WebAPI\ClientLicencesController.cs" />
     <Compile Include="Controllers\WebAPI\ServersController.cs" />
     <Compile Include="DatabaseContext\ApplicationDbImportData.cs" />
+    <Compile Include="DBModel\AspNetClientRequests.cs" />
     <Compile Include="DBModel\AspNetClientServers.cs" />
     <Compile Include="DBModel\AspNetUserContexts.cs" />
     <Compile Include="DBModel\AspNetUserClientServer.cs" />
@@ -408,6 +409,8 @@
     <Compile Include="DBModel\AspNetLicences.cs" />
     <Compile Include="DBModel\AspNetClients.cs" />
     <Compile Include="DBModel\AspNetUserFingerprints.cs" />
+    <Compile Include="DBModel\SystemSettings.cs" />
+    <Compile Include="DBModel\SystemValueTypes.cs" />
     <Compile Include="DependencyInjection\ApiModel.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>

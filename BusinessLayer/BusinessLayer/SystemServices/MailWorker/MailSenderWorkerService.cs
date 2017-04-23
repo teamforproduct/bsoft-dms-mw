@@ -17,8 +17,8 @@ namespace BL.Logic.SystemServices.MailWorker
 
         private readonly Dictionary<InternalSendMailServerParameters, Timer> _timers;
         
-        public MailSenderWorkerService(ISystemDbProcess sysDb, ISettings settings, ILogger logger)
-            :base(settings, logger)
+        public MailSenderWorkerService(ISystemDbProcess sysDb, ISettingValues settingValues, ILogger logger)
+            :base(settingValues, logger)
         {
             _sysDb = sysDb;
             _timers = new Dictionary<InternalSendMailServerParameters, Timer>();
@@ -56,13 +56,13 @@ namespace BL.Logic.SystemServices.MailWorker
                     var msSetting = new InternalSendMailServerParameters
                     {
                         DatabaseKey = keyValuePair.Key,
-                        CheckInterval = Settings.GetMailTimeoutMin(ctx),
-                        ServerType = Settings.GetMailInfoServerType(ctx),
-                        FromAddress = Settings.GetMailInfoSystemMail(ctx),
-                        Login = Settings.GetMailInfoLogin(ctx),
-                        Pass = Settings.GetMailInfoPassword(ctx),
-                        Server = Settings.GetMailInfoName(ctx),
-                        Port = Settings.GetMailInfoPort(ctx)
+                        CheckInterval = SettingValues.GetMailTimeoutMin(ctx),
+                        ServerType = SettingValues.GetMailInfoServerType(ctx),
+                        FromAddress = SettingValues.GetMailInfoSystemMail(ctx),
+                        Login = SettingValues.GetMailInfoLogin(ctx),
+                        Pass = SettingValues.GetMailInfoPassword(ctx),
+                        Server = SettingValues.GetMailInfoName(ctx),
+                        Port = SettingValues.GetMailInfoPort(ctx)
                     };
 
                     // start timer only once. Do not do it regulary in case we don't know how much time sending of email take. So we can continue sending only when previous iteration was comlete
@@ -141,13 +141,13 @@ namespace BL.Logic.SystemServices.MailWorker
             var msSetting = new InternalSendMailParameters(
                     new InternalSendMailServerParameters
                     {
-                        CheckInterval = Settings.GetMailTimeoutMin(ctx),
-                        ServerType = Settings.GetMailInfoServerType(ctx),
-                        FromAddress = Settings.GetMailInfoSystemMail(ctx),
-                        Login = Settings.GetMailInfoLogin(ctx),
-                        Pass = Settings.GetMailInfoPassword(ctx),
-                        Server = Settings.GetMailInfoName(ctx),
-                        Port = Settings.GetMailInfoPort(ctx)
+                        CheckInterval = SettingValues.GetMailTimeoutMin(ctx),
+                        ServerType = SettingValues.GetMailInfoServerType(ctx),
+                        FromAddress = SettingValues.GetMailInfoSystemMail(ctx),
+                        Login = SettingValues.GetMailInfoLogin(ctx),
+                        Pass = SettingValues.GetMailInfoPassword(ctx),
+                        Server = SettingValues.GetMailInfoName(ctx),
+                        Port = SettingValues.GetMailInfoPort(ctx)
                     })
             {
                 Body = body,

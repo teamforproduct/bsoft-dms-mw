@@ -26,7 +26,7 @@ namespace BL.Logic.SystemServices.AutoPlan
         private readonly IQueueWorkerService _workerSrv;
         private readonly ICommandService _cmdService;
 
-        public AutoPlanService(ISettings settings, ILogger logger, ICommandService cmdService, IQueueWorkerService workerService) : base(settings, logger)
+        public AutoPlanService(ISettingValues settingValues, ILogger logger, ICommandService cmdService, IQueueWorkerService workerService) : base(settingValues, logger)
         {
             _sysDb = DmsResolver.Current.Get<ISystemDbProcess>();
             _docDb = DmsResolver.Current.Get<IDocumentsDbProcess>();
@@ -44,7 +44,7 @@ namespace BL.Logic.SystemServices.AutoPlan
                 {
                     var ftsSetting = new AutoPlanSettings
                     {
-                        TimeToUpdate = Settings.GetAutoplanTimeoutMinute(keyValuePair.Value),
+                        TimeToUpdate = SettingValues.GetAutoplanTimeoutMinute(keyValuePair.Value),
                         DatabaseKey = keyValuePair.Key,
                     };
                     var tmr = new Timer(OnSinchronize, ftsSetting, ftsSetting.TimeToUpdate * 60000, Timeout.Infinite);

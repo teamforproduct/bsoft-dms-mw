@@ -1210,6 +1210,7 @@ namespace BL.Database.DatabaseContext
 
         public static List<SystemValueTypes> GetSystemValueTypes()
         {
+            // Синхронизировать с ApplicationDbImportData
             var items = new List<SystemValueTypes>();
 
             items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Text, Code = "text", Description = "text" });

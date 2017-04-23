@@ -9,11 +9,16 @@ namespace DMS_WebAPI.Models
     {
         protected override void Seed(ApplicationDbContext context)
         {
+            context.AdminLanguagesSet.AddRange(ApplicationDbImportData.GetAdminLanguages());
+
+            context.SystemValueTypesSet.AddRange(ApplicationDbImportData.GetSystemValueTypes());
+
+            context.SystemSettingsSet.AddRange(ApplicationDbImportData.GetSystemSettings());
+
             context.AspNetLicencesSet.AddRange(ApplicationDbImportData.GetAspNetLicences());
 
             context.SystemControlQuestionsSet.AddRange(ApplicationDbImportData.GetSystemControlQuestions());
 
-            context.AdminLanguagesSet.AddRange(ApplicationDbImportData.GetAdminLanguages());
 
             //context.AdminLanguageValuesSet.AddRange(ApplicationDbImportData.GetAdminLanguageValues());
 

@@ -93,6 +93,7 @@
     <Compile Include="Helpers\Transactions.cs" />
     <Compile Include="Helpers\VerifyLicence.cs" />
     <Compile Include="Interfaces\IDmsDatabaseContext.cs" />
+    <Compile Include="Interfaces\ISettingValue.cs" />
     <Compile Include="Interfaces\ISystemCommand.cs" />
     <Compile Include="Interfaces\ICommand.cs" />
     <Compile Include="Context\UserContext.cs" />
