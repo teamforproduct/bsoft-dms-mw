@@ -1258,6 +1258,19 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
+        public void UpdateUserContextLastChangeDate(string token, DateTime date)
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetUserContextQuery(dbContext, new FilterAspNetUserContext { TokenExact = token });
+
+                qry.Update(x => new AspNetUserContexts { LastChangeDate = date });
+
+                transaction.Complete();
+            }
+
+        }
+
         public void DeleteUserContext(string token)
         {
             using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())

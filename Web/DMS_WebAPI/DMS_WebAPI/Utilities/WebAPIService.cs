@@ -1106,6 +1106,11 @@ namespace DMS_WebAPI.Utilities
 
         }
 
+        public void UpdateUserContextLastChangeDate(string token , DateTime date)
+        {
+            _webDb.UpdateUserContextLastChangeDate(token, date);
+        }
+
         public void DeleteUserContext(string token)
         {
             _webDb.DeleteUserContext(token);

@@ -198,46 +198,63 @@ namespace BL.Database.SystemDb
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                dbContext.AdminRolePermissionsSet.Delete();
+                //dbContext.AdminRolePermissionsSet.Delete();
 
-                dbContext.SystemPermissionsSet.Delete();
+                //dbContext.SystemPermissionsSet.Delete();
 
-                dbContext.SystemFeaturesSet.Delete();
+                //dbContext.SystemFeaturesSet.Delete();
 
-                dbContext.SystemModulesSet.Delete();
+                //dbContext.SystemModulesSet.Delete();
 
-                dbContext.SystemAccessTypesSet.Delete();
+                //dbContext.SystemAccessTypesSet.Delete();
 
                 DmsDbImportData.InitPermissions();
 
-                foreach (var item in DmsDbImportData.GetSystemAccessTypes())
-                {
-                    dbContext.SystemAccessTypesSet.Attach(item);
-                    dbContext.Entry(item).State = EntityState.Added;
-                    dbContext.SaveChanges();
-                }
+                //foreach (var item in DmsDbImportData.GetSystemAccessTypes())
+                //{
+                //    dbContext.SystemAccessTypesSet.Attach(item);
+                //    dbContext.Entry(item).State = EntityState.Added;
+                //    dbContext.SaveChanges();
+                //}
 
-                foreach (var item in DmsDbImportData.GetSystemModules())
+                var modules = dbContext.SystemModulesSet.ToList();
+
+                foreach (var item in DmsDbImportData.GetSystemModules().Where(x => !modules.Any(y => y.Id == x.Id)))
                 {
                     dbContext.SystemModulesSet.Attach(item);
                     dbContext.Entry(item).State = EntityState.Added;
                     dbContext.SaveChanges();
                 }
 
-                foreach (var item in DmsDbImportData.GetSystemFeatures())
+                var features = dbContext.SystemFeaturesSet.ToList();
+
+                foreach (var item in DmsDbImportData.GetSystemFeatures().Where(x => !features.Any(y => y.Id == x.Id)))
                 {
                     dbContext.SystemFeaturesSet.Attach(item);
                     dbContext.Entry(item).State = EntityState.Added;
                     dbContext.SaveChanges();
                 }
 
-                foreach (var item in DmsDbImportData.GetSystemPermissions())
-                {
+                var permissions = dbContext.SystemPermissionsSet.ToList();
 
+                foreach (var item in DmsDbImportData.GetSystemPermissions().Where(x => !permissions.Any(y => y.Id == x.Id)))
+                {
                     dbContext.SystemPermissionsSet.Attach(item);
                     dbContext.Entry(item).State = EntityState.Added;
                     dbContext.SaveChanges();
                 }
+
+                //var rolePermissions = dbContext.AdminRolePermissionsSet.ToList();
+
+                //foreach (var item in DmsDbImportData.GetAdminRolePermissions().Where(x => !rolePermissions.Any(y => y.PermissionId == x.PermissionId && y.RoleId == x.RoleId)))
+                //{
+                //    item.
+                //    dbContext.AdminRolePermissionsSet.Attach(item);
+                //    dbContext.Entry(item).State = EntityState.Added;
+                //    dbContext.SaveChanges();
+                //}
+
+
                 transaction.Complete();
                 _cacheService.RefreshKey(ctx, SettingConstants.PERMISSION_CASHE_KEY);
                 _cacheService.RefreshKey(ctx, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
