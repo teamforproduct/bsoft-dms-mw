@@ -1,10 +1,6 @@
 ﻿using System.Web.Mvc;
-using BL.Logic.DependencyInjection;
-using BL.Logic.DocumentCore;
-using BL.Model.DocumentCore;
-using DMS_WebAPI.Utilities;
 
-namespace DMS_WebAPI.Controllers
+namespace DMS_WebAPI.Controllers.System
 {
     public class HomeController : Controller
     {

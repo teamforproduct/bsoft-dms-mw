@@ -109,12 +109,13 @@ namespace BL.Logic.SystemServices.FullTextSearch
             tmr.Change(Timeout.Infinite, Timeout.Infinite); // stop the timer. But that should be checked. Probably timer event can be rased ones more
             _stopTimersList.Add(tmr); // to avoid additional raise of timer event
 
-            var systemSetting = SettingsFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED);
-            systemSetting.Value = false.ToString();
-            Settings.SaveSetting(ctx, systemSetting);
-            worker.StartUpdate();//initiate the update of FT
             try
             {
+                var systemSetting = SettingsFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED);
+                systemSetting.Value = false.ToString();
+                Settings.SaveSetting(ctx, systemSetting);
+                worker.StartUpdate();//initiate the update of FT
+
                 var currCashId = _systemDb.GetCurrentMaxCasheId(ctx);
                 var objToProcess = _systemDb.ObjectToReindex();
                 worker.DeleteAllDocuments(ctx.CurrentClientId);//delete all current document before reindexing
@@ -158,9 +159,13 @@ namespace BL.Logic.SystemServices.FullTextSearch
             finally
             {
                 worker.CommitChanges();
+                if (_stopTimersList.Contains(tmr))
+                {
+                    _stopTimersList.Remove(tmr);
+                }
+                tmr.Change(md.TimeToUpdate * 60000, Timeout.Infinite); //start new iteration of the timer
+
             }
-            _stopTimersList.Remove(tmr);
-            tmr.Change(md.TimeToUpdate * 60000, Timeout.Infinite); //start new iteration of the timer
         }
         private IFullTextIndexWorker GetWorker(IContext ctx)
         {
