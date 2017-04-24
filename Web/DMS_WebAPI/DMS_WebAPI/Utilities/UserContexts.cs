@@ -535,6 +535,9 @@ namespace DMS_WebAPI.Utilities
 
         private void Restore(string token)
         {
+            // Попытка восстановить восстановленный контекст
+            if (Contains(token)) return;
+
             var webService = DmsResolver.Current.Get<WebAPIService>();
             var item = webService.GetUserContexts(new BL.Model.WebAPI.Filters.FilterAspNetUserContext() { TokenExact = token }).FirstOrDefault();
 
@@ -552,7 +555,7 @@ namespace DMS_WebAPI.Utilities
 
             if (user == null) return;
 
-            // Получаю информацию о браузере
+            // Получаю информацию о браузере (она могла обновиться с момента предыдущего входа, например версия)
             var message = HttpContext.Current.Request.Browser.Info();
 
 
