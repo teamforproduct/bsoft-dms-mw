@@ -65,12 +65,12 @@ namespace DMS_WebAPI.Utilities
         /// <param name="isThrowExeception"></param>
         /// <param name="keepAlive"></param>
         /// <returns>Typed setting value.</returns>
-        public IContext Get(int? currentPositionId = null, bool isThrowExeception = true, bool keepAlive = true)
+        public IContext Get(int? currentPositionId = null, bool isThrowExeception = true, bool keepAlive = true, bool restoreToken = true)
         {
             string token = TokenLower;
 
             // пробую восстановить контекст из базы
-            if (!Contains(token))
+            if (restoreToken && !Contains(token))
             {
                 Restore(token);
             }

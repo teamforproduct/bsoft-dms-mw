@@ -537,14 +537,14 @@ namespace DMS_WebAPI.Utilities
 
             if (_webDb.ExistsClientRequests(new FilterAspNetClientRequests { CodeExact = model.ClientCode })) throw new ClientCodeAlreadyExists(model.ClientCode);
 
-            if (!string.IsNullOrEmpty(model.ClientName)) model.ClientName = model.ClientCode;
+            if (string.IsNullOrEmpty(model.ClientName)) model.ClientName = model.ClientCode;
 
             model.HashCode = model.ClientCode.md5();
             model.SMSCode = DateTime.UtcNow.ToString("ssHHmm");
 
             var id = _webDb.AddClientRequest(model);
 
-            var callbackurl = new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "Client/Info/Execute").AbsoluteUri;
+            var callbackurl = new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "Client/Create/ByHash").AbsoluteUri;
 
             callbackurl += String.Format("?hash={0}", model.HashCode);
 

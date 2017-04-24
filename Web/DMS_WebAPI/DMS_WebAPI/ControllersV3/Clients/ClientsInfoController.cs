@@ -22,7 +22,7 @@ namespace DMS_WebAPI.ControllersV3.Clients
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route(Features.Info)]
+        [Route("Create")]
         public IHttpActionResult AddClientRequest([FromBody]AddClientSaaS model)
         {
             var tmpService = DmsResolver.Current.Get<WebAPIService>();
@@ -36,7 +36,7 @@ namespace DMS_WebAPI.ControllersV3.Clients
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route(Features.Info + "/ByEMail")]
+        [Route("Create/ByHash")]
         public IHttpActionResult AddClient([FromBody]AddClientFromHash model)
         {
             var tmpService = DmsResolver.Current.Get<WebAPIService>();
@@ -50,7 +50,7 @@ namespace DMS_WebAPI.ControllersV3.Clients
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route(Features.Info + "/BySMS")]
+        [Route("Create/BySMS")]
         public IHttpActionResult AddClient([FromBody]AddClientFromSMS model)
         {
             var tmpService = DmsResolver.Current.Get<WebAPIService>();
@@ -65,7 +65,7 @@ namespace DMS_WebAPI.ControllersV3.Clients
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route(Features.Info + "/{Id:int}")]
+        [Route("{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             var tmpService = DmsResolver.Current.Get<WebAPIService>();
