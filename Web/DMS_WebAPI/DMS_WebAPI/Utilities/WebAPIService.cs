@@ -102,6 +102,12 @@ namespace DMS_WebAPI.Utilities
             return await GetUserByIdAsync(userId);
         }
 
+        public bool ExistsUser(string userName)
+        {
+            var user = GetUser(userName);
+            return user != null;
+        }
+
         public bool ExistsUser(string userName, string clientCode)
         {
             var clientId = GetClientId(clientCode);
@@ -187,7 +193,7 @@ namespace DMS_WebAPI.Utilities
                         Email = model.Login,
                         Phone = model.Phone,
                         // Для нового пользователя высылается письмо с линком на страницу "введите новый пароль"
-                        Password = "k~WPop8V%W~11hG~~VGR",
+                        Password = string.IsNullOrEmpty(model.Password) ? "k~WPop8V%W~11hG~~VGR" : model.Password,
 
                         // Предполагаю, что человек, который создает пользователей. создает их в тойже базе и в том же клиенте
                         ClientId = context.CurrentClientId,
@@ -235,6 +241,7 @@ namespace DMS_WebAPI.Utilities
             if (model.PositionId == null && string.IsNullOrEmpty(model.PositionName)) throw new PositionRequired();
 
             employee.Login = model.Login;
+            employee.Password = model.Password;
             employee.Phone = model.Phone;
             employee.FirstName = model.FirstName;
             employee.MiddleName = model.MiddleName;
@@ -464,7 +471,7 @@ namespace DMS_WebAPI.Utilities
                 var db = GetClientServer(model.ClientId);
                 var ctx = new AdminContext(db);
                 var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-                mailService.SendMessage(ctx, model.Email, "Ostrean. Приглашение", htmlContent);
+                mailService.SendMessage(ctx, MailServers.Noreplay, model.Email, "Ostrean. Приглашение", htmlContent);
             }
             return userId;
         }
@@ -546,13 +553,16 @@ namespace DMS_WebAPI.Utilities
 
             var callbackurl = new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "Client/Create/ByHash").AbsoluteUri;
 
-            callbackurl += String.Format("?hash={0}", model.HashCode);
+            // isNew можно вычислить только на текущий момент времени (пользователь может сделать несколько компаний)
+            var isNew = ExistsUser(model.Email);
+
+            callbackurl += String.Format("?hash={0}&login={1}&code={2}&isNew={3}", model.HashCode, model.Email, model.ClientCode, isNew);
 
             var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.RestorePasswordAgentUserVerificationEmail);
             var db = GetClientServer(model.ClientId);
             var ctx = new AdminContext(db);
             var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-            mailService.SendMessage(ctx, model.Email, "Ostrean. Создание клиента", htmlContent);
+            mailService.SendMessage(ctx, MailServers.Noreplay, model.Email, "Ostrean. Создание клиента", htmlContent);
 
             return id;
         }
@@ -564,7 +574,9 @@ namespace DMS_WebAPI.Utilities
 
             if (request == null) throw new Exception("//TODO Exception");
 
-            AddClientSaaS(request.Id);
+            request.Password = model.Password;
+
+            AddClientSaaS(request);
         }
 
         public void AddClientBySMS(AddClientFromSMS model)
@@ -573,13 +585,11 @@ namespace DMS_WebAPI.Utilities
 
             if (request == null) throw new Exception("//TODO Exception");
 
-            AddClientSaaS(request.Id);
+            AddClientSaaS(request);
         }
 
-        public async Task AddClientSaaS(int RequestId)
+        public async Task AddClientSaaS(AddClientSaaS model)
         {
-            var model = _webDb.GetClientRequest(RequestId);
-
             // Проверка уникальности доменного имени
             if (_webDb.ExistsClients(new FilterAspNetClients { Code = model.ClientCode })) throw new ClientCodeAlreadyExists(model.ClientCode);
 
@@ -698,6 +708,7 @@ namespace DMS_WebAPI.Utilities
                 Phone = model.PhoneNumber,
                 Login = model.Email,
                 Role = Roles.Admin,
+                Password = model.Password,
             });
 
 
@@ -847,7 +858,7 @@ namespace DMS_WebAPI.Utilities
 
                 var languages = DmsResolver.Current.Get<ILanguages>();
 
-                mailService.SendMessage(context, model.NewEmail, languages.GetTranslation("##l@EmailSubject:EmailConfirmation@l##"), htmlContent);
+                mailService.SendMessage(context, MailServers.Noreplay, model.NewEmail, languages.GetTranslation("##l@EmailSubject:EmailConfirmation@l##"), htmlContent);
             }
 
         }
@@ -928,7 +939,7 @@ namespace DMS_WebAPI.Utilities
             var db = GetClientServer(model.ClientCode);
             var ctx = new AdminContext(db);
             var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-            mailService.SendMessage(ctx, model.Email, emailSubject, htmlContent);
+            mailService.SendMessage(ctx, MailServers.Noreplay, model.Email, emailSubject, htmlContent);
         }
 
         public void RestorePasswordAgentUser(RestorePasswordAgentUser model, string baseUrl, NameValueCollection query, string emailSubject, string renderPartialView)
@@ -957,7 +968,7 @@ namespace DMS_WebAPI.Utilities
 
             var ctx = new AdminContext(db);
             var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-            mailService.SendMessage(ctx, model.Email, emailSubject, htmlContent);
+            mailService.SendMessage(ctx, MailServers.Noreplay, model.Email, emailSubject, htmlContent);
         }
 
         public async Task ChangePasswordAgentUserAsync(ChangePasswordAgentUser model)

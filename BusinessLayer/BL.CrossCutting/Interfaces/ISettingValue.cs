@@ -6,32 +6,57 @@ namespace BL.CrossCutting.Interfaces
     {
         bool GetSubordinationsSendAllForExecution(IContext ctx);
         bool GetSubordinationsSendAllForInforming(IContext ctx);
-        int GetMailSenderTimeoutMin(IContext ctx);
-        MailServerType GetMailInfoServerType(IContext ctx);
 
+        #region MailDocum
+        int GetMailDocumSenderTimeoutMin();
+        MailServerType GetMailDocumServerType();
+        string GetMailDocumServerName();
+        int GetMailDocumServerPort();
 
-        string GetMailInfoSystemMail(IContext ctx);
+        string GetMailDocumEmail();
+        string GetMailDocumLogin();
+        string GetMailDocumPassword();
+        #endregion
 
-        string GetMailInfoName(IContext ctx);
+        #region MailNoreplay
+        int GetMailNoreplaySenderTimeoutMin();
+        MailServerType GetMailNoreplayServerType();
+        string GetMailNoreplayServerName();
+        int GetMailNoreplayServerPort();
 
-        string GetMailInfoLogin(IContext ctx);
+        string GetMailNoreplayEmail();
+        string GetMailNoreplayLogin();
+        string GetMailNoreplayPassword();
+        #endregion
 
-        string GetMailInfoPassword(IContext ctx);
+        #region MailSMS
+        int GetMailSMSSenderTimeoutMin();
+        MailServerType GetMailSMSServerType();
+        string GetMailSMSServerName();
+        int GetMailSMSServerPort();
 
-        int GetMailInfoPort(IContext ctx);
+        string GetMailSMSEmail();
+        string GetMailSMSLogin();
+        string GetMailSMSPassword();
+        #endregion
 
         bool GetDigitalSignatureIsUseCertificateSign(IContext ctx);
 
         bool GetDigitalSignatureIsUseInternalSign(IContext ctx);
 
-        string GetFulltextDatastorePath(IContext ctx);
+        #region [+] Fulltext ...
+        string GetFulltextStorePath();
 
         int GetFulltextRefreshTimeout(IContext ctx);
         int GetFulltextRowLimit(IContext ctx);
 
         bool GetFulltextWasInitialized(IContext ctx);
 
-        string GetFileStorePath(IContext ctx);
+        #endregion
+
+        #region [+] FileStore ...
+        string GetFileStorePath();
+        #endregion
 
         string GetReportDocumentForDigitalSignature(IContext ctx);
 

@@ -295,7 +295,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     {
                         TimeToUpdate = SettingValues.GetFulltextRefreshTimeout(keyValuePair.Value),
                         DatabaseKey = keyValuePair.Key,
-                        StorePath = SettingValues.GetFulltextDatastorePath(keyValuePair.Value),
+                        StorePath = SettingValues.GetFulltextStorePath(),
                         IsFullTextInitialized = SettingValues.GetFulltextWasInitialized(keyValuePair.Value)
                     };
                     var worker = new FullTextIndexWorker(ftsSetting.DatabaseKey, ftsSetting.StorePath);
