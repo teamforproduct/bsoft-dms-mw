@@ -37,16 +37,11 @@ namespace BL.Logic.AdminCore
         private readonly DictionariesDbProcess _dictDb;
         private readonly ICommandService _commandService;
 
-        private const int _MINUTES_TO_UPDATE_INFO = 5;
-
-        private Dictionary<string, StoreInfo> accList;
-
         public AdminService(AdminsDbProcess adminDb, DictionariesDbProcess dictDb, ICommandService commandService)
         {
             _adminDb = adminDb;
             _dictDb = dictDb;
             _commandService = commandService;
-            accList = new Dictionary<string, StoreInfo>();
         }
 
         public object ExecuteAction(EnumAdminActions act, IContext context, object param)
@@ -58,30 +53,7 @@ namespace BL.Logic.AdminCore
 
         #region [+] General ...
 
-        private AdminAccessInfo GetAccInfo(IContext context)
-        {
-            var key = CommonSystemUtilities.GetServerKey(context);
-            if (accList.ContainsKey(key))
-            {
-                var so = accList[key];
-                if ((DateTime.UtcNow - so.LastUsage).TotalMinutes > _MINUTES_TO_UPDATE_INFO)
-                {
-                    var lst = _adminDb.GetAdminAccesses(context);
-                    so.StoreObject = lst;
-                    so.LastUsage = DateTime.UtcNow;
-                    return lst;
-                }
-                return so.StoreObject as AdminAccessInfo;
-            }
-            var nlst = _adminDb.GetAdminAccesses(context);
-            var nso = new StoreInfo
-            {
-                LastUsage = DateTime.UtcNow,
-                StoreObject = nlst
-            };
-            accList.Add(key, nso);
-            return nlst;
-        }
+        
         public Employee GetEmployeeForContext(IContext context, string userId)
         {
             return _adminDb.GetEmployeeForContext(context, userId);
@@ -215,14 +187,6 @@ namespace BL.Logic.AdminCore
             return _adminDb.GetPositionRolesDIP(context, filter);
         }
 
-        public IEnumerable<FrontAdminPositionRole> GetPositionRoles(IContext context, FilterAdminPositionRole filter)
-        {
-            return _adminDb.GetPositionRoles(context, filter);
-        }
-        public FrontAdminPositionRole GetPositionRole(IContext context, int id)
-        {
-            return _adminDb.GetPositionRole(context, id);
-        }
         #endregion
 
         #region [+] UserRoles ...
@@ -880,16 +844,11 @@ namespace BL.Logic.AdminCore
 
         public FilterPermissionsAccess GetFilterPermissionsAccessByContext(IContext context, bool isPositionFromContext, List<int> permissionIDs = null, int? actionId = null, int? moduleId = null)
         {
-            var res = new FilterPermissionsAccess();
-            res.UserId = context.CurrentAgentId;
-            if (isPositionFromContext)
-            {
-                res.PositionsIdList = new List<int> { context.CurrentPositionId }.Intersect(context.CurrentPositionsIdList).ToList();
-            }
-            else
-            {
-                res.PositionsIdList = context.CurrentPositionsIdList;
-            }
+            var res = new FilterPermissionsAccess {UserId = context.CurrentAgentId};
+
+            res.PositionsIdList = isPositionFromContext 
+                ? new List<int> { context.CurrentPositionId }.Intersect(context.CurrentPositionsIdList).ToList() 
+                : context.CurrentPositionsIdList;
             res.ActionId = actionId;
             res.PermissionIDs = permissionIDs;
             res.ModuleId = moduleId;
@@ -913,7 +872,7 @@ namespace BL.Logic.AdminCore
         {
             if (context is AdminContext) return true;//Full access to admin. ADMIN IS COOL!!! 
 
-            var data = GetAccInfo(context);
+            var data = _adminDb.GetAdminAccesses(context); 
             var res = false;
             if (model.UserId == 0)
             {
