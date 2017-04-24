@@ -21,6 +21,9 @@ namespace BL.Model.DictionaryCore.IncomingModel
         [IgnoreDataMember]
         public string UserName { get; set; }
 
+        [IgnoreDataMember]
+        public string Password { get; set; }
+
         /// <summary>
         /// Имейл, на который высылается письмо с приглашением
         /// </summary>

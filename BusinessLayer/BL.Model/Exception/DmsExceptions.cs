@@ -38,6 +38,18 @@ namespace BL.Model.Exception
         public TokenAlreadyExists(System.Exception ex) : base(ex) { }
     }
 
+    public class SettingValueIsNotSet : DmsExceptions
+    {
+        public SettingValueIsNotSet(string settingKey) : base() { Parameters = new List<string> { settingKey }; }
+        public SettingValueIsNotSet(System.Exception ex) : base(ex) { }
+    }
+
+    public class SettingValueIsInvalid : DmsExceptions
+    {
+        public SettingValueIsInvalid(string settingKey) : base() { Parameters = new List<string> { settingKey }; }
+        public SettingValueIsInvalid(System.Exception ex) : base(ex) { }
+    }
+
     #region [+] LicenceError ... 
 
 

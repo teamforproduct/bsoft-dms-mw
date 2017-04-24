@@ -7,8 +7,51 @@
     {
         ServerForNewClient,
 
-        MailSenderTimeoutMin,
+        #region MailDocum
+        MailDocumSenderTimeoutMin,
 
-        // При добавлении новых настроек не забудь добавить значения по умолчанию в SettingsFactory
+        MailDocumServerType,
+        MailDocumServerName,
+        MailDocumServerPort,
+
+        MailDocumLogin,
+        MailDocumEmail,
+
+        MailDocumPassword,
+
+        #endregion
+
+        #region MailNoreplay
+        MailNoreplaySenderTimeoutMin,
+
+        MailNoreplayServerType,
+        MailNoreplayServerName,
+        MailNoreplayServerPort,
+
+        MailNoreplayLogin,
+        MailNoreplayEmail,
+
+        MailNoreplayPassword,
+
+        #endregion
+
+        #region MailSMS
+        MailSMSSenderTimeoutMin,
+
+        MailSMSServerType,
+        MailSMSServerName,
+        MailSMSServerPort,
+
+        MailSMSLogin,
+        MailSMSEmail,
+
+        MailSMSPassword,
+
+        #endregion
+
+        FileStorePath,
+
+        FulltextStorePath,
+
     }
 }

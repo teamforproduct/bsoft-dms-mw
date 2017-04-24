@@ -288,23 +288,15 @@ namespace BL.Logic.ClientCore
             items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.DIGITAL_SIGNATURE_IS_USE_CERTIFICATE_SIGN));
             items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.DIGITAL_SIGNATURE_IS_USE_INTERNAL_SIGN));
 
-            items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.MAILSERVER_TYPE));
-            items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.MAILSERVER_SYSTEMMAIL));
-            items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.MAILSERVER_NAME));
-            items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.MAILSERVER_LOGIN));
-            items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.MAILSERVER_PASSWORD));
-            items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.MAILSERVER_PORT));
 
             items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.CLEARTRASHDOCUMENTS_TIMEOUT_MINUTE_FOR_CLEAR));
 
-            items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.IRF_DMS_FILESTORE_PATH));
             items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_DocumentForDigitalSignature));
             items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegisterTransmissionDocuments));
             items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegistrationCardIncomingDocument));
             items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegistrationCardInternalDocument));
             items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegistrationCardOutcomingDocument));
 
-            items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_DATASTORE_PATH));
             items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_REFRESH_TIMEOUT));
             items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED));
             items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_ROWLIMIT));

@@ -13,37 +13,6 @@ namespace BL.Logic.Settings
             // и регулировать это можно через отдельный параметр 
             switch (key)
             {
-                case EnumSystemSettings.MAILSERVER_TYPE:
-                    res.Value = "2";
-                    res.ValueType = EnumValueTypes.Number;
-                    res.SettingTypeId = 4;
-                    break;
-                case EnumSystemSettings.MAILSERVER_NAME:
-                    res.Value = "mail.irf.com.ua";
-                    res.ValueType = EnumValueTypes.Text;
-                    res.SettingTypeId = 4;
-                    break;
-                case EnumSystemSettings.MAILSERVER_LOGIN:
-                    res.Value = "docum@ostrean.com";
-                    res.ValueType = EnumValueTypes.Text;
-                    res.SettingTypeId = 4;
-                    break;
-                case EnumSystemSettings.MAILSERVER_PASSWORD:
-                    res.Value = "123QWEasdZXC_";
-                    res.ValueType = EnumValueTypes.Password;
-                    res.SettingTypeId = 4;
-                    break;
-                case EnumSystemSettings.MAILSERVER_PORT:
-                    res.Value = "465";
-                    res.ValueType = EnumValueTypes.Number;
-                    res.SettingTypeId = 4;
-                    break;
-                case EnumSystemSettings.MAILSERVER_SYSTEMMAIL:
-                    res.Value = "noreply@ostrean.com";
-                    res.ValueType = EnumValueTypes.Text;
-                    res.SettingTypeId = 4;
-                    break;
-
 
                 case EnumSystemSettings.SUBORDINATIONS_SEND_ALL_FOR_EXECUTION:
                     res.Value = "true";
@@ -68,11 +37,6 @@ namespace BL.Logic.Settings
                     res.SettingTypeId = 2;
                     break;
 
-                case EnumSystemSettings.FULLTEXTSEARCH_DATASTORE_PATH:
-                    res.Value = @"D:\FULLTEXT_INDEXES";
-                    res.ValueType = EnumValueTypes.Text;
-                    res.SettingTypeId = 2;
-                    break;
                 case EnumSystemSettings.FULLTEXTSEARCH_REFRESH_TIMEOUT:
                     res.Value = "1";
                     res.ValueType = EnumValueTypes.Number;
@@ -86,12 +50,6 @@ namespace BL.Logic.Settings
                 case EnumSystemSettings.FULLTEXTSEARCH_ROWLIMIT:
                     res.Value = "100000";
                     res.ValueType = EnumValueTypes.Number;
-                    res.SettingTypeId = 2;
-                    break;
-
-                case EnumSystemSettings.IRF_DMS_FILESTORE_PATH:
-                    res.Value = @"D:\FULLTEXT_INDEXES";
-                    res.ValueType = EnumValueTypes.Text;
                     res.SettingTypeId = 2;
                     break;
 
