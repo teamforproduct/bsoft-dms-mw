@@ -363,34 +363,11 @@
     <Compile Include="ControllersV3\Lists\DictionaryListsController.cs" />
     <Compile Include="ApiPrefix.cs" />
     <Compile Include="ControllersV3\Utilities\WebPartialViewController.cs" />
-    <Compile Include="Controllers\Documents\DocumentAccessesController.cs" />
-    <Compile Include="Controllers\Documents\DocumentWorkGroupsController.cs" />
-    <Compile Include="Controllers\Documents\DocumentSubscriptionsController.cs" />
-    <Compile Include="Controllers\Documents\DocumentLinksController.cs" />
-    <Compile Include="Controllers\Documents\DocumentWaitsController.cs" />
-    <Compile Include="Controllers\Documents\DocumentEventsController.cs" />
-    <Compile Include="Controllers\Documents\DocumentPaperListsController.cs" />
-    <Compile Include="Controllers\Documents\DocumentPapersController.cs" />
-    <Compile Include="Controllers\Documents\DocumentTasksController.cs" />
-    <Compile Include="Controllers\Documents\DocumentTagsController.cs" />
-    <Compile Include="Controllers\Documents\TemplateDocumentAttachedFileController.cs" />
-    <Compile Include="Controllers\Documents\TemplateDocumentsRestrictedSendListsController.cs" />
-    <Compile Include="Controllers\Documents\TemplateDocumentsPapersController.cs" />
-    <Compile Include="Controllers\Documents\TemplateDocumentsTasksController.cs" />
-    <Compile Include="Controllers\Documents\TemplateDocumentsSendListsController.cs" />
     <Compile Include="Controllers\Properties\FilterPropertiesController.cs" />
     <Compile Include="Controllers\Properties\PropertyLinksController.cs" />
     <Compile Include="Controllers\Properties\PropertiesController.cs" />
     <Compile Include="Controllers\System\AccountController.cs" />
-    <Compile Include="Controllers\Documents\DocumentActionsController.cs" />
-    <Compile Include="Controllers\Documents\DocumentFilesController.cs" />
-    <Compile Include="Controllers\Documents\DocumentRestrictedSendListsController.cs" />
-    <Compile Include="Controllers\Documents\DocumentSavedFiltersController.cs" />
-    <Compile Include="Controllers\Documents\DocumentsController.cs" />
-    <Compile Include="Controllers\Documents\DocumentSendListStagesController.cs" />
-    <Compile Include="Controllers\Documents\DocumentSendListsController.cs" />
     <Compile Include="Controllers\System\HomeController.cs" />
-    <Compile Include="Controllers\Documents\TemplateDocumentsController.cs" />
     <Compile Include="Controllers\WebAPI\CreateClientController.cs" />
     <Compile Include="Controllers\WebAPI\LicencesController.cs" />
     <Compile Include="Controllers\WebAPI\ClientServersController.cs" />
@@ -398,6 +375,7 @@
     <Compile Include="Controllers\WebAPI\ClientLicencesController.cs" />
     <Compile Include="Controllers\WebAPI\ServersController.cs" />
     <Compile Include="DatabaseContext\ApplicationDbImportData.cs" />
+    <Compile Include="DBModel\AspNetClientRequests.cs" />
     <Compile Include="DBModel\AspNetClientServers.cs" />
     <Compile Include="DBModel\AspNetUserContexts.cs" />
     <Compile Include="DBModel\AspNetUserClientServer.cs" />
@@ -408,6 +386,8 @@
     <Compile Include="DBModel\AspNetLicences.cs" />
     <Compile Include="DBModel\AspNetClients.cs" />
     <Compile Include="DBModel\AspNetUserFingerprints.cs" />
+    <Compile Include="DBModel\SystemSettings.cs" />
+    <Compile Include="DBModel\SystemValueTypes.cs" />
     <Compile Include="DependencyInjection\ApiModel.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -428,6 +408,14 @@
     <Compile Include="Migrations\201704192136139_refactor_userContexts.cs" />
     <Compile Include="Migrations\201704192136139_refactor_userContexts.Designer.cs">
       <DependentUpon>201704192136139_refactor_userContexts.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704232218400_generalSettings.cs" />
+    <Compile Include="Migrations\201704232218400_generalSettings.Designer.cs">
+      <DependentUpon>201704232218400_generalSettings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201704240006103_ClientRequests.cs" />
+    <Compile Include="Migrations\201704240006103_ClientRequests.Designer.cs">
+      <DependentUpon>201704240006103_ClientRequests.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
@@ -450,6 +438,7 @@
     <Compile Include="Results\JsonResult.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Utilities\GeneralSettings.cs" />
     <Compile Include="Utilities\WebApiHelper.cs" />
     <Compile Include="Utilities\DimanicAuthorizeAttribute.cs" />
     <Compile Include="Utilities\StringExtentions.cs" />
@@ -621,6 +610,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201704192136139_refactor_userContexts.resx">
       <DependentUpon>201704192136139_refactor_userContexts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704232218400_generalSettings.resx">
+      <DependentUpon>201704232218400_generalSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704240006103_ClientRequests.resx">
+      <DependentUpon>201704240006103_ClientRequests.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

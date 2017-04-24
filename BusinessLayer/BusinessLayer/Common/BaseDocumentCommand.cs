@@ -47,7 +47,7 @@ namespace BL.Logic.Common
 
         protected bool GetIsUseInternalSign()
         {
-            var sett = DmsResolver.Current.Get<ISettings>();
+            var sett = DmsResolver.Current.Get<ISettingValues>();
             return sett.GetDigitalSignatureIsUseInternalSign(_context);
             //try
             //{
@@ -61,7 +61,7 @@ namespace BL.Logic.Common
         }
         protected bool GetIsUseCertificateSign()
         {
-            var sett = DmsResolver.Current.Get<ISettings>();
+            var sett = DmsResolver.Current.Get<ISettingValues>();
             return sett.GetDigitalSignatureIsUseCertificateSign(_context);
             //try
             //{

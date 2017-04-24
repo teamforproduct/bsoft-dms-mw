@@ -1,13 +1,10 @@
 ﻿using BL.CrossCutting.DependencyInjection;
-using BL.CrossCutting.Helpers;
-using BL.Model.Constants;
+using BL.CrossCutting.Interfaces;
 using BL.Model.Reports.FrontModel;
 using CrystalDecisions.CrystalReports.Engine;
 using CrystalDecisions.Shared;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace BL.Database.Reports
 {

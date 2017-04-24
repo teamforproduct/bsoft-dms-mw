@@ -267,7 +267,7 @@ namespace BL.Database.DatabaseContext
                 );
 
             AddPermission(860, Modules.Employee, Features.AddInOrg, r: false, u: false, d: false,
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees }
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementEmployees }
                 );
 
             AddPermission(900, Modules.Company, Features.Info,
@@ -1210,6 +1210,7 @@ namespace BL.Database.DatabaseContext
 
         public static List<SystemValueTypes> GetSystemValueTypes()
         {
+            // Синхронизировать с ApplicationDbImportData
             var items = new List<SystemValueTypes>();
 
             items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Text, Code = "text", Description = "text" });

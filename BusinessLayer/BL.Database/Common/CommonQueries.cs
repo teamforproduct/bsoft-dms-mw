@@ -1625,10 +1625,10 @@ namespace BL.Database.Common
         #endregion
 
         #region Tags
-        public static IEnumerable<FrontDocumentTag> GetDocumentTags(IContext context, FilterDocumentTag filter)
+        public static IQueryable<DocumentTags> GetDocumentTagsQuery(IContext context, FilterDocumentTag filter)
         {
             var dbContext = context.DbContext as DmsContext;
-            var tagsDb = dbContext.DocumentTagsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+            var qry = dbContext.DocumentTagsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
             if (filter != null)
             {
@@ -1638,7 +1638,7 @@ namespace BL.Database.Common
                     filterContains = filter.DocumentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
-                    tagsDb = tagsDb.Where(filterContains);
+                    qry = qry.Where(filterContains);
                 }
 
                 if (filter.CurrentPositionsId?.Count > 0)
@@ -1647,24 +1647,10 @@ namespace BL.Database.Common
                     filterContains = filter.CurrentPositionsId.Aggregate(filterContains,
                         (current, value) => current.Or(e => !e.Tag.PositionId.HasValue || e.Tag.PositionId == value).Expand());
 
-                    tagsDb = tagsDb.Where(filterContains);
+                    qry = qry.Where(filterContains);
                 }
             }
-
-            var tagsRes = tagsDb;
-
-            var tags = tagsRes.Select(x => new FrontDocumentTag
-            {
-                TagId = x.TagId,
-                DocumentId = x.DocumentId,
-                PositionId = x.Tag.PositionId,
-                PositionName = x.Tag.Position.Name,
-                Color = x.Tag.Color,
-                Name = x.Tag.Name,
-                IsSystem = !x.Tag.PositionId.HasValue
-            }).ToList();
-
-            return tags;
+            return qry;
 
         }
         #endregion

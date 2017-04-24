@@ -15,16 +15,22 @@ namespace BL.Model.AdminCore.Clients
         public int ClientId { get; set; }
 
         [IgnoreDataMember]
-        public string Password { get; set; }
+        public string HashCode { get; set; }
+
+        [IgnoreDataMember]
+        public string SMSCode { get; set; }
+
 
         /// <summary>
         /// Доменное имя клиента сlient156454.ostrean.com
         /// </summary>
         [Required]
-        [StringLength(100, ErrorMessage = "{0} должно быть по крайней мере {2} символов.", MinimumLength = 3)]
+        [RegularExpression(@"[-0-9a-z]{3,60}$")]
         public string ClientCode { get { return _ClientCode; } set { _ClientCode = value.Trim().ToLower(); } }
         private string _ClientCode;
-        
+
+        public string ClientName { get; set; }
+
         /// <summary>
         /// Язык интерфейса
         /// </summary>
@@ -35,14 +41,14 @@ namespace BL.Model.AdminCore.Clients
         /// </summary>
         [Required]
         [EmailAddress]
-        public string Email { get { return _Email; } set { _Email = value.Trim(); } }
+        public string Email { get { return _Email; } set { _Email = value?.Trim(); } }
         private string _Email;
 
         /// <summary>
         /// Имя первого пользователя - директора, админа
         /// </summary>
         [Required]
-        public string Name { get; set; }
+        public string FirstName { get; set; }
 
         /// <summary>
         /// Фамилия первого пользователя - директора, админа
@@ -51,9 +57,13 @@ namespace BL.Model.AdminCore.Clients
         public string LastName { get; set; }
 
         /// <summary>
+        /// Отчество первого пользователя - директора, админа
+        /// </summary>
+        public string MiddleName { get; set; }
+
+        /// <summary>
         /// Номер телефона первого пользователя - директора, админа
         /// </summary>
-        [Required]
         public string PhoneNumber { get; set; }
 
     }

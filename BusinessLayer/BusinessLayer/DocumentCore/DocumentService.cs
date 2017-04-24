@@ -124,6 +124,19 @@ namespace BL.Logic.DocumentCore
             return _documentDb.GetLinkedDocumentIds(ctx, documentId);
         }
 
+        public IEnumerable<FrontDocument> GetLinkedDocuments(IContext ctx, int linkId)
+        {
+            return _documentDb.GetLinkedDocuments(ctx, linkId);
+        }
+
+        public IEnumerable<FrontDocumentTag> GetDocumentTags(IContext context, FilterDocumentTag filter)
+        {
+            return _documentDb.GetDocumentTags(context, filter);
+        }
+        public int GetDocumentTagsCounter(IContext context, FilterDocumentTag filter)
+        {
+            return _documentDb.GetDocumentTagsCounter(context, filter);
+        }
         public IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontDocument doc)
         {
             var sysDb = DmsResolver.Current.Get<ISystemDbProcess>();

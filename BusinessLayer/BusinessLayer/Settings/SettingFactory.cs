@@ -3,7 +3,7 @@ using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Logic.Settings
 {
-    public static class SettingsFactory
+    public static class SettingFactory
     {
         public static InternalSystemSetting GetDefaultSetting(EnumSystemSettings key)
         {
@@ -41,11 +41,6 @@ namespace BL.Logic.Settings
                 case EnumSystemSettings.MAILSERVER_SYSTEMMAIL:
                     res.Value = "noreply@ostrean.com";
                     res.ValueType = EnumValueTypes.Text;
-                    res.SettingTypeId = 4;
-                    break;
-                case EnumSystemSettings.MAILSERVER_TIMEOUT_MINUTE:
-                    res.Value = "1";
-                    res.ValueType = EnumValueTypes.Number;
                     res.SettingTypeId = 4;
                     break;
 

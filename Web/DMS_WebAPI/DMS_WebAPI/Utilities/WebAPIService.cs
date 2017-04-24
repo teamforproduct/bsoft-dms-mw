@@ -33,6 +33,7 @@ using System.Threading.Tasks;
 using System.Web;
 using BL.Model.DictionaryCore.FrontModel.Employees;
 using BL.Model.AdminCore.IncomingModel;
+using System.Net.Http;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -297,6 +298,10 @@ namespace DMS_WebAPI.Utilities
 
                 assignmentId = (int)dicService.ExecuteAction(EnumDictionaryActions.AddExecutor, context, ass);
 
+
+                // Отправка приглашения
+
+
                 return empoyeeId;
             }
             catch (Exception e)
@@ -525,16 +530,92 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public string AddClientSaaS(AddClientSaaS model)
+        public int AddClientSaaSRequest(AddClientSaaS model)
         {
             // Проверка уникальности доменного имени
             if (_webDb.ExistsClients(new FilterAspNetClients { Code = model.ClientCode })) throw new ClientCodeAlreadyExists(model.ClientCode);
 
-            //TODO Автоматическое определение сервера
-            // определяю сервер для клиента пока первый попавшийся
+            if (_webDb.ExistsClientRequests(new FilterAspNetClientRequests { CodeExact = model.ClientCode })) throw new ClientCodeAlreadyExists(model.ClientCode);
+
+            if (string.IsNullOrEmpty(model.ClientName)) model.ClientName = model.ClientCode;
+
+            model.HashCode = model.ClientCode.md5();
+            model.SMSCode = DateTime.UtcNow.ToString("ssHHmm");
+
+            var id = _webDb.AddClientRequest(model);
+
+            var callbackurl = new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "Client/Create/ByHash").AbsoluteUri;
+
+            callbackurl += String.Format("?hash={0}", model.HashCode);
+
+            var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.RestorePasswordAgentUserVerificationEmail);
+            var db = GetClientServer(model.ClientId);
+            var ctx = new AdminContext(db);
+            var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
+            mailService.SendMessage(ctx, model.Email, "Ostrean. Создание клиента", htmlContent);
+
+            return id;
+        }
+
+
+        public void AddClientByEmail(AddClientFromHash model)
+        {
+            var request = _webDb.GetClientRequests(new FilterAspNetClientRequests { HashCodeExact = model.Hash }).FirstOrDefault();
+
+            if (request == null) throw new Exception("//TODO Exception");
+
+            AddClientSaaS(request.Id);
+        }
+
+        public void AddClientBySMS(AddClientFromSMS model)
+        {
+            var request = _webDb.GetClientRequests(new FilterAspNetClientRequests { SMSCodeExact = model.SMSCode }).FirstOrDefault();
+
+            if (request == null) throw new Exception("//TODO Exception");
+
+            AddClientSaaS(request.Id);
+        }
+
+        public async Task AddClientSaaS(int RequestId)
+        {
+            var model = _webDb.GetClientRequest(RequestId);
+
+            // Проверка уникальности доменного имени
+            if (_webDb.ExistsClients(new FilterAspNetClients { Code = model.ClientCode })) throw new ClientCodeAlreadyExists(model.ClientCode);
+
+            var client = new HttpClient();
+
+
+            var responseString = await client.GetStringAsync($"http://192.168.38.21:82/newhost.pl?fqdn={model.ClientCode}.ostrean.com");
+
+            switch (responseString)
+            {
+                case "Created":
+                    //- успешное выполнение
+                    break;
+                case "BadRequest":
+                    throw new ClientCodeRequired(); //- не указан параметр fqdn
+                case "PreconditionFailed":
+                    throw new ClientCodeInvalid(); //- параметр не соответствует маске[-0 - 9a - z].ostrean.com
+                case "Conflict":
+                    throw new ClientCodeAlreadyExists(model.ClientCode); //- такой субдомен уже существует
+                default:
+                    throw new ClientCreateException(new List<string> { responseString });
+            }
+
             // сервер может определяться более сложным образом: с учетом нагрузки, количества клиентов
-            var server = _webDb.GetServers(new FilterAdminServers()).FirstOrDefault();
-            if (server == null) throw new ServerIsNotFound();
+            var settings = DmsResolver.Current.Get<ISettingValues>();
+            var dbName = settings.GetCurrentServerName();
+
+            var db = _webDb.GetServers(new FilterAdminServers { ServerNameExact = dbName }).FirstOrDefault();
+
+            if (db == null)
+            {
+                // определяю сервер для клиента пока первый попавшийся
+                db = _webDb.GetServers(new FilterAdminServers()).FirstOrDefault();
+            }
+
+            if (db == null) throw new ServerIsNotFound();
 
 
             //if (string.IsNullOrEmpty(model.Password)) model.Password = "admin_" + model.ClientCode;
@@ -554,7 +635,7 @@ namespace DMS_WebAPI.Utilities
                 _webDb.AddClientServer(new SetClientServer
                 {
                     ClientId = model.ClientId,
-                    ServerId = server.Id,
+                    ServerId = db.Id,
                 });
 
 
@@ -573,9 +654,9 @@ namespace DMS_WebAPI.Utilities
                 transaction.Complete();
             }
 
-            server.ClientId = model.ClientId;
+            db.ClientId = model.ClientId;
 
-            var ctx = new AdminContext(server);
+            var ctx = new AdminContext(db);
 
             var languages = DmsResolver.Current.Get<ILanguages>();
 
@@ -605,9 +686,9 @@ namespace DMS_WebAPI.Utilities
 
             AddUserEmployeeInOrg(ctx, new AddEmployeeInOrg
             {
-                FirstName = model.Name,
+                FirstName = model.FirstName,
                 LastName = model.LastName,
-                //MiddleName = model.MiddleName,
+                MiddleName = model.MiddleName,
                 OrgName = languages.GetTranslation(ctx.CurrentEmployee.LanguageId, "##l@Clients:" + "MyCompany" + "@l##"),
                 DepartmentName = languages.GetTranslation(ctx.CurrentEmployee.LanguageId, "##l@Clients:" + "MyDepartment" + "@l##"),
                 PositionName = languages.GetTranslation(ctx.CurrentEmployee.LanguageId, "##l@Clients:" + "MyPosition" + "@l##"),
@@ -622,8 +703,6 @@ namespace DMS_WebAPI.Utilities
 
             //UserManager.AddLogin(userId, new UserLoginInfo {    })
 
-
-            return "token";
 
         }
 
@@ -1106,7 +1185,7 @@ namespace DMS_WebAPI.Utilities
 
         }
 
-        public void UpdateUserContextLastChangeDate(string token , DateTime date)
+        public void UpdateUserContextLastChangeDate(string token, DateTime date)
         {
             _webDb.UpdateUserContextLastChangeDate(token, date);
         }

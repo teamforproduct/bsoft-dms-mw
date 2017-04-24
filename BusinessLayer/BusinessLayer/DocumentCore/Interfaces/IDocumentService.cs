@@ -19,7 +19,9 @@ namespace BL.Logic.DocumentCore.Interfaces
         FrontDocument GetDocument(IContext ctx, int documentId);
 
         IEnumerable<int> GetLinkedDocumentIds(IContext ctx, int documentId);
-
+        IEnumerable<FrontDocument> GetLinkedDocuments(IContext context, int linkId);
+        IEnumerable<FrontDocumentTag> GetDocumentTags(IContext context, FilterDocumentTag filter);
+        int GetDocumentTagsCounter(IContext context, FilterDocumentTag filter);
         IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontDocument doc);
         object ExecuteAction(EnumDocumentActions act, IContext context, object param);
         FrontDocumentEvent GetDocumentEvent(IContext ctx, int eventId);
