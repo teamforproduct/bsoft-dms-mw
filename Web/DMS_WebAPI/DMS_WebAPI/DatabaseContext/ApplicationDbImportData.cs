@@ -80,7 +80,7 @@ namespace DMS_WebAPI.Models
 
         private static SystemSettings GetSystemSettings(int order, EnumGeneralSettings id, string value, EnumValueTypes valueTypeId)
         {
-            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Name");
             string description = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Description");
             return new SystemSettings()
             {

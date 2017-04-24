@@ -530,14 +530,63 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public async Task<string> AddClientSaaS(AddClientSaaS model)
+        public int AddClientSaaSRequest(AddClientSaaS model)
         {
+            // Проверка уникальности доменного имени
+            if (_webDb.ExistsClients(new FilterAspNetClients { Code = model.ClientCode })) throw new ClientCodeAlreadyExists(model.ClientCode);
+
+            if (_webDb.ExistsClientRequests(new FilterAspNetClientRequests { CodeExact = model.ClientCode })) throw new ClientCodeAlreadyExists(model.ClientCode);
+
+            if (!string.IsNullOrEmpty(model.ClientName)) model.ClientName = model.ClientCode;
+
+            model.HashCode = model.ClientCode.md5();
+            model.SMSCode = DateTime.UtcNow.ToString("ssHHmm");
+
+            var id = _webDb.AddClientRequest(model);
+
+            var callbackurl = new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "Client/Info/Execute").AbsoluteUri;
+
+            callbackurl += String.Format("?hash={0}", model.HashCode);
+
+            var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.RestorePasswordAgentUserVerificationEmail);
+            var db = GetClientServer(model.ClientId);
+            var ctx = new AdminContext(db);
+            var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
+            mailService.SendMessage(ctx, model.Email, "Ostrean. Создание клиента", htmlContent);
+
+            return id;
+        }
+
+
+        public void AddClientByEmail(AddClientFromHash model)
+        {
+            var request = _webDb.GetClientRequests(new FilterAspNetClientRequests { HashCodeExact = model.Hash }).FirstOrDefault();
+
+            if (request == null) throw new Exception("//TODO Exception");
+
+            AddClientSaaS(request.Id);
+        }
+
+        public void AddClientBySMS(AddClientFromSMS model)
+        {
+            var request = _webDb.GetClientRequests(new FilterAspNetClientRequests { SMSCodeExact = model.SMSCode }).FirstOrDefault();
+
+            if (request == null) throw new Exception("//TODO Exception");
+
+            AddClientSaaS(request.Id);
+        }
+
+        public async Task AddClientSaaS(int RequestId)
+        {
+            var model = _webDb.GetClientRequest(RequestId);
+
             // Проверка уникальности доменного имени
             if (_webDb.ExistsClients(new FilterAspNetClients { Code = model.ClientCode })) throw new ClientCodeAlreadyExists(model.ClientCode);
 
             var client = new HttpClient();
 
-            var responseString = await client.GetStringAsync("http://10.88.12.21:82/newhost.pl?fqdn=bsoft.ostrean.com");
+
+            var responseString = await client.GetStringAsync($"http://192.168.38.21:82/newhost.pl?fqdn={model.ClientCode}.ostrean.com");
 
             switch (responseString)
             {
@@ -654,8 +703,6 @@ namespace DMS_WebAPI.Utilities
 
             //UserManager.AddLogin(userId, new UserLoginInfo {    })
 
-
-            return "token";
 
         }
 

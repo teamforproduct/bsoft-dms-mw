@@ -35,5 +35,11 @@ namespace DMS_WebAPI.DBModel
         [MaxLength(2000)]
         public string PhoneNumber { get; set; }
 
+        [MaxLength(10)]
+        public string SMSCode { get; set; }
+
+        [MaxLength(32)]
+        public string HashCode { get; set; }
+
     }
 }

@@ -436,6 +436,10 @@
     <Compile Include="Migrations\201704232218400_generalSettings.Designer.cs">
       <DependentUpon>201704232218400_generalSettings.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201704240006103_ClientRequests.cs" />
+    <Compile Include="Migrations\201704240006103_ClientRequests.Designer.cs">
+      <DependentUpon>201704240006103_ClientRequests.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
@@ -632,6 +636,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201704232218400_generalSettings.resx">
       <DependentUpon>201704232218400_generalSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704240006103_ClientRequests.resx">
+      <DependentUpon>201704240006103_ClientRequests.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

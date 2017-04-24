@@ -43,11 +43,6 @@ namespace BL.Logic.Settings
                     res.ValueType = EnumValueTypes.Text;
                     res.SettingTypeId = 4;
                     break;
-                case EnumSystemSettings.MAILSERVER_TIMEOUT_MINUTE:
-                    res.Value = "1";
-                    res.ValueType = EnumValueTypes.Number;
-                    res.SettingTypeId = 4;
-                    break;
 
 
                 case EnumSystemSettings.SUBORDINATIONS_SEND_ALL_FOR_EXECUTION:

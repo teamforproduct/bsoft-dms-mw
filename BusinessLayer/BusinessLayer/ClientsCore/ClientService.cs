@@ -288,7 +288,6 @@ namespace BL.Logic.ClientCore
             items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.DIGITAL_SIGNATURE_IS_USE_CERTIFICATE_SIGN));
             items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.DIGITAL_SIGNATURE_IS_USE_INTERNAL_SIGN));
 
-            items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.MAILSERVER_TIMEOUT_MINUTE));
             items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.MAILSERVER_TYPE));
             items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.MAILSERVER_SYSTEMMAIL));
             items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.MAILSERVER_NAME));

@@ -81,6 +81,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdminCore\Clients\AddClientFromSMS.cs" />
+    <Compile Include="AdminCore\Clients\AddClientFromHash.cs" />
     <Compile Include="AdminCore\Clients\AddClientSaaS.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminRegistrationJournalPosition.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminPositionRoleDIP.cs" />
@@ -651,6 +653,7 @@
     <Compile Include="Users\ChangePasswordAgentUser.cs" />
     <Compile Include="Users\Employee.cs" />
     <Compile Include="Users\CurrentPosition.cs" />
+    <Compile Include="WebAPI\Filters\FilterAspNetClientRequests.cs" />
     <Compile Include="WebAPI\Filters\FilterAspNetClientServer.cs" />
     <Compile Include="WebAPI\Filters\FilterAspNetLicences.cs" />
     <Compile Include="WebAPI\Filters\FilterAspNetClientServers.cs" />
@@ -663,6 +666,7 @@
     <Compile Include="WebAPI\FrontModel\AuthError.cs" />
     <Compile Include="WebAPI\FrontModel\FrontAdminServer.cs" />
     <Compile Include="WebAPI\FrontModel\FrontAdminServerByUser.cs" />
+    <Compile Include="WebAPI\FrontModel\FrontAspNetClientRequest.cs" />
     <Compile Include="WebAPI\FrontModel\FrontAspNetClient.cs" />
     <Compile Include="WebAPI\FrontModel\FrontAspNetClientServer.cs" />
     <Compile Include="WebAPI\FrontModel\FrontAspNetClientLicence.cs" />

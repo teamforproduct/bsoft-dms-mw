@@ -17,21 +17,50 @@ namespace DMS_WebAPI.ControllersV3.Clients
     {
 
         /// <summary>
-        /// Создает нового клиента
+        /// Создает заявку на добавление нового клиента
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info)]
-        public IHttpActionResult Post([FromBody]AddClientSaaS model)
+        public IHttpActionResult AddClientRequest([FromBody]AddClientSaaS model)
         {
             var tmpService = DmsResolver.Current.Get<WebAPIService>();
-            tmpService.AddClientSaaS(model);
+            tmpService.AddClientSaaSRequest(model);
             return new JsonResult(null, this);
         }
 
         /// <summary>
-        /// Удаляет банк
+        /// Создает нового клиента
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route(Features.Info + "/ByEMail")]
+        public IHttpActionResult AddClient([FromBody]AddClientFromHash model)
+        {
+            var tmpService = DmsResolver.Current.Get<WebAPIService>();
+            tmpService.AddClientByEmail(model);
+            return new JsonResult(null, this);
+        }
+
+        /// <summary>
+        /// Создает нового клиента
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route(Features.Info + "/BySMS")]
+        public IHttpActionResult AddClient([FromBody]AddClientFromSMS model)
+        {
+            var tmpService = DmsResolver.Current.Get<WebAPIService>();
+            tmpService.AddClientBySMS(model);
+            return new JsonResult(null, this);
+        }
+
+
+        /// <summary>
+        /// Удаляет данные клиента
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>

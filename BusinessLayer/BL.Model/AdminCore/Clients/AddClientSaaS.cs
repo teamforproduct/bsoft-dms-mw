@@ -14,6 +14,12 @@ namespace BL.Model.AdminCore.Clients
         [IgnoreDataMember]
         public int ClientId { get; set; }
 
+        [IgnoreDataMember]
+        public string HashCode { get; set; }
+
+        [IgnoreDataMember]
+        public string SMSCode { get; set; }
+
 
         /// <summary>
         /// Доменное имя клиента сlient156454.ostrean.com
@@ -22,7 +28,9 @@ namespace BL.Model.AdminCore.Clients
         [RegularExpression(@"[-0-9a-z]{3,60}$")]
         public string ClientCode { get { return _ClientCode; } set { _ClientCode = value.Trim().ToLower(); } }
         private string _ClientCode;
-        
+
+        public string ClientName { get; set; }
+
         /// <summary>
         /// Язык интерфейса
         /// </summary>
