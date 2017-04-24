@@ -1054,12 +1054,33 @@ namespace BL.Database.Documents
             }
         }
 
-        public IEnumerable<FrontDictionaryPosition> GetDocumentWorkGroup(IContext context, FilterDictionaryPosition filter, UIPaging paging)
+        public IEnumerable<FrontDictionaryPosition> GetDocumentWorkGroup(IContext context, FilterDictionaryPosition filter)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var res = CommonQueries.GetDocumentWorkGroup(context, filter).ToList();
+                var qry = CommonQueries.GetDocumentWorkGroupQuery(context, filter);
+                qry = qry.OrderBy(x => x.Position.Name);
+                var res = qry.Where(x => x.PositionId.HasValue).Select(x => new FrontDictionaryPosition
+                {
+                    Id = x.PositionId.Value,
+                    Name = x.Position.Name,
+                    DepartmentId = x.Position.DepartmentId,
+                    ExecutorAgentId = x.Position.ExecutorAgentId,
+                    DepartmentName = x.Position.Department.Name,
+                    ExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : (string)null),
+                }).Distinct().ToList();
+                transaction.Complete();
+                return res;
+            }
+        }
+        public int GetDocumentWorkGroupCounter(IContext context, FilterDictionaryPosition filter)
+        {
+            var dbContext = context.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = CommonQueries.GetDocumentWorkGroupQuery(context, filter);
+                var res = qry.Count();
                 transaction.Complete();
                 return res;
             }
@@ -1385,10 +1406,11 @@ namespace BL.Database.Documents
                                                 ClientId = x.ClientId,
                                                 EntityTypeId = x.EntityTypeId,
                                                 DocumentId = x.OnEvent.DocumentId,
-                                                SourcePositionId = x.OnEvent.SourcePositionId,
+                                                SourcePositionId = x.OnEvent.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
+                                                TargetPositionId = x.OnEvent.Accesses.Where(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source || y.AccessTypeId == (int)EnumEventAccessTypes.Target)
+                                                                    .OrderByDescending(y=> y.AccessTypeId).FirstOrDefault().PositionId,
                                                 SourcePositionExecutorAgentId = x.OnEvent.SourcePositionExecutorAgentId,
                                                 SourcePositionExecutorTypeId = x.OnEvent.SourcePositionExecutorTypeId,
-                                                TargetPositionId = x.OnEvent.TargetPositionId,
                                                 TargetPositionExecutorAgentId = x.OnEvent.TargetPositionExecutorAgentId,
                                                 TargetPositionExecutorTypeId = x.OnEvent.TargetPositionExecutorTypeId,
                                                 SourceAgentId = x.OnEvent.SourceAgentId,

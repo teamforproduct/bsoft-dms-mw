@@ -27,6 +27,10 @@ namespace BL.Logic.DocumentCore
             return _documentDb.GetRestrictedSendList(context, restrictedSendListId);
         }
 
+        public int GetRestrictedSendListsCounter(IContext context, int documentId)
+        {
+            return _documentDb.GetRestrictedSendListsCounter(context, documentId);
+        }
         public IEnumerable<FrontDocumentRestrictedSendList> GetRestrictedSendLists(IContext context, int documentId)
         {
             return _documentDb.GetRestrictedSendLists(context, documentId);
@@ -61,6 +65,10 @@ namespace BL.Logic.DocumentCore
         public IEnumerable<FrontDocumentSendList> GetSendLists(IContext context, int documentId)
         {
             return _documentDb.GetSendLists(context, documentId).ToList();
+        }
+        public int GetSendListsCounter(IContext context, int documentId)
+        {
+            return _documentDb.GetSendListsCounter(context, documentId);
         }
         public IEnumerable<FrontDocument> GetAdditinalLinkedDocumentSendLists(IContext context, AdditinalLinkedDocumentSendList model)
         {

@@ -43,6 +43,18 @@ namespace BL.Database.Documents
             }
         }
 
+        public int GetRestrictedSendListsCounter(IContext ctx, int documentId)
+        {
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = CommonQueries.GetDocumentRestrictedSendListQuery(ctx, new FilterDocumentRestrictedSendList { DocumentId = new List<int> { documentId } });
+                var res = qry.Count();
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public IEnumerable<FrontDocumentRestrictedSendList> GetRestrictedSendLists(IContext ctx, int documentId)
         {
             var dbContext = ctx.DbContext as DmsContext;
@@ -122,7 +134,17 @@ namespace BL.Database.Documents
                 return res;
             }
         }
-
+        public int GetSendListsCounter(IContext context, int documentId)
+        {
+            var dbContext = context.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = CommonQueries.GetDocumentSendList(context, new FilterDocumentSendList { DocumentId = new List<int> { documentId } });
+                var res = qry.Count();
+                transaction.Complete();
+                return res;
+            }
+        }
         public FrontDocumentSendList GetSendList(IContext ctx, int id)
         {
             var dbContext = ctx.DbContext as DmsContext;

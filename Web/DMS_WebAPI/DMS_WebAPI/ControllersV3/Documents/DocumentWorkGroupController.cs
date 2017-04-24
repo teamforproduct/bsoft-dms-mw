@@ -26,20 +26,37 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// Возвращает список рабочей группы
         /// </summary>
         /// <param name="filter">Фильтр</param>
-        /// <param name="paging">Пейджинг</param>
         /// <returns></returns>
         [HttpGet]
         [Route(Features.WorkGroups)]
         [ResponseType(typeof(List<FrontDictionaryPosition>))]
-        public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryPosition filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryPosition filter)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var docProc = DmsResolver.Current.Get<IDocumentService>();
-                   var items = docProc.GetDocumentWorkGroup(context, filter, paging);
+                   var items = docProc.GetDocumentWorkGroup(context, filter);
                    var res = new JsonResult(items, this);
                    return res;
                });
+        }
+
+        /// <summary>
+        /// Возвращает счетчик списка рабочей группы
+        /// </summary>
+        /// <param name="filter">Фильтр</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.WorkGroups + "/Counter")]
+        public async Task<IHttpActionResult> GetCounter([FromUri] FilterDictionaryPosition filter)
+        {
+            return await SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var docProc = DmsResolver.Current.Get<IDocumentService>();
+                var items = docProc.GetDocumentWorkGroupCounter(context, filter);
+                var res = new JsonResult(items, this);
+                return res;
+            });
         }
 
         /// <summary>

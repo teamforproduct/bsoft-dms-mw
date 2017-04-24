@@ -163,9 +163,14 @@ namespace BL.Logic.DocumentCore
             return _operationDb.GetDocumentSubscriptions(ctx, filter, paging);
         }
 
-        public IEnumerable<FrontDictionaryPosition> GetDocumentWorkGroup(IContext ctx, FilterDictionaryPosition filter, UIPaging paging)
+        public IEnumerable<FrontDictionaryPosition> GetDocumentWorkGroup(IContext ctx, FilterDictionaryPosition filter)
         {
-            return _operationDb.GetDocumentWorkGroup(ctx, filter, paging);
+            return _operationDb.GetDocumentWorkGroup(ctx, filter);
+        }
+
+        public int GetDocumentWorkGroupCounter(IContext ctx, FilterDictionaryPosition filter)
+        {
+            return _operationDb.GetDocumentWorkGroupCounter(ctx, filter);
         }
 
         public FrontRegistrationFullNumber GetNextRegisterDocumentNumber(IContext ctx, RegisterDocumentBase model)

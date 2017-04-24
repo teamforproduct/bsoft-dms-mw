@@ -1884,7 +1884,7 @@ namespace BL.Database.Common
         #endregion
 
         #region WorkGroups
-        public static IEnumerable<FrontDictionaryPosition> GetDocumentWorkGroup(IContext context, FilterDictionaryPosition filter)
+        public static IQueryable<DocumentAccesses> GetDocumentWorkGroupQuery(IContext context, FilterDictionaryPosition filter)
         {
             var dbContext = context.DbContext as DmsContext;
             var qry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
@@ -1910,15 +1910,7 @@ namespace BL.Database.Common
                 }
             }
 
-            return qry.Where(x => x.PositionId.HasValue).Select(x => new FrontDictionaryPosition
-            {
-                Id = x.PositionId.Value,
-                Name = x.Position.Name,
-                DepartmentId = x.Position.DepartmentId,
-                ExecutorAgentId = x.Position.ExecutorAgentId,
-                DepartmentName = x.Position.Department.Name,
-                ExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : (string)null),
-            }).Distinct().ToList();
+            return qry;
 
         }
         #endregion
