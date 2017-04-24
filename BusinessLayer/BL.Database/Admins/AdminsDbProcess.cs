@@ -43,50 +43,39 @@ namespace BL.Database.Admins
         #region [+] General ...
         public AdminAccessInfo GetAdminAccesses(IContext ctx)
         {
-            var dbContext = ctx.DbContext as DmsContext;
-            using (var transaction = Transactions.GetTransaction())
+            if (!_cacheService.Exists(ctx, SettingConstants.ADMINACCESSINFO_CASHE_KEY))
             {
-                var res = new AdminAccessInfo();
-
-                res.UserRoles = dbContext.AdminUserRolesSet.Where(x => x.Role.ClientId == ctx.CurrentClientId).Select(x => new InternalAdminUserRole
+                var admCtx = new AdminContext(ctx);
+                VerifyAdminSecurityCash(admCtx);
+                _cacheService.AddOrUpdateCasheData(admCtx, SettingConstants.ADMINACCESSINFO_CASHE_KEY, () =>
                 {
-                    Id = x.Id,
-                    RoleId = x.RoleId,
-                    AgentId = x.PositionExecutor.AgentId
-                }).ToList();
+                    var adminPermiss =_cacheService.GetDataWithoutLock(admCtx, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY) as List<InternalAdminRolePermission>;
+                    var sysAction =_cacheService.GetDataWithoutLock(admCtx, SettingConstants.ACTION_CASHE_KEY) as List<InternalSystemAction>;
+                    var adminRole =_cacheService.GetDataWithoutLock(admCtx, SettingConstants.ADMIN_ROLE_CASHE_KEY) as List<InternalAdminRole>;
+                    var userRole =_cacheService.GetDataWithoutLock(admCtx, SettingConstants.USER_ROLE_CASHE_KEY) as List<InternalAdminUserRole>;
+                    var adminPos =_cacheService.GetDataWithoutLock(admCtx, SettingConstants.ADMIN_POSITION_ROLE_KEY) as List<InternalAdminPositionRole>;
 
-                res.Roles = dbContext.AdminRolesSet.Where(x => x.ClientId == ctx.CurrentClientId).Select(x => new InternalAdminRole
-                {
-                    Id = x.Id
+                    if (sysAction == null || adminPermiss == null || adminRole == null || userRole == null || adminPos == null) throw new KeyNotFoundException();
 
-                }).ToList();
+                    var res = new AdminAccessInfo
+                    {
+                        UserRoles = userRole.Where(x => x.ClientId == admCtx.CurrentClientId).ToList(),
+                        Roles = adminRole.Where(x => x.ClientId == admCtx.CurrentClientId).ToList(),
+                        PositionRoles = adminPos.Where(x => x.ClientId == admCtx.CurrentClientId).ToList(),
+                        Actions = sysAction.ToList(),
+                        RolePermissions = adminPermiss.Where(x => x.ClientId == admCtx.CurrentClientId).ToList()
+                    };
 
-                res.PositionRoles = dbContext.AdminPositionRolesSet.Where(x => x.Role.ClientId == ctx.CurrentClientId).Select(x => new InternalAdminPositionRole
-                {
-                    PositionId = x.PositionId,
-                    Id = x.Id,
-                    RoleId = x.RoleId
-                }).ToList();
-
-                res.Actions = dbContext.SystemActionsSet.Select(x => new InternalSystemAction
-                {
-                    Id = x.Id,
-                    Code = x.Code,
-                    Description = x.Description,
-                    PermissionId = x.PermissionId,
-                    ObjectId = (EnumObjects)x.ObjectId,
-                }).ToList();
-
-                res.RolePermissions = dbContext.AdminRolePermissionsSet.Where(x => x.Role.ClientId == ctx.CurrentClientId).Select(x => new InternalAdminRolePermission
-                {
-                    Id = x.Id,
-                    RoleId = x.RoleId,
-                    PermissionId = x.PermissionId
-                }).ToList();
-
-                transaction.Complete();
-                return res;
+                    return res;
+                });
+                _cacheService.AddUpdateDependency(admCtx, SettingConstants.PERMISSION_CASHE_KEY, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
+                _cacheService.AddUpdateDependency(admCtx, SettingConstants.PERMISSION_CASHE_KEY, SettingConstants.ACTION_CASHE_KEY);
+                _cacheService.AddUpdateDependency(admCtx, SettingConstants.PERMISSION_CASHE_KEY, SettingConstants.ADMIN_ROLE_CASHE_KEY);
+                _cacheService.AddUpdateDependency(admCtx, SettingConstants.PERMISSION_CASHE_KEY, SettingConstants.USER_ROLE_CASHE_KEY);
+                _cacheService.AddUpdateDependency(admCtx, SettingConstants.PERMISSION_CASHE_KEY, SettingConstants.ADMIN_POSITION_ROLE_KEY);
             }
+
+            return _cacheService.GetData(ctx, SettingConstants.ADMINACCESSINFO_CASHE_KEY) as AdminAccessInfo;
         }
 
         public IEnumerable<FrontUserAssignments> GetAvailablePositions(IContext ctx, int agentId, List<int> PositionIDs)
@@ -134,7 +123,7 @@ namespace BL.Database.Admins
 
                     res.Where(x => x.RolePositionId.HasValue && lastPositionChose.Contains(x.RolePositionId.Value)).ToList().ForEach(x => x.IsLastChosen = true);
                 }
-                catch { };
+                catch { }
 
                 var positions = res.Select(s => s.RolePositionId).ToList();
                 var filterAccessPositionContains = PredicateBuilder.New<DocumentAccesses>(false);
@@ -153,63 +142,12 @@ namespace BL.Database.Admins
                 var access = accessQry.ToList();
                 res.ForEach(x =>
                 {
-                    var stat = access.Where(y => y.PositionId == x.RolePositionId).FirstOrDefault();
+                    var stat = access.FirstOrDefault(y => y.PositionId == x.RolePositionId);
                     x.NewEventsCount = stat?.CountNewEvents;
                     x.ControlsCount = stat?.CountWaits;
                     x.OverdueControlsCount = stat?.OverDueCountWaits;
                     x.MinDueDate = stat?.MinDueDate;
                 });
-
-
-                //var filterNewEventTargetPositionContains = PredicateBuilder.New<DBModel.Document.DocumentEvents>(false);
-                //filterNewEventTargetPositionContains = positions.Aggregate(filterNewEventTargetPositionContains,
-                //    (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
-
-                //var neweventQry = dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId)   //TODO include doc access
-                //                .Where(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId)
-                //                .Where(filterNewEventTargetPositionContains)
-                //                .GroupBy(g => g.TargetPositionId)
-                //                .Select(s => new { PosID = s.Key, EvnCnt = s.Count() });
-                //var newevnt = neweventQry.ToList();
-
-                //var filterOnEventPositionsContains = PredicateBuilder.New<DocumentWaits>(false);
-                //filterOnEventPositionsContains = positions.Aggregate(filterOnEventPositionsContains,
-                //    (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value /*|| e.OnEvent.SourcePositionId == value*/).Expand());
-
-                //var waitQry = dbContext.DocumentWaitsSet.Where(x => x.ClientId == ctx.CurrentClientId)   //TODO include doc access
-                //                .Where(x => !x.OffEventId.HasValue)
-                //                .Where(filterOnEventPositionsContains)
-                //                .GroupBy(y => new
-                //                {
-                //                    y.OnEvent.SourcePositionId, y.OnEvent.TargetPositionId,
-                //                   // IsOverDue = !y.OffEventId.HasValue && y.DueDate.HasValue && y.DueDate.Value <= DateTime.UtcNow,
-                //                   // DueDate = DbFunctions.TruncateTime(y.DueDate),
-                //                })
-                //                .Select(x => new
-                //                {
-                //                    Pos = x.Key,
-                //                    ControlsCount = x.Count(),
-                //                    OverdueControlsCount = x.Where(y => y.DueDate.HasValue && y.DueDate.Value < DateTime.UtcNow).Count(),
-                //                    MinDueDate = x.Where(y => y.DueDate.HasValue).Min(y => y.DueDate),
-                //                })
-                //                ;
-                //var wait = waitQry.ToList();
-
-                ////res.Join(newevnt, r => r.RolePositionId, e => e.PosID, (r, e) => { r.NewEventsCount = e.EvnCnt; r.ControlsCount = 1; r.OverdueControlsCount = 1; r.MinDueDate = DateTime.UtcNow; return r; }).ToList();
-                //res.ForEach(x =>
-                //{
-                //    x.NewEventsCount = newevnt.Where(y => y.PosID == x.RolePositionId).Select(y => y.EvnCnt).FirstOrDefault();
-                //    var t = wait.Where(y => y.Pos.SourcePositionId == x.RolePositionId || y.Pos.TargetPositionId == x.RolePositionId).GroupBy(y => 1)
-                //        .Select(y => new
-                //        {
-                //            MinDueDate = y.Min(z => z.MinDueDate),
-                //            ControlsCount = y.Sum(z => z.ControlsCount),
-                //            OverdueControlsCount = y.Sum(z => z.OverdueControlsCount)
-                //        }).FirstOrDefault();
-                //    x.MinDueDate = t?.MinDueDate;
-                //    x.ControlsCount = t?.ControlsCount ?? 0;
-                //    x.OverdueControlsCount = t?.OverdueControlsCount ?? 0;
-                //});
 
                 transaction.Complete();
                 return res;
@@ -735,8 +673,10 @@ namespace BL.Database.Admins
 
                 CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.AdminPositionRoles, EnumOperationType.AddNew);
                 transaction.Complete();
+                _cacheService.RefreshKey(ctx, SettingConstants.ADMIN_POSITION_ROLE_KEY);
                 return dbModel.Id;
             }
+
         }
 
         public void DeletePositionRoles(IContext ctx, FilterAdminPositionRole filter)
@@ -748,6 +688,7 @@ namespace BL.Database.Admins
                 CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.AdminPositionRoles, EnumOperationType.Delete);
                 qry.Delete();
                 transaction.Complete();
+                _cacheService.RefreshKey(ctx, SettingConstants.ADMIN_POSITION_ROLE_KEY);
             }
         }
 
@@ -765,23 +706,6 @@ namespace BL.Database.Admins
                     RoleId = x.RoleId,
                     LastChangeUserId = x.LastChangeUserId,
                     LastChangeDate = x.LastChangeDate
-                }).FirstOrDefault();
-                transaction.Complete();
-                return res;
-            }
-        }
-
-        public FrontAdminPositionRole GetPositionRole(IContext ctx, int id)
-        {
-            var dbContext = ctx.DbContext as DmsContext;
-            using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = dbContext.AdminRolesSet.Where(x => x.Id == id).Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
-
-                var res = qry.Select(x => new FrontAdminPositionRole
-                {
-                    Id = x.Id,
-                    RoleName = x.Name,
                 }).FirstOrDefault();
                 transaction.Complete();
                 return res;
@@ -853,8 +777,8 @@ namespace BL.Database.Admins
                     Id = x.Id,
                     RoleId = x.Id,
                     RoleName = x.Name,
-                    IsChecked = x.PositionRoles.Where(y => y.RoleId == x.Id).Where(y => filter.PositionIDs.Contains(y.PositionId)).Any(),
-                    IsDefault = x.PositionRoles.Where(y => y.RoleId == x.Id).Where(y => y.Role.RoleTypeId.HasValue).Any(),
+                    IsChecked = x.PositionRoles.Any(y => y.RoleId == x.Id && filter.PositionIDs.Contains(y.PositionId)),
+                    IsDefault = x.PositionRoles.Any(y => y.RoleId == x.Id && y.Role.RoleTypeId.HasValue),
                 }).ToList();
 
                 transaction.Complete();
@@ -1117,12 +1041,6 @@ namespace BL.Database.Admins
 
                     qry = qry.Where(filterContains);
                 }
-
-                //if (filter.Period?.IsActive == true)
-                //{
-                //    qry = qry.Where(x => x.StartDate >= filter.Period.DateBeg);
-                //    qry = qry.Where(x => x.EndDate <= filter.Period.DateEnd);
-                //}
 
                 if (filter.StartDate.HasValue)
                 {
@@ -1681,7 +1599,7 @@ namespace BL.Database.Admins
 
 
         private IQueryable<AdminRolePermissions> GetRolePermissionsQuery(IContext ctx, DmsContext dbContext, FilterAdminRolePermissions filter)
-        { //TODO change to cashe
+        { 
             var qry = dbContext.AdminRolePermissionsSet.Where(x => x.Role.ClientId == ctx.CurrentClientId).AsQueryable();
 
             if (filter != null)
@@ -1805,7 +1723,8 @@ namespace BL.Database.Admins
                         RoleId = x.RoleId,
                         PermissionId = x.PermissionId,
                         LastChangeDate = x.LastChangeDate,
-                        LastChangeUserId = x.LastChangeUserId
+                        LastChangeUserId = x.LastChangeUserId,
+                        ClientId = x.Role.ClientId
                     }).ToList();
 
                 });
@@ -1823,7 +1742,8 @@ namespace BL.Database.Admins
                         LastChangeUserId = x.LastChangeUserId,
                         Name = x.Name,
                         Description = x.Description,
-                        RoleTypeId = x.RoleTypeId
+                        RoleTypeId = x.RoleTypeId,
+                        ClientId = x.ClientId
                     }).ToList();
 
                 });
@@ -1837,7 +1757,9 @@ namespace BL.Database.Admins
                     {
                         Id = x.Id,
                         RoleId = x.RoleId,
-                        PositionExecutorId = x.PositionExecutorId
+                        PositionExecutorId = x.PositionExecutorId,
+                        AgentId = x.PositionExecutor.AgentId,
+                        ClientId = x.Role.ClientId
                     }).ToList();
 
                 });
@@ -1858,6 +1780,22 @@ namespace BL.Database.Admins
                         IsActive = x.IsActive,
                         StartDate = x.StartDate,
                         PositionExecutorTypeId = x.PositionExecutorTypeId
+                    }).ToList();
+
+                });
+            }
+
+            if (!_cacheService.Exists(ctx, SettingConstants.ADMIN_POSITION_ROLE_KEY))
+            {
+                _cacheService.AddOrUpdateCasheData(ctx, SettingConstants.ADMIN_POSITION_ROLE_KEY, () =>
+                {
+
+                    return dbCtx.AdminPositionRolesSet.Select(x => new InternalAdminPositionRole
+                    {
+                        PositionId = x.PositionId,
+                        Id = x.Id,
+                        RoleId = x.RoleId,
+                        ClientId = x.Role.ClientId
                     }).ToList();
 
                 });
@@ -1961,31 +1899,31 @@ namespace BL.Database.Admins
                          Order = y.Key.FeatureOrder,
                          Read = new FrontPermissionValue
                          {
-                             Module = y.Any(z => z.AccessTypeId == EnumAccessTypes.R) ? y.Where(z => z.AccessTypeId == EnumAccessTypes.R).FirstOrDefault().ModuleCode : string.Empty,
-                             Feature = y.Any(z => z.AccessTypeId == EnumAccessTypes.R) ? y.Where(z => z.AccessTypeId == EnumAccessTypes.R).FirstOrDefault().FeatureCode : string.Empty,
-                             AccessType = y.Any(z => z.AccessTypeId == EnumAccessTypes.R) ? y.Where(z => z.AccessTypeId == EnumAccessTypes.R).FirstOrDefault().AccessTypeCode : string.Empty,
+                             Module = y.Any(z => z.AccessTypeId == EnumAccessTypes.R) ? y.FirstOrDefault(z => z.AccessTypeId == EnumAccessTypes.R).ModuleCode : string.Empty,
+                             Feature = y.Any(z => z.AccessTypeId == EnumAccessTypes.R) ? y.FirstOrDefault(z => z.AccessTypeId == EnumAccessTypes.R).FeatureCode : string.Empty,
+                             AccessType = y.Any(z => z.AccessTypeId == EnumAccessTypes.R) ? y.FirstOrDefault(z => z.AccessTypeId == EnumAccessTypes.R).AccessTypeCode : string.Empty,
                              Value = y.Any(z => z.AccessTypeId == EnumAccessTypes.R) ? (y.Any(z => z.AccessTypeId == EnumAccessTypes.R && z.IsChecked) ? EnumAccessTypesValue.Cheched : EnumAccessTypesValue.Uncheched) : EnumAccessTypesValue.Undefined
                          },
                          Create = new FrontPermissionValue
                          {
-                             Module = y.Any(z => z.AccessTypeId == EnumAccessTypes.C) ? y.Where(z => z.AccessTypeId == EnumAccessTypes.C).FirstOrDefault().ModuleCode : string.Empty,
-                             Feature = y.Any(z => z.AccessTypeId == EnumAccessTypes.C) ? y.Where(z => z.AccessTypeId == EnumAccessTypes.C).FirstOrDefault().FeatureCode : string.Empty,
-                             AccessType = y.Any(z => z.AccessTypeId == EnumAccessTypes.C) ? y.Where(z => z.AccessTypeId == EnumAccessTypes.C).FirstOrDefault().AccessTypeCode : string.Empty,
+                             Module = y.Any(z => z.AccessTypeId == EnumAccessTypes.C) ? y.FirstOrDefault(z => z.AccessTypeId == EnumAccessTypes.C).ModuleCode : string.Empty,
+                             Feature = y.Any(z => z.AccessTypeId == EnumAccessTypes.C) ? y.FirstOrDefault(z => z.AccessTypeId == EnumAccessTypes.C).FeatureCode : string.Empty,
+                             AccessType = y.Any(z => z.AccessTypeId == EnumAccessTypes.C) ? y.FirstOrDefault(z => z.AccessTypeId == EnumAccessTypes.C).AccessTypeCode : string.Empty,
                              Value = y.Any(z => z.AccessTypeId == EnumAccessTypes.C) ? (y.Any(z => z.AccessTypeId == EnumAccessTypes.C && z.IsChecked) ? EnumAccessTypesValue.Cheched : EnumAccessTypesValue.Uncheched) : EnumAccessTypesValue.Undefined
                          },
                          Update = new FrontPermissionValue
                          {
 
-                             Module = y.Any(z => z.AccessTypeId == EnumAccessTypes.U) ? y.Where(z => z.AccessTypeId == EnumAccessTypes.U).FirstOrDefault().ModuleCode : string.Empty,
-                             Feature = y.Any(z => z.AccessTypeId == EnumAccessTypes.U) ? y.Where(z => z.AccessTypeId == EnumAccessTypes.U).FirstOrDefault().FeatureCode : string.Empty,
-                             AccessType = y.Any(z => z.AccessTypeId == EnumAccessTypes.U) ? y.Where(z => z.AccessTypeId == EnumAccessTypes.U).FirstOrDefault().AccessTypeCode : string.Empty,
+                             Module = y.Any(z => z.AccessTypeId == EnumAccessTypes.U) ? y.FirstOrDefault(z => z.AccessTypeId == EnumAccessTypes.U).ModuleCode : string.Empty,
+                             Feature = y.Any(z => z.AccessTypeId == EnumAccessTypes.U) ? y.FirstOrDefault(z => z.AccessTypeId == EnumAccessTypes.U).FeatureCode : string.Empty,
+                             AccessType = y.Any(z => z.AccessTypeId == EnumAccessTypes.U) ? y.FirstOrDefault(z => z.AccessTypeId == EnumAccessTypes.U).AccessTypeCode : string.Empty,
                              Value = y.Any(z => z.AccessTypeId == EnumAccessTypes.U) ? (y.Any(z => z.AccessTypeId == EnumAccessTypes.U && z.IsChecked) ? EnumAccessTypesValue.Cheched : EnumAccessTypesValue.Uncheched) : EnumAccessTypesValue.Undefined
                          },
                          Delete = new FrontPermissionValue
                          {
-                             Module = y.Any(z => z.AccessTypeId == EnumAccessTypes.D) ? y.Where(z => z.AccessTypeId == EnumAccessTypes.D).FirstOrDefault().ModuleCode : string.Empty,
-                             Feature = y.Any(z => z.AccessTypeId == EnumAccessTypes.D) ? y.Where(z => z.AccessTypeId == EnumAccessTypes.D).FirstOrDefault().FeatureCode : string.Empty,
-                             AccessType = y.Any(z => z.AccessTypeId == EnumAccessTypes.D) ? y.Where(z => z.AccessTypeId == EnumAccessTypes.D).FirstOrDefault().AccessTypeCode : string.Empty,
+                             Module = y.Any(z => z.AccessTypeId == EnumAccessTypes.D) ? y.FirstOrDefault(z => z.AccessTypeId == EnumAccessTypes.D).ModuleCode : string.Empty,
+                             Feature = y.Any(z => z.AccessTypeId == EnumAccessTypes.D) ? y.FirstOrDefault(z => z.AccessTypeId == EnumAccessTypes.D).FeatureCode : string.Empty,
+                             AccessType = y.Any(z => z.AccessTypeId == EnumAccessTypes.D) ? y.FirstOrDefault(z => z.AccessTypeId == EnumAccessTypes.D).AccessTypeCode : string.Empty,
                              Value = y.Any(z => z.AccessTypeId == EnumAccessTypes.D) ? (y.Any(z => z.AccessTypeId == EnumAccessTypes.D && z.IsChecked) ? EnumAccessTypesValue.Cheched : EnumAccessTypesValue.Uncheched) : EnumAccessTypesValue.Undefined
                          },
                      }).ToList()

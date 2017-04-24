@@ -5222,7 +5222,6 @@ namespace BL.Database.Dictionaries
 
         public void DeleteExecutors(IContext ctx, FilterDictionaryPositionExecutor filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionExecutorsQuery(ctx, filter);
@@ -5233,11 +5232,11 @@ namespace BL.Database.Dictionaries
                 CommonQueries.AddFullTextCacheInfo(ctx, list, EnumObjects.DictionaryPositionExecutors, EnumOperationType.Delete);
                 transaction.Complete();
             }
+            _cacheService.RefreshKey(ctx, SettingConstants.DICT_POSITION_EXECUTOR_CASHE_KEY);
         }
 
         public IEnumerable<FrontDictionaryPositionExecutor> GetPositionExecutors(IContext ctx, FilterDictionaryPositionExecutor filter, EnumSortPositionExecutors sort = EnumSortPositionExecutors.StartDate_PositionExecutorType)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionExecutorsQuery(ctx, filter);
@@ -5284,7 +5283,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<InternalDictionaryPositionExecutor> GetInternalPositionExecutors(IContext ctx, FilterDictionaryPositionExecutor filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionExecutorsQuery(ctx, filter);
@@ -5315,7 +5313,6 @@ namespace BL.Database.Dictionaries
 
         public List<int> GetPositionExecutorsIDs(IContext ctx, FilterDictionaryPositionExecutor filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionExecutorsQuery(ctx, filter);
@@ -5326,7 +5323,6 @@ namespace BL.Database.Dictionaries
         }
         public IEnumerable<AutocompleteItem> GetShortListPositionExecutors(IContext ctx, FilterDictionaryPositionExecutor filter, UIPaging paging)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionExecutorsQuery(ctx, filter);
@@ -5348,7 +5344,6 @@ namespace BL.Database.Dictionaries
         }
         public IEnumerable<TreeItem> GetPositionExecutorsForTree(IContext ctx, FilterDictionaryPositionExecutor filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionExecutorsQuery(ctx, filter);
@@ -5380,7 +5375,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontDictionaryPositionExecutorExtended> GetPositionExecutorsDIPUserRoles(IContext ctx, FilterDictionaryPositionExecutor filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionExecutorsQuery(ctx, filter);
@@ -5388,8 +5382,6 @@ namespace BL.Database.Dictionaries
                 qry = qry.OrderBy(x => x.Position.Order).ThenBy(x => x.PositionExecutorType.Id).ThenBy(x => x.Agent.Name);
 
                 DateTime? maxDateTime = DateTime.UtcNow.AddYears(50);
-                string objId = ((int)EnumObjects.DictionaryPositionExecutors).ToString();
-                string parObjId = string.Empty;
 
                 var res = qry.Select(x => new FrontDictionaryPositionExecutorExtended
                 {
@@ -5547,7 +5539,6 @@ namespace BL.Database.Dictionaries
         // Для использования в коммандах метод CanExecute
         public bool ExistsPositionExecutor(IContext ctx, FilterDictionaryPositionExecutor filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionExecutorsQuery(ctx, filter);
@@ -5564,7 +5555,6 @@ namespace BL.Database.Dictionaries
         #region [+] PositionExecutorTypes ...
         public IEnumerable<InternalDictionaryPositionExecutorType> GetInternalDictionaryPositionExecutorType(IContext ctx, FilterDictionaryPositionExecutorType filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionExecutorTypesQuery(ctx, filter);
@@ -5584,7 +5574,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontDictionaryPositionExecutorType> GetPositionExecutorTypes(IContext ctx, FilterDictionaryPositionExecutorType filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionExecutorTypesQuery(ctx, filter);
@@ -5716,7 +5705,6 @@ namespace BL.Database.Dictionaries
 
         public void DeleteRegistrationJournals(IContext ctx, FilterDictionaryRegistrationJournal filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetRegistrationJournalsQuery(ctx, filter);
@@ -5729,7 +5717,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<InternalDictionaryRegistrationJournal> GetInternalRegistrationJournals(IContext ctx, FilterDictionaryRegistrationJournal filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetRegistrationJournalsQuery(ctx, filter);
@@ -5766,7 +5753,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontDictionaryRegistrationJournal> GetRegistrationJournals(IContext ctx, IBaseFilter filter, UIPaging paging, UISorting sorting)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetRegistrationJournalsQuery(ctx, filter as FilterDictionaryRegistrationJournal);
@@ -5802,7 +5788,6 @@ namespace BL.Database.Dictionaries
 
         public List<int> GetRegistrationJournalIDs(IContext ctx, IBaseFilter filter, UISorting sorting)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetRegistrationJournalsQuery(ctx, filter as FilterDictionaryRegistrationJournal);
@@ -5819,7 +5804,6 @@ namespace BL.Database.Dictionaries
         // Использовался для дерева журналов, как конечне элементы
         public IEnumerable<TreeItem> GetRegistrationJournalsForRegistrationJournals(IContext ctx, FilterDictionaryRegistrationJournal filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetRegistrationJournalsQuery(ctx, filter);
@@ -5848,7 +5832,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<AutocompleteItem> GetShortListRegistrationJournals(IContext ctx, FilterDictionaryRegistrationJournal filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetRegistrationJournalsQuery(ctx, filter);
@@ -5869,7 +5852,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<TreeItem> GetRegistrationJournalsForDIPRJournalPositions(IContext ctx, int positionId, FilterDictionaryRegistrationJournal filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetRegistrationJournalsQuery(ctx, filter);
@@ -5912,7 +5894,6 @@ namespace BL.Database.Dictionaries
         // Для использования в коммандах метод CanExecute
         public bool ExistsDictionaryRegistrationJournal(IContext ctx, FilterDictionaryRegistrationJournal filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetRegistrationJournalsQuery(ctx, filter);
@@ -6022,24 +6003,6 @@ namespace BL.Database.Dictionaries
                 {
                     qry = qry.Where(x => x.DirectionCodes.Contains(((int)filter.DocumentDirection).ToString()));
                 }
-
-                //// Условие по IsIncoming
-                //if (filter.IsIncoming != null)
-                //{
-                //    qry = qry.Where(x => x.DirectionCodes.Contains(((int)EnumDocumentDirections.Incoming).ToString()));
-                //}
-
-                //// Условие по IsOutcoming
-                //if (filter.IsOutcoming != null)
-                //{
-                //    qry = qry.Where(x => x.DirectionCodes.Contains(((int)EnumDocumentDirections.Outcoming).ToString()));
-                //}
-
-                //// Условие по IsInternal
-                //if (filter.IsInternal != null)
-                //{
-                //    qry = qry.Where(x => x.DirectionCodes.Contains(((int)EnumDocumentDirections.Internal).ToString()));
-                //}
 
                 if (filter.PositionIdsAccessForRegistration?.Count > 0)
                 {
@@ -6363,7 +6326,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontDictionaryStandartSendListContent> GetStandartSendListContents(IContext ctx, FilterDictionaryStandartSendListContent filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetStandartSendListContentsQuery(ctx, filter);
@@ -6403,7 +6365,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<InternalDictionaryStandartSendListContent> GetInternalStandartSendListContents(IContext ctx, FilterDictionaryStandartSendListContent filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetStandartSendListContentsQuery(ctx, filter);
@@ -6445,7 +6406,7 @@ namespace BL.Database.Dictionaries
                 var dbModel = DictionaryModelConverter.GetDbStandartSendListContent(ctx, content);
                 dbContext.DictionaryStandartSendListContentsSet.Attach(dbModel);
                 var entity = dbContext.Entry(dbModel);
-                entity.State = System.Data.Entity.EntityState.Modified;
+                entity.State = EntityState.Modified;
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryStandartSendListContent, EnumOperationType.UpdateFull);
@@ -6564,7 +6525,6 @@ namespace BL.Database.Dictionaries
 
         public List<int> GetStandartSendListIDs(IContext ctx, IBaseFilter filter, UISorting sortin)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetStandartSendListQuery(ctx, filter as FilterDictionaryStandartSendList);
@@ -6581,7 +6541,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontDictionaryStandartSendList> GetStandartSendLists(IContext ctx, FilterDictionaryStandartSendList filter, UIPaging paging)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetStandartSendListQuery(ctx, filter);
@@ -6643,7 +6602,6 @@ namespace BL.Database.Dictionaries
 
         public void DeleteStandartSendList(IContext ctx, FilterDictionaryStandartSendList filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetStandartSendListQuery(ctx, filter);
@@ -6792,7 +6750,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontTag> GetTag(IContext ctx, FilterDictionaryTag filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetTagsQuery(ctx, filter);
@@ -6812,7 +6769,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<ListItem> GetTagList(IContext ctx, FilterDictionaryTag filter, UIPaging paging)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetTagsQuery(ctx, filter);
@@ -6865,7 +6821,6 @@ namespace BL.Database.Dictionaries
 
         public List<int> GetTagIDs(IContext ctx, IBaseFilter filter, UISorting sortin)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetTagsQuery(ctx, filter as FilterDictionaryTag);
@@ -6926,7 +6881,6 @@ namespace BL.Database.Dictionaries
 
         public void DeleteTags(IContext ctx, FilterDictionaryTag filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetTagsQuery(ctx, filter);
@@ -6943,7 +6897,6 @@ namespace BL.Database.Dictionaries
         #region [+] AdminAccessLevels ...
         public IEnumerable<FrontAdminAccessLevel> GetAdminAccessLevels(IContext ctx, FilterAdminAccessLevel filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAccessLevelsQuery(ctx, filter);
@@ -7069,7 +7022,6 @@ namespace BL.Database.Dictionaries
 
         public void DeleteCustomDictionaryType(IContext ctx, FilterCustomDictionaryType filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetCustomDictionaryTypesQuery(ctx, filter);
@@ -7081,7 +7033,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<InternalCustomDictionaryType> GetInternalCustomDictionaryTypes(IContext ctx, FilterCustomDictionaryType filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetCustomDictionaryTypesQuery(ctx, filter);
@@ -7103,7 +7054,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontCustomDictionaryType> GetCustomDictionaryTypes(IContext ctx, FilterCustomDictionaryType filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetCustomDictionaryTypesQuery(ctx, filter);
@@ -7123,7 +7073,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontCustomDictionaryType> GetMainCustomDictionaryTypes(IContext ctx, IBaseFilter filter, UIPaging paging, UISorting sorting)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetCustomDictionaryTypesQuery(ctx, filter as FilterCustomDictionaryType);
@@ -7147,7 +7096,6 @@ namespace BL.Database.Dictionaries
 
         public List<int> GetCustomDictionaryTypeIDs(IContext ctx, IBaseFilter filter, UISorting sorting)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetCustomDictionaryTypesQuery(ctx, filter as FilterCustomDictionaryType);
@@ -7267,7 +7215,6 @@ namespace BL.Database.Dictionaries
 
         public void DeleteCustomDictionaries(IContext ctx, FilterCustomDictionary filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetCustomDictionaryQuery(ctx, filter);
@@ -7279,7 +7226,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<InternalCustomDictionary> GetInternalCustomDictionarys(IContext ctx, FilterCustomDictionary filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetCustomDictionaryQuery(ctx, filter);
@@ -7300,7 +7246,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontCustomDictionary> GetMainCustomDictionaries(IContext ctx, IBaseFilter filter, UIPaging paging, UISorting sorting)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetCustomDictionaryQuery(ctx, filter as FilterCustomDictionary);
@@ -7325,7 +7270,6 @@ namespace BL.Database.Dictionaries
 
         public List<int> GetCustomDictionarieIDs(IContext ctx, IBaseFilter filter, UISorting sorting)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetCustomDictionaryQuery(ctx, filter as FilterCustomDictionary);
@@ -7363,11 +7307,6 @@ namespace BL.Database.Dictionaries
 
                 if (filter.TypeId.HasValue)
                 {
-                    //var filterContains = PredicateBuilder.New<CustomDictionaries>(false);
-                    //filterContains = filter.TypeIDs.Aggregate(filterContains,
-                    //    (current, value) => current.Or(e => e.DictionaryTypeId == value).Expand());
-
-                    //qry = qry.Where(filterContains);
                     qry = qry.Where(x => x.DictionaryTypeId == filter.TypeId);
                 }
 
@@ -7469,7 +7408,6 @@ namespace BL.Database.Dictionaries
 
         public void DeleteAgentFavourite(IContext ctx, FilterAgentFavourite filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAgentFavouriteQuery(ctx, filter);
@@ -7480,7 +7418,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<InternalAgentFavourite> GetInternalAgentFavourite(IContext ctx, FilterAgentFavourite filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAgentFavouriteQuery(ctx, filter);
