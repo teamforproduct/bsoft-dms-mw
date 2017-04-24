@@ -132,54 +132,54 @@ namespace BL.Logic.Settings
 
         #endregion
 
-        #region MailNoreplay
+        #region MailNoreply
 
-        public int GetMailNoreplaySenderTimeoutMin() =>
-            genSett.GetSetting<int>(EnumGeneralSettings.MailNoreplaySenderTimeoutMin);
+        public int GetMailNoreplySenderTimeoutMin() =>
+            genSett.GetSetting<int>(EnumGeneralSettings.MailNoreplySenderTimeoutMin);
 
-        public MailServerType GetMailNoreplayServerType()
+        public MailServerType GetMailNoreplyServerType()
         {
-            var val = genSett.GetSetting<string>(EnumGeneralSettings.MailNoreplayServerType);
+            var val = genSett.GetSetting<string>(EnumGeneralSettings.MailNoreplyServerType);
 
-            if (string.IsNullOrEmpty(val)) throw new SettingValueIsNotSet(EnumGeneralSettings.MailNoreplayServerType.ToString());
+            if (string.IsNullOrEmpty(val)) throw new SettingValueIsNotSet(EnumGeneralSettings.MailNoreplyServerType.ToString());
 
             try { return (MailServerType)Enum.Parse(typeof(MailServerType), val); }
-            catch { throw new SettingValueIsInvalid(EnumGeneralSettings.MailNoreplayServerType.ToString()); }
+            catch { throw new SettingValueIsInvalid(EnumGeneralSettings.MailNoreplyServerType.ToString()); }
         }
 
-        public string GetMailNoreplayServerName()
+        public string GetMailNoreplyServerName()
         {
-            var val = genSett.GetSetting<string>(EnumGeneralSettings.MailNoreplayServerName);
-            if (string.IsNullOrEmpty(val)) throw new SettingValueIsNotSet(EnumGeneralSettings.MailNoreplayServerName.ToString());
+            var val = genSett.GetSetting<string>(EnumGeneralSettings.MailNoreplyServerName);
+            if (string.IsNullOrEmpty(val)) throw new SettingValueIsNotSet(EnumGeneralSettings.MailNoreplyServerName.ToString());
             return val;
         }
 
-        public int GetMailNoreplayServerPort()
+        public int GetMailNoreplyServerPort()
         {
-            var val = genSett.GetSetting<int>(EnumGeneralSettings.MailNoreplayServerPort);
-            if (val == 0) throw new SettingValueIsNotSet(EnumGeneralSettings.MailNoreplayServerPort.ToString());
+            var val = genSett.GetSetting<int>(EnumGeneralSettings.MailNoreplyServerPort);
+            if (val == 0) throw new SettingValueIsNotSet(EnumGeneralSettings.MailNoreplyServerPort.ToString());
             return val;
         }
 
 
-        public string GetMailNoreplayEmail()
+        public string GetMailNoreplyEmail()
         {
-            var val = genSett.GetSetting<string>(EnumGeneralSettings.MailNoreplayEmail);
-            if (string.IsNullOrEmpty(val)) throw new SettingValueIsNotSet(EnumGeneralSettings.MailNoreplayEmail.ToString());
+            var val = genSett.GetSetting<string>(EnumGeneralSettings.MailNoreplyEmail);
+            if (string.IsNullOrEmpty(val)) throw new SettingValueIsNotSet(EnumGeneralSettings.MailNoreplyEmail.ToString());
             return val;
         }
 
-        public string GetMailNoreplayLogin()
+        public string GetMailNoreplyLogin()
         {
-            var val = genSett.GetSetting<string>(EnumGeneralSettings.MailNoreplayLogin);
-            if (string.IsNullOrEmpty(val)) throw new SettingValueIsNotSet(EnumGeneralSettings.MailNoreplayLogin.ToString());
+            var val = genSett.GetSetting<string>(EnumGeneralSettings.MailNoreplyLogin);
+            if (string.IsNullOrEmpty(val)) throw new SettingValueIsNotSet(EnumGeneralSettings.MailNoreplyLogin.ToString());
             return val;
         }
 
-        public string GetMailNoreplayPassword()
+        public string GetMailNoreplyPassword()
         {
-            var val = genSett.GetSetting<string>(EnumGeneralSettings.MailNoreplayPassword);
-            if (string.IsNullOrEmpty(val)) throw new SettingValueIsNotSet(EnumGeneralSettings.MailNoreplayPassword.ToString());
+            var val = genSett.GetSetting<string>(EnumGeneralSettings.MailNoreplyPassword);
+            if (string.IsNullOrEmpty(val)) throw new SettingValueIsNotSet(EnumGeneralSettings.MailNoreplyPassword.ToString());
             return val;
         }
 
@@ -238,9 +238,21 @@ namespace BL.Logic.Settings
 
         #endregion
 
-        
 
-       
+        public string GetMainHost()
+        {
+            var val = genSett.GetSetting<string>(EnumGeneralSettings.MainHost);
+            if (string.IsNullOrEmpty(val)) throw new SettingValueIsNotSet(EnumGeneralSettings.MainHost.ToString());
+            return val;
+        }
+
+        public string GetVirtualHost()
+        {
+            var val = genSett.GetSetting<string>(EnumGeneralSettings.VirtualHost);
+            if (string.IsNullOrEmpty(val)) throw new SettingValueIsNotSet(EnumGeneralSettings.VirtualHost.ToString());
+            return val;
+        }
+
 
 
 

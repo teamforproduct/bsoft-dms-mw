@@ -4,6 +4,11 @@ namespace BL.CrossCutting.Interfaces
 {
     public interface ISettingValues
     {
+        string GetCurrentServerName();
+
+        string GetMainHost();
+        string GetVirtualHost();
+
         bool GetSubordinationsSendAllForExecution(IContext ctx);
         bool GetSubordinationsSendAllForInforming(IContext ctx);
 
@@ -18,15 +23,15 @@ namespace BL.CrossCutting.Interfaces
         string GetMailDocumPassword();
         #endregion
 
-        #region MailNoreplay
-        int GetMailNoreplaySenderTimeoutMin();
-        MailServerType GetMailNoreplayServerType();
-        string GetMailNoreplayServerName();
-        int GetMailNoreplayServerPort();
+        #region MailNoreply
+        int GetMailNoreplySenderTimeoutMin();
+        MailServerType GetMailNoreplyServerType();
+        string GetMailNoreplyServerName();
+        int GetMailNoreplyServerPort();
 
-        string GetMailNoreplayEmail();
-        string GetMailNoreplayLogin();
-        string GetMailNoreplayPassword();
+        string GetMailNoreplyEmail();
+        string GetMailNoreplyLogin();
+        string GetMailNoreplyPassword();
         #endregion
 
         #region MailSMS
@@ -76,7 +81,7 @@ namespace BL.CrossCutting.Interfaces
 
         int GetClearTrashDocumentsTimeoutMinuteForClear(IContext ctx);
 
-        string GetCurrentServerName();
+        
 
     }
 }

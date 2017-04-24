@@ -198,7 +198,7 @@ namespace DMS_WebAPI.Infrastructure
                 // TODO - USER + BROWSER + BR.LANG-S 
                 errorMessage += $"User: {user}\r\nMethod: {method}\r\nRequest Body: {body}\r\n{logExpression}Browser: {browser}\r\n";
 
-                FileLogger.AppendTextToFile(errorMessage, Properties.Settings.Default.ServerPath + "/SiteErrors.txt");
+                FileLogger.AppendTextToFile(errorMessage, Properties.Settings.Default.ServerPath + "SiteErrors.txt");
             }
             catch { }
             #endregion log to file

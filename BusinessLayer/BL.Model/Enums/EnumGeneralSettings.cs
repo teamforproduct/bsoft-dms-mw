@@ -6,6 +6,9 @@
     public enum EnumGeneralSettings
     {
         ServerForNewClient,
+        MainHost,
+        VirtualHost,
+
 
         #region MailDocum
         MailDocumSenderTimeoutMin,
@@ -21,17 +24,17 @@
 
         #endregion
 
-        #region MailNoreplay
-        MailNoreplaySenderTimeoutMin,
+        #region MailNoreply
+        MailNoreplySenderTimeoutMin,
 
-        MailNoreplayServerType,
-        MailNoreplayServerName,
-        MailNoreplayServerPort,
+        MailNoreplyServerType,
+        MailNoreplyServerName,
+        MailNoreplyServerPort,
 
-        MailNoreplayLogin,
-        MailNoreplayEmail,
+        MailNoreplyLogin,
+        MailNoreplyEmail,
 
-        MailNoreplayPassword,
+        MailNoreplyPassword,
 
         #endregion
 

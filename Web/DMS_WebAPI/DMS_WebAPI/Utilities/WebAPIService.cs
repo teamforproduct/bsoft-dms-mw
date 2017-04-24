@@ -471,7 +471,7 @@ namespace DMS_WebAPI.Utilities
                 var db = GetClientServer(model.ClientId);
                 var ctx = new AdminContext(db);
                 var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-                mailService.SendMessage(ctx, MailServers.Noreplay, model.Email, "Ostrean. Приглашение", htmlContent);
+                mailService.SendMessage(ctx, MailServers.Noreply, model.Email, "Ostrean. Приглашение", htmlContent);
             }
             return userId;
         }
@@ -554,15 +554,13 @@ namespace DMS_WebAPI.Utilities
             var callbackurl = new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "Client/Create/ByHash").AbsoluteUri;
 
             // isNew можно вычислить только на текущий момент времени (пользователь может сделать несколько компаний)
-            var isNew = ExistsUser(model.Email);
+            var isNew = !ExistsUser(model.Email);
 
             callbackurl += String.Format("?hash={0}&login={1}&code={2}&isNew={3}", model.HashCode, model.Email, model.ClientCode, isNew);
 
             var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.RestorePasswordAgentUserVerificationEmail);
-            var db = GetClientServer(model.ClientId);
-            var ctx = new AdminContext(db);
             var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-            mailService.SendMessage(ctx, MailServers.Noreplay, model.Email, "Ostrean. Создание клиента", htmlContent);
+            mailService.SendMessage(null, MailServers.Docum, model.Email, "Ostrean. Создание клиента", htmlContent);
 
             return id;
         }
@@ -595,8 +593,15 @@ namespace DMS_WebAPI.Utilities
 
             var client = new HttpClient();
 
+            var tmpService = DmsResolver.Current.Get<ISettingValues>();
+            var mHost = tmpService.GetMainHost();
+            var vHost = tmpService.GetVirtualHost();
+#if DEBUG
+            vHost = "http://10.88.12.21:82";
+#endif
+            var request = $"{vHost}/newhost.pl?fqdn={model.ClientCode}.{mHost}";
 
-            var responseString = await client.GetStringAsync($"http://192.168.38.21:82/newhost.pl?fqdn={model.ClientCode}.ostrean.com");
+            var responseString = await client.GetStringAsync(request);
 
             switch (responseString)
             {
@@ -790,7 +795,7 @@ namespace DMS_WebAPI.Utilities
 
 
 
-                #region Create client 1 
+#region Create client 1 
 
                 // Создаю клиента
                 var clientId = _webDb.AddClient(new ModifyAspNetClient
@@ -805,7 +810,7 @@ namespace DMS_WebAPI.Utilities
                     _webDb.AddClientLicence(clientId, model.LicenceId.GetValueOrDefault());
                 }
 
-                #endregion Create client 1
+#endregion Create client 1
 
                 transaction.Complete();
 
@@ -815,7 +820,7 @@ namespace DMS_WebAPI.Utilities
         }
 
 
-        #region UserAgent
+#region UserAgent
 
         public async void ChangeLoginAgentUser(ChangeLoginAgentUser model)
         {
@@ -858,7 +863,7 @@ namespace DMS_WebAPI.Utilities
 
                 var languages = DmsResolver.Current.Get<ILanguages>();
 
-                mailService.SendMessage(context, MailServers.Noreplay, model.NewEmail, languages.GetTranslation("##l@EmailSubject:EmailConfirmation@l##"), htmlContent);
+                mailService.SendMessage(context, MailServers.Noreply, model.NewEmail, languages.GetTranslation("##l@EmailSubject:EmailConfirmation@l##"), htmlContent);
             }
 
         }
@@ -939,7 +944,7 @@ namespace DMS_WebAPI.Utilities
             var db = GetClientServer(model.ClientCode);
             var ctx = new AdminContext(db);
             var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-            mailService.SendMessage(ctx, MailServers.Noreplay, model.Email, emailSubject, htmlContent);
+            mailService.SendMessage(ctx, MailServers.Noreply, model.Email, emailSubject, htmlContent);
         }
 
         public void RestorePasswordAgentUser(RestorePasswordAgentUser model, string baseUrl, NameValueCollection query, string emailSubject, string renderPartialView)
@@ -968,7 +973,7 @@ namespace DMS_WebAPI.Utilities
 
             var ctx = new AdminContext(db);
             var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-            mailService.SendMessage(ctx, MailServers.Noreplay, model.Email, emailSubject, htmlContent);
+            mailService.SendMessage(ctx, MailServers.Noreply, model.Email, emailSubject, htmlContent);
         }
 
         public async Task ChangePasswordAgentUserAsync(ChangePasswordAgentUser model)
@@ -1070,9 +1075,9 @@ namespace DMS_WebAPI.Utilities
             return user.Email;
         }
 
-        #endregion
+#endregion
 
-        #region Fingerprints
+#region Fingerprints
         public IEnumerable<FrontAspNetUserFingerprint> GetUserFingerprints(FilterAspNetUserFingerprint filter)
         {
             return _webDb.GetUserFingerprints(filter);
@@ -1158,7 +1163,7 @@ namespace DMS_WebAPI.Utilities
             if (!result.Succeeded) throw new DatabaseError(result.Errors);
         }
 
-        #endregion
+#endregion
 
         public IEnumerable<AspNetUserContexts> GetUserContexts(FilterAspNetUserContext filter)
         {

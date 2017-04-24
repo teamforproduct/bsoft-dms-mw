@@ -55,7 +55,7 @@ namespace BL.Logic.SystemServices.MailWorker
                 {
                     var ctx = keyValuePair.Value;
 
-                    var msSetting = GetMailServerParameters(MailServers.Noreplay, keyValuePair.Key);
+                    var msSetting = GetMailServerParameters(MailServers.Noreply, keyValuePair.Key);
 
                     // start timer only once. Do not do it regulary in case we don't know how much time sending of email take. So we can continue sending only when previous iteration was comlete
                     var tmr = new Timer(CheckForNewMessages, msSetting, msSetting.CheckInterval*60000, Timeout.Infinite); 
@@ -84,17 +84,17 @@ namespace BL.Logic.SystemServices.MailWorker
                         Login = SettingValues.GetMailDocumLogin(),
                         Pass = SettingValues.GetMailDocumPassword(),
                     };
-                case MailServers.Noreplay:
+                case MailServers.Noreply:
                     return new InternalSendMailServerParameters
                     {
                         DatabaseKey = databaseKey,
-                        CheckInterval = SettingValues.GetMailNoreplaySenderTimeoutMin(),
-                        ServerType = SettingValues.GetMailNoreplayServerType(),
-                        Server = SettingValues.GetMailNoreplayServerName(),
-                        Port = SettingValues.GetMailNoreplayServerPort(),
-                        FromAddress = SettingValues.GetMailNoreplayEmail(),
-                        Login = SettingValues.GetMailNoreplayLogin(),
-                        Pass = SettingValues.GetMailNoreplayPassword(),
+                        CheckInterval = SettingValues.GetMailNoreplySenderTimeoutMin(),
+                        ServerType = SettingValues.GetMailNoreplyServerType(),
+                        Server = SettingValues.GetMailNoreplyServerName(),
+                        Port = SettingValues.GetMailNoreplyServerPort(),
+                        FromAddress = SettingValues.GetMailNoreplyEmail(),
+                        Login = SettingValues.GetMailNoreplyLogin(),
+                        Pass = SettingValues.GetMailNoreplyPassword(),
                     };
                 case MailServers.SMS:
                     return new InternalSendMailServerParameters

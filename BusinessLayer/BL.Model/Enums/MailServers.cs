@@ -3,7 +3,7 @@
     public enum MailServers
     {
         Docum ,
-        Noreplay ,
+        Noreply ,
         SMS ,
     }
 }
