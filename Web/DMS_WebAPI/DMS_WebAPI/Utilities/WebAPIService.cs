@@ -551,7 +551,7 @@ namespace DMS_WebAPI.Utilities
 
             var id = _webDb.AddClientRequest(model);
 
-            var callbackurl = new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "Client/Create/ByHash").AbsoluteUri;
+            var callbackurl = new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "new-client").AbsoluteUri;
 
             // isNew можно вычислить только на текущий момент времени (пользователь может сделать несколько компаний)
             var isNew = !ExistsUser(model.Email);
