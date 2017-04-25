@@ -76,7 +76,8 @@ namespace DMS_WebAPI.Providers
             if (string.IsNullOrEmpty(clientCode?.Trim())) throw new ClientCodeRequired();
 
             // отпечаток - обязательный параметр (решили сделать обязательным, хотя дальше по логике он может не понадобиться)
-            if (string.IsNullOrEmpty(fingerprint?.Trim())) throw new FingerprintRequired();
+            // не можем передавать из соапа
+            //if (string.IsNullOrEmpty(fingerprint?.Trim())) throw new FingerprintRequired();
 
             // Если передали несуществующие код клиента. дальше не пускаю
             var webService = DmsResolver.Current.Get<WebAPIService>();
