@@ -1902,11 +1902,10 @@ namespace BL.Database.Common
         #endregion
 
         #region LinkedDocuments
-        public static IEnumerable<int> GetLinkedDocumentIds(IContext context, int documentId, bool isVerifyAccesses = true)
+        public static IEnumerable<int> GetLinkedDocumentIds(IContext context, int documentId)
         {
             var dbContext = context.DbContext as DmsContext;
-            var qry = isVerifyAccesses ? CommonQueries.GetDocumentQuery(context) : dbContext.DocumentsSet.AsQueryable();
-            var docLinkId = qry.Where(y => y.LinkId.HasValue && y.Id == documentId).Select(y => y.LinkId).AsQueryable();
+            var docLinkId = CommonQueries.GetDocumentQuery(context).Where(y => y.LinkId.HasValue && y.Id == documentId).Select(y => y.LinkId).AsQueryable();
             var docIds = CommonQueries.GetDocumentQuery(context).Where(x => x.LinkId.HasValue && docLinkId.Contains(x.LinkId)).Select(x => x.Id).ToList();
             if (!docIds.Any())
                 docIds = new List<int> { documentId };
