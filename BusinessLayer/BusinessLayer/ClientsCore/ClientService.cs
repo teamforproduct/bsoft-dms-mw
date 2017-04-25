@@ -89,8 +89,8 @@ namespace BL.Logic.ClientCore
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             foreach (var item in GetAddressTypes())
             {
-                item.Name = languages.GetTranslation(context.CurrentEmployee.LanguageId, item.Name);
-                item.Code = languages.GetTranslation(context.CurrentEmployee.LanguageId, item.Code);
+                item.Name = languages.GetTranslation(context.Employee.LanguageId, item.Name);
+                item.Code = languages.GetTranslation(context.Employee.LanguageId, item.Code);
                 tmpService.ExecuteAction(EnumDictionaryActions.AddAddressType, context, item);
             };
             #endregion
@@ -99,7 +99,7 @@ namespace BL.Logic.ClientCore
 
             foreach (var item in GetDocumentTypes())
             {
-                item.Name = languages.GetTranslation(context.CurrentEmployee.LanguageId, item.Name);
+                item.Name = languages.GetTranslation(context.Employee.LanguageId, item.Name);
                 tmpService.ExecuteAction(EnumDictionaryActions.AddDocumentType, context, item);
             };
 
@@ -210,8 +210,8 @@ namespace BL.Logic.ClientCore
             var languageService = DmsResolver.Current.Get<ILanguages>();
 
             string specCode = ctype.ToString();
-            string code = languageService.GetTranslation(context.CurrentEmployee.LanguageId, GetLabel("ContactTypesCode", ctype.ToString())); ;
-            string name = languageService.GetTranslation(context.CurrentEmployee.LanguageId, GetLabel("ContactTypes", ctype.ToString()));
+            string code = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("ContactTypesCode", ctype.ToString())); ;
+            string name = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("ContactTypes", ctype.ToString()));
 
             var model = new AddContactType()
             {

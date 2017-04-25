@@ -1,4 +1,4 @@
-﻿namespace BL.Model.Users
+﻿namespace BL.Model.Context
 {
     /// <summary>
     /// класс сотрудника
@@ -26,8 +26,8 @@
         /// </summary>
         public int LanguageId { get; set; }
 
-        public int ClientId { get; set; }
-        public string ClientCode { get; set; }
+        //public int ClientId { get; set; }
+        //public string ClientCode { get; set; }
 
         /// <summary>
         /// деактивированный сотрудник не может войти в систему

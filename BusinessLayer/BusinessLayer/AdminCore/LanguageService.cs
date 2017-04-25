@@ -1,18 +1,15 @@
-﻿using System;
+﻿using BL.CrossCutting.Interfaces;
+using BL.Database.Admins.Interfaces;
+using BL.Logic.AdminCore.Interfaces;
+using BL.Logic.Common;
+using BL.Model.AdminCore;
+using BL.Model.AdminCore.FilterModel;
+using BL.Model.AdminCore.FrontModel;
+using BL.Model.AdminCore.InternalModel;
+using BL.Model.SystemCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using BL.Logic.AdminCore.Interfaces;
-using BL.Database.Admins.Interfaces;
-using BL.Model.AdminCore;
-using BL.CrossCutting.Interfaces;
-using BL.Logic.Common;
-using BL.Model.Database;
-using BL.Model.AdminCore.FrontModel;
-using BL.Model.AdminCore.FilterModel;
-using System.Text.RegularExpressions;
-using BL.Model.AdminCore.InternalModel;
-using BL.Database.DatabaseContext;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.AdminCore
 {

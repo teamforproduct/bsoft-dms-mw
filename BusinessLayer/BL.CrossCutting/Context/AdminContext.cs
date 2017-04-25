@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
-using BL.Model.Database;
-using BL.Model.Users;
+using BL.Model.Context;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
 using System;
@@ -17,7 +16,7 @@ namespace BL.CrossCutting.Context
         private const string _USER_NAME = "DmsAdmin";
         private const string _USER_PASS = "UkrPr0100_th3B3ssTC0nTry";
 
-        public AdminContext(DatabaseModel dbModel)
+        public AdminContext(DatabaseModelForAdminContext dbModel)
         {
             //TODO ClientId
             CurrentDB = new DatabaseModel
@@ -33,11 +32,15 @@ namespace BL.CrossCutting.Context
                 DefaultSchema = dbModel.DefaultSchema,
                 ConnectionString = dbModel.ConnectionString,
             };
-            CurrentEmployee = new Employee
+            Employee = new Employee
             {
                 Name = "System user",
                 AgentId = (int)EnumSystemUsers.AdminUser,
-                ClientId = dbModel.ClientId,
+            };
+            Client = new Client
+            {
+                Id = dbModel.ClientId,
+                Code = dbModel.ClientCode
             };
             DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
         }
@@ -57,11 +60,15 @@ namespace BL.CrossCutting.Context
                 DefaultSchema = ctx.CurrentDB.DefaultSchema,
                 ConnectionString = ctx.CurrentDB.ConnectionString,
             };
-            CurrentEmployee = new Employee
+            Employee = new Employee
             {
                 Name = "System user",
                 AgentId = (int) EnumSystemUsers.AdminUser,
-                ClientId = ctx.CurrentClientId
+            };
+            Client = new Client
+            {
+                Id = ctx.Client.Id,
+                Code = ctx.Client.Code
             };
 
             IsChangePasswordRequired = ctx.IsChangePasswordRequired;
@@ -75,7 +82,12 @@ namespace BL.CrossCutting.Context
         /// </summary>
         public bool IsFormed { get; set; }
 
-        public Employee CurrentEmployee { get; set; }
+        public Employee Employee { get; set; }
+
+        public Client Client { get; set; }
+
+        public DatabaseModel CurrentDB { get; set; }
+
         public List<int> CurrentPositionsIdList
         {
             get { return new List<int> { (int)EnumSystemPositions.AdminPosition }; }
@@ -88,7 +100,6 @@ namespace BL.CrossCutting.Context
             set { }
         }
 
-        public DatabaseModel CurrentDB { get; set; }
 
         public int CurrentPositionId => _currentPositionId ?? (int)EnumSystemPositions.AdminPosition;
 
@@ -111,15 +122,11 @@ namespace BL.CrossCutting.Context
         {
             get
             {
-                if (CurrentEmployee.ClientId <= 0)
-                {
-                    return 0;
-                }
-                return CurrentEmployee.ClientId;
+                return Client.Id;
             }
             set
             {
-                CurrentEmployee.ClientId = value;
+                Client.Id = value;
             }
         }
 

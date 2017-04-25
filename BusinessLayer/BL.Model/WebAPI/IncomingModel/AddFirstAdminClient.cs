@@ -1,8 +1,4 @@
-﻿using BL.Model.Database;
-using System.Collections.Generic;
-using System.Runtime.Serialization;
-
-namespace BL.Model.WebAPI.IncomingModel
+﻿namespace BL.Model.WebAPI.IncomingModel
 {
     public class AddFirstAdminClient
     {

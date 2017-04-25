@@ -1,23 +1,21 @@
-﻿using BL.Model.Database;
-using System;
-using System.Collections.Generic;
-using System.Web;
-using BL.CrossCutting.Interfaces;
-using BL.Logic.AdminCore.Interfaces;
-using BL.Model.Exception;
-using System.Linq;
-using BL.CrossCutting.Context;
+﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
-using BL.Model.SystemCore;
-using BL.Model.WebAPI.FrontModel;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
-using BL.Model.WebAPI.IncomingModel;
-using Ninject;
-using Ninject.Parameters;
+using BL.Model.Context;
 using BL.Model.Enums;
+using BL.Model.Exception;
+using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
 using DMS_WebAPI.Providers;
+using Ninject;
+using Ninject.Parameters;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -46,10 +44,10 @@ namespace DMS_WebAPI.Utilities
                     CreateDate = (x.Value.StoreObject as IContext).CreateDate,
                     LoginLogInfo = (x.Value.StoreObject as IContext).LoginLogInfo,
                     LoginLogId = (x.Value.StoreObject as IContext).LoginLogId,
-                    UserId = (x.Value.StoreObject as IContext).CurrentEmployee.UserId,
-                    AgentId = (x.Value.StoreObject as IContext).CurrentEmployee.AgentId,
-                    Name = (x.Value.StoreObject as IContext).CurrentEmployee.Name,
-                    ClientId = (x.Value.StoreObject as IContext).CurrentEmployee.ClientId,
+                    UserId = (x.Value.StoreObject as IContext).Employee.UserId,
+                    AgentId = (x.Value.StoreObject as IContext).Employee.AgentId,
+                    Name = (x.Value.StoreObject as IContext).Employee.Name,
+                    ClientId = (x.Value.StoreObject as IContext).Client.Id,
                     IsActive = true,
                     IsSuccess = true,
                 });
@@ -118,22 +116,25 @@ namespace DMS_WebAPI.Utilities
         {
             token = token.ToLower();
 
-            if (Contains(token))
-                throw new TokenAlreadyExists();
+            if (Contains(token)) throw new TokenAlreadyExists();
 
-            var context =
-            new UserContext
+            var dbWeb = DmsResolver.Current.Get<WebAPIDbProcess>();
+
+            var context = new UserContext
             {
-                CurrentEmployee = new BL.Model.Users.Employee
+                Employee = new BL.Model.Context.Employee
                 {
                     Token = token,
                     UserId = userId,
-                    ClientCode = clientCode
-                }
+                },
+                Client = new BL.Model.Context.Client
+                {
+                    Id = dbWeb.GetClientId(clientCode),
+                    Code = clientCode
+                },
             };
 
-            var dbWeb = DmsResolver.Current.Get<WebAPIDbProcess>();
-            context.CurrentClientId = dbWeb.GetClientId(clientCode);
+
             context.IsChangePasswordRequired = IsChangePasswordRequired;
             context.UserName = userName;
 
@@ -151,7 +152,7 @@ namespace DMS_WebAPI.Utilities
         /// <param name="token">new server parameters</param>
         /// <param name="db">new server parameters</param>
         /// <returns></returns>
-        public void Set(string token, DatabaseModel db)
+        public void Set(string token, DatabaseModelForAdminContext db)
         {
             token = token.ToLower();
 
@@ -165,12 +166,12 @@ namespace DMS_WebAPI.Utilities
 
             context.ClientLicence = dbWeb.GetClientLicenceActive(context.CurrentClientId);
 
-            VerifyNumberOfConnectionsByNew(context, context.CurrentClientId, new List<DatabaseModel> { db });
+            VerifyNumberOfConnectionsByNew(context, context.CurrentClientId, new List<DatabaseModelForAdminContext> { db });
 
             context.CurrentDB = db;
             var dbCtx = DmsResolver.Current.Kernel.Get<DmsContext>(new ConstructorArgument("dbModel", context.CurrentDB));
             context.DbContext = dbCtx;
-            var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(context, context.CurrentEmployee.UserId);
+            var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(context, context.Employee.UserId);
 
             if (agentUser != null)
             {
@@ -188,9 +189,9 @@ namespace DMS_WebAPI.Utilities
                     throw new UserNotExecuteAnyPosition(agentUser.Name);
                 }
 
-                context.CurrentEmployee.AgentId = agentUser.AgentId;
-                context.CurrentEmployee.Name = agentUser.Name;
-                context.CurrentEmployee.LanguageId = agentUser.LanguageId;
+                context.Employee.AgentId = agentUser.AgentId;
+                context.Employee.Name = agentUser.Name;
+                context.Employee.LanguageId = agentUser.LanguageId;
             }
             else
             {
@@ -279,7 +280,7 @@ namespace DMS_WebAPI.Utilities
         /// <returns></returns>
         public void UpdateChangePasswordRequired(string userId, bool IsChangePasswordRequired)
         {
-            var keys = _cacheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentEmployee.UserId == userId; } catch { } return false; }).Select(x => x.Key).ToArray();
+            var keys = _cacheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).Employee.UserId == userId; } catch { } return false; }).Select(x => x.Key).ToArray();
             foreach (var key in keys)
             {
                 try
@@ -295,7 +296,7 @@ namespace DMS_WebAPI.Utilities
             _cacheContexts.Add(token.ToLower(), new StoreInfo() { StoreObject = val, LastUsage = DateTime.UtcNow });
         }
 
-        public void VerifyLicence(int clientId, IEnumerable<DatabaseModel> dbs)
+        public void VerifyLicence(int clientId, IEnumerable<DatabaseModelForAdminContext> dbs)
         {
             var clientUsers = _cacheContexts
                     .Select(x => (IContext)x.Value.StoreObject)
@@ -316,7 +317,7 @@ namespace DMS_WebAPI.Utilities
                 var qry = _cacheContexts
                    .Select(x => (IContext)x.Value.StoreObject)
                    .Where(x => x.CurrentClientId == clientId)
-                   .Select(x => x.CurrentEmployee.UserId)
+                   .Select(x => x.Employee.UserId)
                    .Distinct();
 
                 lic.ConcurenteNumberOfConnectionsNow = qry.Count();
@@ -414,7 +415,7 @@ namespace DMS_WebAPI.Utilities
         /// <param name="userId"></param>
         public void RemoveByUserId(string userId)
         {
-            var keys = _cacheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentEmployee.UserId == userId; } catch { } return false; }).Select(x => x.Key).ToArray();
+            var keys = _cacheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).Employee.UserId == userId; } catch { } return false; }).Select(x => x.Key).ToArray();
             foreach (var key in keys)
             {
                 Remove(key);
@@ -423,7 +424,7 @@ namespace DMS_WebAPI.Utilities
 
 
 
-        public void VerifyNumberOfConnectionsByNew(IContext context, int clientId, IEnumerable<DatabaseModel> dbs)
+        public void VerifyNumberOfConnectionsByNew(IContext context, int clientId, IEnumerable<DatabaseModelForAdminContext> dbs)
         {
             if (clientId <= 0) return;
 
@@ -444,12 +445,12 @@ namespace DMS_WebAPI.Utilities
                 var qry = _cacheContexts
                     .Select(x => (IContext)x.Value.StoreObject)
                     .Where(x => x.CurrentClientId == clientId)
-                    .Select(x => x.CurrentEmployee.UserId)
+                    .Select(x => x.Employee.UserId)
                     .Distinct();
 
                 var count = qry.Count();
 
-                if (!qry.Any(x => x == context.CurrentEmployee.UserId))
+                if (!qry.Any(x => x == context.Employee.UserId))
                 {
                     count++;
                 }
@@ -473,11 +474,11 @@ namespace DMS_WebAPI.Utilities
         {
             var contexts = _cacheContexts
                         .Select(x => (IContext)x.Value.StoreObject)
-                        .Where(x => x.CurrentEmployee.AgentId == agentId).ToList();
+                        .Where(x => x.Employee.AgentId == agentId).ToList();
 
             foreach (var context in contexts)
             {
-                context.CurrentEmployee.LanguageId = languageId;
+                context.Employee.LanguageId = languageId;
             }
         }
 

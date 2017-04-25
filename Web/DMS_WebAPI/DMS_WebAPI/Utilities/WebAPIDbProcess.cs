@@ -6,7 +6,7 @@ using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.SystemCore.Interfaces;
 using BL.Model.AdminCore.Clients;
 using BL.Model.Common;
-using BL.Model.Database;
+using BL.Model.Context;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.SystemCore.InternalModel;
@@ -15,7 +15,6 @@ using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
 using DMS_WebAPI.DatabaseContext;
 using DMS_WebAPI.DBModel;
-using DMS_WebAPI.Models;
 using EntityFramework.Extensions;
 using LinqKit;
 using System;
@@ -169,7 +168,7 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public IEnumerable<DatabaseModel> GetServersByAdminContext(FilterAdminServers filter)
+        public IEnumerable<DatabaseModelForAdminContext> GetServersByAdminContext(FilterAdminServers filter)
         {
             using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
@@ -181,10 +180,11 @@ namespace DMS_WebAPI.Utilities
                                 select new
                                 {
                                     Server = server,
-                                    ClientId = clientServer.ClientId
+                                    ClientId = clientServer.ClientId,
+                                    ClientCode = clientServer.Client.Code
                                 }).ToList();
 
-                var items = itemsRes.Select(x => new DatabaseModel
+                var items = itemsRes.Select(x => new DatabaseModelForAdminContext
                 {
                     Id = x.Server.Id,
                     Address = x.Server.Address,
@@ -196,26 +196,29 @@ namespace DMS_WebAPI.Utilities
                     UserPassword = x.Server.UserPassword,
                     ConnectionString = x.Server.ConnectionString,
                     DefaultSchema = x.Server.DefaultSchema,
-                    ClientId = x.ClientId
+                    ClientId = x.ClientId,
+                    ClientCode = x.ClientCode
                 }).ToList();
                 transaction.Complete();
                 return items;
             }
         }
 
-        public DatabaseModel GetClientServer(string clientCode)
+        public DatabaseModelForAdminContext GetClientServer(string clientCode)
         {
             var clientId = GetClientId(clientCode);
             return GetClientServer(clientId);
         }
 
-        public DatabaseModel GetClientServer(int clientId)
+        public DatabaseModelForAdminContext GetClientServer(int clientId)
         {
             // тут подразумевается, что клиентские данные могут рассполагатся только на одном из серверов   
-            var res = GetServers(new FilterAdminServers { ClientIDs = new List<int> { clientId } }).FirstOrDefault();
-            if (res == null) throw new ServerIsNotFound();
+            var serv = GetServers(new FilterAdminServers { ClientIDs = new List<int> { clientId } }).FirstOrDefault();
+            if (serv == null) throw new ServerIsNotFound();
             //!!!!!!!!!!!!!!!!!!!!!!
+            var res = new DatabaseModelForAdminContext(serv);
             res.ClientId = clientId;
+            res.ClientCode = GetClientCode(clientId);
             return res;
         }
 
@@ -253,7 +256,7 @@ namespace DMS_WebAPI.Utilities
 
         public void InitializerDatabase(ModifyAdminServer model)
         {
-            var db = new DatabaseModel
+            var db = new DatabaseModelForAdminContext
             {
                 Address = model.Address,
                 Name = model.Name,
@@ -264,7 +267,8 @@ namespace DMS_WebAPI.Utilities
                 UserPassword = model.UserPassword,
                 ConnectionString = model.ConnectionString,
                 DefaultSchema = model.DefaultSchema,
-                ClientId = model.ClientId
+                ClientId = model.ClientId,
+                ClientCode = GetClientCode(model.ClientId),
             };
             var ctx = new AdminContext(db);
             var sysProc = DmsResolver.Current.Get<ISystemService>();

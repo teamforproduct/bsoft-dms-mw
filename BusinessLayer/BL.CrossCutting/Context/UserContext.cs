@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
-using BL.Model.Database;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
-using BL.Model.Users;
+using BL.Model.Context;
 using System;
 using BL.CrossCutting.DependencyInjection;
 using BL.Model.Enums;
@@ -23,8 +22,10 @@ namespace BL.CrossCutting.Context
         private List<int> _currentPositionsIdList;
         private Dictionary<int, int> _currentPositionsAccessLevel;
 
-        private DatabaseModel _currentDb;
-        public Employee CurrentEmployee { get; set; }
+
+        public Employee Employee { get; set; }
+
+        public Client Client { get; set; }
 
         public UserContext()
         {
@@ -49,6 +50,7 @@ namespace BL.CrossCutting.Context
                         UserPassword = ctx.CurrentDB.UserPassword,
                         DefaultSchema = ctx.CurrentDB.DefaultSchema,
                         ConnectionString = ctx.CurrentDB.ConnectionString,
+
                     };
                 }
                 catch (DatabaseIsNotSet)
@@ -56,15 +58,18 @@ namespace BL.CrossCutting.Context
                     CurrentDB = null;
                 }
                 DbContext = ctx.DbContext;
-                CurrentEmployee = new Employee
+                Employee = new Employee
                 {
-                    AgentId = ctx.CurrentEmployee.AgentId,
-                    LanguageId = ctx.CurrentEmployee.LanguageId,
-                    Name = ctx.CurrentEmployee.Name,
-                    Token = ctx.CurrentEmployee.Token,
-                    UserId = ctx.CurrentEmployee.UserId,
-                    ClientId = ctx.CurrentEmployee.ClientId,
-                    ClientCode = ctx.CurrentEmployee.ClientCode,
+                    AgentId = ctx.Employee.AgentId,
+                    LanguageId = ctx.Employee.LanguageId,
+                    Name = ctx.Employee.Name,
+                    Token = ctx.Employee.Token,
+                    UserId = ctx.Employee.UserId,
+                };
+                Client = new Client
+                {
+                    Id = ctx.Client.Id,
+                    Code = ctx.Client.Code,
                 };
 
                 ClientLicence = ctx.ClientLicence;
@@ -163,11 +168,11 @@ namespace BL.CrossCutting.Context
         {
             get
             {
-                if (CurrentEmployee?.AgentId == null)
+                if (Employee?.AgentId == null)
                 {
                     throw new UserContextIsNotDefined();
                 }
-                return CurrentEmployee.AgentId.GetValueOrDefault();
+                return Employee.AgentId.GetValueOrDefault();
             }
         }
 
@@ -195,10 +200,7 @@ namespace BL.CrossCutting.Context
         {
             get
             {
-                if (_currentDb == null)
-                {
-                    throw new DatabaseIsNotSet();
-                }
+                if (_currentDb == null) throw new DatabaseIsNotSet();
                 return _currentDb;
             }
             set
@@ -206,20 +208,17 @@ namespace BL.CrossCutting.Context
                 _currentDb = value;
             }
         }
+        private DatabaseModel _currentDb;
 
         public int CurrentClientId
         {
             get
             {
-                if (CurrentEmployee.ClientId <= 0)
-                {
-                    return 0;
-                }
-                return CurrentEmployee.ClientId;
+                return Client.Id;
             }
             set
             {
-                CurrentEmployee.ClientId = value;
+                Client.Id = value;
             }
         }
 

@@ -1,9 +1,9 @@
-﻿using System.Data.Common;
-using System.Data.SqlClient;
-using BL.CrossCutting.Interfaces;
-using BL.Model.Database;
-using Oracle.ManagedDataAccess.Client;
+﻿using BL.CrossCutting.Interfaces;
+using BL.Model.Context;
 using BL.Model.Enums;
+using Oracle.ManagedDataAccess.Client;
+using System.Data.Common;
+using System.Data.SqlClient;
 
 namespace BL.Database.Helper
 {

@@ -1,6 +1,6 @@
-﻿using System.Data.Common;
-using BL.CrossCutting.Interfaces;
-using BL.Model.Database;
+﻿using BL.CrossCutting.Interfaces;
+using BL.Model.Context;
+using System.Data.Common;
 
 namespace BL.Database.Helper
 {

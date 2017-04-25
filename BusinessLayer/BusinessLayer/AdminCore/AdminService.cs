@@ -25,6 +25,7 @@ using BL.Model.FullTextSearch;
 using BL.Model.SystemCore;
 using BL.Model.Tree;
 using BL.Model.Users;
+using BL.Model.Context;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -89,7 +90,7 @@ namespace BL.Logic.AdminCore
             if (context.IsFormed)
             {
                 // Решено тут синхронизировать context.CurrentPositionsIdList и генерировать исключения если AvailablePositions конфликтуют с CurrentPositionsIdList
-                if (res.Count() == 0) throw new UserNotExecuteAnyPosition(context.CurrentEmployee.Name);
+                if (res.Count() == 0) throw new UserNotExecuteAnyPosition(context.Employee.Name);
 
                 // Проверяю содержатся ли выбранные должности в списке доступных
                 foreach (var positionId in context.CurrentPositionsIdList)
@@ -151,7 +152,7 @@ namespace BL.Logic.AdminCore
             using (var transaction = Transactions.GetTransaction())
             {
                 var languageService = DmsResolver.Current.Get<ILanguages>();
-                var name = languageService.GetTranslation(context.CurrentEmployee.LanguageId, $"##l@Roles:{roleTypeId.ToString()}@l##");
+                var name = languageService.GetTranslation(context.Employee.LanguageId, $"##l@Roles:{roleTypeId.ToString()}@l##");
 
                 // предполагаю, что классификатор ролей загружен при инсталяции приложения
                 var role = new InternalAdminRole() { RoleTypeId = (int)roleTypeId, Name = name };

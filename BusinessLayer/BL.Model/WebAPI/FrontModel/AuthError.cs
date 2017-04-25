@@ -1,6 +1,4 @@
-﻿using BL.Model.Database;
-
-namespace BL.Model.WebAPI.FrontModel
+﻿namespace BL.Model.WebAPI.FrontModel
 {
     public class AuthError
     {
