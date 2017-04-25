@@ -14,13 +14,16 @@ namespace DMS_WebAPI.Utilities
         private Task _initializeThread;
         private Timer _timer;
         private int _USER_CONTEXT_TIMEOUT_MIN = 1;
+
         public UserContextsWorkerService()
         {
         }
+
         public void Initialize()
         {
             _initializeThread = Task.Factory.StartNew(InitializeServers);
         }
+
         protected void InitializeServers()
         {
             try
@@ -35,7 +38,7 @@ namespace DMS_WebAPI.Utilities
             try
             {
                 // start timer only once. Do not do it regulary in case we don't know how much time sending of email take. So we can continue sending only when previous iteration was comlete
-                _timer = new Timer(ClearUserContext, null, _USER_CONTEXT_TIMEOUT_MIN * 60000, Timeout.Infinite);
+                _timer = new Timer(ClearUserContext, null, _USER_CONTEXT_TIMEOUT_MIN*60000, Timeout.Infinite);
             }
             catch (Exception ex)
             {
@@ -43,7 +46,7 @@ namespace DMS_WebAPI.Utilities
         }
 
         private void ClearUserContext(object param)
-       {
+        {
             try
             {
                 var contexts = DmsResolver.Current.Get<UserContexts>();
@@ -53,7 +56,7 @@ namespace DMS_WebAPI.Utilities
             catch (Exception ex)
             {
             }
-            _timer.Change(_USER_CONTEXT_TIMEOUT_MIN * 60000, Timeout.Infinite);//start new iteration of the timer
+            _timer.Change(_USER_CONTEXT_TIMEOUT_MIN*60000, Timeout.Infinite); //start new iteration of the timer
         }
 
         public void Dispose()

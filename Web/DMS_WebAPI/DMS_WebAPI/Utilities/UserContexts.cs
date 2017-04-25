@@ -10,9 +10,7 @@ using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
 using BL.Database.DatabaseContext;
 using BL.Model.SystemCore;
-using BL.Model.WebAPI.FrontModel;
 using BL.Logic.DictionaryCore.Interfaces;
-using BL.Model.WebAPI.IncomingModel;
 using Ninject;
 using Ninject.Parameters;
 using BL.Model.Enums;
@@ -358,8 +356,6 @@ namespace DMS_WebAPI.Utilities
                 webService.DeleteUserContext(token);
             }
 
-
-
             return ctx;
         }
 
@@ -387,7 +383,7 @@ namespace DMS_WebAPI.Utilities
             var keys = _cacheContexts.Where(x => x.Value.LastUsage.AddMinutes(_TIME_OUT_MIN) <= now).Select(x => x.Key).ToArray();
             foreach (var key in keys)
             {
-                Remove(key, removeFromBase: false);
+                Remove(key, false);
             }
         }
 
@@ -416,7 +412,6 @@ namespace DMS_WebAPI.Utilities
                 Remove(key);
             }
         }
-
 
 
         public void VerifyNumberOfConnectionsByNew(IContext context, int clientId, IEnumerable<DatabaseModel> dbs)
