@@ -454,7 +454,7 @@ namespace DMS_WebAPI.Utilities
 
         public int AddClientLicence(IContext ctx, int licenceId)
         {
-            return AddClientLicence(ctx.CurrentClientId, licenceId);
+            return AddClientLicence(ctx.Client.Id, licenceId);
         }
 
         public int AddClientLicence(int clientId, int licenceId)

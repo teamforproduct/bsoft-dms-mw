@@ -118,18 +118,6 @@ namespace BL.CrossCutting.Context
         public bool IsAdmin => true;
         public LicenceInfo ClientLicence { get; set; }
 
-        public int CurrentClientId
-        {
-            get
-            {
-                return Client.Id;
-            }
-            set
-            {
-                Client.Id = value;
-            }
-        }
-
         public DateTime CreateDate { get; } = DateTime.UtcNow;
         public DateTime LastChangeDate { get; set; } = DateTime.UtcNow;
 

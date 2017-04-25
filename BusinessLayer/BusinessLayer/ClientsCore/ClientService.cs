@@ -180,7 +180,7 @@ namespace BL.Logic.ClientCore
 
                 _DictDb.DeleteAgents(context, null);
 
-                _FTextDb.Delete(context, context.CurrentClientId);
+                _FTextDb.Delete(context, context.Client.Id);
 
                 // Удаляю, то что накопилось во время удаленя агентов
                 _SystemDb.DeleteSystemLogs(context, null);

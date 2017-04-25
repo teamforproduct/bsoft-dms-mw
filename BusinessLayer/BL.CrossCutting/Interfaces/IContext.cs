@@ -19,7 +19,6 @@ namespace BL.CrossCutting.Interfaces
         void SetCurrentPosition(int? position);
         bool IsAdmin { get; }
         LicenceInfo ClientLicence { get; set; }
-        int CurrentClientId{ get; set; }
         DateTime CreateDate { get; }
         DateTime LastChangeDate { get; set; }
         bool IsChangePasswordRequired { get; set; }

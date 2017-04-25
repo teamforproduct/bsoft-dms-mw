@@ -44,7 +44,7 @@ namespace BL.Database.Common
         public static IQueryable<DBModel.Document.Documents> GetDocumentQuery(IContext context, IQueryable<DocumentAccesses> userAccesses = null, bool? isVerifyExecutorPosition = null, bool isVerifyAccessLevel = true, bool isVerifyIsInWork = false)
         {
             var dbContext = context.DbContext as DmsContext;
-            var qry = dbContext.DocumentsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+            var qry = dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id).AsQueryable();
             if (!context.IsAdmin)
             {
                 if (userAccesses == null)
@@ -79,7 +79,7 @@ namespace BL.Database.Common
                         .Where(filterPositionsIdList).Where(x => x.RegJournalAccessTypeId == (int)EnumRegistrationJournalAccessTypes.View)
                         .Select(x => x.RegJournalId).Any())
                     {
-                        var qryRJA = dbContext.DocumentsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable()
+                        var qryRJA = dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id).AsQueryable()
                             .Where(x => x.RegistrationJournalId.HasValue
                                         && dbContext.AdminRegistrationJournalPositionsSet
                                             .Where(filterPositionsIdList).Where(y => y.RegJournalAccessTypeId == (int)EnumRegistrationJournalAccessTypes.View)
@@ -431,7 +431,7 @@ namespace BL.Database.Common
                 {
                     foreach (var filterProperty in filter.FilterProperties)
                     {
-                        var qryTmp = dbContext.PropertyValuesSet.Where(x => x.PropertyLink.Property.ClientId == context.CurrentClientId)
+                        var qryTmp = dbContext.PropertyValuesSet.Where(x => x.PropertyLink.Property.ClientId == context.Client.Id)
                                         .Where(x => x.PropertyLinkId == filterProperty.PropertyLinkId && qry.Select(y => y.Id).Contains(x.RecordId));
 
                         switch (filterProperty.ValueType)
@@ -567,7 +567,7 @@ namespace BL.Database.Common
 
             var qry = dbContext.DocumentEventsSet.AsQueryable();
 
-            qry = qry.Where(x => x.ClientId == context.CurrentClientId);
+            qry = qry.Where(x => x.ClientId == context.Client.Id);
 
             if (filter != null)
             {
@@ -789,7 +789,7 @@ namespace BL.Database.Common
         public static IQueryable<DocumentFiles> GetDocumentFileQuery(IContext context, FilterDocumentFile filter, bool isVerifyAccessLevel = true)
         {
             var dbContext = context.DbContext as DmsContext;
-            var qry = dbContext.DocumentFilesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+            var qry = dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id).AsQueryable();
 
             if (!context.IsAdmin)
             {
@@ -962,7 +962,7 @@ namespace BL.Database.Common
 
             var qry = dbContext.DocumentWaitsSet.AsQueryable();
 
-            qry = qry.Where(x => x.ClientId == context.CurrentClientId);
+            qry = qry.Where(x => x.ClientId == context.Client.Id);
 
             //if (!(filter?.IsOpened.HasValue??false) && !(filter?.DocumentId?.Any()??false))
             //{
@@ -1247,7 +1247,7 @@ namespace BL.Database.Common
             var qry = dbContext.DocumentAccessesSet.AsQueryable();
             if (isAddClientFilter)
             {
-                qry = qry.Where(x => x.ClientId == context.CurrentClientId);
+                qry = qry.Where(x => x.ClientId == context.Client.Id);
             }
             if (!isAll && !context.IsAdmin)
             {
@@ -1299,14 +1299,14 @@ namespace BL.Database.Common
         {
             var dbContext = context.DbContext as DmsContext;
             if (docAccesses == null || !docAccesses.Any()) return null;
-            var accPositions = dbContext.DocumentAccessesSet.Where(x => x.ClientId == context.CurrentClientId).Where(x => x.DocumentId == documentId).Select(x => x.PositionId);
+            var accPositions = dbContext.DocumentAccessesSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == documentId).Select(x => x.PositionId);
             return docAccesses.Where(x => !accPositions.Contains(x.PositionId)).Select(ModelConverter.GetDbDocumentAccess);
         }
 
         public static IQueryable<DocumentAccesses> GetDocumentAccessesesQry(IContext context, int documentId, bool isVerifyAccessLevel = false)
         {
             var dbContext = context.DbContext as DmsContext;
-            var qry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == context.CurrentClientId).Where(x => x.DocumentId == documentId);
+            var qry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == documentId);
             if (context != null && !context.IsAdmin)
             {
                 var filterContains = PredicateBuilder.New<DocumentAccesses>(false);
@@ -1325,7 +1325,7 @@ namespace BL.Database.Common
         public static IEnumerable<InternalDocumentAccess> GetInternalDocumentAccesses(IContext context, int documentId)
         {
             var dbContext = context.DbContext as DmsContext;
-            return dbContext.DocumentAccessesSet.Where(x => x.ClientId == context.CurrentClientId)
+            return dbContext.DocumentAccessesSet.Where(x => x.ClientId == context.Client.Id)
                     .Where(x => x.DocumentId == documentId).Select(acc => new InternalDocumentAccess
                     {
                         Id = acc.Id,
@@ -1344,7 +1344,7 @@ namespace BL.Database.Common
             filterContains = positionIds.Aggregate(filterContains,
                 (current, value) => current.Or(e => e.Id == value).Expand());
 
-            return dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.CurrentClientId)
+            return dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.Client.Id)
                 .Where(filterContains).Select(x => new InternalPositionInfo
                 {
                     PositionId = x.Id,
@@ -1359,7 +1359,7 @@ namespace BL.Database.Common
         public static IEnumerable<FrontDocumentTask> GetDocumentTasks(IContext context, FilterDocumentTask filter, UIPaging paging)
         {
             var dbContext = context.DbContext as DmsContext;
-            var tasksDb = dbContext.DocumentTasksSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+            var tasksDb = dbContext.DocumentTasksSet.Where(x => x.ClientId == context.Client.Id).AsQueryable();
 
             if (!context.IsAdmin)
             {
@@ -1544,7 +1544,7 @@ namespace BL.Database.Common
         public static IQueryable<DocumentSubscriptions> GetDocumentSubscriptionsQuery(IContext context, FilterDocumentSubscription filter)
         {
             var dbContext = context.DbContext as DmsContext;
-            var subscriptionsDb = dbContext.DocumentSubscriptionsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+            var subscriptionsDb = dbContext.DocumentSubscriptionsSet.Where(x => x.ClientId == context.Client.Id).AsQueryable();
             if (!context.IsAdmin)
             {
                 var filterContains = PredicateBuilder.New<DocumentAccesses>(false);
@@ -1580,7 +1580,7 @@ namespace BL.Database.Common
         public static IEnumerable<InternalDocumentSubscription> GetInternalDocumentSubscriptions(IContext context, FilterDocumentSubscription filter)
         {
             var dbContext = context.DbContext as DmsContext;
-            var subscriptionsDb = dbContext.DocumentSubscriptionsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+            var subscriptionsDb = dbContext.DocumentSubscriptionsSet.Where(x => x.ClientId == context.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -1627,7 +1627,7 @@ namespace BL.Database.Common
         public static IQueryable<DocumentTags> GetDocumentTagsQuery(IContext context, FilterDocumentTag filter)
         {
             var dbContext = context.DbContext as DmsContext;
-            var qry = dbContext.DocumentTagsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+            var qry = dbContext.DocumentTagsSet.Where(x => x.ClientId == context.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -1658,7 +1658,7 @@ namespace BL.Database.Common
         public static IQueryable<PropertyValues> GetPropertyValuesQuery(IContext context, FilterPropertyValue filter)
         {
             var dbContext = context.DbContext as DmsContext;
-            var itemsDb = dbContext.PropertyValuesSet.Where(x => x.PropertyLink.Property.ClientId == context.CurrentClientId).AsQueryable();
+            var itemsDb = dbContext.PropertyValuesSet.Where(x => x.PropertyLink.Property.ClientId == context.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -1804,7 +1804,7 @@ namespace BL.Database.Common
         {
             var dbContext = context.DbContext as DmsContext;
             var propertyValues = dbContext.PropertyValuesSet
-                .Where(x => x.PropertyLink.Property.ClientId == context.CurrentClientId)
+                .Where(x => x.PropertyLink.Property.ClientId == context.Client.Id)
                 .Where(x => x.PropertyLink.ObjectId == (int)model.Object && x.RecordId == model.RecordId)
                 .Select(x => new { x.Id, x.PropertyLinkId }).ToList();
 
@@ -1872,7 +1872,7 @@ namespace BL.Database.Common
         public static IQueryable<DocumentAccesses> GetDocumentWorkGroupQuery(IContext context, FilterDictionaryPosition filter)
         {
             var dbContext = context.DbContext as DmsContext;
-            var qry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+            var qry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == context.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -1917,7 +1917,7 @@ namespace BL.Database.Common
         private static IQueryable<DocumentSendLists> GetDocumentSendListQuery(IContext context, FilterDocumentSendList filter)
         {
             var dbContext = context.DbContext as DmsContext;
-            var sendListDb = dbContext.DocumentSendListsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+            var sendListDb = dbContext.DocumentSendListsSet.Where(x => x.ClientId == context.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -2033,7 +2033,7 @@ namespace BL.Database.Common
         {
             var dbContext = context.DbContext as DmsContext;
 
-            var sendListDb = dbContext.DocumentSendListsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+            var sendListDb = dbContext.DocumentSendListsSet.Where(x => x.ClientId == context.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -2077,7 +2077,7 @@ namespace BL.Database.Common
         {
             var dbContext = context.DbContext as DmsContext;
 
-            var sendListDb = dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+            var sendListDb = dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == context.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -2112,7 +2112,7 @@ namespace BL.Database.Common
                 ObjectId = objectId,
                 ObjectType = (int)objType,
                 OperationType = (int)operationType,
-                ClientId = context.CurrentClientId
+                ClientId = context.Client.Id
             };
 
 
@@ -2132,7 +2132,7 @@ namespace BL.Database.Common
                     ObjectId = x,
                     ObjectType = (int)objType,
                     OperationType = (int)operationType,
-                    ClientId = context.CurrentClientId
+                    ClientId = context.Client.Id
                 }).ToList();
 
             dbContext.FullTextIndexCashSet.AddRange(cashInfos);
@@ -2145,7 +2145,7 @@ namespace BL.Database.Common
         public static IEnumerable<FrontDocumentPaper> GetDocumentPapers(IContext context, FilterDocumentPaper filter, UIPaging paging)
         {
             var dbContext = context.DbContext as DmsContext;
-            var itemsDb = dbContext.DocumentPapersSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+            var itemsDb = dbContext.DocumentPapersSet.Where(x => x.ClientId == context.Client.Id).AsQueryable();
 
             if (!context.IsAdmin)
             {
@@ -2249,7 +2249,7 @@ namespace BL.Database.Common
         public static IEnumerable<FrontDocumentPaperList> GetDocumentPaperLists(IContext context, FilterDocumentPaperList filter, UIPaging paging)
         {
             var dbContext = context.DbContext as DmsContext;
-            var itemsDb = dbContext.DocumentPaperListsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+            var itemsDb = dbContext.DocumentPaperListsSet.Where(x => x.ClientId == context.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -2463,7 +2463,7 @@ namespace BL.Database.Common
                         entry.Property(x => x.LastChangeDate).IsModified = true;
 
                         var sendList = dbContext.DocumentSendListsSet
-                            .Where(x => x.ClientId == context.CurrentClientId)
+                            .Where(x => x.ClientId == context.Client.Id)
                             .FirstOrDefault(x => x.StartEventId == subscription.SendEventId && x.IsInitial);
 
                         if (sendList != null)
@@ -2853,7 +2853,7 @@ namespace BL.Database.Common
         public static void ModifyDocumentTaskAccesses(IContext context, int documentId, int? taskId = null)
         {
             var dbContext = context.DbContext as DmsContext;
-            var qry0 = dbContext.DocumentEventsSet.Where(x => x.ClientId == context.CurrentClientId)
+            var qry0 = dbContext.DocumentEventsSet.Where(x => x.ClientId == context.Client.Id)
                 .Where(x => x.DocumentId == documentId);
             if (taskId.HasValue)
                 qry0 = qry0.Where(x => x.TaskId == taskId);
@@ -2868,7 +2868,7 @@ namespace BL.Database.Common
             var taNew = qry2.Union(qry3).GroupBy(x => new { x.TaskId, x.PositionId })
                 .Select(x => new InternalDocumentTaskAccess { TaskId = x.Key.TaskId.Value, PositionId = x.Key.PositionId.Value }).ToList();
 
-            var taOld = dbContext.DocumentTaskAccessesSet.Where(x => x.ClientId == context.CurrentClientId).Where(x => x.Task.DocumentId == documentId)
+            var taOld = dbContext.DocumentTaskAccessesSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.Task.DocumentId == documentId)
                 .Select(x => new InternalDocumentTaskAccess { Id = x.Id, TaskId = x.TaskId, PositionId = x.PositionId }).ToList();
 
             var delId = taOld.GroupJoin(taNew
@@ -2886,7 +2886,7 @@ namespace BL.Database.Common
                 filterContains = delId.Aggregate(filterContains,
                     (current, value) => current.Or(e => e.Id == value).Expand());
 
-                dbContext.DocumentTaskAccessesSet.RemoveRange(dbContext.DocumentTaskAccessesSet.Where(x => x.ClientId == context.CurrentClientId).Where(filterContains));
+                dbContext.DocumentTaskAccessesSet.RemoveRange(dbContext.DocumentTaskAccessesSet.Where(x => x.ClientId == context.Client.Id).Where(filterContains));
             }
             //TODO DELETE or CLIENT
             dbContext.DocumentTaskAccessesSet.AddRange(insTA.Select(x => new DocumentTaskAccesses { TaskId = x.TaskId, PositionId = x.PositionId }));
@@ -2911,7 +2911,7 @@ namespace BL.Database.Common
         public static void ModifyDocumentAccessesStatistics(IContext context, int? documentId = null, List<int> positionId = null)
         {
             var dbContext = context.DbContext as DmsContext;
-            var qry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == context.CurrentClientId);
+            var qry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == context.Client.Id);
             if (documentId.HasValue)
             {
                 qry = qry.Where(x => x.DocumentId == documentId);
@@ -2965,7 +2965,7 @@ namespace BL.Database.Common
         public static IQueryable<EncryptionCertificates> GetCertificatesQuery(IContext context, FilterEncryptionCertificate filter)
         {
             var dbContext = context.DbContext as DmsContext;
-            var qry = dbContext.EncryptionCertificatesSet.Where(x => x.Agent.ClientId == context.CurrentClientId).AsQueryable();
+            var qry = dbContext.EncryptionCertificatesSet.Where(x => x.Agent.ClientId == context.Client.Id).AsQueryable();
             if (!context.IsAdmin)
             {
                 qry = qry.Where(x => x.AgentId == context.CurrentAgentId);

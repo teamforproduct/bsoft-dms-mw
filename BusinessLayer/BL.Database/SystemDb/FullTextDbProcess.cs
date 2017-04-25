@@ -20,7 +20,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var res = dbContext.FullTextIndexCashSet.Any(x => x.ClientId == ctx.CurrentClientId) ? dbContext.FullTextIndexCashSet.Where(x => x.ClientId == ctx.CurrentClientId).Max(x => x.Id) : 0;
+                var res = dbContext.FullTextIndexCashSet.Any(x => x.ClientId == ctx.Client.Id) ? dbContext.FullTextIndexCashSet.Where(x => x.ClientId == ctx.Client.Id).Max(x => x.Id) : 0;
                 transaction.Complete();
                 return res;
             }
@@ -30,7 +30,7 @@ namespace BL.Database.SystemDb
         {
             using (var dbContext = new DmsContext(ctx)) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.FullTextIndexCashSet.Where(x => x.ClientId == ctx.CurrentClientId);
+                var qry = dbContext.FullTextIndexCashSet.Where(x => x.ClientId == ctx.Client.Id);
                 if (filter != null)
                 {
                     if (filter?.IdFrom != null)
@@ -57,13 +57,13 @@ namespace BL.Database.SystemDb
                 dbContext.Database.CommandTimeout = 0;
                 //Add deleted item to  process processing full text index
                 res.AddRange(
-                    dbContext.FullTextIndexCashSet.Where(x => x.Id <= maxIdValue && x.ClientId == ctx.CurrentClientId)
+                    dbContext.FullTextIndexCashSet.Where(x => x.Id <= maxIdValue && x.ClientId == ctx.Client.Id)
                         .Select(x => new FullTextIndexItem
                         {
                             Id = x.Id,
                             ObjectType = (EnumObjects)x.ObjectType,
                             OperationType = (EnumOperationType)x.OperationType,
-                            ClientId = ctx.CurrentClientId,
+                            ClientId = ctx.Client.Id,
                             ObjectId = x.ObjectId,
                             ObjectText = ""
                         }).ToList());
@@ -83,7 +83,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DocumentsSet
-                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -115,7 +115,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.Documents); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId,FilterId = x.FilterId,ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id,FilterId = x.FilterId,ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.Documents,
                     ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.Documents,
                     ObjectText = (x.Main.RegistrationNumber != null ? (x.Main.RegistrationNumberPrefix ?? "") + x.Main.RegistrationNumber + (x.Main.RegistrationNumberSuffix ?? "") : "#" + x.Main.Id) + " "
@@ -131,7 +131,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DocumentAccessesSet
-                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -148,7 +148,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.Documents); var featureId = Features.GetId(Features.Accesses);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.PositionId.HasValue? x.Main.PositionId.Value : 0,
                     ObjectType = EnumObjects.DocumentAccesses,    //!!!сервисные цели
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
@@ -172,7 +172,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DocumentEventsSet
-                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -201,7 +201,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.Documents); var featureId = Features.GetId(Features.Events);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DocumentEvents,
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
                     Access = new List<int> { x.Main.TargetPositionId ?? 0,   x.Main.SourcePositionId ?? 0 }.Distinct()
@@ -218,7 +218,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DocumentSendListsSet
-                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -253,7 +253,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.Documents); var featureId = Features.GetId(Features.Plan);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DocumentSendLists,
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
                     Access = new List<int> { x.Main.TargetPositionId??0, x.Main.SourcePositionId }.Where(y=>!x.Main.IsInitial).Distinct()
@@ -269,7 +269,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DocumentFilesSet
-                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.ClientId == ctx.Client.Id)
                             .Where(x=>x.TypeId == (int)EnumFileTypes.Main || x.TypeId == (int)EnumFileTypes.Additional)
                             .Select(x=>new { Main = x, FilterId = 0});
 
@@ -287,7 +287,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.Documents); var featureId = Features.GetId(Features.Files);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DocumentFiles,
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
                     Access = new List<int> { x.Main.ExecutorPositionId??0}.Where(y=> x.Main.TypeId == (int)EnumFileTypes.Additional).Distinct()
@@ -301,7 +301,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DocumentSubscriptionsSet
-                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -318,7 +318,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.Documents); var featureId = Features.GetId(Features.Signs);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DocumentSubscriptions,
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
                     ObjectText = x.Main.Description
@@ -330,7 +330,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DocumentTagsSet
-                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -350,7 +350,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.Documents); var featureId = Features.GetId(Features.Tags);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.TagId, //!!!сервисные цели
                     ObjectType = EnumObjects.DocumentTags,
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
@@ -363,7 +363,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DocumentPapersSet
-                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -380,7 +380,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.Documents); var featureId = Features.GetId(Features.Papers);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DocumentPapers,
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
                     ObjectText = x.Main.Name + " " + x.Main.Description
@@ -395,7 +395,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.TemplateDocumentsSet
-                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -424,7 +424,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.Templates); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId,FilterId = x.FilterId,ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id,FilterId = x.FilterId,ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.TemplateDocument,
                     ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.TemplateDocument,
                     Access = x.Main.Accesses.Where(y=>y.PositionId.HasValue).Select(y=>new FullTextIndexItemAccessInfo {Key = y.PositionId.Value }).ToList(),
@@ -439,7 +439,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.TemplateDocumentFilesSet
-                            .Where(x => x.Document.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.Document.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -455,7 +455,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.Templates); var featureId = Features.GetId(Features.Files);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.TemplateDocumentAttachedFiles,
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.TemplateDocument,
                     ObjectText = x.Main.Name + " " + x.Main.Extention + " " + x.Main.Description
@@ -467,7 +467,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.TemplateDocumentTasksSet
-                            .Where(x => x.Document.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.Document.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -483,7 +483,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.Templates); var featureId = Features.GetId(Features.Tasks);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.TemplateDocumentTask,
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.TemplateDocument,
                     ObjectText = x.Main.Task + " " + x.Main.Description
@@ -495,7 +495,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.TemplateDocumentSendListsSet
-                            .Where(x => x.Document.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.Document.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -520,7 +520,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.Templates); var featureId = Features.GetId(Features.Plan);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DocumentSendLists,
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
                     ObjectText = x.Main.Description + " " + x.Main.Task.Task + " "
@@ -533,7 +533,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.TemplateDocumentPapersSet
-                            .Where(x => x.Document.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.Document.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -549,7 +549,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.Templates); var featureId = Features.GetId(Features.Papers);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.TemplateDocumentPaper,
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.TemplateDocument,
                     ObjectText = x.Main.Name + " " + x.Main.Description
@@ -565,7 +565,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DictionaryAgentClientCompaniesSet
-                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -579,7 +579,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.Org); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentClientCompanies,
                     ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentClientCompanies,
                     ObjectText = x.Main.Agent.Name + " " + x.Main.FullName+ " " + x.Main.Description
@@ -591,7 +591,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DictionaryDepartmentsSet
-                            .Where(x => x.Company.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.Company.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -605,7 +605,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.Department); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryDepartments,
                     ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryDepartments,
                     ObjectText = x.Main.Name + " " + x.Main.FullName+ " " + x.Main.FullPath
@@ -617,7 +617,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DictionaryPositionsSet
-                            .Where(x => x.Department.Company.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.Department.Company.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -631,7 +631,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.Position); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryPositions,
                     ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryPositions,
                     ObjectText = x.Main.Name + " " + x.Main.FullName
@@ -643,7 +643,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DictionaryAgentEmployeesSet
-                            .Where(x => x.Agent.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.Agent.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -657,7 +657,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.Employee); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentEmployees,
                     ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentEmployees,
                     ObjectText = x.Main.PersonnelNumber + " " + x.Main.Description + " " + x.Main.Agent.Name + " " + x.Main.Agent.AgentUser.UserName + " "
@@ -672,7 +672,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DictionaryAgentCompaniesSet
-                            .Where(x => x.Agent.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.Agent.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -686,7 +686,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.Company); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentCompanies,
                     ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentCompanies,
                     ObjectText = x.Main.Agent.Name + " " + x.Main.FullName + " " + x.Main.OKPOCode + " " + x.Main.Description + " " + x.Main.TaxCode + " " + x.Main.VATCode
@@ -698,7 +698,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DictionaryAgentPersonsSet
-                            .Where(x => x.Agent.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.Agent.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -715,7 +715,7 @@ namespace BL.Database.SystemDb
                     var moduleId = Modules.GetId(Modules.Person); var featureId = Features.GetId(Features.Info);
                     var qryRes= qry.Select(x => new FullTextIndexItem
                     {
-                        ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                        ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentPeople,
                         ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentPeople,
                         ObjectText = x.Main.Agent.Name + " " + x.Main.Description + " "
@@ -733,7 +733,7 @@ namespace BL.Database.SystemDb
                     var qryRes= qry.Where(x=>x.Main.AgentCompanyId.HasValue)
                     .Select(x => new FullTextIndexItem
                     {
-                        ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                        ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentPersons,
                         ParentObjectId = x.Main.AgentCompanyId.Value, ParentObjectType = EnumObjects.DictionaryAgentCompanies,
                         ObjectText = x.Main.People.Agent.Name + x.Main.People.FullName + x.Main.Position + " " + x.Main.Description
@@ -747,7 +747,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DictionaryAgentBanksSet
-                            .Where(x => x.Agent.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.Agent.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -761,7 +761,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.Bank); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentBanks,
                     ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAgentBanks,
                     ObjectText = x.Main.Agent.Name + " " + x.Main.FullName + " " + x.Main.Description + " " + x.Main.MFOCode + " " + x.Main.Swift
@@ -773,7 +773,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DictionaryStandartSendListsSet
-                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -793,7 +793,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.SendList); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryStandartSendLists,
                     ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryStandartSendLists,
                     ObjectText = x.Main.Name /*+ " " + x.Main.Position.Name + " "+ x.Main.Position.ExecutorAgent.Name*/
@@ -805,7 +805,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.CustomDictionaryTypesSet
-                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -819,7 +819,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.CustomDictionaries); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.CustomDictionaryTypes,
                     ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.CustomDictionaryTypes,
                     ObjectText = x.Main.Code + " " + x.Main.Name + " " + x.Main.Description
@@ -831,7 +831,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.AdminRolesSet
-                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -845,7 +845,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.Role); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.AdminRoles,
                     ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.AdminRoles,
                     ObjectText = x.Main.Name + " " + x.Main.Description
@@ -860,7 +860,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DictionaryAgentAddressesSet
-                            .Where(x => x.Agent.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.Agent.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -876,7 +876,7 @@ namespace BL.Database.SystemDb
                     var qryRes= qry.Where(x=>x.Main.Agent.AgentEmployee != null)
                     .Select(x => new FullTextIndexItem
                     {
-                        ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                        ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentAddresses,
                         ParentObjectId = x.Main.AgentId, ParentObjectType = EnumObjects.DictionaryAgentEmployees,
                         ObjectText = x.Main.Address + " " + x.Main.PostCode + " " + x.Main.Description
@@ -889,7 +889,7 @@ namespace BL.Database.SystemDb
                     var qryRes= qry.Where(x=>x.Main.Agent.AgentPerson != null)
                     .Select(x => new FullTextIndexItem
                     {
-                        ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                        ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentAddresses,
                         ParentObjectId = x.Main.AgentId, ParentObjectType = EnumObjects.DictionaryAgentPeople,
                         ObjectText = x.Main.Address + " " + x.Main.PostCode + " " + x.Main.Description
@@ -902,7 +902,7 @@ namespace BL.Database.SystemDb
                     var qryRes= qry.Where(x=>x.Main.Agent.AgentBank != null)
                     .Select(x => new FullTextIndexItem
                     {
-                        ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                        ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentAddresses,
                         ParentObjectId = x.Main.AgentId, ParentObjectType = EnumObjects.DictionaryAgentBanks,
                         ObjectText = x.Main.Address + " " + x.Main.PostCode + " " + x.Main.Description
@@ -915,7 +915,7 @@ namespace BL.Database.SystemDb
                     var qryRes= qry.Where(x=>x.Main.Agent.AgentCompany != null)
                     .Select(x => new FullTextIndexItem
                     {
-                        ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                        ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentAddresses,
                         ParentObjectId = x.Main.AgentId, ParentObjectType = EnumObjects.DictionaryAgentCompanies,
                         ObjectText = x.Main.Address + " " + x.Main.PostCode + " " + x.Main.Description
@@ -928,7 +928,7 @@ namespace BL.Database.SystemDb
                     var qryRes= qry.Where(x=>x.Main.Agent.AgentOrg != null)
                     .Select(x => new FullTextIndexItem
                     {
-                        ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                        ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAgentAddresses,
                         ParentObjectId = x.Main.AgentId, ParentObjectType = EnumObjects.DictionaryAgentClientCompanies,
                         ObjectText = x.Main.Address + " " + x.Main.PostCode + " " + x.Main.Description
@@ -942,7 +942,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DictionaryAgentContactsSet
-                            .Where(x => x.Agent.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.Agent.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -958,7 +958,7 @@ namespace BL.Database.SystemDb
                     var qryRes= qry.Where(x=>x.Main.Agent.AgentEmployee != null)
                     .Select(x => new FullTextIndexItem
                     {
-                        ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                        ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryContacts,
                         ParentObjectId = x.Main.AgentId, ParentObjectType = EnumObjects.DictionaryAgentEmployees,
                         ObjectText = x.Main.Contact + " " + x.Main.Description
@@ -971,7 +971,7 @@ namespace BL.Database.SystemDb
                     var qryRes= qry.Where(x=>x.Main.Agent.AgentPerson != null)
                     .Select(x => new FullTextIndexItem
                     {
-                        ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                        ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryContacts,
                         ParentObjectId = x.Main.AgentId, ParentObjectType = EnumObjects.DictionaryAgentPeople,
                         ObjectText = x.Main.Contact + " " + x.Main.Description
@@ -984,7 +984,7 @@ namespace BL.Database.SystemDb
                     var qryRes= qry.Where(x=>x.Main.Agent.AgentBank != null)
                     .Select(x => new FullTextIndexItem
                     {
-                        ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                        ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryContacts,
                         ParentObjectId = x.Main.AgentId, ParentObjectType = EnumObjects.DictionaryAgentBanks,
                         ObjectText = x.Main.Contact + " " + x.Main.Description
@@ -997,7 +997,7 @@ namespace BL.Database.SystemDb
                     var qryRes= qry.Where(x=>x.Main.Agent.AgentCompany != null)
                     .Select(x => new FullTextIndexItem
                     {
-                        ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                        ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryContacts,
                         ParentObjectId = x.Main.AgentId, ParentObjectType = EnumObjects.DictionaryAgentCompanies,
                         ObjectText = x.Main.Contact + " " + x.Main.Description
@@ -1010,7 +1010,7 @@ namespace BL.Database.SystemDb
                     var qryRes= qry.Where(x=>x.Main.Agent.AgentOrg != null)
                     .Select(x => new FullTextIndexItem
                     {
-                        ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                        ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryContacts,
                         ParentObjectId = x.Main.AgentId, ParentObjectType = EnumObjects.DictionaryAgentClientCompanies,
                         ObjectText = x.Main.Contact + " " + x.Main.Description
@@ -1024,7 +1024,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DictionaryStandartSendListContentsSet
-                            .Where(x => x.StandartSendList.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.StandartSendList.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -1047,7 +1047,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.SendList); var featureId = Features.GetId(Features.Contents);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryStandartSendLists,
                     ParentObjectId = x.Main.StandartSendListId, ParentObjectType = EnumObjects.DictionaryStandartSendLists,
                     ObjectText = x.Main.Description + " " + x.Main.Task + " " + x.Main.TargetPosition.Name + " " + x.Main.TargetPosition.ExecutorAgent.Name + " " + x.Main.TargetPosition.Department.FullPath + " " + x.Main.TargetPosition.Department.Name + " " + x.Main.TargetAgent.Name
@@ -1059,7 +1059,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.CustomDictionariesSet
-                            .Where(x => x.CustomDictionaryType.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.CustomDictionaryType.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -1073,7 +1073,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.CustomDictionaries); var featureId = Features.GetId(Features.Contents);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.CustomDictionaries,
                     ParentObjectId = x.Main.DictionaryTypeId, ParentObjectType = EnumObjects.CustomDictionaryTypes,
                     ObjectText = x.Main.Code + " " + x.Main.Name + " " + x.Main.Description
@@ -1085,7 +1085,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.AdminUserRolesSet
-                            .Where(x => x.Role.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.Role.ClientId == ctx.Client.Id)
                             //TODO разрулить текущие/все назначения
                             .Select(x=>new { Main = x, FilterId = 0});
 
@@ -1107,7 +1107,7 @@ namespace BL.Database.SystemDb
                     var moduleId = Modules.GetId(Modules.Role); var featureId = Features.GetId(Features.Employees);
                     var qryRes= qry.Select(x => new FullTextIndexItem
                     {
-                        ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                        ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.AdminUserRoles,
                         ParentObjectId = x.Main.RoleId, ParentObjectType = EnumObjects.AdminRoles,
                         DateFrom = x.Main.PositionExecutor.StartDate, DateTo = x.Main.PositionExecutor.EndDate,
@@ -1120,7 +1120,7 @@ namespace BL.Database.SystemDb
                     var moduleId = Modules.GetId(Modules.Employee); var featureId = Features.GetId(Features.Roles);
                     var qryRes= qry.Select(x => new FullTextIndexItem
                     {
-                        ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                        ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.AdminUserRoles,
                         ParentObjectId = x.Main.PositionExecutor.AgentId, ParentObjectType = EnumObjects.DictionaryAgentEmployees,
                         DateFrom = x.Main.PositionExecutor.StartDate, DateTo = x.Main.PositionExecutor.EndDate,
@@ -1134,7 +1134,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.AdminPositionRolesSet
-                            .Where(x => x.Role.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.Role.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -1155,7 +1155,7 @@ namespace BL.Database.SystemDb
                     var moduleId = Modules.GetId(Modules.Role); var featureId = Features.GetId(Features.Positions);
                     var qryRes= qry.Select(x => new FullTextIndexItem
                     {
-                        ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                        ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.AdminPositionRoles,
                         ParentObjectId = x.Main.RoleId, ParentObjectType = EnumObjects.AdminRoles,
                         ObjectText = x.Main.Position.Name
@@ -1167,7 +1167,7 @@ namespace BL.Database.SystemDb
                     var moduleId = Modules.GetId(Modules.Position); var featureId = Features.GetId(Features.Roles);
                     var qryRes= qry.Select(x => new FullTextIndexItem
                     {
-                        ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                        ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.AdminPositionRoles,
                         ParentObjectId = x.Main.PositionId, ParentObjectType = EnumObjects.DictionaryPositions,
                         ObjectText = x.Main.Role.Name
@@ -1180,7 +1180,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DictionaryPositionExecutorsSet
-                            .Where(x => x.Position.Department.Company.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.Position.Department.Company.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -1201,7 +1201,7 @@ namespace BL.Database.SystemDb
                     var moduleId = Modules.GetId(Modules.Employee); var featureId = Features.GetId(Features.Assignments);
                     var qryRes= qry.Select(x => new FullTextIndexItem
                     {
-                        ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                        ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryPositionExecutors,
                         ParentObjectId = x.Main.AgentId, ParentObjectType = EnumObjects.DictionaryAgentEmployees,
                         DateFrom = x.Main.StartDate, DateTo = x.Main.EndDate,
@@ -1214,7 +1214,7 @@ namespace BL.Database.SystemDb
                     var moduleId = Modules.GetId(Modules.Position); var featureId = Features.GetId(Features.Executors);
                     var qryRes= qry.Select(x => new FullTextIndexItem
                     {
-                        ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                        ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryPositionExecutors,
                         ParentObjectId = x.Main.PositionId, ParentObjectType = EnumObjects.DictionaryPositions,
                         DateFrom = x.Main.StartDate, DateTo = x.Main.EndDate,
@@ -1228,7 +1228,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.AdminRegistrationJournalPositionsSet
-                            .Where(x => x.RegistrationJournal.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.RegistrationJournal.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
                 switch (filterType)
                 {
@@ -1248,7 +1248,7 @@ namespace BL.Database.SystemDb
                     var moduleId = Modules.GetId(Modules.Journal); var featureId = Features.GetId(Features.Positions);
                     var qryRes= qry.Select(x => new FullTextIndexItem
                     {
-                        ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                        ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.AdminRegistrationJournalPositions,
                         ParentObjectId = x.Main.RegJournalId, ParentObjectType = EnumObjects.DictionaryRegistrationJournals,
                         ObjectText = x.Main.Position.Name
@@ -1260,7 +1260,7 @@ namespace BL.Database.SystemDb
                     var moduleId = Modules.GetId(Modules.Position); var featureId = Features.GetId(Features.Journals);
                     var qryRes= qry.Select(x => new FullTextIndexItem
                     {
-                        ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                        ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.AdminRegistrationJournalPositions,
                         ParentObjectId = x.Main.PositionId, ParentObjectType = EnumObjects.DictionaryPositions,
                         ObjectText = x.Main.RegistrationJournal.Name
@@ -1273,7 +1273,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.AdminEmployeeDepartmentsSet
-                            .Where(x => x.Department.Company.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.Department.Company.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -1291,7 +1291,7 @@ namespace BL.Database.SystemDb
                     var moduleId = Modules.GetId(Modules.Department); var featureId = Features.GetId(Features.Admins);
                     var qryRes= qry.Select(x => new FullTextIndexItem
                     {
-                        ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                        ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                         ObjectId = x.Main.Id, ObjectType = EnumObjects.AdminEmployeeDepartments,
                         ParentObjectId = x.Main.DepartmentId, ParentObjectType = EnumObjects.DictionaryDepartments,
                         ObjectText = x.Main.Employee.Agent.Name
@@ -1308,7 +1308,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DictionaryAddressTypesSet
-                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -1322,7 +1322,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.AddressType); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryAddressType,
                     ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryAddressType,
                     ObjectText = x.Main.Code + " " + x.Main.Name
@@ -1334,7 +1334,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DictionaryContactTypesSet
-                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -1348,7 +1348,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.ContactType); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryContactType,
                     ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryContactType,
                     ObjectText = x.Main.Code + " " + x.Main.Name
@@ -1360,7 +1360,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DictionaryDocumentTypesSet
-                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -1374,7 +1374,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.DocumentType); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryDocumentType,
                     ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryDocumentType,
                     ObjectText = x.Main.Name
@@ -1386,7 +1386,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DictionaryRegistrationJournalsSet
-                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -1403,7 +1403,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.Journal); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryRegistrationJournals,
                     ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryRegistrationJournals,
                     ObjectText =  x.Main.Index + " " + x.Main.Name + " " + x.Main.Department.FullName + " " + x.Main.Department.Name
@@ -1415,7 +1415,7 @@ namespace BL.Database.SystemDb
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DictionaryTagsSet
-                            .Where(x => x.ClientId == ctx.CurrentClientId)
+                            .Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -1429,7 +1429,7 @@ namespace BL.Database.SystemDb
                 var moduleId = Modules.GetId(Modules.Tags); var featureId = Features.GetId(Features.Info);
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
-                    ClientId = ctx.CurrentClientId, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
+                    ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryTag,
                     ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryTag,
                     ObjectText = x.Main.Name
@@ -1643,19 +1643,19 @@ namespace BL.Database.SystemDb
                         {
                             qry.Query = IsDirectFilter
                                 ? qry.Query.Where(x => (x.ObjectId >= idBeg.Value) && (x.ObjectId <= idEnd.Value))
-                                : qry.Query.Where(x => dbContext.FullTextIndexCashSet.Where(y => y.ClientId == ctx.CurrentClientId && (y.Id >= idBeg.Value) && (y.Id <= idEnd.Value)).Select(y => y.ObjectId).Contains(x.ObjectId));
+                                : qry.Query.Where(x => dbContext.FullTextIndexCashSet.Where(y => y.ClientId == ctx.Client.Id && (y.Id >= idBeg.Value) && (y.Id <= idEnd.Value)).Select(y => y.ObjectId).Contains(x.ObjectId));
                         }
                         else if (qry.FilterType == EnamFilterType.Slave)
                         {
                             qry.Query = IsDirectFilter
                                 ? qry.Query.Where(x => (x.ParentObjectId >= idBeg.Value) && (x.ParentObjectId <= idEnd.Value))
-                                : qry.Query.Where(x => dbContext.FullTextIndexCashSet.Where(y => y.ClientId == ctx.CurrentClientId && (y.Id >= idBeg.Value) && (y.Id <= idEnd.Value)).Select(y => y.ObjectId).Contains(x.ParentObjectId));
+                                : qry.Query.Where(x => dbContext.FullTextIndexCashSet.Where(y => y.ClientId == ctx.Client.Id && (y.Id >= idBeg.Value) && (y.Id <= idEnd.Value)).Select(y => y.ObjectId).Contains(x.ParentObjectId));
                         }
                         else
                         {
                             qry.Query = IsDirectFilter
                                 ? qry.Query.Where(x => (x.FilterId >= idBeg.Value) && (x.FilterId <= idEnd.Value))
-                                : qry.Query.Where(x => x.FilterId != 0 && dbContext.FullTextIndexCashSet.Where(y => y.ClientId == ctx.CurrentClientId && (y.Id >= idBeg.Value) && (y.Id <= idEnd.Value)).Select(y => y.ObjectId).Contains(x.FilterId));
+                                : qry.Query.Where(x => x.FilterId != 0 && dbContext.FullTextIndexCashSet.Where(y => y.ClientId == ctx.Client.Id && (y.Id >= idBeg.Value) && (y.Id <= idEnd.Value)).Select(y => y.ObjectId).Contains(x.FilterId));
                         }
                     }
                     res.AddRange(qry.Query.ToList());

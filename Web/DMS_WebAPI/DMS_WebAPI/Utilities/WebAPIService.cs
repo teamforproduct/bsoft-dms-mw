@@ -176,7 +176,7 @@ namespace DMS_WebAPI.Utilities
             var employeeId = -1;
 
             // проверяю нет ли уже сотрудника с указанным имененм у клиента
-            if (ExistsUser(model.UserName, context.CurrentClientId)) throw new UserNameAlreadyExists(model.UserName);
+            if (ExistsUser(model.UserName, context.Client.Id)) throw new UserNameAlreadyExists(model.UserName);
 
             // пробую создать сотрудника
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -201,7 +201,7 @@ namespace DMS_WebAPI.Utilities
 
                         // Предполагаю, что человек, который создает пользователей. создает их в тойже базе и в том же клиенте
                         // Первый пользователь создается под админ-контекстом
-                        ClientId = context.CurrentClientId,
+                        ClientId = context.Client.Id,
                         ServerId = context.CurrentDB.Id,
                     });
 
@@ -223,7 +223,7 @@ namespace DMS_WebAPI.Utilities
             {
                 if (employeeId > 0) tmpService.ExecuteAction(EnumDictionaryActions.DeleteAgentEmployee, context, employeeId);
 
-                if (user != null) DeleteUsersInClient(context.CurrentClientId, new List<string> { user.Id });
+                if (user != null) DeleteUsersInClient(context.Client.Id, new List<string> { user.Id });
 
                 throw e;
             }
@@ -319,7 +319,7 @@ namespace DMS_WebAPI.Utilities
                 {
                     var tmp = new RestorePasswordAgentUser
                     {
-                        ClientCode = _webDb.GetClientCode(context.CurrentClientId),
+                        ClientCode = _webDb.GetClientCode(context.Client.Id),
                         Email = res.Email,
                         FirstEntry = "true"
                     };
@@ -335,7 +335,7 @@ namespace DMS_WebAPI.Utilities
 
                 else
                 {
-                    var clientCode = _webDb.GetClientCode(context.CurrentClientId);
+                    var clientCode = _webDb.GetClientCode(context.Client.Id);
                     var settVal = DmsResolver.Current.Get<ISettingValues>();
                     var we = new WelcomeEmailModel()
                     {
@@ -348,7 +348,7 @@ namespace DMS_WebAPI.Utilities
                     };
 
                     var htmlContent = we.RenderPartialViewToString(RenderPartialView.WelcomeEmail);
-                    var db = GetClientServer(context.CurrentClientId);
+                    var db = GetClientServer(context.Client.Id);
                     var ctx = new AdminContext(db);
                     var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
                     mailService.SendMessage(ctx, MailServers.Noreply, res.Email, "Ostrean. Приглашение", htmlContent);
@@ -415,7 +415,7 @@ namespace DMS_WebAPI.Utilities
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             tmpService.ExecuteAction(EnumDictionaryActions.DeleteAgentEmployee, context, agentId);
 
-            DeleteUsersInClient(context.CurrentClientId, new List<string> { user.Id });
+            DeleteUsersInClient(context.Client.Id, new List<string> { user.Id });
         }
 
         private AspNetUsers AddUser(string userName, string userPassword, string userEmail, string userPhone = "",
@@ -1193,7 +1193,7 @@ namespace DMS_WebAPI.Utilities
             var model = new AspNetUserContexts
             {
                 Token = context.Employee.Token,
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
                 CurrentPositionsIdList = string.Join(",", context.CurrentPositionsIdList),
                 UserId = context.Employee.UserId,
                 LastChangeDate = DateTime.UtcNow,

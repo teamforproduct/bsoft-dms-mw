@@ -24,7 +24,7 @@ namespace BL.Database.Common
         {
             return item == null ? null : new AdminRoles
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
 
                 Id = item.Id,
                 LastChangeDate = item.LastChangeDate,

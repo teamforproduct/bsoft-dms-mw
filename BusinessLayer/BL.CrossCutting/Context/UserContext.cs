@@ -210,18 +210,6 @@ namespace BL.CrossCutting.Context
         }
         private DatabaseModel _currentDb;
 
-        public int CurrentClientId
-        {
-            get
-            {
-                return Client.Id;
-            }
-            set
-            {
-                Client.Id = value;
-            }
-        }
-
         public DateTime CreateDate { get; } = DateTime.UtcNow;
         public DateTime LastChangeDate { get; set; } = DateTime.UtcNow;
         public bool IsChangePasswordRequired { get; set; }

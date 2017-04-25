@@ -84,7 +84,7 @@ namespace DMS_WebAPI.Utilities
             //    throw ctx.ClientLicence.LicenceError as DmsExceptions;
             //}
 
-            //VerifyNumberOfConnections(ctx, ctx.CurrentClientId);
+            //VerifyNumberOfConnections(ctx, ctx.Client.Id);
 
             var request_ctx = new UserContext(ctx);
             request_ctx.SetCurrentPosition(currentPositionId);
@@ -164,9 +164,9 @@ namespace DMS_WebAPI.Utilities
 
             var dbWeb = DmsResolver.Current.Get<WebAPIDbProcess>();
 
-            context.ClientLicence = dbWeb.GetClientLicenceActive(context.CurrentClientId);
+            context.ClientLicence = dbWeb.GetClientLicenceActive(context.Client.Id);
 
-            VerifyNumberOfConnectionsByNew(context, context.CurrentClientId, new List<DatabaseModelForAdminContext> { db });
+            VerifyNumberOfConnectionsByNew(context, context.Client.Id, new List<DatabaseModelForAdminContext> { db });
 
             context.CurrentDB = db;
             var dbCtx = DmsResolver.Current.Kernel.Get<DmsContext>(new ConstructorArgument("dbModel", context.CurrentDB));
@@ -212,10 +212,10 @@ namespace DMS_WebAPI.Utilities
         /// Добавляет к существующему пользовательскому контексту информации по логу
         /// </summary>
         /// <param name="token">new server parameters</param>
-        /// <param name="browberInfo">clientId</param>
+        /// <param name="browserInfo">clientId</param>
         /// <param name="fingerPrint">clientId</param>
         /// <returns></returns>
-        public void Set(string token, string browberInfo, string fingerPrint)
+        public void Set(string token, string browserInfo, string fingerPrint)
         {
             token = token.ToLower();
 
@@ -226,7 +226,7 @@ namespace DMS_WebAPI.Utilities
             context.DbContext = dbCtx;
             var logger = DmsResolver.Current.Get<ILogger>();
 
-            context.LoginLogInfo = browberInfo;
+            context.LoginLogInfo = browserInfo;
             context.LoginLogId = logger.Information(context, context.LoginLogInfo, (int)EnumObjects.System, (int)EnumSystemActions.Login, logDate: context.CreateDate, isCopyDate1: true);
 
             if (!string.IsNullOrEmpty(fingerPrint))
@@ -300,7 +300,7 @@ namespace DMS_WebAPI.Utilities
         {
             var clientUsers = _cacheContexts
                     .Select(x => (IContext)x.Value.StoreObject)
-                    .Where(x => x.CurrentClientId == clientId);
+                    .Where(x => x.Client.Id == clientId);
 
             if (clientUsers.Count() <= 0)
                 return;
@@ -316,7 +316,7 @@ namespace DMS_WebAPI.Utilities
             {
                 var qry = _cacheContexts
                    .Select(x => (IContext)x.Value.StoreObject)
-                   .Where(x => x.CurrentClientId == clientId)
+                   .Where(x => x.Client.Id == clientId)
                    .Select(x => x.Employee.UserId)
                    .Distinct();
 
@@ -444,7 +444,7 @@ namespace DMS_WebAPI.Utilities
             {
                 var qry = _cacheContexts
                     .Select(x => (IContext)x.Value.StoreObject)
-                    .Where(x => x.CurrentClientId == clientId)
+                    .Where(x => x.Client.Id == clientId)
                     .Select(x => x.Employee.UserId)
                     .Distinct();
 
