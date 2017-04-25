@@ -271,7 +271,7 @@ namespace BL.Database.Documents
                 if (template.Id > 0)
                 {
                     newTemplate.Id = template.Id;
-                    dbContext.TemplateDocumentsSet.Attach(newTemplate);
+                    dbContext.SafeAttach(newTemplate);
                     var entity = dbContext.Entry(newTemplate);
                     entity.State = System.Data.Entity.EntityState.Modified;
                 }
@@ -609,7 +609,7 @@ namespace BL.Database.Documents
                     entityState = System.Data.Entity.EntityState.Modified;
                 }
 
-                dbContext.TemplateDocumentSendListsSet.Attach(newTemplate);
+                dbContext.SafeAttach(newTemplate);
                 var entity = dbContext.Entry(newTemplate);
                 entity.State = entityState;
 
@@ -723,7 +723,6 @@ namespace BL.Database.Documents
                             Id = x.Id,
                             DocumentId = x.DocumentId,
                             PositionId = x.Position.Id,
-                            //AccessLevel = (EnumDocumentAccesses) x.AccessLevelId,
                             PositionName = x.Position.Name,
                             PositionExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null),
                             AccessLevelName = x.AccessLevel.Name,
@@ -754,7 +753,7 @@ namespace BL.Database.Documents
                     entityState = System.Data.Entity.EntityState.Modified;
                 }
 
-                dbContext.TemplateDocumentRestrictedSendListsSet.Attach(newTemplate);
+                dbContext.SafeAttach(newTemplate);
                 var entity = dbContext.Entry(newTemplate);
                 entity.State = entityState;
 
@@ -900,7 +899,7 @@ namespace BL.Database.Documents
                     entityState = System.Data.Entity.EntityState.Modified;
                 }
 
-                dbContext.TemplateDocumentAccessesSet.Attach(newTemplate);
+                dbContext.SafeAttach(newTemplate);
                 var entity = dbContext.Entry(newTemplate);
                 entity.State = entityState;
 
@@ -1018,7 +1017,7 @@ namespace BL.Database.Documents
                     entityState = System.Data.Entity.EntityState.Modified;
                 }
 
-                dbContext.TemplateDocumentTasksSet.Attach(newTemplate);
+                dbContext.SafeAttach(newTemplate);
                 var entity = dbContext.Entry(newTemplate);
                 entity.State = entityState;
                 dbContext.SaveChanges();
@@ -1175,7 +1174,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var itemDb = ModelConverter.GetDbTemplateDocumentPaper(item);
-                dbContext.TemplateDocumentPapersSet.Attach(itemDb);
+                dbContext.SafeAttach(itemDb);
                 var entry = dbContext.Entry(itemDb);
                 entry.Property(e => e.Name).IsModified = true;
                 entry.Property(e => e.Description).IsModified = true;
@@ -1429,7 +1428,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var fl = ModelConverter.GetDbTemplateFile(docFile);
-                dbContext.TemplateDocumentFilesSet.Attach(fl);
+                dbContext.SafeAttach(fl);
 
                 var entry = dbContext.Entry(fl);
                 entry.Property(x => x.TypeId).IsModified = true;
@@ -1449,7 +1448,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var fl = ModelConverter.GetDbTemplateFile(docFile);
-                dbContext.TemplateDocumentFilesSet.Attach(fl);
+                dbContext.SafeAttach(fl);
                 var entry = dbContext.Entry(fl);
                 entry.Property(x => x.IsPdfCreated).IsModified = true;
                 entry.Property(x => x.LastPdfAccessDate).IsModified = true;

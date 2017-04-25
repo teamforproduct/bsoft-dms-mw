@@ -6,7 +6,6 @@ using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Document;
 using BL.Database.DBModel.System;
 using BL.Database.Helper;
-using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
@@ -17,7 +16,6 @@ using LinqKit;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using BL.CrossCutting.Helpers.CashService;
 using BL.Model.Constants;
@@ -200,11 +198,16 @@ namespace BL.Database.SystemDb
             {
                 DmsDbImportData.InitPermissions();
 
+                foreach (var item in DmsDbImportData.GetSystemAccessTypes())
+                {
+                    dbContext.SafeAttach(item);
+                    dbContext.Entry(item).State = EntityState.Added;
+                    dbContext.SaveChanges();
+                }
                 var modules = dbContext.SystemModulesSet.ToList();
-
                 foreach (var item in DmsDbImportData.GetSystemModules().Where(x => modules.All(y => y.Id != x.Id)))
                 {
-                    dbContext.SystemModulesSet.Attach(item);
+                    dbContext.SafeAttach(item);
                     dbContext.Entry(item).State = EntityState.Added;
                     dbContext.SaveChanges();
                 }
@@ -213,7 +216,7 @@ namespace BL.Database.SystemDb
 
                 foreach (var item in DmsDbImportData.GetSystemFeatures().Where(x => features.All(y => y.Id != x.Id)))
                 {
-                    dbContext.SystemFeaturesSet.Attach(item);
+                    dbContext.SafeAttach(item);
                     dbContext.Entry(item).State = EntityState.Added;
                     dbContext.SaveChanges();
                 }
@@ -222,7 +225,7 @@ namespace BL.Database.SystemDb
 
                 foreach (var item in DmsDbImportData.GetSystemPermissions().Where(x => permissions.All(y => y.Id != x.Id)))
                 {
-                    dbContext.SystemPermissionsSet.Attach(item);
+                    dbContext.SafeAttach(item);
                     dbContext.Entry(item).State = EntityState.Added;
                     dbContext.SaveChanges();
                 }
@@ -857,8 +860,8 @@ namespace BL.Database.SystemDb
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                dbContext.SystemObjectsSet.Attach(item);
-                dbContext.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                dbContext.SafeAttach(item);
+                dbContext.Entry(item).State = EntityState.Modified;
                 dbContext.SaveChanges();
                 transaction.Complete();
             }
@@ -979,7 +982,7 @@ namespace BL.Database.SystemDb
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                dbContext.SystemActionsSet.Attach(item);
+                dbContext.SafeAttach(item);
                 dbContext.Entry(item).State = EntityState.Modified;
                 dbContext.SaveChanges();
                 transaction.Complete();
@@ -1349,7 +1352,7 @@ namespace BL.Database.SystemDb
                     LastChangeDate = model.LastChangeDate,
                     LastChangeUserId = model.LastChangeUserId,
                 };
-                dbContext.PropertiesSet.Attach(item);
+                dbContext.SafeAttach(item);
                 dbContext.Entry(item).State = EntityState.Added;
 
                 dbContext.SaveChanges();
@@ -1384,7 +1387,7 @@ namespace BL.Database.SystemDb
                     LastChangeDate = model.LastChangeDate,
                     LastChangeUserId = model.LastChangeUserId,
                 };
-                dbContext.PropertiesSet.Attach(item);
+                dbContext.SafeAttach(item);
                 dbContext.Entry(item).State = EntityState.Modified;
 
                 dbContext.SaveChanges();
@@ -1494,7 +1497,7 @@ namespace BL.Database.SystemDb
                     LastChangeDate = model.LastChangeDate,
                     LastChangeUserId = model.LastChangeUserId,
                 };
-                dbContext.PropertyLinksSet.Attach(item);
+                dbContext.SafeAttach(item);
                 dbContext.Entry(item).State = EntityState.Added;
 
                 dbContext.SaveChanges();
@@ -1517,7 +1520,7 @@ namespace BL.Database.SystemDb
                     LastChangeDate = model.LastChangeDate,
                     LastChangeUserId = model.LastChangeUserId,
                 };
-                dbContext.PropertyLinksSet.Attach(item);
+                dbContext.SafeAttach(item);
                 var entry = dbContext.Entry(item);
                 entry.Property(p => p.Filers).IsModified = true;
                 entry.Property(p => p.IsMandatory).IsModified = true;
@@ -1615,15 +1618,13 @@ namespace BL.Database.SystemDb
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                //TODO будет ли это работать?? 
-                var upd = new List<DbEntityEntry>();
+                //TODO convert it to Update method
                 mailProcessed.ProcessedEventIds.ForEach(x =>
                 {
                     var evt = new DocumentEvents { Id = x, SendDate = mailProcessed.ProcessedDate };
-                    dbContext.DocumentEventsSet.Attach(evt);
+                    dbContext.SafeAttach(evt);
                     var entry = dbContext.Entry(evt);
                     entry.Property(p => p.SendDate).IsModified = true;
-                    upd.Add(entry);
                 });
                 dbContext.SaveChanges();
                 transaction.Complete();

@@ -4,34 +4,64 @@ namespace BL.CrossCutting.Interfaces
 {
     public interface ISettingValues
     {
+        string GetCurrentServerName();
+
+        string GetMainHost();
+        string GetVirtualHost();
+
         bool GetSubordinationsSendAllForExecution(IContext ctx);
         bool GetSubordinationsSendAllForInforming(IContext ctx);
-        int GetMailSenderTimeoutMin(IContext ctx);
-        MailServerType GetMailInfoServerType(IContext ctx);
 
+        #region MailDocum
+        int GetMailDocumSenderTimeoutMin();
+        MailServerType GetMailDocumServerType();
+        string GetMailDocumServerName();
+        int GetMailDocumServerPort();
 
-        string GetMailInfoSystemMail(IContext ctx);
+        string GetMailDocumEmail();
+        string GetMailDocumLogin();
+        string GetMailDocumPassword();
+        #endregion
 
-        string GetMailInfoName(IContext ctx);
+        #region MailNoreply
+        int GetMailNoreplySenderTimeoutMin();
+        MailServerType GetMailNoreplyServerType();
+        string GetMailNoreplyServerName();
+        int GetMailNoreplyServerPort();
 
-        string GetMailInfoLogin(IContext ctx);
+        string GetMailNoreplyEmail();
+        string GetMailNoreplyLogin();
+        string GetMailNoreplyPassword();
+        #endregion
 
-        string GetMailInfoPassword(IContext ctx);
+        #region MailSMS
+        int GetMailSMSSenderTimeoutMin();
+        MailServerType GetMailSMSServerType();
+        string GetMailSMSServerName();
+        int GetMailSMSServerPort();
 
-        int GetMailInfoPort(IContext ctx);
+        string GetMailSMSEmail();
+        string GetMailSMSLogin();
+        string GetMailSMSPassword();
+        #endregion
 
         bool GetDigitalSignatureIsUseCertificateSign(IContext ctx);
 
         bool GetDigitalSignatureIsUseInternalSign(IContext ctx);
 
-        string GetFulltextDatastorePath(IContext ctx);
+        #region [+] Fulltext ...
+        string GetFulltextStorePath();
 
         int GetFulltextRefreshTimeout(IContext ctx);
         int GetFulltextRowLimit(IContext ctx);
 
         bool GetFulltextWasInitialized(IContext ctx);
 
-        string GetFileStorePath(IContext ctx);
+        #endregion
+
+        #region [+] FileStore ...
+        string GetFileStorePath();
+        #endregion
 
         string GetReportDocumentForDigitalSignature(IContext ctx);
 
@@ -51,7 +81,7 @@ namespace BL.CrossCutting.Interfaces
 
         int GetClearTrashDocumentsTimeoutMinuteForClear(IContext ctx);
 
-        string GetCurrentServerName();
+        
 
     }
 }

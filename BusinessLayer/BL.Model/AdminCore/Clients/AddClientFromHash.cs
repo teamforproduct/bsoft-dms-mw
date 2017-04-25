@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
 
 namespace BL.Model.AdminCore.Clients
 {
@@ -10,6 +9,8 @@ namespace BL.Model.AdminCore.Clients
     {
         [Required]
         public string Hash { get; set ; }
+
+        public string Password { get; set; }
 
     }
 }

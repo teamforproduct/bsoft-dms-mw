@@ -24,6 +24,7 @@ namespace BL.Logic.SystemServices
             LockObjectTimer = new object();
             ServerContext = new Dictionary<string, AdminContext>();
             Logger = logger;
+            SettingValues = settingValues;
         }
 
         public void Initialize(IEnumerable<DatabaseModel> dbList)
