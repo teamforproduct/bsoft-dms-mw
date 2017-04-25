@@ -69,9 +69,14 @@ namespace DMS_WebAPI.Providers
         /// <returns></returns>
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
-            string clientCode = context.Request.Body.GetClientCode();
+            var clientCode = context.Request.Body.GetClientCode();
+            var fingerprint = context.Request.Body.GetFingerprint();
+
             // код клиента - обязательный параметр
             if (string.IsNullOrEmpty(clientCode?.Trim())) throw new ClientCodeRequired();
+
+            // отпечаток - обязательный параметр (решили сделать обязательным, хотя дальше по логике он может не понадобиться)
+            if (string.IsNullOrEmpty(fingerprint?.Trim())) throw new FingerprintRequired();
 
             // Если передали несуществующие код клиента. дальше не пускаю
             var webService = DmsResolver.Current.Get<WebAPIService>();
@@ -101,7 +106,7 @@ namespace DMS_WebAPI.Providers
             {
                 var answer = context.Request.Body.GetControlAnswer();
                 var rememberFingerprint = context.Request.Body.GetRememberFingerprint();
-                var fingerprint = context.Request.Body.GetFingerprint();
+                
 
                 if (string.IsNullOrEmpty(fingerprint?.Trim())) ThrowErrorGrantResourceOwnerCredentials(context, new FingerprintRequired());
 
