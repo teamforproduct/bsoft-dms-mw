@@ -54,8 +54,8 @@ namespace BL.CrossCutting.Interfaces
         #region [+] Fulltext ...
         string GetFulltextStorePath();
 
-        int GetFulltextRefreshTimeout(IContext ctx);
-        int GetFulltextRowLimit(IContext ctx);
+        int GetFulltextRefreshTimeout();
+        int GetFulltextRowLimit();
 
         bool GetFulltextWasInitialized(IContext ctx);
 

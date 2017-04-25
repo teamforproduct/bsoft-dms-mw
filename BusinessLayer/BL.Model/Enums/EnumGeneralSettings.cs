@@ -57,5 +57,8 @@
 
         FulltextStorePath,
 
+        FulltextRefreshTimeout,
+        FulltextRowLimit,
+
     }
 }

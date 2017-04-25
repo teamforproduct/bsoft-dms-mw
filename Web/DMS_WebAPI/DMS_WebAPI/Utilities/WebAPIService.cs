@@ -229,7 +229,7 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public int AddUserEmployeeInOrg(IContext context, AddEmployeeInOrg model)
+        public int AddUserEmployeeInOrg(IContext context, AddEmployeeInOrg model, bool sendEmail = true)
         {
             var dicService = DmsResolver.Current.Get<IDictionaryService>();
             var admService = DmsResolver.Current.Get<IAdminService>();
@@ -254,6 +254,9 @@ namespace DMS_WebAPI.Utilities
             employee.LastName = model.LastName;
             employee.IsActive = true;
             employee.LanguageId = model.LanguageId;
+            employee.EmailConfirmed = model.EmailConfirmed;
+            employee.IsChangePasswordRequired = model.IsChangePasswordRequired;
+            employee.IsEmailConfirmRequired = model.IsEmailConfirmRequired;
 
             try
             {  // тут возникает проблама транзакционности: если возникнет проблема при назначении сотрудника, то 
@@ -315,43 +318,43 @@ namespace DMS_WebAPI.Utilities
 
                 // Отправка приглашения
                 // Если пользователь уже был в базе, то ему нужно выслать только ссылку на нового клиента, а если нет то ссылку на смену пароля
-                if (res.IsNew)
+                if (sendEmail)
                 {
-                    var tmp = new RestorePasswordAgentUser
+                    if (res.IsNew)
                     {
-                        ClientCode = _webDb.GetClientCode(context.Client.Id),
-                        Email = res.Email,
-                        FirstEntry = "true"
-                    };
+                        var tmp = new RestorePasswordAgentUser
+                        {
+                            ClientCode = _webDb.GetClientCode(context.Client.Id),
+                            Email = res.Email,
+                            FirstEntry = "true"
+                        };
 
 
-                    var tmpService = DmsResolver.Current.Get<ISettingValues>();
-                    var addr = tmpService.GetAuthAddress();
-                    // http://docum.ostrean.com/restore-password
-                    var uri = new Uri(new Uri(addr), "restore-password").ToString();
+                        var tmpService = DmsResolver.Current.Get<ISettingValues>();
+                        var addr = tmpService.GetAuthAddress();
+                        // http://docum.ostrean.com/restore-password
+                        var uri = new Uri(new Uri(addr), "restore-password").ToString();
 
-                    RestorePasswordAgentUserAsync(tmp, uri,  null, "Ostrean. Приглашение");
-                }
-
-                else
-                {
-                    var clientCode = _webDb.GetClientCode(context.Client.Id);
-                    var settVal = DmsResolver.Current.Get<ISettingValues>();
-                    var we = new WelcomeEmailModel()
+                        RestorePasswordAgentUserAsync(tmp, uri, null, "Ostrean. Приглашение");
+                    }
+                    else
                     {
-                        UserName = res.UserName,
-                        UserEmail = res.Email,
-                        ClientUrl = clientCode + "." + settVal.GetMainHost(),
-                        CabinetUrl = clientCode + "." + settVal.GetMainHost() + "/cabinet/",
-                        OstreanEmail = settVal.GetMailDocumEmail() ,
-                        SpamUrl = settVal.GetMailNoreplyEmail(),
-                    };
+                        var clientCode = _webDb.GetClientCode(context.Client.Id);
+                        var settVal = DmsResolver.Current.Get<ISettingValues>();
+                        var we = new WelcomeEmailModel()
+                        {
+                            UserName = res.UserName,
+                            UserEmail = res.Email,
+                            ClientUrl = clientCode + "." + settVal.GetMainHost(),
+                            CabinetUrl = clientCode + "." + settVal.GetMainHost() + "/cabinet/",
+                            OstreanEmail = settVal.GetMailDocumEmail(),
+                            SpamUrl = settVal.GetMailNoreplyEmail(),
+                        };
 
-                    var htmlContent = we.RenderPartialViewToString(RenderPartialView.WelcomeEmail);
-                    var db = GetClientServer(context.Client.Id);
-                    var ctx = new AdminContext(db);
-                    var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-                    mailService.SendMessage(ctx, MailServers.Noreply, res.Email, "Ostrean. Приглашение", htmlContent);
+                        var htmlContent = we.RenderPartialViewToString(RenderPartialView.WelcomeEmail);
+                        var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
+                        mailService.SendMessage(null, MailServers.Noreply, res.Email, "Ostrean. Приглашение", htmlContent);
+                    }
                 }
 
                 return res.EmployeeId;
@@ -584,20 +587,24 @@ namespace DMS_WebAPI.Utilities
         {
             var request = _webDb.GetClientRequests(new FilterAspNetClientRequests { HashCodeExact = model.Hash }).FirstOrDefault();
 
-            if (request == null) throw new Exception("//TODO Exception");
+            if (request == null) throw new ClientRequestIsNotFound();
 
             request.Password = model.Password;
 
             AddClientSaaS(request);
+
+            _webDb.DeleteClientRequest(new FilterAspNetClientRequests { HashCodeExact = model.Hash });
         }
 
         public void AddClientBySMS(AddClientFromSMS model)
         {
             var request = _webDb.GetClientRequests(new FilterAspNetClientRequests { SMSCodeExact = model.SMSCode }).FirstOrDefault();
 
-            if (request == null) throw new Exception("//TODO Exception");
+            if (request == null) throw new ClientRequestIsNotFound();
 
             AddClientSaaS(request);
+
+            _webDb.DeleteClientRequest(new FilterAspNetClientRequests { SMSCodeExact = model.SMSCode });
         }
 
         public async Task AddClientSaaS(AddClientSaaS model)
@@ -659,7 +666,7 @@ namespace DMS_WebAPI.Utilities
                 });
 
 
-                // Линкую клиента на лицензию
+                // Линкую клиента на сервер
 
                 _webDb.AddClientServer(new SetClientServer
                 {
@@ -706,6 +713,7 @@ namespace DMS_WebAPI.Utilities
 
             try
             {
+                // Предзаполняю клиентскую базу настроками, ролями
                 clientService.AddDictionary(ctx, model);
 
             }
@@ -730,7 +738,11 @@ namespace DMS_WebAPI.Utilities
                 Login = model.Email,
                 Role = Roles.Admin,
                 Password = model.Password,
-            });
+                // Создание клиента происходит по факту клика по ссылке в письме, поэтому при создании пользователя подтверждать емаил не нужно
+                EmailConfirmed = true,
+                IsChangePasswordRequired = false,
+                IsEmailConfirmRequired = false,
+            }, sendEmail: false);
 
 
             //UserManager.AddLogin(userId, new UserLoginInfo {    })
@@ -943,25 +955,24 @@ namespace DMS_WebAPI.Utilities
             builder.Query = newQuery.ToString();// string.Join("&", nvc.AllKeys.Select(key => string.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(nvc[key]))));
             // сылка на восстановление пароля
             string callbackurl = builder.ToString();
+            var settVal = DmsResolver.Current.Get<ISettingValues>();
 
             var m = new WelcomeEmailModel()
             {
-                CabinetUrl = "ostrean.com/cabinet",
-                ClientUrl = callbackurl,
-                OstreanEmail = "info@ostrean.com",
-                SpamUrl = "noreplay@ostrean.com",
-                UserEmail = user.Email,
                 UserName = user.UserName,
+                UserEmail = user.Email,
+                ClientUrl = callbackurl,
+                CabinetUrl = model.ClientCode + "." + settVal.GetMainHost() + "/cabinet/",
+                OstreanEmail = settVal.GetMailDocumEmail(),
+                SpamUrl = settVal.GetMailNoreplyEmail(),
             };
 
-            // html с подставленной ссылкой
+            // html с подставленной моделью
             var htmlContent = m.RenderPartialViewToString(RenderPartialView.WelcomeEmail);
 
 
-            var db = GetClientServer(model.ClientCode);
-            var ctx = new AdminContext(db);
             var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-            mailService.SendMessage(ctx, MailServers.Noreply, model.Email, emailSubject, htmlContent);
+            mailService.SendMessage(null, MailServers.Noreply, model.Email, emailSubject, htmlContent);
         }
 
         public void RestorePasswordAgentUser(RestorePasswordAgentUser model, string baseUrl, NameValueCollection query, string emailSubject, string renderPartialView)

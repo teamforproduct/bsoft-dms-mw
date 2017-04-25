@@ -232,7 +232,6 @@ namespace BL.Logic.ClientCore
             var items = new List<AddAddressType>();
 
             items.Add(GetAddressType(EnumAddressTypes.Actual));
-            items.Add(GetAddressType(EnumAddressTypes.Current));
             items.Add(GetAddressType(EnumAddressTypes.Legal));
             items.Add(GetAddressType(EnumAddressTypes.Working));
             return items;
@@ -297,9 +296,7 @@ namespace BL.Logic.ClientCore
             items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegistrationCardInternalDocument));
             items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegistrationCardOutcomingDocument));
 
-            items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_REFRESH_TIMEOUT));
             items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED));
-            items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_ROWLIMIT));
 
             items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.RUN_AUTOPLAN_TIMEOUT_MINUTE));
             items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.RUN_CLEARTRASHDOCUMENTS_TIMEOUT_MINUTE));

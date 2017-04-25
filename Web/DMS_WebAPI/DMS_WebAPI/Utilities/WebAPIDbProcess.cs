@@ -620,6 +620,17 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
+        public void DeleteClientRequest(FilterAspNetClientRequests filter)
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetClientRequestsQuery(dbContext, filter);
+                qry.Delete();
+
+                transaction.Complete();
+            }
+        }
+
         #endregion
 
         #region Clients
