@@ -173,7 +173,7 @@ namespace BL.Database.Encryption
                     LastChangeDate = item.LastChangeDate,
                 };
 
-                dbContext.EncryptionCertificatesSet.Attach(itemDb);
+                dbContext.SafeAttach(itemDb);
 
                 var entry = dbContext.Entry(itemDb);
                 entry.Property(x => x.Name).IsModified = true;

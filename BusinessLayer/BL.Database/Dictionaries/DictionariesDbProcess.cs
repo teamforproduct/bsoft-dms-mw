@@ -23,7 +23,6 @@ using LinqKit;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 
 namespace BL.Database.Dictionaries
@@ -61,9 +60,9 @@ namespace BL.Database.Dictionaries
             {
                 var dbModel = DictionaryModelConverter.GetDbAgent(ctx, agent);
 
-                dbContext.DictionaryAgentsSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 var entity = dbContext.Entry(dbModel);
-                entity.State = System.Data.Entity.EntityState.Modified;
+                entity.State = EntityState.Modified;
                 dbContext.SaveChanges();
 
                 transaction.Complete();
@@ -77,7 +76,7 @@ namespace BL.Database.Dictionaries
             {
                 var dbModel = DictionaryModelConverter.GetDbAgent(ctx, agent);
 
-                dbContext.DictionaryAgentsSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
 
                 var entity = dbContext.Entry(dbModel);
 
@@ -85,7 +84,7 @@ namespace BL.Database.Dictionaries
                 entity.Property(x => x.LastChangeDate).IsModified = true;
                 entity.Property(x => x.LastChangeUserId).IsModified = true;
 
-                //entity.State = System.Data.Entity.EntityState.Modified;
+                //entity.State = EntityState.Modified;
                 dbContext.SaveChanges();
 
                 transaction.Complete();
@@ -111,23 +110,13 @@ namespace BL.Database.Dictionaries
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var dbModel = dbContext.DictionaryAgentsSet.FirstOrDefault(x => x.Id == User.Id);
-
-                if (dbModel != null)
-                {
-                    dbModel.LastChangeDate = User.LastChangeDate;
-                    dbModel.LastChangeUserId = User.LastChangeUserId;
-                    dbModel.Image = User.Image;
-                    dbContext.SaveChanges();
-
-                }
-                //var dbModel = DictionaryModelConverter.GetDbAgentImage(ctx, User);
-                //dbContext.DictionaryAgentsSet.Attach(dbModel);
-                //var entity = dbContext.Entry(dbModel);
-                //entity.Property(x => x.Image).IsModified = true;
-                //entity.Property(x => x.LastChangeDate).IsModified = true;
-                //entity.Property(x => x.LastChangeUserId).IsModified = true;
-//                dbContext.SaveChanges();
+                var dbModel = DictionaryModelConverter.GetDbAgentImage(ctx, User);
+                dbContext.SafeAttach(dbModel);
+                var entity = dbContext.Entry(dbModel);
+                entity.Property(x => x.Image).IsModified = true;
+                entity.Property(x => x.LastChangeDate).IsModified = true;
+                entity.Property(x => x.LastChangeUserId).IsModified = true;
+                dbContext.SaveChanges();
                 transaction.Complete();
             }
         }
@@ -135,7 +124,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontDictionaryAgent> GetAgents(IContext ctx, FilterDictionaryAgent filter, UIPaging paging)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAgentsQuery(ctx, filter);
@@ -161,7 +149,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<AutocompleteItem> GetAgentExternalList(IContext ctx, UIPaging paging)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 //Контрагенты(Тип: Физ.лицо / Юр.лицо / Банк, ИНН / ОКПО / МФО)
@@ -306,7 +293,7 @@ namespace BL.Database.Dictionaries
 
                 var dbModel = DictionaryModelConverter.GetDbAgentPeople(ctx, people);
 
-                dbContext.DictionaryAgentPeopleSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 var entity = dbContext.Entry(dbModel);
                 entity.Property(x => x.FullName).IsModified = true;
                 entity.Property(x => x.LastName).IsModified = true;
@@ -346,7 +333,7 @@ namespace BL.Database.Dictionaries
             {
                 var dbModel = DictionaryModelConverter.GetDbAgentPeople(ctx, people);
 
-                dbContext.DictionaryAgentPeopleSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 var entity = dbContext.Entry(dbModel);
                 entity.Property(x => x.PassportDate).IsModified = true;
                 entity.Property(x => x.PassportNumber).IsModified = true;
@@ -460,10 +447,10 @@ namespace BL.Database.Dictionaries
 
                 var dbModel = DictionaryModelConverter.GetDbAgentPerson(ctx, person);
 
-                dbContext.DictionaryAgentPersonsSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 dbContext.SaveChanges();
                 var entity = dbContext.Entry(dbModel);
-                entity.State = System.Data.Entity.EntityState.Modified;
+                entity.State = EntityState.Modified;
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.UpdateFull);
@@ -871,7 +858,7 @@ namespace BL.Database.Dictionaries
 
                 var dbModel = DictionaryModelConverter.GetDbAgentEmployee(ctx, employee);
 
-                dbContext.DictionaryAgentEmployeesSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 var entity = dbContext.Entry(dbModel);
                 entity.State = EntityState.Modified;
                 dbContext.SaveChanges();
@@ -1216,8 +1203,7 @@ namespace BL.Database.Dictionaries
                 if (filter.RoleIDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.New<AdminUserRoles>(false);
-                    filterContains = filter.RoleIDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.RoleId == value).Expand());
+                    filter.RoleIDs.Aggregate(filterContains,(current, value) => current.Or(e => e.RoleId == value).Expand());
 
                     //qry = qry.Where(x => x.PositionExecutors.UserRoles.Any(y => filter.RoleIDs.Any(RoleId => y.RoleId == RoleId)));
 
@@ -1230,7 +1216,6 @@ namespace BL.Database.Dictionaries
 
         public bool ExistsAgentEmployees(IContext ctx, FilterDictionaryAgentEmployee filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var res = GetAgentEmployeesQuery(ctx, filter).Any();
@@ -1258,7 +1243,6 @@ namespace BL.Database.Dictionaries
 
         public void DeleteAgentUsers(IContext ctx, FilterDictionaryAgentUsers filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAgentUsersQuery(ctx, filter);
@@ -1274,7 +1258,7 @@ namespace BL.Database.Dictionaries
             {
                 var dbModel = DictionaryModelConverter.GetDbAgentUser(ctx, User);
 
-                dbContext.DictionaryAgentUsersSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 var entity = dbContext.Entry(dbModel);
                 entity.Property(x => x.LanguageId).IsModified = true;
                 entity.Property(x => x.LastChangeDate).IsModified = true;
@@ -1292,7 +1276,7 @@ namespace BL.Database.Dictionaries
             {
                 var dbModel = DictionaryModelConverter.GetDbAgentUser(ctx, User);
 
-                dbContext.DictionaryAgentUsersSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 var entity = dbContext.Entry(dbModel);
                 entity.Property(x => x.LastPositionChose).IsModified = true;
                 dbContext.SaveChanges();
@@ -1306,20 +1290,11 @@ namespace BL.Database.Dictionaries
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetAgentUsersQuery(ctx, new FilterDictionaryAgentUsers { IDs = new List<int> { User.Id } });
-                var dbModel = qry.FirstOrDefault();
-
-                dbModel.UserId = User.UserId;
-
+                var dbModel = DictionaryModelConverter.GetDbAgentUser(ctx, User);
+                dbContext.SafeAttach(dbModel);
+                var entity = dbContext.Entry(dbModel);
+                entity.Property(x => x.UserId).IsModified = true;
                 dbContext.SaveChanges();
-
-                // Attach стал стреляться при внедрении ctx.DbContext as DmsContext;
-
-                //var dbModel = DictionaryModelConverter.GetDbAgentUser(ctx, User);
-                //dbContext.DictionaryAgentUsersSet.Attach(dbModel);
-                //var entity = dbContext.Entry(dbModel);
-                //entity.Property(x => x.UserId).IsModified = true;
-                //dbContext.SaveChanges();
 
                 transaction.Complete();
             }
@@ -1334,7 +1309,7 @@ namespace BL.Database.Dictionaries
 
                 var dbModel = DictionaryModelConverter.GetDbAgentUser(ctx, User);
 
-                dbContext.DictionaryAgentUsersSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 var entity = dbContext.Entry(dbModel);
                 entity.Property(x => x.UserName).IsModified = true;
                 entity.Property(x => x.LastChangeDate).IsModified = true;
@@ -1368,7 +1343,6 @@ namespace BL.Database.Dictionaries
 
         public InternalDictionaryAgentUser GetInternalAgentUser(IContext ctx, int id)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAgentUsersQuery(ctx, new FilterDictionaryAgentUsers { IDs = new List<int> { id } });
@@ -1490,9 +1464,9 @@ namespace BL.Database.Dictionaries
             {
                 var dbModel = DictionaryModelConverter.GetDbAgentAddress(ctx, addr);
 
-                dbContext.DictionaryAgentAddressesSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 var entity = dbContext.Entry(dbModel);
-                entity.State = System.Data.Entity.EntityState.Modified;
+                entity.State = EntityState.Modified;
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryAgentAddresses, EnumOperationType.UpdateFull);
@@ -1661,7 +1635,7 @@ namespace BL.Database.Dictionaries
             {
                 var dbModel = DictionaryModelConverter.GetDbAddressType(ctx, addrType);
 
-                dbContext.DictionaryAddressTypesSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 var entity = dbContext.Entry(dbModel);
                 // Все поля кроме SpecCode
                 entity.Property(x => x.Code).IsModified = true;
@@ -1906,8 +1880,8 @@ namespace BL.Database.Dictionaries
                 UpdateAgentName(ctx, org.Id, org);
 
                 var dbModel = DictionaryModelConverter.GetDbAgentOrg(ctx, org);
-                dbContext.DictionaryAgentClientCompaniesSet.Attach(dbModel);
-                dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
+                dbContext.SafeAttach(dbModel);
+                dbContext.Entry(dbModel).State = EntityState.Modified;
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryAgentClientCompanies, EnumOperationType.UpdateFull);
@@ -2265,9 +2239,9 @@ namespace BL.Database.Dictionaries
 
                 var dbModel = DictionaryModelConverter.GetDbAgentCompany(ctx, company);
 
-                dbContext.DictionaryAgentCompaniesSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 var entity = dbContext.Entry(dbModel);
-                entity.State = System.Data.Entity.EntityState.Modified;
+                entity.State = EntityState.Modified;
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryAgentCompanies, EnumOperationType.UpdateFull);
@@ -2550,7 +2524,7 @@ namespace BL.Database.Dictionaries
 
                 var dbModel = DictionaryModelConverter.GetDbAgentBank(ctx, bank);
 
-                dbContext.DictionaryAgentBanksSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 var entity = dbContext.Entry(dbModel);
                 entity.State = EntityState.Modified;
                 dbContext.SaveChanges();
@@ -2753,8 +2727,7 @@ namespace BL.Database.Dictionaries
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var res =
-                    dbContext.DictionaryAgentAccountsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Where(x => x.Id == id).Select(x => new FrontDictionaryAgentAccount
+                var res = dbContext.DictionaryAgentAccountsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Where(x => x.Id == id).Select(x => new FrontDictionaryAgentAccount
                     {
                         Id = x.Id,
                         AccountNumber = x.AccountNumber,
@@ -2801,9 +2774,9 @@ namespace BL.Database.Dictionaries
             {
                 var dbModel = DictionaryModelConverter.GetDbAgentAccount(ctx, account);
 
-                dbContext.DictionaryAgentAccountsSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 var entity = dbContext.Entry(dbModel);
-                entity.State = System.Data.Entity.EntityState.Modified;
+                entity.State = EntityState.Modified;
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryAgentAccounts, EnumOperationType.UpdateFull);
@@ -2813,7 +2786,6 @@ namespace BL.Database.Dictionaries
 
         public void DeleteAgentAccounts(IContext ctx, FilterDictionaryAgentAccount filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAgentAccountsQuery(ctx, filter);
@@ -2827,7 +2799,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<InternalDictionaryAgentAccount> GetInternalAgentAccounts(IContext ctx, FilterDictionaryAgentAccount filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAgentAccountsQuery(ctx, filter);
@@ -2852,7 +2823,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontDictionaryAgentAccount> GetAgentAccounts(IContext ctx, FilterDictionaryAgentAccount filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAgentAccountsQuery(ctx, filter);
@@ -2996,7 +2966,7 @@ namespace BL.Database.Dictionaries
             {
                 var dbModel = DictionaryModelConverter.GetDbContactType(ctx, model);
 
-                dbContext.DictionaryContactTypesSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 var entity = dbContext.Entry(dbModel);
                 // Все поля кроме SpecCode
                 entity.Property(x => x.InputMask).IsModified = true;
@@ -3218,9 +3188,9 @@ namespace BL.Database.Dictionaries
             {
                 var dbModel = DictionaryModelConverter.GetDbContact(ctx, contact);
 
-                dbContext.DictionaryAgentContactsSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 var entity = dbContext.Entry(dbModel);
-                entity.State = System.Data.Entity.EntityState.Modified;
+                entity.State = EntityState.Modified;
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryContacts, EnumOperationType.UpdateFull);
@@ -3229,7 +3199,6 @@ namespace BL.Database.Dictionaries
         }
         public void DeleteAgentContacts(IContext ctx, FilterDictionaryContact filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetContactsQuery(ctx, filter);
@@ -3453,8 +3422,8 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var dd = DictionaryModelConverter.GetDbDepartments(ctx, department);
-                dbContext.DictionaryDepartmentsSet.Attach(dd);
-                dbContext.Entry(dd).State = System.Data.Entity.EntityState.Modified;
+                dbContext.SafeAttach(dd);
+                dbContext.Entry(dd).State = EntityState.Modified;
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCacheInfo(ctx, dd.Id, EnumObjects.DictionaryDepartments, EnumOperationType.UpdateFull);
@@ -4087,8 +4056,8 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var dbModel = DictionaryModelConverter.GetDbDocumentType(ctx, docType);
-                dbContext.DictionaryDocumentTypesSet.Attach(dbModel);
-                dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
+                dbContext.SafeAttach(dbModel);
+                dbContext.Entry(dbModel).State = EntityState.Modified;
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryDocumentType, EnumOperationType.UpdateFull);
@@ -4480,11 +4449,11 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var dbModel = DictionaryModelConverter.GetDbPosition(ctx, position);
-                dbContext.CheckEntityIfExists(dbModel);
-                dbContext.DictionaryPositionsSet.Attach(dbModel);
-                //pss нельзя модифицировать поля, которые проставляет вертушка
-                //dbContext.Entry(dd).State = System.Data.Entity.EntityState.Modified;
+                dbContext.SafeAttach(dbModel);
                 var entity = dbContext.Entry(dbModel);
+                //pss нельзя модифицировать поля, которые проставляет вертушка
+                //dbContext.Entry(dd).State = EntityState.Modified;
+                
                 entity.Property(x => x.ParentId).IsModified = true;
                 entity.Property(x => x.IsActive).IsModified = true;
                 entity.Property(x => x.Name).IsModified = true;
@@ -4508,13 +4477,11 @@ namespace BL.Database.Dictionaries
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                // Attach стал стреляться при внедрении ctx.DbContext as DmsContext;
                 var dbModel = DictionaryModelConverter.GetDbPosition(ctx, new InternalDictionaryPosition() { Id = positionId, Order = order });
                 //dbContext.DictionaryPositionsSet.Where(x => x.Id == positionId).Update(x => new DictionaryPositions { Order = order });
-
-                dbContext.CheckEntityIfExists(dbModel);
-                dbContext.DictionaryPositionsSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 var entity = dbContext.Entry(dbModel);
+                
                 entity.Property(x => x.Order).IsModified = true;
 
                 dbContext.SaveChanges();
@@ -4571,7 +4538,6 @@ namespace BL.Database.Dictionaries
 
         public void DeletePositions(IContext ctx, FilterDictionaryPosition filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionsQuery(ctx, filter);
@@ -4684,7 +4650,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontDictionaryPosition> GetPositions(IContext ctx, FilterDictionaryPosition filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionsQuery(ctx, filter);
@@ -4733,7 +4698,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<InternalDictionaryPosition> GetInternalPositions(IContext ctx, FilterDictionaryPosition filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionsQuery(ctx, filter);
@@ -4763,7 +4727,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<int> GetPositionIDs(IContext ctx, FilterDictionaryPosition filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionsQuery(ctx, filter);
@@ -4776,7 +4739,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<ListItem> GetPositionList(IContext ctx, FilterDictionaryPosition filter, UIPaging paging)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionsQuery(ctx, filter);
@@ -4803,7 +4765,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<TreeItem> GetPositionsTree(IContext ctx, FilterDictionaryPosition filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionsQuery(ctx, filter);
@@ -4829,7 +4790,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<AutocompleteItem> GetShortListPositionsExecutor(IContext ctx, FilterDictionaryPosition filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionsQuery(ctx, filter);
@@ -4854,7 +4814,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<AutocompleteItem> GetShortListPositions(IContext ctx, FilterDictionaryPosition filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionsQuery(ctx, filter);
@@ -4879,7 +4838,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontDIPSubordinationsPosition> GetPositionsForStaffList(IContext ctx, FilterDictionaryPosition filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionsQuery(ctx, filter);
@@ -4908,7 +4866,6 @@ namespace BL.Database.Dictionaries
         }
         public IEnumerable<FrontDIPRegistrationJournalPositions> GetPositionsForDIPRegistrationJournals(IContext ctx, int registrationJournalId, FilterDictionaryPosition filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionsQuery(ctx, filter);
@@ -4929,7 +4886,6 @@ namespace BL.Database.Dictionaries
         }
         public IEnumerable<FrontDIPSubordinationsPosition> GetPositionsForDIPSubordinations(IContext ctx, int sourcePositionId, FilterDictionaryPosition filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionsQuery(ctx, filter);
@@ -4952,15 +4908,9 @@ namespace BL.Database.Dictionaries
                     ExecutorName = x.ExecutorAgent.Name,
                     ExecutorTypeSuffix = x.ExecutorType.Suffix,
                     IsInforming = (x.TargetPositionSubordinations
-                        .Where(y => y.TargetPositionId == x.Id)
-                        .Where(y => y.SourcePositionId == sourcePositionId)
-                        .Where(y => y.SubordinationTypeId == (int)EnumSubordinationTypes.Informing)
-                        .Any() ? 1 : 0),
+                        .Any(y => y.TargetPositionId == x.Id && y.SourcePositionId == sourcePositionId && y.SubordinationTypeId == (int)EnumSubordinationTypes.Informing) ? 1 : 0),
                     IsExecution = (x.TargetPositionSubordinations
-                        .Where(y => y.TargetPositionId == x.Id)
-                        .Where(y => y.SourcePositionId == sourcePositionId)
-                        .Where(y => y.SubordinationTypeId == (int)EnumSubordinationTypes.Execution)
-                        .Any() ? 1 : 0),
+                        .Any(y => y.TargetPositionId == x.Id && y.SourcePositionId == sourcePositionId && y.SubordinationTypeId == (int)EnumSubordinationTypes.Execution) ? 1 : 0),
                     SourcePositionId = sourcePositionId,
                     TargetPositionId = x.Id
                 }).ToList();
@@ -4972,7 +4922,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<FrontDIPJournalAccessPosition> GetPositionsForDIPJournalAccess(IContext ctx, int journalId, FilterDictionaryPosition filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionsQuery(ctx, filter);
@@ -5015,7 +4964,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<SortPositoin> GetPositionsForSort(IContext ctx, FilterDictionaryPosition filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetPositionsQuery(ctx, filter);
@@ -5209,8 +5157,8 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 DictionaryPositionExecutors drj = DictionaryModelConverter.GetDbExecutor(ctx, executor);
-                dbContext.DictionaryPositionExecutorsSet.Attach(drj);
-                dbContext.Entry(drj).State = System.Data.Entity.EntityState.Modified;
+                dbContext.SafeAttach(drj);
+                dbContext.Entry(drj).State = EntityState.Modified;
                 dbContext.SaveChanges();
                 CommonQueries.AddFullTextCacheInfo(ctx, drj.Id, EnumObjects.DictionaryPositionExecutors, EnumOperationType.UpdateFull);
                 UpdateExecutorsInPositions(ctx, new List<int> { executor.PositionId });
@@ -5694,8 +5642,8 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var dbModel = DictionaryModelConverter.GetDbRegistrationJournal(ctx, regJournal);
-                dbContext.DictionaryRegistrationJournalsSet.Attach(dbModel);
-                dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
+                dbContext.SafeAttach(dbModel);
+                dbContext.Entry(dbModel).State = EntityState.Modified;
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryRegistrationJournals, EnumOperationType.UpdateFull);
@@ -6404,7 +6352,7 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var dbModel = DictionaryModelConverter.GetDbStandartSendListContent(ctx, content);
-                dbContext.DictionaryStandartSendListContentsSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 var entity = dbContext.Entry(dbModel);
                 entity.State = EntityState.Modified;
                 dbContext.SaveChanges();
@@ -6416,7 +6364,6 @@ namespace BL.Database.Dictionaries
 
         public void DeleteStandartSendListContents(IContext ctx, FilterDictionaryStandartSendListContent filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetStandartSendListContentsQuery(ctx, filter);
@@ -6590,9 +6537,9 @@ namespace BL.Database.Dictionaries
             {
                 var dbModel = DictionaryModelConverter.GetDbStandartSendList(ctx, model);
 
-                dbContext.DictionaryStandartSendListsSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 var entity = dbContext.Entry(dbModel);
-                entity.State = System.Data.Entity.EntityState.Modified;
+                entity.State = EntityState.Modified;
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryStandartSendLists, EnumOperationType.UpdateFull);
@@ -6730,7 +6677,6 @@ namespace BL.Database.Dictionaries
 
         public IEnumerable<InternalDictionaryTag> GetInternalTags(IContext ctx, FilterDictionaryTag filter)
         {
-            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetTagsQuery(ctx, filter);
@@ -6870,7 +6816,7 @@ namespace BL.Database.Dictionaries
 
                 dbContext.DictionaryTagsSet.Attach(dbModel);
                 var entity = dbContext.Entry(dbModel);
-                entity.State = System.Data.Entity.EntityState.Modified;
+                entity.State = EntityState.Modified;
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryStandartSendLists, EnumOperationType.UpdateFull);
@@ -7005,7 +6951,7 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var dbModel = DictionaryModelConverter.GetDbCustomDictionaryType(ctx, model);
-                dbContext.CustomDictionaryTypesSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 var entity = dbContext.Entry(dbModel);
 
                 entity.Property(x => x.Code).IsModified = true;
@@ -7199,7 +7145,7 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var dbModel = DictionaryModelConverter.GetDbCustomDictionary(ctx, model);
-                dbContext.CustomDictionariesSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 var entity = dbContext.Entry(dbModel);
 
                 entity.Property(x => x.Code).IsModified = true;
@@ -7399,7 +7345,7 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var dbModel = DictionaryModelConverter.GetDbAgentFavorite(ctx, model);
-                dbContext.DictionaryAgentFavoritesSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 dbContext.Entry(dbModel).State = EntityState.Modified;
                 dbContext.SaveChanges();
                 transaction.Complete();
