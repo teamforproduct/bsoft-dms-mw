@@ -259,7 +259,7 @@ namespace DMS_WebAPI.Utilities
 
             try
             {
-                defContext = DmsResolver.Current.Get<UserContexts>().Get(keepAlive: false);
+                defContext = DmsResolver.Current.Get<UserContexts>().Get(keepAlive: false, restoreToken: false);
 
                 if (defContext.CurrentEmployee.LanguageId <= 0) defContext = null;
             }

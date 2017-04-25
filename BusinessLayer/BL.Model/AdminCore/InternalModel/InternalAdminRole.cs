@@ -47,5 +47,9 @@ namespace BL.Model.AdminCore.InternalModel
         /// </summary>
         public int? RoleTypeId { get; set; }
 
+        /// <summary>
+        /// ИД клиента
+        /// </summary>
+        public int ClientId { get; set; }
     }
 }

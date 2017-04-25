@@ -6,7 +6,6 @@ using BL.Database.Admins;
 using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Admin;
 using BL.Database.Dictionaries;
-using BL.Database.SystemDb;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.Common;
 using BL.Logic.DocumentCore.Interfaces;
@@ -36,20 +35,13 @@ namespace BL.Logic.AdminCore
     {
         private readonly AdminsDbProcess _adminDb;
         private readonly DictionariesDbProcess _dictDb;
-        private readonly ISystemDbProcess _systemDb;
         private readonly ICommandService _commandService;
 
-        private const int _MINUTES_TO_UPDATE_INFO = 5;
-
-        private Dictionary<string, StoreInfo> accList;
-
-        public AdminService(AdminsDbProcess adminDb, DictionariesDbProcess dictDb, ISystemDbProcess systemDb, ICommandService commandService)
+        public AdminService(AdminsDbProcess adminDb, DictionariesDbProcess dictDb, ICommandService commandService)
         {
             _adminDb = adminDb;
             _dictDb = dictDb;
-            _systemDb = systemDb;
             _commandService = commandService;
-            accList = new Dictionary<string, StoreInfo>();
         }
 
         public object ExecuteAction(EnumAdminActions act, IContext context, object param)
@@ -61,30 +53,7 @@ namespace BL.Logic.AdminCore
 
         #region [+] General ...
 
-        private AdminAccessInfo GetAccInfo(IContext context)
-        {
-            var key = CommonSystemUtilities.GetServerKey(context);
-            if (accList.ContainsKey(key))
-            {
-                var so = accList[key];
-                if ((DateTime.UtcNow - so.LastUsage).TotalMinutes > _MINUTES_TO_UPDATE_INFO)
-                {
-                    var lst = _adminDb.GetAdminAccesses(context);
-                    so.StoreObject = lst;
-                    so.LastUsage = DateTime.UtcNow;
-                    return lst;
-                }
-                return so.StoreObject as AdminAccessInfo;
-            }
-            var nlst = _adminDb.GetAdminAccesses(context);
-            var nso = new StoreInfo
-            {
-                LastUsage = DateTime.UtcNow,
-                StoreObject = nlst
-            };
-            accList.Add(key, nso);
-            return nlst;
-        }
+        
         public Employee GetEmployeeForContext(IContext context, string userId)
         {
             return _adminDb.GetEmployeeForContext(context, userId);
@@ -218,14 +187,6 @@ namespace BL.Logic.AdminCore
             return _adminDb.GetPositionRolesDIP(context, filter);
         }
 
-        public IEnumerable<FrontAdminPositionRole> GetPositionRoles(IContext context, FilterAdminPositionRole filter)
-        {
-            return _adminDb.GetPositionRoles(context, filter);
-        }
-        public FrontAdminPositionRole GetPositionRole(IContext context, int id)
-        {
-            return _adminDb.GetPositionRole(context, id);
-        }
         #endregion
 
         #region [+] UserRoles ...
@@ -883,16 +844,11 @@ namespace BL.Logic.AdminCore
 
         public FilterPermissionsAccess GetFilterPermissionsAccessByContext(IContext context, bool isPositionFromContext, List<int> permissionIDs = null, int? actionId = null, int? moduleId = null)
         {
-            var res = new FilterPermissionsAccess();
-            res.UserId = context.CurrentAgentId;
-            if (isPositionFromContext)
-            {
-                res.PositionsIdList = new List<int> { context.CurrentPositionId }.Intersect(context.CurrentPositionsIdList).ToList();
-            }
-            else
-            {
-                res.PositionsIdList = context.CurrentPositionsIdList;
-            }
+            var res = new FilterPermissionsAccess {UserId = context.CurrentAgentId};
+
+            res.PositionsIdList = isPositionFromContext 
+                ? new List<int> { context.CurrentPositionId }.Intersect(context.CurrentPositionsIdList).ToList() 
+                : context.CurrentPositionsIdList;
             res.ActionId = actionId;
             res.PermissionIDs = permissionIDs;
             res.ModuleId = moduleId;
@@ -916,7 +872,7 @@ namespace BL.Logic.AdminCore
         {
             if (context is AdminContext) return true;//Full access to admin. ADMIN IS COOL!!! 
 
-            var data = GetAccInfo(context);
+            var data = _adminDb.GetAdminAccesses(context); 
             var res = false;
             if (model.UserId == 0)
             {
@@ -940,26 +896,9 @@ namespace BL.Logic.AdminCore
 
                 while (!res && actionId.HasValue && data.Actions.Any(x => x.PermissionId.HasValue && x.Id == actionId.Value))
                 {
-                    //var qry = data.ActionAccess
-                    //    .Join(data.Actions, aa => aa.ActionId, ac => ac.Id, (aa, ac) => new { ActAccess = aa, Act = ac })
-                    //    .Join(data.PositionRoles, aa => aa.ActAccess.RoleId, r => r.RoleId, (aa, r) => new { aa.ActAccess, aa.Act, Role = r });
-                    ////var t = qry.Where(x => x.Act.Id == actionId.Value
-                    ////                        && data.UserRoles.Where(s => s.RoleId == x.Role.RoleId).Any(y => y.AgentId == model.UserId)
-                    ////                        //&& x.Role.PositionId == 5516
-                    ////                        ).ToList();
-                    //// test it really good!
-                    //res = qry.Any(x => x.Act.Id == actionId.Value
-                    //    && data.UserRoles.Where(s => s.RoleId == x.Role.RoleId).Any(y => y.AgentId == model.UserId)
-                    //    && (((model.PositionId == null) && (model.PositionsIdList.Contains(x.Role.PositionId))) || (x.Role.PositionId == model.PositionId))
-                    //    && (!x.Act.IsGrantable || (x.Act.IsGrantable && (!x.Act.IsGrantableByRecordId || x.ActAccess.RecordId == 0 || x.ActAccess.RecordId == model.RecordId)))
-                    //    );
                     var filter = GetFilterPermissionsAccessByContext(context, model.PositionId.HasValue, null, actionId.Value);
                     res = _adminDb.ExistsPermissionsAccess(context, filter);
                     actionId = null;
-                    //if (!res)
-                    //{
-                    //    actionId = data.Actions.Where(x => x.Id == actionId.Value).Select(x => x.GrantId).FirstOrDefault();
-                    //}
                 }
             }
             else
@@ -968,25 +907,23 @@ namespace BL.Logic.AdminCore
 
                 res = !model.PositionsIdList.Except(qry.Where(x => x.URole.AgentId == model.UserId).Select(x => x.PR.PositionId)).Any();
             }
-            if (!res && isThrowExeception)
+            if (res || !isThrowExeception) return res;
             {
                 if (model.DocumentActionId == null)
-                { throw new AccessIsDenied(); }
-                else
                 {
-                    string actionName = string.Empty;
-                    var a = data.Actions.Where(x => x.Id == model.DocumentActionId).FirstOrDefault();
-
-                    if (a != null)
-                    {
-                        actionName = a.Description;
-                    }
-
-                    throw new ActionIsDenied(actionName); //TODO Сергей!!!Как красиво передать string obj, string act, int? id = null в сообщение?
+                    throw new AccessIsDenied(); 
                 }
-            }
-            return res;
 
+                var actionName = string.Empty;
+                var a = data.Actions.FirstOrDefault(x => x.Id == model.DocumentActionId);
+
+                if (a != null)
+                {
+                    actionName = a.Description;
+                }
+
+                throw new ActionIsDenied(actionName); //TODO Сергей!!!Как красиво передать string obj, string act, int? id = null в сообщение?
+            }
         }
 
         public bool VerifyAccess(IContext context, EnumDocumentActions action, bool isPositionFromContext = true, bool isThrowExeception = true)
@@ -1003,8 +940,6 @@ namespace BL.Logic.AdminCore
         {
             return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
         }
-
-
 
         public bool VerifyAccess(IContext context, EnumAdminActions action, bool isPositionFromContext = true, bool isThrowExeception = true)
         {

@@ -65,12 +65,12 @@ namespace DMS_WebAPI.Utilities
         /// <param name="isThrowExeception"></param>
         /// <param name="keepAlive"></param>
         /// <returns>Typed setting value.</returns>
-        public IContext Get(int? currentPositionId = null, bool isThrowExeception = true, bool keepAlive = true)
+        public IContext Get(int? currentPositionId = null, bool isThrowExeception = true, bool keepAlive = true, bool restoreToken = true)
         {
             string token = TokenLower;
 
             // пробую восстановить контекст из базы
-            if (!Contains(token))
+            if (restoreToken && !Contains(token))
             {
                 Restore(token);
             }
@@ -214,7 +214,7 @@ namespace DMS_WebAPI.Utilities
         /// <param name="browberInfo">clientId</param>
         /// <param name="fingerPrint">clientId</param>
         /// <returns></returns>
-        public void Set(string token, string browberInfo, string fingerPrint, bool IsRestore = false)
+        public void Set(string token, string browberInfo, string fingerPrint)
         {
             token = token.ToLower();
 
@@ -225,7 +225,7 @@ namespace DMS_WebAPI.Utilities
             context.DbContext = dbCtx;
             var logger = DmsResolver.Current.Get<ILogger>();
 
-            context.LoginLogInfo = IsRestore ? "Restore Session; " : "" + browberInfo;
+            context.LoginLogInfo = browberInfo;
             context.LoginLogId = logger.Information(context, context.LoginLogInfo, (int)EnumObjects.System, (int)EnumSystemActions.Login, logDate: context.CreateDate, isCopyDate1: true);
 
             if (!string.IsNullOrEmpty(fingerPrint))
@@ -362,6 +362,7 @@ namespace DMS_WebAPI.Utilities
                 var webService = DmsResolver.Current.Get<WebAPIService>();
                 webService.DeleteUserContext(token);
             }
+
 
             return ctx;
         }
@@ -523,10 +524,24 @@ namespace DMS_WebAPI.Utilities
             var storeInfo = _cacheContexts[token];
             // KeepAlive: Продление жизни пользовательского контекста
             storeInfo.LastUsage = DateTime.UtcNow;
+
+            var ctx = GetInternal(token);
+
+            // не чаше, чем раз в 5 минут обновляю LastChangeDate
+            if (ctx.LastChangeDate.AddMinutes(_TIME_OUT_MIN / 3) < DateTime.UtcNow)
+            {
+                ctx.LastChangeDate = DateTime.UtcNow;
+                // Сохраняю текущий контекст
+                var webService = DmsResolver.Current.Get<WebAPIService>();
+                webService.UpdateUserContextLastChangeDate(token, ctx.LastChangeDate);
+            }
         }
 
         private void Restore(string token)
         {
+            // Попытка восстановить восстановленный контекст
+            if (Contains(token)) return;
+
             var webService = DmsResolver.Current.Get<WebAPIService>();
             var item = webService.GetUserContexts(new BL.Model.WebAPI.Filters.FilterAspNetUserContext() { TokenExact = token }).FirstOrDefault();
 
@@ -544,7 +559,7 @@ namespace DMS_WebAPI.Utilities
 
             if (user == null) return;
 
-            // Получаю информацию о браузере
+            // Получаю информацию о браузере (она могла обновиться с момента предыдущего входа, например версия)
             var message = HttpContext.Current.Request.Browser.Info();
 
 
@@ -558,7 +573,7 @@ namespace DMS_WebAPI.Utilities
 
             Set(item.Token, item.UserId, user.UserName, user.IsChangePasswordRequired, clientCode);
             Set(item.Token, server);
-            Set(item.Token, message, fingerPrint, true);
+            Set(item.Token, message, fingerPrint);
             SetUserPositions(item.Token, item.CurrentPositionsIdList.Split(',').Select(n => Convert.ToInt32(n)).ToList());
         }
 

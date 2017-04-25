@@ -291,7 +291,6 @@
     <Compile Include="DocumentCore\Commands\AskPostponeDueDateDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\CancelPostponeDueDateDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\SendDocumentCommand.cs" />
-    <Compile Include="DocumentCore\Commands\SendMessageDocumentCommand_OLD.cs" />
     <Compile Include="DocumentCore\Commands\VerifySigningDocumentCommand.cs" />
     <Compile Include="DocumentCore\ReportCommand\ReportDocumentForDigitalSignature.cs" />
     <Compile Include="DocumentCore\TemplateCommands\AddTemplateAccessCommand.cs" />
@@ -309,7 +308,8 @@
     <Compile Include="EncryptionCore\Certificate\ModifyEncryptionCertificateCommand.cs" />
     <Compile Include="EncryptionCore\Interfaces\IEncryptionService.cs" />
     <Compile Include="DocumentCore\Commands\SelfAffixSigningDocumentCommand.cs" />
-    <Compile Include="Settings\SettingsFactory.cs" />
+    <Compile Include="Settings\SettingValues.cs" />
+    <Compile Include="Settings\SettingFactory.cs" />
     <Compile Include="SystemCore\FullTextSearch.cs" />
     <Compile Include="SystemCore\Settings\SetSettingCommand.cs" />
     <Compile Include="SystemCore\Settings\BaseSettingCommand.cs" />
@@ -475,9 +475,7 @@
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="FullTextSearch\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -4,10 +4,12 @@ using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.SystemCore.Interfaces;
+using BL.Model.AdminCore.Clients;
 using BL.Model.Common;
 using BL.Model.Database;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.Model.SystemCore.InternalModel;
 using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
@@ -30,6 +32,60 @@ namespace DMS_WebAPI.Utilities
         }
 
         //        private TransactionScope GetTransaction() => new TransactionScope(TransactionScopeOption.Required, new TransactionOptions { IsolationLevel = IsolationLevel.ReadUncommitted });
+
+        #region [+] Settings ...
+
+        public int MergeSetting(InternalGeneralSetting model)
+        {
+            var res = 0;
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var cset = dbContext.SystemSettingsSet.FirstOrDefault(x => x.Key == model.Key);
+                if (cset == null)
+                {
+                    var nsett = new SystemSettings
+                    {
+                        Key = model.Key,
+                        Value = model.Value,
+                        ValueTypeId = (int)model.ValueType,
+                        Name = model.Name,
+                        Description = model.Description,
+                        Order = model.Order,
+                    };
+                    dbContext.SystemSettingsSet.Add(nsett);
+                    dbContext.SaveChanges();
+                    res = nsett.Id;
+                }
+                else
+                {
+                    cset.Value = model.Value;
+
+                    if (model.ValueType > 0)
+                    {
+                        cset.ValueTypeId = (int)model.ValueType;
+                    }
+
+                    dbContext.SaveChanges();
+                    res = cset.Id;
+                }
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public string GetSettingValue(string key)
+        {
+            var res = string.Empty;
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                res = dbContext.SystemSettingsSet.Where(x => x.Key == key)
+                        .Select(x => x.Value)
+                        .FirstOrDefault();
+                transaction.Complete();
+                return res;
+            }
+        }
+        #endregion
 
         #region Servers
 
@@ -69,6 +125,11 @@ namespace DMS_WebAPI.Utilities
                         (current, value) => current.Or(e => e.ServerType == value).Expand());
 
                     qry = qry.Where(filterContains);
+                }
+
+                if (!string.IsNullOrEmpty(filter.ServerNameExact))
+                {
+                    qry = qry.Where(x => x.Name == filter.ServerNameExact);
                 }
             }
 
@@ -463,6 +524,99 @@ namespace DMS_WebAPI.Utilities
 
         #endregion ClientLicences
 
+        #region ClientRequests
+
+        private IQueryable<AspNetClientRequests> GetClientRequestsQuery(ApplicationDbContext dbContext, FilterAspNetClientRequests filter)
+        {
+            var qry = dbContext.AspNetClientRequestsSet.AsQueryable();
+
+            if (filter != null)
+            {
+                if (filter.IDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.New<AspNetClientRequests>(false);
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (!string.IsNullOrEmpty(filter.CodeExact))
+                {
+                    qry = qry.Where(x => filter.CodeExact.Equals(x.ClientCode));
+                }
+
+                if (!string.IsNullOrEmpty(filter.HashCodeExact))
+                {
+                    qry = qry.Where(x => filter.HashCodeExact.Equals(x.HashCode));
+                }
+
+                if (!string.IsNullOrEmpty(filter.SMSCodeExact))
+                {
+                    qry = qry.Where(x => filter.SMSCodeExact.Equals(x.SMSCode));
+                }
+
+            }
+
+            return qry;
+        }
+
+        public FrontAspNetClientRequest GetClientRequest(int id)
+        {
+            return GetClientRequests(new FilterAspNetClientRequests { IDs = new List<int> { id } }).FirstOrDefault();
+        }
+
+        public IEnumerable<FrontAspNetClientRequest> GetClientRequests(FilterAspNetClientRequests filter)
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var itemsDb = GetClientRequestsQuery(dbContext, filter);
+
+                var items = itemsDb.Select(x => new FrontAspNetClientRequest
+                {
+                    Id = x.Id,
+                    ClientCode = x.ClientCode,
+                    ClientName = x.ClientName,
+                    Language = x.Language,
+                    Email = x.Email,
+                    FirstName = x.FirstName,
+                    LastName = x.LastName,
+                    MiddleName = x.MiddleName,
+                    PhoneNumber = x.PhoneNumber,
+                    HashCode = x.HashCode,
+                    SMSCode = x.SMSCode,
+                }).ToList();
+                transaction.Complete();
+                return items;
+            }
+        }
+
+        public bool ExistsClientRequests(FilterAspNetClientRequests filter)
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var res = GetClientRequestsQuery(dbContext, filter).Any();
+                transaction.Complete();
+                return res;
+            }
+        }
+
+        public int AddClientRequest(AddClientSaaS model)
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var client = GetDbClientRequest(model);
+
+                dbContext.AspNetClientRequestsSet.Add(client);
+                dbContext.SaveChanges();
+
+                transaction.Complete();
+                return client.Id;
+            }
+        }
+
+        #endregion
+
         #region Clients
 
         private IQueryable<AspNetClients> GetClientsQuery(ApplicationDbContext dbContext, FilterAspNetClients filter)
@@ -630,6 +784,23 @@ namespace DMS_WebAPI.Utilities
                 Id = model.Id,
                 Name = model.Name,
                 Code = model.Code,
+            };
+        }
+
+        private static AspNetClientRequests GetDbClientRequest(AddClientSaaS model)
+        {
+            return new AspNetClientRequests
+            {
+                ClientCode = model.ClientCode,
+                ClientName = model.ClientName,
+                Language = model.Language,
+                Email = model.Email,
+                PhoneNumber = model.PhoneNumber,
+                FirstName = model.FirstName,
+                MiddleName = model.MiddleName,
+                LastName = model.LastName,
+                HashCode = model.HashCode,
+                SMSCode = model.SMSCode,
             };
         }
 
@@ -1256,6 +1427,19 @@ namespace DMS_WebAPI.Utilities
                 dbContext.SaveChanges();
                 transaction.Complete();
             }
+        }
+
+        public void UpdateUserContextLastChangeDate(string token, DateTime date)
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetUserContextQuery(dbContext, new FilterAspNetUserContext { TokenExact = token });
+
+                qry.Update(x => new AspNetUserContexts { LastChangeDate = date });
+
+                transaction.Complete();
+            }
+
         }
 
         public void DeleteUserContext(string token)

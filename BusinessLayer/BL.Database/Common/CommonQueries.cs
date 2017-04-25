@@ -1624,10 +1624,10 @@ namespace BL.Database.Common
         #endregion
 
         #region Tags
-        public static IEnumerable<FrontDocumentTag> GetDocumentTags(IContext context, FilterDocumentTag filter)
+        public static IQueryable<DocumentTags> GetDocumentTagsQuery(IContext context, FilterDocumentTag filter)
         {
             var dbContext = context.DbContext as DmsContext;
-            var tagsDb = dbContext.DocumentTagsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
+            var qry = dbContext.DocumentTagsSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
 
             if (filter != null)
             {
@@ -1637,7 +1637,7 @@ namespace BL.Database.Common
                     filterContains = filter.DocumentId.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
-                    tagsDb = tagsDb.Where(filterContains);
+                    qry = qry.Where(filterContains);
                 }
 
                 if (filter.CurrentPositionsId?.Count > 0)
@@ -1646,24 +1646,10 @@ namespace BL.Database.Common
                     filterContains = filter.CurrentPositionsId.Aggregate(filterContains,
                         (current, value) => current.Or(e => !e.Tag.PositionId.HasValue || e.Tag.PositionId == value).Expand());
 
-                    tagsDb = tagsDb.Where(filterContains);
+                    qry = qry.Where(filterContains);
                 }
             }
-
-            var tagsRes = tagsDb;
-
-            var tags = tagsRes.Select(x => new FrontDocumentTag
-            {
-                TagId = x.TagId,
-                DocumentId = x.DocumentId,
-                PositionId = x.Tag.PositionId,
-                PositionName = x.Tag.Position.Name,
-                Color = x.Tag.Color,
-                Name = x.Tag.Name,
-                IsSystem = !x.Tag.PositionId.HasValue
-            }).ToList();
-
-            return tags;
+            return qry;
 
         }
         #endregion
@@ -1883,7 +1869,7 @@ namespace BL.Database.Common
         #endregion
 
         #region WorkGroups
-        public static IEnumerable<FrontDictionaryPosition> GetDocumentWorkGroup(IContext context, FilterDictionaryPosition filter)
+        public static IQueryable<DocumentAccesses> GetDocumentWorkGroupQuery(IContext context, FilterDictionaryPosition filter)
         {
             var dbContext = context.DbContext as DmsContext;
             var qry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == context.CurrentClientId).AsQueryable();
@@ -1909,15 +1895,7 @@ namespace BL.Database.Common
                 }
             }
 
-            return qry.Where(x => x.PositionId.HasValue).Select(x => new FrontDictionaryPosition
-            {
-                Id = x.PositionId.Value,
-                Name = x.Position.Name,
-                DepartmentId = x.Position.DepartmentId,
-                ExecutorAgentId = x.Position.ExecutorAgentId,
-                DepartmentName = x.Position.Department.Name,
-                ExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : (string)null),
-            }).Distinct().ToList();
+            return qry;
 
         }
         #endregion

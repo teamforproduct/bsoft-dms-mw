@@ -49,7 +49,23 @@ namespace DMS_WebAPI.ControllersV3.Documents
                 return res;
             });
         }
-
+        /// <summary>
+        /// Возвращает счеткчик для ограничительного списка по ИД документа
+        /// </summary>
+        /// <param name="Id">ИД документа</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{Id:int}/" + Features.AccessList+ "/Counter")]
+        public async Task<IHttpActionResult> GetByDocumentIdCounter(int Id)
+        {
+            return await SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
+                var items = docProc.GetRestrictedSendListsCounter(context, Id);
+                var res = new JsonResult(items, this);
+                return res;
+            });
+        }
         /// <summary>
         /// Возвращает ограничительный список по ИД документа для автокомплита
         /// </summary>

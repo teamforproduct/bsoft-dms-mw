@@ -17,26 +17,55 @@ namespace DMS_WebAPI.ControllersV3.Clients
     {
 
         /// <summary>
+        /// Создает заявку на добавление нового клиента
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("Create")]
+        public IHttpActionResult AddClientRequest([FromBody]AddClientSaaS model)
+        {
+            var tmpService = DmsResolver.Current.Get<WebAPIService>();
+            tmpService.AddClientSaaSRequest(model);
+            return new JsonResult(null, this);
+        }
+
+        /// <summary>
         /// Создает нового клиента
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
-        [Route(Features.Info)]
-        public IHttpActionResult Post([FromBody]AddClientSaaS model)
+        [Route("Create/ByHash")]
+        public IHttpActionResult AddClient([FromBody]AddClientFromHash model)
         {
             var tmpService = DmsResolver.Current.Get<WebAPIService>();
-            tmpService.AddClientSaaS(model);
+            tmpService.AddClientByEmail(model);
             return new JsonResult(null, this);
         }
 
         /// <summary>
-        /// Удаляет банк
+        /// Создает нового клиента
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("Create/BySMS")]
+        public IHttpActionResult AddClient([FromBody]AddClientFromSMS model)
+        {
+            var tmpService = DmsResolver.Current.Get<WebAPIService>();
+            tmpService.AddClientBySMS(model);
+            return new JsonResult(null, this);
+        }
+
+
+        /// <summary>
+        /// Удаляет данные клиента
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route(Features.Info + "/{Id:int}")]
+        [Route("{Id:int}")]
         public IHttpActionResult Delete([FromUri] int Id)
         {
             var tmpService = DmsResolver.Current.Get<WebAPIService>();

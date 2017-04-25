@@ -17,5 +17,6 @@ namespace BL.Model.DocumentCore.Actions
         public int? CertificateId { get; set; }
         public string CertificatePassword { get; set; }
         public string ServerPath { get; set; }
+
     }
 }

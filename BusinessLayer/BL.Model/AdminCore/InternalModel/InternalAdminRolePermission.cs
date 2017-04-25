@@ -14,5 +14,10 @@ namespace BL.Model.AdminCore.InternalModel
 
         public int PermissionId { get; set; }
 
+        /// <summary>
+        /// ИД клиента
+        /// </summary>
+        public int ClientId { get; set; }
+
     }
 }

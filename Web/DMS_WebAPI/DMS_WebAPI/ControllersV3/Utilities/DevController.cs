@@ -127,7 +127,8 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         public async Task<IHttpActionResult> RemoveSessions()
         {
             DmsResolver.Current.Get<UserContexts>().Clear();
-            return new JsonResult(null, this);
+
+            return Ok();
         }
 
 

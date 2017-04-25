@@ -124,6 +124,7 @@ namespace BL.CrossCutting.Context
         }
 
         public DateTime CreateDate { get; } = DateTime.UtcNow;
+        public DateTime LastChangeDate { get; set; } = DateTime.UtcNow;
 
         public bool IsChangePasswordRequired { get; set; }
 

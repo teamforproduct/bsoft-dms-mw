@@ -63,9 +63,9 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 ex = new PlanPointHasAlredyBeenLaunched();
             }
-            else if (!Model.TargetPositionId.HasValue)
+            else if (!Model.TargetPositionId.HasValue || Model.AccessGroups.Count(x => x.AccessType == EnumEventAccessTypes.Target) > 1)
             {
-                ex = new TaskIsNotDefined();
+                ex = new TargetIsNotDefined();
             }
 
             if (Model.TargetPositionId.HasValue
@@ -105,27 +105,20 @@ namespace BL.Logic.DocumentCore.Commands
         }
         public override object Execute()
         {
-            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
-
-            var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, _eventType, EnumEventCorrespondentType.FromSourceToTarget);
-            _document.Waits = new List<InternalDocumentWait> { waitTarget };
-
             var subscription = CommonDocumentUtilities.GetNewDocumentSubscription(_context, Model);
-            subscription.SendEvent = waitTarget.OnEvent;
-
             _document.Subscriptions = new List<InternalDocumentSubscription> { subscription };
-
-            if (Model.IsAddControl)
-            {
-                ((List<InternalDocumentWait>)_document.Waits).AddRange(CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromSourceToSource));
-            }
-
-            Model.StartEvent = waitTarget.OnEvent;
+            var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, _eventType, EnumEventCorrespondentType.FromSourceToTarget);
+            var newEvent = Model.StartEvent = subscription.SendEvent = waitTarget.OnEvent;
             CommonDocumentUtilities.SetLastChange(_context, Model);
+            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.AccessLevel, newEvent.Accesses);
             _document.SendLists = new List<InternalDocumentSendList> { Model };
 
+            _document.Waits = new List<InternalDocumentWait> { waitTarget };
+            if (Model.IsAddControl)
+            {
+                _document.Waits = _document.Waits.Concat(CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromSourceToSource,false));
+            }
             _operationDb.SendBySendList(_context, _document);
-
             _documentServ.CheckIsInWorkForControls(_context, new FilterDocumentAccess { DocumentId = new List<int> { _document.Id } });
 
             return null;

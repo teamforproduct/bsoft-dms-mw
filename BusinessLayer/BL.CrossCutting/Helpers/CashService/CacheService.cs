@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using BL.CrossCutting.Interfaces;
 using BL.Model.Exception;
@@ -10,6 +12,8 @@ namespace BL.CrossCutting.Helpers.CashService
         private readonly CasheBase<string, object> _dataCashe = new CasheBase<string, object>();
         private readonly CasheBase<string, Func<object>> _queryCashe = new CasheBase<string, Func<object>>();
         private readonly ReaderWriterLockSlim _locker = new ReaderWriterLockSlim();
+
+        private List<KeyValuePair<string, string>> _updateDependency = new List<KeyValuePair<string, string>>();
 
         private string GetInternalKey(string key, int clientId)
         {
@@ -31,7 +35,20 @@ namespace BL.CrossCutting.Helpers.CashService
                 {
                     throw new WrongCasheKey();
                 }
-                 
+
+                foreach (var depend in _updateDependency.Where(x => x.Key == internalKey))
+                {
+                    if (_queryCashe.TryGet(depend.Value, out qry))
+                    {
+                        var data = qry();
+                        _dataCashe.AddOrUpdate(depend.Value, data);
+                    }
+                    else
+                    {
+                        throw new WrongCasheKey();
+                    }
+                }
+
             }
             finally { _locker.ExitWriteLock(); }
         }
@@ -64,6 +81,20 @@ namespace BL.CrossCutting.Helpers.CashService
             finally { _locker.ExitReadLock(); }
         }
 
+        // be careful with that method. It should be used only inside AddOrUpdate method
+        public object GetDataWithoutLock(IContext ctx, string key)
+        {
+            try
+            {
+                object rv;
+                return _dataCashe.TryGet(GetInternalKey(key, ctx.CurrentClientId), out rv) ? rv : null;
+            }
+            catch 
+            {
+                return null;
+            }
+        }
+
         public void RefreshKey(IContext ctx, string key)
         {
             var intK = GetInternalKey(key, ctx.CurrentClientId);
@@ -71,6 +102,16 @@ namespace BL.CrossCutting.Helpers.CashService
             {
                 UpdateData(intK);
             }
+        }
+
+        public void AddUpdateDependency(IContext ctx, string depends, string dependsFrom)
+        {
+            _updateDependency.Add(new KeyValuePair<string, string>(GetInternalKey(dependsFrom, ctx.CurrentClientId), GetInternalKey(depends, ctx.CurrentClientId)));
+        }
+
+        public void RemoveUpdateDependency(IContext ctx, string depends, string dependsFrom)
+        {
+            _updateDependency.RemoveAll(x => x.Key == GetInternalKey(dependsFrom, ctx.CurrentClientId) && x.Value == GetInternalKey(depends, ctx.CurrentClientId));
         }
 
         public void Dispose()

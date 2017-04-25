@@ -6,6 +6,7 @@ using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -76,7 +77,11 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, EnumEventTypes.AskPostponeDueDate, Model.EventDate, Model.Description, null, _docWait.OnEvent.TaskId, _docWait.OnEvent.SourcePositionId, null, _docWait.OnEvent.TargetPositionId);
+            var evAcceesses = (Model.TargetCopyAccessGroups?.Where(x => x.AccessType == EnumEventAccessTypes.TargetCopy) ?? new List<AccessGroup>())
+                .Concat(new List<AccessGroup> { new AccessGroup { AccessType = EnumEventAccessTypes.Target, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = _docWait.OnEvent.SourcePositionId } })
+                .ToList();
+            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, EnumEventTypes.AskPostponeDueDate, Model.EventDate, Model.Description, null, Model.EventId, _docWait.OnEvent.TaskId,
+                _docWait.OnEvent.SourcePositionId, null, _docWait.OnEvent.TargetPositionId, null, evAcceesses, true);
 
             var newWait = CommonDocumentUtilities.GetNewDocumentWait(_context, (int)EnumEntytiTypes.Document, _document.Id, newEvent);
 

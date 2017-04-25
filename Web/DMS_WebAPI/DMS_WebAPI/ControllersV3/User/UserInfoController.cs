@@ -271,7 +271,9 @@ namespace DMS_WebAPI.ControllersV3.User
 
             Request.GetOwinContext().Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
 
-            return new JsonResult(null, this);
+            // JsonResult - восстанавливает контекст
+            //return new JsonResult(null, this);
+            return Ok();
         }
 
 

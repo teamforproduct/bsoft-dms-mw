@@ -34,6 +34,11 @@ namespace BL.Model.AdminCore.InternalModel
         public int? RoleTypeId { get; set; }
 
 
+        /// <summary>
+        /// ИД клиента
+        /// </summary>
+        public int ClientId { get; set; }
+
         #region [+] Выноска параметров ...
         public int AgentId { get; set; }
 

@@ -40,20 +40,40 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpGet]
         [Route("{Id:int}/" + Features.Plan)]
-        [ResponseType(typeof(List<FrontDocumentSendList>))]
+        [ResponseType(typeof(List<FrontDocumentSendListStage>))]
         public async Task<IHttpActionResult> GetByDocumentId(int Id)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
-                   var items = docProc.GetSendLists(context, Id);
+//                   var items = docProc.GetSendLists(context, Id);
+                   var items = docProc.GetSendListStage(context, Id);
                    var res = new JsonResult(items, this);
                    return res;
                });
         }
 
         /// <summary>
-        /// Возвращает пунктов плана по ИД
+        /// Возвращает счетчик списка пунктов плана по ИД документа
+        /// </summary>
+        /// <param name="Id">ИД документа</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{Id:int}/" + Features.Plan + "/Counter")]
+        [ResponseType(typeof(List<FrontDocumentSendList>))]
+        public async Task<IHttpActionResult> GetByDocumentIdCounter(int Id)
+        {
+            return await SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var docProc = DmsResolver.Current.Get<IDocumentSendListService>();
+                var items = docProc.GetSendListsCounter(context, Id);
+                var res = new JsonResult(items, this);
+                return res;
+            });
+        }
+
+        /// <summary>
+        /// Возвращает пункт плана по ИД
         /// </summary>
         /// <param name="Id">ИД пункта плана</param>
         /// <returns>запись пункта плана</returns>

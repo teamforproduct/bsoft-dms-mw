@@ -81,6 +81,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AdminCore\Clients\AddClientFromSMS.cs" />
+    <Compile Include="AdminCore\Clients\AddClientFromHash.cs" />
     <Compile Include="AdminCore\Clients\AddClientSaaS.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminRegistrationJournalPosition.cs" />
     <Compile Include="AdminCore\FilterModel\FilterAdminPositionRoleDIP.cs" />
@@ -171,13 +173,17 @@
     <Compile Include="Enums\EnumEventAccessTypes.cs" />
     <Compile Include="Enums\EnumEntityTypes.cs" />
     <Compile Include="Enums\EnumSettingTypes.cs" />
+    <Compile Include="Enums\EnumGeneralSettings.cs" />
     <Compile Include="Enums\EnumUIElements.cs" />
+    <Compile Include="Enums\MailServers.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="FullTextSearch\FilterFullTextIndexCash.cs" />
     <Compile Include="Enums\EnumSortPositionExecutors.cs" />
     <Compile Include="FullTextSearch\FullTextIndexItemAccessInfo.cs" />
     <Compile Include="SystemCore\FrontModel\FrontSearchQueryLog.cs" />
     <Compile Include="SystemCore\FullTextFilterTypes.cs" />
+    <Compile Include="SystemCore\IncomingModel\ModifyGeneralSetting.cs" />
+    <Compile Include="SystemCore\InternalModel\InternalGeneralSetting.cs" />
     <Compile Include="SystemCore\UISorting.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterAgentFavourite.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryTag.cs" />
@@ -648,6 +654,7 @@
     <Compile Include="Users\ChangePasswordAgentUser.cs" />
     <Compile Include="Users\Employee.cs" />
     <Compile Include="Users\CurrentPosition.cs" />
+    <Compile Include="WebAPI\Filters\FilterAspNetClientRequests.cs" />
     <Compile Include="WebAPI\Filters\FilterAspNetClientServer.cs" />
     <Compile Include="WebAPI\Filters\FilterAspNetLicences.cs" />
     <Compile Include="WebAPI\Filters\FilterAspNetClientServers.cs" />
@@ -660,6 +667,7 @@
     <Compile Include="WebAPI\FrontModel\AuthError.cs" />
     <Compile Include="WebAPI\FrontModel\FrontAdminServer.cs" />
     <Compile Include="WebAPI\FrontModel\FrontAdminServerByUser.cs" />
+    <Compile Include="WebAPI\FrontModel\FrontAspNetClientRequest.cs" />
     <Compile Include="WebAPI\FrontModel\FrontAspNetClient.cs" />
     <Compile Include="WebAPI\FrontModel\FrontAspNetClientServer.cs" />
     <Compile Include="WebAPI\FrontModel\FrontAspNetClientLicence.cs" />

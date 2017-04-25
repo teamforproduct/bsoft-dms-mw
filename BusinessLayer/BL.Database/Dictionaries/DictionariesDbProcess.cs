@@ -5180,6 +5180,7 @@ namespace BL.Database.Dictionaries
                 CommonQueries.AddFullTextCacheInfo(ctx, list, EnumObjects.DictionaryPositionExecutors, EnumOperationType.Delete);
                 transaction.Complete();
             }
+            _cacheService.RefreshKey(ctx, SettingConstants.DICT_POSITION_EXECUTOR_CASHE_KEY);
         }
 
         public IEnumerable<FrontDictionaryPositionExecutor> GetPositionExecutors(IContext ctx, FilterDictionaryPositionExecutor filter, EnumSortPositionExecutors sort = EnumSortPositionExecutors.StartDate_PositionExecutorType)
@@ -7252,11 +7253,6 @@ namespace BL.Database.Dictionaries
 
                 if (filter.TypeId.HasValue)
                 {
-                    //var filterContains = PredicateBuilder.New<CustomDictionaries>(false);
-                    //filterContains = filter.TypeIDs.Aggregate(filterContains,
-                    //    (current, value) => current.Or(e => e.DictionaryTypeId == value).Expand());
-
-                    //qry = qry.Where(filterContains);
                     qry = qry.Where(x => x.DictionaryTypeId == filter.TypeId);
                 }
 

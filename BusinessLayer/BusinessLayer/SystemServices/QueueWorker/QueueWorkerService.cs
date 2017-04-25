@@ -10,7 +10,7 @@ namespace BL.Logic.SystemServices.QueueWorker
         private readonly Dictionary<string, QueueWorker> _workers;
         protected object _lockObjectWorker;
 
-        public QueueWorkerService(ISettings settings, ILogger logger) : base(settings, logger)
+        public QueueWorkerService(ISettingValues settingValues, ILogger logger) : base(settingValues, logger)
         {
             _workers = new Dictionary<string, QueueWorker>();
             _lockObjectWorker = new object();

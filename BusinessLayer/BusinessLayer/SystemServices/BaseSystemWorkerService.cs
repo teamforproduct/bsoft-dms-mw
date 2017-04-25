@@ -12,19 +12,19 @@ namespace BL.Logic.SystemServices
 {
     public abstract class BaseSystemWorkerService: ISystemWorkerService, IDisposable
     {
-        protected readonly ISettings Settings;
+        protected readonly ISettingValues SettingValues;
         protected readonly ILogger Logger;
         private readonly object _lockObjectContext;
         protected object LockObjectTimer;
         protected readonly Dictionary<string, AdminContext> ServerContext;
 
-        public BaseSystemWorkerService(ISettings settings, ILogger logger)
+        public BaseSystemWorkerService(ISettingValues settingValues, ILogger logger)
         {
             _lockObjectContext = new object();
             LockObjectTimer = new object();
             ServerContext = new Dictionary<string, AdminContext>();
-            Settings = settings;
             Logger = logger;
+            SettingValues = settingValues;
         }
 
         public void Initialize(IEnumerable<DatabaseModel> dbList)

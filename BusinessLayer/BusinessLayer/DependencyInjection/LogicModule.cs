@@ -56,6 +56,7 @@ namespace BL.Logic.DependencyInjection
         {
             Bind<ILogger>().To<Logger>().InSingletonScope();
             Bind<ISettings>().To<Setting>().InSingletonScope();
+            Bind<ISettingValues>().To<SettingValues>().InSingletonScope();
             Bind<ICommandService>().To<CommandService>().InSingletonScope();
             Bind<IAdminService>().To<AdminService>().InSingletonScope();
             Bind<IClientService>().To<ClientService>().InSingletonScope();

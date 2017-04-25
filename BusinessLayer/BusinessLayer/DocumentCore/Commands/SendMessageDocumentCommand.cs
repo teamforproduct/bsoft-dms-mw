@@ -56,7 +56,7 @@ namespace BL.Logic.DocumentCore.Commands
         public override object Execute()
         {
             var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task);
-            var ev = CommonDocumentUtilities.GetNewDocumentEvent(   _context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.SendMessage, Model.EventDate, Model.Description, null, taskId, 
+            var ev = CommonDocumentUtilities.GetNewDocumentEvent(   _context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.SendMessage, Model.EventDate, Model.Description, null, Model.ParentEventId, taskId, 
                                                                     accessGroups : Model.TargetAccessGroups, isVeryfyDocumentAccess: true);
             if (!ev.Accesses.Any(x=>x.AccessType!=EnumEventAccessTypes.Source))
             {

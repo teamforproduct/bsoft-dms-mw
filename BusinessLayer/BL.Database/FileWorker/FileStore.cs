@@ -14,36 +14,36 @@ namespace BL.Database.FileWorker
 {
     public class FileStore : IFileStore
     {
-        private string GetStorePath(IContext ctx)
+        private string GetStorePath()
         {
-            var sett = DmsResolver.Current.Get<ISettings>();
-            return sett.GetFileStorePath(ctx);
+            var sett = DmsResolver.Current.Get<ISettingValues>();
+            return sett.GetFileStorePath();
         }
 
-        private string GetFullDocumentFilePath(IContext ctx, FrontDocumentAttachedFile attFile)
+        private string GetFullDocumentFilePath(FrontDocumentAttachedFile attFile)
         {
-            var path = GetStorePath(ctx);
+            var path = GetStorePath();
             path = Path.Combine(path, SettingConstants.FILE_STORE_DOCUMENT_FOLDER, attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString(), attFile.Version.ToString());
             return path;
         }
 
-        private string GetFullDocumentFilePath(IContext ctx, FrontTemplateAttachedFile attFile)
+        private string GetFullDocumentFilePath(FrontTemplateAttachedFile attFile)
         {
-            var path = GetStorePath(ctx);
+            var path = GetStorePath();
             path = Path.Combine(new[] { path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
             return path;
         }
 
-        private string GetFullDocumentFilePath(IContext ctx, InternalDocumentAttachedFile attFile)
+        private string GetFullDocumentFilePath(InternalDocumentAttachedFile attFile)
         {
-            var path = GetStorePath(ctx);
+            var path = GetStorePath();
             path = Path.Combine(path, SettingConstants.FILE_STORE_DOCUMENT_FOLDER, attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString(), attFile.Version.ToString());
             return path;
         }
 
-        private string GetFullDocumentFilePath(IContext ctx, InternalTemplateAttachedFile attFile)
+        private string GetFullDocumentFilePath(InternalTemplateAttachedFile attFile)
         {
-            var path = GetStorePath(ctx);
+            var path = GetStorePath();
             path = Path.Combine(new[] { path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
             return path;
         }
@@ -86,7 +86,7 @@ namespace BL.Database.FileWorker
             try
             {
                 var docFile = attFile as InternalDocumentAttachedFile;
-                var path = docFile == null ? GetFullDocumentFilePath(ctx, attFile) : GetFullDocumentFilePath(ctx, docFile);
+                var path = docFile == null ? GetFullDocumentFilePath(attFile) : GetFullDocumentFilePath(docFile);
 
                 if (!Directory.Exists(path))
                 {
@@ -125,7 +125,7 @@ namespace BL.Database.FileWorker
             try
             {
                 var docFile = attFile as InternalDocumentAttachedFile;
-                var path = docFile == null ? GetFullDocumentFilePath(ctx, attFile) : GetFullDocumentFilePath(ctx, docFile);
+                var path = docFile == null ? GetFullDocumentFilePath(attFile) : GetFullDocumentFilePath(docFile);
 
                 if (!Directory.Exists(path))
                 {
@@ -170,7 +170,7 @@ namespace BL.Database.FileWorker
             try
             {
                 var docFile = attFile as InternalDocumentAttachedFile;
-                var path = docFile == null ? GetFullDocumentFilePath(ctx, attFile) : GetFullDocumentFilePath(ctx, docFile);
+                var path = docFile == null ? GetFullDocumentFilePath(attFile) : GetFullDocumentFilePath(docFile);
 
                 if (!Directory.Exists(path))
                 {
@@ -241,7 +241,7 @@ namespace BL.Database.FileWorker
         {
             try
             {
-                var path = GetFullDocumentFilePath(ctx, docFile);
+                var path = GetFullDocumentFilePath(docFile);
 
                 var localFilePath = path + "\\" + docFile.Name + "." + docFile.Extension;
 
@@ -264,7 +264,7 @@ namespace BL.Database.FileWorker
         {
             try
             {
-                var path = GetFullDocumentFilePath(ctx, attFile);
+                var path = GetFullDocumentFilePath( attFile);
 
                 var localFilePath = GetFilePath(path, attFile.Name, attFile.Extension, fileType);
 
@@ -301,7 +301,7 @@ namespace BL.Database.FileWorker
         {
             try
             {
-                var path = GetFullDocumentFilePath(ctx, attFile);
+                var path = GetFullDocumentFilePath(attFile);
 
                 var localFilePath = GetFilePath(path, attFile.Name, attFile.Extension, fileType);
 
@@ -347,7 +347,7 @@ namespace BL.Database.FileWorker
             try
             {
                 var docFile = attFile as InternalDocumentAttachedFile;
-                var path = (docFile == null) ? GetFullDocumentFilePath(ctx, attFile) : GetFullDocumentFilePath(ctx, docFile);
+                var path = (docFile == null) ? GetFullDocumentFilePath(attFile) : GetFullDocumentFilePath(docFile);
 
                 var localFilePath = GetFilePath(path, attFile.Name, attFile.Extension, fileType);
 
@@ -388,8 +388,8 @@ namespace BL.Database.FileWorker
             try
             {
                 //TODO CurrentAgentId
-                var path = GetStorePath(ctx);
-                path = Path.Combine(new[] {path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, templateId.ToString()});
+                var path = GetStorePath();
+                path = Path.Combine(new[] { path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, templateId.ToString() });
                 if (Directory.Exists(path))
                     Directory.Delete(path, true);
             }
@@ -412,8 +412,8 @@ namespace BL.Database.FileWorker
             {
                 //TODO CurrentAgentId
 
-                var path = GetStorePath(ctx);
-                path = Path.Combine(new[] {path, SettingConstants.FILE_STORE_DOCUMENT_FOLDER, documentId.ToString()});
+                var path = GetStorePath();
+                path = Path.Combine(new[] { path, SettingConstants.FILE_STORE_DOCUMENT_FOLDER, documentId.ToString() });
                 if (Directory.Exists(path))
                     Directory.Delete(path, true);
             }
@@ -436,8 +436,8 @@ namespace BL.Database.FileWorker
             {
                 var docFile = attFile as InternalDocumentAttachedFile;
                 var path = docFile == null
-                    ? GetFullDocumentFilePath(ctx, attFile)
-                    : GetFullDocumentFilePath(ctx, docFile);
+                    ? GetFullDocumentFilePath(attFile)
+                    : GetFullDocumentFilePath(docFile);
 
                 var localPdfFilePath = path + "\\" + attFile.Name + ".pdf";
                 var localPreviewFilePathNew = path + "\\" + attFile.Name + ".jpg";
@@ -469,8 +469,8 @@ namespace BL.Database.FileWorker
         {
             try
             {
-                var path = GetStorePath(ctx);
-                path = Path.Combine(new[] {path, ((attFile is InternalDocumentAttachedFile) ? SettingConstants.FILE_STORE_DOCUMENT_FOLDER : SettingConstants.FILE_STORE_TEMPLATE_FOLDER), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString()});
+                var path = GetStorePath();
+                path = Path.Combine(new[] { path, ((attFile is InternalDocumentAttachedFile) ? SettingConstants.FILE_STORE_DOCUMENT_FOLDER : SettingConstants.FILE_STORE_TEMPLATE_FOLDER), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
 
                 Directory.Delete(path, true);
             }
@@ -491,7 +491,7 @@ namespace BL.Database.FileWorker
         {
             try
             {
-                var path = GetFullDocumentFilePath(ctx, attFile);
+                var path = GetFullDocumentFilePath(attFile);
                 Directory.Delete(path, true);
             }
             catch (Exception ex)
@@ -508,8 +508,8 @@ namespace BL.Database.FileWorker
             {
                 var fromDoc = fromTempl as InternalDocumentAttachedFile;
                 var toDoc = toTempl as InternalDocumentAttachedFile;
-                var fromPath = (fromDoc == null) ? GetFullDocumentFilePath(ctx, fromTempl) : GetFullDocumentFilePath(ctx, fromDoc);
-                var toPath = (toDoc == null) ? GetFullDocumentFilePath(ctx, toTempl) : GetFullDocumentFilePath(ctx, toDoc);
+                var fromPath = (fromDoc == null) ? GetFullDocumentFilePath(fromTempl) : GetFullDocumentFilePath(fromDoc);
+                var toPath = (toDoc == null) ? GetFullDocumentFilePath(toTempl) : GetFullDocumentFilePath(toDoc);
 
                 var localFromPath = fromPath + "\\" + fromTempl.Name + "." + fromTempl.Extension;
                 var localToPath = toPath + "\\" + toTempl.Name + "." + toTempl.Extension;
@@ -548,29 +548,29 @@ namespace BL.Database.FileWorker
 
         public string GetFullTemplateReportFilePath(IContext ctx, EnumReportTypes reportType)
         {
-            var path = GetStorePath(ctx);
+            var path = GetStorePath();
             var templateReportFile = string.Empty;
-            var sett = DmsResolver.Current.Get<ISettings>();
+            var setVal = DmsResolver.Current.Get<ISettingValues>();
             switch (reportType)
             {
                 case EnumReportTypes.RegistrationCardIncomingDocument:
-                    templateReportFile = sett.GetReportRegistrationCardIncomingDocument(ctx);
+                    templateReportFile = setVal.GetReportRegistrationCardIncomingDocument(ctx);
                     break;
                 case EnumReportTypes.RegistrationCardInternalDocument:
-                    templateReportFile = sett.GetReportRegistrationCardInternalDocument(ctx);
+                    templateReportFile = setVal.GetReportRegistrationCardInternalDocument(ctx);
                     break;
                 case EnumReportTypes.RegistrationCardOutcomingDocument:
-                    templateReportFile = sett.GetReportRegistrationCardOutcomingDocument(ctx);
+                    templateReportFile = setVal.GetReportRegistrationCardOutcomingDocument(ctx);
                     break;
                 case EnumReportTypes.RegisterTransmissionDocuments:
-                    templateReportFile = sett.GetReportRegisterTransmissionDocuments(ctx);
+                    templateReportFile = setVal.GetReportRegisterTransmissionDocuments(ctx);
                     break;
                 case EnumReportTypes.DocumentForDigitalSignature:
-                    templateReportFile = sett.GetReportDocumentForDigitalSignature(ctx);
+                    templateReportFile = setVal.GetReportDocumentForDigitalSignature(ctx);
                     break;
             }
 
-            path = Path.Combine(new[] {path, SettingConstants.FILE_STORE_TEMPLATE_REPORTS_FOLDER, templateReportFile});
+            path = Path.Combine(new[] { path, SettingConstants.FILE_STORE_TEMPLATE_REPORTS_FOLDER, templateReportFile });
             return path;
         }
     }

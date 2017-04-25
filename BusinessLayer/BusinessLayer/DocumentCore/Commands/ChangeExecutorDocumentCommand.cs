@@ -1,6 +1,7 @@
 ﻿using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
 using BL.Model.DocumentCore.Actions;
+using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
@@ -93,13 +94,16 @@ namespace BL.Logic.DocumentCore.Commands
         public override object Execute()
         {
             CommonDocumentUtilities.SetLastChange(_context, _document);
-
             _document.ExecutorPositionId = Model.PositionId;
             _document.AccessLevel = Model.AccessLevel;
 
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.ChangeExecutor, Model.EventDate, Model.Description, null, null, Model.PositionId);
+            var evAcceesses = (Model.TargetCopyAccessGroups?.Where(x => x.AccessType == EnumEventAccessTypes.TargetCopy) ?? new List<AccessGroup>())
+                .Concat(new List<AccessGroup> { new AccessGroup { AccessType = EnumEventAccessTypes.Target, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = Model.PositionId } })
+                .ToList();
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.ChangeExecutor, Model.EventDate, Model.Description, null, null, null, 
+                Model.PositionId, accessGroups: evAcceesses, isVeryfyDocumentAccess: true);
 
-            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.AccessLevel, Document.Events.First().Accesses);
+            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.AccessLevel, _document.Events.First().Accesses);
 
             if (Model.PaperEvents?.Any() ?? false)
             {

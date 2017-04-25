@@ -196,16 +196,6 @@ namespace BL.Database.SystemDb
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                dbContext.AdminRolePermissionsSet.Delete();
-
-                dbContext.SystemPermissionsSet.Delete();
-
-                dbContext.SystemFeaturesSet.Delete();
-
-                dbContext.SystemModulesSet.Delete();
-
-                dbContext.SystemAccessTypesSet.Delete();
-
                 DmsDbImportData.InitPermissions();
 
                 foreach (var item in DmsDbImportData.GetSystemAccessTypes())
@@ -215,27 +205,31 @@ namespace BL.Database.SystemDb
                     dbContext.SaveChanges();
                 }
 
-                foreach (var item in DmsDbImportData.GetSystemModules())
+                foreach (var item in DmsDbImportData.GetSystemModules().Where(x => modules.All(y => y.Id != x.Id)))
                 {
                     dbContext.SafeAttach(item);
                     dbContext.Entry(item).State = EntityState.Added;
                     dbContext.SaveChanges();
                 }
 
-                foreach (var item in DmsDbImportData.GetSystemFeatures())
+                var features = dbContext.SystemFeaturesSet.ToList();
+
+                foreach (var item in DmsDbImportData.GetSystemFeatures().Where(x => features.All(y => y.Id != x.Id)))
                 {
                     dbContext.SafeAttach(item);
                     dbContext.Entry(item).State = EntityState.Added;
                     dbContext.SaveChanges();
                 }
 
-                foreach (var item in DmsDbImportData.GetSystemPermissions())
-                {
+                var permissions = dbContext.SystemPermissionsSet.ToList();
 
+                foreach (var item in DmsDbImportData.GetSystemPermissions().Where(x => permissions.All(y => y.Id != x.Id)))
+                {
                     dbContext.SafeAttach(item);
                     dbContext.Entry(item).State = EntityState.Added;
                     dbContext.SaveChanges();
                 }
+
                 transaction.Complete();
                 _cacheService.RefreshKey(ctx, SettingConstants.PERMISSION_CASHE_KEY);
                 _cacheService.RefreshKey(ctx, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
@@ -966,7 +960,7 @@ namespace BL.Database.SystemDb
                 transaction.Complete();
 
             }
-
+            _cacheService.RefreshKey(ctx, SettingConstants.ACTION_CASHE_KEY);
         }
 
         public void AddSystemAction(IContext ctx, SystemActions item)
@@ -974,24 +968,13 @@ namespace BL.Database.SystemDb
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = dbContext.Database.BeginTransaction())
             {
-                //dbContext.Database.ExecuteSqlCommand("SET IDENTITY_INSERT [DMS].[SystemActions] ON");
-
-                //dbContext.Database.ExecuteSqlCommand(
-                //String.Format(@"INSERT INTO[DMS].[SystemActions]
-                //(Id, ObjectId, Code, API, [Description], IsGrantable, IsGrantableByRecordId, IsVisible, IsVisibleInMenu,  GrantId, Category, PermissionId) 
-                //VALUES
-                //({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11})",
-                //item.Id, item.ObjectId, "'" + item.Code + "'", "'" + item.API + "'", "'" + item.Description + "'", item.IsGrantable ? 1 : 0, item.IsGrantableByRecordId ? 1 : 0, item.IsVisible ? 1 : 0, item.IsVisibleInMenu ? 1 : 0, item.GrantId.ToString() == string.Empty ? "null" : item.GrantId.ToString(), item.Category ?? "null", item.PermissionId.ToString() == string.Empty ? "null" : item.PermissionId.ToString())
-                //);
-
                 dbContext.SystemActionsSet.Add(item);
 
                 dbContext.SaveChanges();
 
-                //dbContext.Database.ExecuteSqlCommand("SET IDENTITY_INSERT [DMS].[SystemActions] OFF");
-
                 transaction.Commit();
             }
+            _cacheService.RefreshKey(ctx, SettingConstants.ACTION_CASHE_KEY);
         }
 
         public void UpdateSystemAction(IContext ctx, SystemActions item)

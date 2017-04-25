@@ -404,7 +404,7 @@ namespace BL.Logic.Common
             };
         }
 
-        public static InternalDocumentEvent GetNewDocumentEvent(IContext context, int entityTypeId, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string addDescription = null, int? taskId = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, 
+        public static InternalDocumentEvent GetNewDocumentEvent(IContext context, int entityTypeId, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string addDescription = null, int? parentEventId = null, int? taskId = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null,
                                                                 List<AccessGroup> accessGroups = null, bool isVeryfyDocumentAccess = false)
         {
             var sourcePositionExecutor = GetExecutorAgentIdByPositionId(context, sourcePositionId ?? context.CurrentPositionId);
@@ -416,6 +416,7 @@ namespace BL.Logic.Common
                 DocumentId = documentId ?? 0,
                 EventType = eventType,
                 TaskId = taskId,
+                ParentEventId = parentEventId,
                 Description = description,
                 AddDescription = addDescription,
                 SourceAgentId = sourceAgentId ?? context.CurrentAgentId,
@@ -434,11 +435,11 @@ namespace BL.Logic.Common
             return res;
         }
 
-        public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvents(IContext context, int entityTypeId, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string addDescription = null, int? taskId = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, List<AccessGroup> accessGroups = null)
+        public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvents(IContext context, int entityTypeId, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string addDescription = null, int? parentEventId = null, int? taskId = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, List<AccessGroup> accessGroups = null, bool isVeryfyDocumentAccess = false)
         {
             return new List<InternalDocumentEvent>
             {
-                GetNewDocumentEvent(context,entityTypeId, documentId,eventType,eventDate,description,addDescription,taskId,targetPositionId,targetAgentId,sourcePositionId,sourceAgentId,accessGroups),
+                GetNewDocumentEvent(context,entityTypeId, documentId,eventType,eventDate,description,addDescription,parentEventId,taskId,targetPositionId,targetAgentId,sourcePositionId,sourceAgentId,accessGroups,isVeryfyDocumentAccess),
             };
         }
 
@@ -464,7 +465,8 @@ namespace BL.Logic.Common
                 DocumentId = controlOnModel.DocumentId,
                 DueDate = controlOnModel.DueDate,
                 AttentionDate = controlOnModel.AttentionDate,
-                OnEvent = eventType == null ? null : GetNewDocumentEvent(context, entityTypeId, controlOnModel.DocumentId, eventType.Value, controlOnModel.EventDate, controlOnModel.Description, null, taskId)
+                OnEvent = eventType == null ? null : GetNewDocumentEvent(context, entityTypeId, controlOnModel.DocumentId, eventType.Value, controlOnModel.EventDate, controlOnModel.Description, null, controlOnModel.ParentEventId, taskId,
+                        accessGroups: controlOnModel.TargetCopyAccessGroups, isVeryfyDocumentAccess: true)
             };
             SetLastChange(context, res);
             return res;
@@ -478,38 +480,37 @@ namespace BL.Logic.Common
             };
         }
 
-        public static InternalDocumentWait GetNewDocumentWait(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes eventType, EnumEventCorrespondentType? eventCorrespondentType = null, bool? isTakeMainDueDate = null, bool? isAddTargetCopy = null)
+        public static InternalDocumentWait GetNewDocumentWait(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes eventType, EnumEventCorrespondentType? eventCorrespondentType = null, bool isAddTargetCopy = true, bool isTakeMainDueDate = false)
         {
             var accessess = eventCorrespondentType == EnumEventCorrespondentType.FromSourceToSource
                             ? new List<AccessGroup> { ConvertToAccessGroup(sendListModel.AccessGroups.First(x => x.AccessType == EnumEventAccessTypes.Source)) }
                             : eventCorrespondentType == EnumEventCorrespondentType.FromTargetToTarget
                             ? new List<AccessGroup> { ConvertToAccessGroup(sendListModel.AccessGroups.First(x => x.AccessType == EnumEventAccessTypes.Target), EnumEventAccessTypes.Source) }
-                            : ConvertToAccessGroup (sendListModel.AccessGroups.ToList());
-            if (isAddTargetCopy ?? false)
+                            : ConvertToAccessGroup(sendListModel.AccessGroups.Where(x => x.AccessType == EnumEventAccessTypes.Source || x.AccessType == EnumEventAccessTypes.Target).ToList());
+            if (isAddTargetCopy)
                 accessess.AddRange(ConvertToAccessGroup(sendListModel.AccessGroups.Where(x => x.AccessType != EnumEventAccessTypes.Source && x.AccessType != EnumEventAccessTypes.Target).ToList()));
             var res = new InternalDocumentWait
             {
                 ClientId = context.CurrentClientId,
                 EntityTypeId = sendListModel.EntityTypeId,
                 DocumentId = sendListModel.DocumentId,
-                DueDate = eventType == EnumEventTypes.ControlOn && !(isTakeMainDueDate ?? false)
+                DueDate = eventType == EnumEventTypes.ControlOn && !isTakeMainDueDate
                             ? new[] {   sendListModel.SelfDueDate,
                                         (!sendListModel.SelfDueDay.HasValue || sendListModel.SelfDueDay.Value < 0) ? null : (DateTime?)DateTime.UtcNow.AddDays(sendListModel.SelfDueDay.Value)
                                     }.Max()
                             : new[] {   sendListModel.DueDate,
                                         (!sendListModel.DueDay.HasValue || sendListModel.DueDay.Value < 0) ? null : (DateTime?)DateTime.UtcNow.AddDays(sendListModel.DueDay.Value)
                                     }.Max(),
-                AttentionDate = eventType == EnumEventTypes.ControlOn && !(isTakeMainDueDate ?? false)
+                AttentionDate = eventType == EnumEventTypes.ControlOn && !isTakeMainDueDate
                             ? new[] {   sendListModel.SelfAttentionDate,
                                         (!sendListModel.SelfAttentionDay.HasValue || sendListModel.SelfAttentionDay.Value < 0) ? null : (DateTime?)DateTime.UtcNow.AddDays(sendListModel.SelfAttentionDay.Value)
                                     }.Max()
                             : null,
-                OnEvent = //eventType == null ? null :
-                            GetNewDocumentEvent
+                OnEvent =  GetNewDocumentEvent
                             (
                                 context, sendListModel.EntityTypeId, sendListModel.DocumentId, eventType, null,
                                 ((eventType == EnumEventTypes.ControlOn && !string.IsNullOrEmpty(sendListModel.SelfDescription)) ? sendListModel.SelfDescription : sendListModel.Description),
-                                null, sendListModel.TaskId, 
+                                null, null, sendListModel.TaskId,
                                 eventCorrespondentType == EnumEventCorrespondentType.FromSourceToSource ? sendListModel.SourcePositionId : sendListModel.TargetPositionId, //TODO del
                                 null,
                                 eventCorrespondentType == EnumEventCorrespondentType.FromTargetToTarget ? sendListModel.TargetPositionId : sendListModel.SourcePositionId,//TODO del
@@ -521,16 +522,23 @@ namespace BL.Logic.Common
             return res;
         }
 
-        public static IEnumerable<InternalDocumentWait> GetNewDocumentWaits(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes eventType, EnumEventCorrespondentType? eventCorrespondentType = null, bool? isTakeMainDueDate = null, bool? isAddTargetCopy = null)
+        public static IEnumerable<InternalDocumentWait> GetNewDocumentWaits(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes eventType, EnumEventCorrespondentType? eventCorrespondentType = null, bool isAddTargetCopy = true, bool isTakeMainDueDate = false)
         {
             return new List<InternalDocumentWait>
             {
-                GetNewDocumentWait(context,sendListModel,eventType,eventCorrespondentType,isTakeMainDueDate,isAddTargetCopy)
+                GetNewDocumentWait(context,sendListModel,eventType,eventCorrespondentType,isAddTargetCopy,isTakeMainDueDate)
             };
         }
 
-        public static InternalDocumentSubscription GetNewDocumentSubscription(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes? eventType = null)
+        public static InternalDocumentSubscription GetNewDocumentSubscription(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes? eventType = null, EnumEventCorrespondentType? eventCorrespondentType = null, bool? isAddTargetCopy = null)
         {
+            var accessess = eventCorrespondentType == EnumEventCorrespondentType.FromSourceToSource
+                ? new List<AccessGroup> { ConvertToAccessGroup(sendListModel.AccessGroups.First(x => x.AccessType == EnumEventAccessTypes.Source)) }
+                : eventCorrespondentType == EnumEventCorrespondentType.FromTargetToTarget
+                ? new List<AccessGroup> { ConvertToAccessGroup(sendListModel.AccessGroups.First(x => x.AccessType == EnumEventAccessTypes.Target), EnumEventAccessTypes.Source) }
+                : ConvertToAccessGroup(sendListModel.AccessGroups.ToList());
+            if (isAddTargetCopy ?? false)
+                accessess.AddRange(ConvertToAccessGroup(sendListModel.AccessGroups.Where(x => x.AccessType != EnumEventAccessTypes.Source && x.AccessType != EnumEventAccessTypes.Target).ToList()));
             var res = new InternalDocumentSubscription
             {
                 ClientId = context.CurrentClientId,
@@ -540,24 +548,25 @@ namespace BL.Logic.Common
                 SendEvent = eventType == null ? null :
                             GetNewDocumentEvent
                             (
-                                context, sendListModel.EntityTypeId, sendListModel.DocumentId, eventType.Value, null, sendListModel.Description, null, sendListModel.TaskId,
+                                context, sendListModel.EntityTypeId, sendListModel.DocumentId, eventType.Value, null, sendListModel.Description, null,null, sendListModel.TaskId,
                                 sendListModel.TargetPositionId,
                                 null,
                                 sendListModel.SourcePositionId,
-                                sendListModel.SourceAgentId
+                                sendListModel.SourceAgentId,
+                                accessess
                             )
             };
             SetLastChange(context, res);
             return res;
         }
 
-        public static IEnumerable<InternalDocumentSubscription> GetNewDocumentSubscriptions(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes? eventType = null)
-        {
-            return new List<InternalDocumentSubscription>
-            {
-                GetNewDocumentSubscription(context,sendListModel,eventType)
-            };
-        }
+        //public static IEnumerable<InternalDocumentSubscription> GetNewDocumentSubscriptions(IContext context, InternalDocumentSendList sendListModel, EnumEventTypes? eventType = null, EnumEventCorrespondentType? eventCorrespondentType = null, bool? isAddTargetCopy = null)
+        //{
+        //    return new List<InternalDocumentSubscription>
+        //    {
+        //        GetNewDocumentSubscription(context,sendListModel,eventType,eventCorrespondentType,isAddTargetCopy)
+        //    };
+        //}
 
         public static InternalDocumentSendList GetNewDocumentSendList(IContext context, int entityTypeId, BaseModifyDocumentSendList model, int? taskId = null)
         {
@@ -1173,7 +1182,7 @@ namespace BL.Logic.Common
             }
         }
 
-        public static List<AccessGroup> ConvertToAccessGroup (List<InternalDocumentSendListAccessGroup> accessGroups)
+        public static List<AccessGroup> ConvertToAccessGroup(List<InternalDocumentSendListAccessGroup> accessGroups)
         {
             return accessGroups.Select(x => new AccessGroup
             {
