@@ -120,7 +120,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
                 var currCashId = _systemDb.GetCurrentMaxCasheId(ctx);
                 var objToProcess = _systemDb.ObjectToReindex();
-                worker.DeleteAllDocuments(ctx.CurrentClientId);//delete all current document before reindexing
+                worker.DeleteAllDocuments(ctx.Client.Id);//delete all current document before reindexing
                 var tskList = new List<Action>();
                 foreach (var obj in objToProcess)//.Where(x=>x == EnumObjects.DictionaryAgentEmployees))
                 {
@@ -243,7 +243,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                         .Where(x => x.AccessType == EnumAccessTypes.R.ToString()).Select(x => Features.GetId(x.Feature)).ToList();
             if (filter != null)
                 filter.RowLimit = SettingValues.GetFulltextRowLimit(ctx);
-            var res = GetWorker(ctx).SearchItems(out IsNotAll, text, ctx.CurrentClientId, filter, paging).Where(x => perm.Contains(x.FeatureId));
+            var res = GetWorker(ctx).SearchItems(out IsNotAll, text, ctx.Client.Id, filter, paging).Where(x => perm.Contains(x.FeatureId));
             return res;
         }
         private IEnumerable<FullTextSearchResult> SearchItemsByDetail(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter, UIPaging paging)

@@ -10,7 +10,8 @@ using BL.Logic.SystemServices.TempStorage;
 using BL.Model.AdminCore.Clients;
 using BL.Model.AdminCore.WebUser;
 using BL.Model.Common;
-using BL.Model.Database;
+using BL.Model.Context;
+using BL.Model.DictionaryCore.FrontModel.Employees;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
@@ -19,6 +20,7 @@ using BL.Model.Users;
 using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
+using DMS_WebAPI.DatabaseContext;
 using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Models;
 using Microsoft.AspNet.Identity;
@@ -27,14 +29,10 @@ using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Configuration;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
-using BL.Model.DictionaryCore.FrontModel.Employees;
-using BL.Model.AdminCore.IncomingModel;
-using System.Net.Http;
-using DMS_WebAPI.DatabaseContext;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -178,7 +176,7 @@ namespace DMS_WebAPI.Utilities
             var employeeId = -1;
 
             // проверяю нет ли уже сотрудника с указанным имененм у клиента
-            if (ExistsUser(model.UserName, context.CurrentClientId)) throw new UserNameAlreadyExists(model.UserName);
+            if (ExistsUser(model.UserName, context.Client.Id)) throw new UserNameAlreadyExists(model.UserName);
 
             // пробую создать сотрудника
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -203,7 +201,7 @@ namespace DMS_WebAPI.Utilities
 
                         // Предполагаю, что человек, который создает пользователей. создает их в тойже базе и в том же клиенте
                         // Первый пользователь создается под админ-контекстом
-                        ClientId = context.CurrentClientId,
+                        ClientId = context.Client.Id,
                         ServerId = context.CurrentDB.Id,
                     });
 
@@ -225,7 +223,7 @@ namespace DMS_WebAPI.Utilities
             {
                 if (employeeId > 0) tmpService.ExecuteAction(EnumDictionaryActions.DeleteAgentEmployee, context, employeeId);
 
-                if (user != null) DeleteUsersInClient(context.CurrentClientId, new List<string> { user.Id });
+                if (user != null) DeleteUsersInClient(context.Client.Id, new List<string> { user.Id });
 
                 throw e;
             }
@@ -321,7 +319,7 @@ namespace DMS_WebAPI.Utilities
                 {
                     var tmp = new RestorePasswordAgentUser
                     {
-                        ClientCode = _webDb.GetClientCode(context.CurrentClientId),
+                        ClientCode = _webDb.GetClientCode(context.Client.Id),
                         Email = res.Email,
                         FirstEntry = "true"
                     };
@@ -337,7 +335,7 @@ namespace DMS_WebAPI.Utilities
 
                 else
                 {
-                    var clientCode = _webDb.GetClientCode(context.CurrentClientId);
+                    var clientCode = _webDb.GetClientCode(context.Client.Id);
                     var settVal = DmsResolver.Current.Get<ISettingValues>();
                     var we = new WelcomeEmailModel()
                     {
@@ -350,7 +348,7 @@ namespace DMS_WebAPI.Utilities
                     };
 
                     var htmlContent = we.RenderPartialViewToString(RenderPartialView.WelcomeEmail);
-                    var db = GetClientServer(context.CurrentClientId);
+                    var db = GetClientServer(context.Client.Id);
                     var ctx = new AdminContext(db);
                     var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
                     mailService.SendMessage(ctx, MailServers.Noreply, res.Email, "Ostrean. Приглашение", htmlContent);
@@ -417,7 +415,7 @@ namespace DMS_WebAPI.Utilities
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             tmpService.ExecuteAction(EnumDictionaryActions.DeleteAgentEmployee, context, agentId);
 
-            DeleteUsersInClient(context.CurrentClientId, new List<string> { user.Id });
+            DeleteUsersInClient(context.Client.Id, new List<string> { user.Id });
         }
 
         private AspNetUsers AddUser(string userName, string userPassword, string userEmail, string userPhone = "",
@@ -685,20 +683,22 @@ namespace DMS_WebAPI.Utilities
                 transaction.Complete();
             }
 
-            db.ClientId = model.ClientId;
+            var dbAdmin = new DatabaseModelForAdminContext(db);
+            dbAdmin.ClientId = model.ClientId;
+            dbAdmin.ClientCode = model.ClientCode;
 
-            var ctx = new AdminContext(db);
+            var ctx = new AdminContext(dbAdmin);
 
             var languages = DmsResolver.Current.Get<ILanguages>();
 
             // Если не указан язык, беру язык по умолчанию 
             if (string.IsNullOrEmpty(model.Language))
             {
-                ctx.CurrentEmployee.LanguageId = languages.GetLanguageIdByHttpContext();
+                ctx.Employee.LanguageId = languages.GetLanguageIdByHttpContext();
             }
             else
             {
-                ctx.CurrentEmployee.LanguageId = languages.GetLanguageIdByCode(model.Language);
+                ctx.Employee.LanguageId = languages.GetLanguageIdByCode(model.Language);
             }
 
             var clientService = DmsResolver.Current.Get<IClientService>();
@@ -720,12 +720,12 @@ namespace DMS_WebAPI.Utilities
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 MiddleName = model.MiddleName,
-                OrgName = languages.GetTranslation(ctx.CurrentEmployee.LanguageId, "##l@Clients:" + "MyCompany" + "@l##"),
-                DepartmentName = languages.GetTranslation(ctx.CurrentEmployee.LanguageId, "##l@Clients:" + "MyDepartment" + "@l##"),
-                PositionName = languages.GetTranslation(ctx.CurrentEmployee.LanguageId, "##l@Clients:" + "MyPosition" + "@l##"),
+                OrgName = languages.GetTranslation(ctx.Employee.LanguageId, "##l@Clients:" + "MyCompany" + "@l##"),
+                DepartmentName = languages.GetTranslation(ctx.Employee.LanguageId, "##l@Clients:" + "MyDepartment" + "@l##"),
+                PositionName = languages.GetTranslation(ctx.Employee.LanguageId, "##l@Clients:" + "MyPosition" + "@l##"),
                 ExecutorType = EnumPositionExecutionTypes.Personal,
                 AccessLevel = EnumAccessLevels.Personally,
-                LanguageId = ctx.CurrentEmployee.LanguageId,
+                LanguageId = ctx.Employee.LanguageId,
                 Phone = model.PhoneNumber,
                 Login = model.Email,
                 Role = Roles.Admin,
@@ -1192,10 +1192,10 @@ namespace DMS_WebAPI.Utilities
 
             var model = new AspNetUserContexts
             {
-                Token = context.CurrentEmployee.Token,
-                ClientId = context.CurrentClientId,
+                Token = context.Employee.Token,
+                ClientId = context.Client.Id,
                 CurrentPositionsIdList = string.Join(",", context.CurrentPositionsIdList),
-                UserId = context.CurrentEmployee.UserId,
+                UserId = context.Employee.UserId,
                 LastChangeDate = DateTime.UtcNow,
             };
 
@@ -1239,12 +1239,12 @@ namespace DMS_WebAPI.Utilities
 
         }
 
-        public DatabaseModel GetClientServer(int clientId)
+        public DatabaseModelForAdminContext GetClientServer(int clientId)
         {
             return _webDb.GetClientServer(clientId);
         }
 
-        public DatabaseModel GetClientServer(string clientCode)
+        public DatabaseModelForAdminContext GetClientServer(string clientCode)
         {
             return _webDb.GetClientServer(clientCode);
         }

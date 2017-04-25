@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using BL.CrossCutting.DependencyInjection;
 using System.Collections.Generic;
-using BL.Model.Database;
+using BL.Model.Context;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -57,7 +57,7 @@ namespace DMS_WebAPI.Utilities
                 {
                     var db =webProc.GetClientServer( client.Id);
                         
-                    userContext.VerifyLicence(client.Id, new List<DatabaseModel> { db });
+                    userContext.VerifyLicence(client.Id, new List<DatabaseModelForAdminContext> { db });
                 }
 
 //                DmsResolver.Current.Get<UserContexts>().RemoveByTimeout();

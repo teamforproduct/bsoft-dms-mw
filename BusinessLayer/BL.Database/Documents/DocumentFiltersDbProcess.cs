@@ -21,7 +21,7 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.DocumentSavedFiltersSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+                var qry = dbContext.DocumentSavedFiltersSet.Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
                 if (filter != null)
                 {
@@ -55,7 +55,7 @@ namespace BL.Database.Documents
             {
 
                 var savFilter =
-                    dbContext.DocumentSavedFiltersSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(x => x.Id == savedFilterId)
+                    dbContext.DocumentSavedFiltersSet.Where(x => x.ClientId == ctx.Client.Id).Where(x => x.Id == savedFilterId)
                         .Select(x => new FrontDocumentSavedFilter
                         {
                             Id = x.Id,

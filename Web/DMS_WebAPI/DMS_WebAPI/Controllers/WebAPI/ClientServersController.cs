@@ -1,13 +1,4 @@
-﻿using BL.CrossCutting.Context;
-using BL.CrossCutting.DependencyInjection;
-using BL.Logic.SystemServices.FullTextSearch;
-using BL.Model.Database;
-using BL.Model.WebAPI.Filters;
-using BL.Model.WebAPI.FrontModel;
-using BL.Model.WebAPI.IncomingModel;
-using DMS_WebAPI.Results;
-using DMS_WebAPI.Utilities;
-using System.Web.Http;
+﻿using System.Web.Http;
 
 namespace DMS_WebAPI.Controllers.WebAPI
 {

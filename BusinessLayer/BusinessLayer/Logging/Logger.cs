@@ -227,7 +227,7 @@ namespace BL.Logic.Logging
 
         public int? AddSearchQueryLog(IContext ctx, InternalSearchQueryLog model)
         {
-            model.ClientId = ctx.CurrentClientId;
+            model.ClientId = ctx.Client.Id;
             CommonDocumentUtilities.SetLastChange(ctx, model);
             var id = _systemDb.AddSearchQueryLog(ctx, model);
             return id;
@@ -237,7 +237,7 @@ namespace BL.Logic.Logging
         {
             var model = new InternalSearchQueryLog
             {
-                ClientId = ctx.CurrentClientId,
+                ClientId = ctx.Client.Id,
                 ModuleId = Modules.GetId(module),
                 SearchQueryText = searchText,
             };
@@ -267,7 +267,7 @@ namespace BL.Logic.Logging
                     info.Date1 = info.Date;
                 }
                 info.AgentId = info.AgentId ?? ctx.CurrentAgentId;
-                info.ClientId = ctx.CurrentClientId;
+                info.ClientId = ctx.Client.Id;
                 var id = _systemDb.AddLog(ctx, info);
                 return id;
             }

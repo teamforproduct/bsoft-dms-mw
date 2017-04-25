@@ -1,6 +1,6 @@
 ﻿using BL.Model.Enums;
 
-namespace BL.Model.Database
+namespace BL.Model.Context
 {
     /// <summary>
     /// Model describe server parameters
@@ -49,7 +49,6 @@ namespace BL.Model.Database
         /// </summary>
         public string ConnectionString { get; set; }
         public string DefaultSchema { get; set; }
-        //for AdminContext
-        public int ClientId { get; set; }
+        
     }
 }

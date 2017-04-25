@@ -1,12 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using BL.CrossCutting.Context;
+﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.Common;
 using BL.Logic.SystemServices.MailWorker;
-using BL.Model.Database;
+using BL.Model.Context;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BL.Logic.SystemServices
 {
@@ -27,7 +27,7 @@ namespace BL.Logic.SystemServices
             SettingValues = settingValues;
         }
 
-        public void Initialize(IEnumerable<DatabaseModel> dbList)
+        public void Initialize(IEnumerable<DatabaseModelForAdminContext> dbList)
         {
           ServerContext.Clear();
 

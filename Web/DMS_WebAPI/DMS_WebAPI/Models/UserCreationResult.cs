@@ -2,11 +2,11 @@
 
 namespace DMS_WebAPI.Models
 {
-    public class UserCreationResult : AspNetUsers
+    public class UserCreationResult
     {
         public UserCreationResult() { }
 
-        public UserCreationResult(AspNetUsers user)
+        public UserCreationResult(UserCreationResult user)
         {
             SetMergeUserResult(user);
         }
@@ -16,34 +16,38 @@ namespace DMS_WebAPI.Models
             SetMergeUserResult(user);
             IsNew = isNew;
         }
-        private void SetMergeUserResult(AspNetUsers user)
+        private void SetMergeUserResult(UserCreationResult user)
         {
+            Id = user.Id;
             Email = user.Email;
             EmailConfirmed = user.EmailConfirmed;
-
-            PhoneNumber = user.PhoneNumber;
-            PhoneNumberConfirmed = user.PhoneNumberConfirmed;
 
             UserName = user.UserName;
 
             IsChangePasswordRequired = user.IsChangePasswordRequired;
             IsEmailConfirmRequired = user.IsEmailConfirmRequired;
-            IsLockout = user.IsLockout;
-            IsFingerprintEnabled = user.IsLockout;
 
-            ControlQuestionId = user.ControlQuestionId;
-            ControlAnswer = user.ControlAnswer;
-
-            CreateDate = user.CreateDate;
-            LastChangeDate = user.LastChangeDate;
-
-            PasswordHash = user.PasswordHash;
-            SecurityStamp = user.SecurityStamp;
-            TwoFactorEnabled = user.TwoFactorEnabled;
-            LockoutEndDateUtc = user.LockoutEndDateUtc;
-            LockoutEnabled = user.LockoutEnabled;
-            AccessFailedCount = user.AccessFailedCount;
         }
+
+        private void SetMergeUserResult(AspNetUsers user)
+        {
+            Id = user.Id;
+            Email = user.Email;
+            EmailConfirmed = user.EmailConfirmed;
+
+            UserName = user.UserName;
+
+            IsChangePasswordRequired = user.IsChangePasswordRequired;
+            IsEmailConfirmRequired = user.IsEmailConfirmRequired;
+        }
+
+        public string Id { set; get; }
+        public string Email { set; get; }
+        public string UserName { get; set; }
+
+        public bool EmailConfirmed { get; set; }
+        public bool IsChangePasswordRequired { get; set; }
+        public bool IsEmailConfirmRequired { get; set; }
 
 
         public bool IsNew { set; get; }

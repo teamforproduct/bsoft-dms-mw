@@ -1,5 +1,4 @@
-﻿using BL.Model.Database;
-using BL.Model.WebAPI.IncomingModel;
+﻿using BL.Model.WebAPI.IncomingModel;
 
 namespace BL.Model.WebAPI.FrontModel
 {

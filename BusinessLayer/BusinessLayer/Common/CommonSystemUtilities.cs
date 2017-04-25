@@ -15,7 +15,7 @@ namespace BL.Logic.Common
     {
         public static string GetServerKey(IContext ctx)
         {
-            return $"{ctx.CurrentDB.Address}/{ctx.CurrentDB.DefaultDatabase}/{ctx.CurrentEmployee.ClientId}";
+            return $"{ctx.CurrentDB.Address}/{ctx.CurrentDB.DefaultDatabase}/{ctx.Client.Id}";
         }
 
         public static bool IsContainsInFilter(string propertyFilter, string[] template)

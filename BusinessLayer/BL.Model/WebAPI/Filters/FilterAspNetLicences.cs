@@ -1,5 +1,4 @@
-﻿using BL.Model.Database;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace BL.Model.WebAPI.Filters
 {
