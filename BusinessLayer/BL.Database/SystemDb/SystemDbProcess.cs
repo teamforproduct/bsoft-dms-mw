@@ -204,7 +204,7 @@ namespace BL.Database.SystemDb
                     dbContext.Entry(item).State = EntityState.Added;
                     dbContext.SaveChanges();
                 }
-
+                var modules = dbContext.SystemModulesSet.ToList();
                 foreach (var item in DmsDbImportData.GetSystemModules().Where(x => modules.All(y => y.Id != x.Id)))
                 {
                     dbContext.SafeAttach(item);
