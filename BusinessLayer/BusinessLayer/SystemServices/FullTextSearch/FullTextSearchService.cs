@@ -242,7 +242,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             var perm = admService.GetUserPermissions(ctx, admService.GetFilterPermissionsAccessByContext(ctx, false, null, null, moduleId))
                         .Where(x => x.AccessType == EnumAccessTypes.R.ToString()).Select(x => Features.GetId(x.Feature)).ToList();
             if (filter != null)
-                filter.RowLimit = SettingValues.GetFulltextRowLimit(ctx);
+                filter.RowLimit = SettingValues.GetFulltextRowLimit();
             var res = GetWorker(ctx).SearchItems(out IsNotAll, text, ctx.Client.Id, filter, paging).Where(x => perm.Contains(x.FeatureId));
             return res;
         }
@@ -293,7 +293,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 {
                     var ftsSetting = new FullTextSettings
                     {
-                        TimeToUpdate = SettingValues.GetFulltextRefreshTimeout(keyValuePair.Value),
+                        TimeToUpdate = SettingValues.GetFulltextRefreshTimeout(),
                         DatabaseKey = keyValuePair.Key,
                         StorePath = SettingValues.GetFulltextStorePath(),
                         IsFullTextInitialized = SettingValues.GetFulltextWasInitialized(keyValuePair.Value)

@@ -37,19 +37,9 @@ namespace BL.Logic.Settings
                     res.SettingTypeId = 2;
                     break;
 
-                case EnumSystemSettings.FULLTEXTSEARCH_REFRESH_TIMEOUT:
-                    res.Value = "1";
-                    res.ValueType = EnumValueTypes.Number;
-                    res.SettingTypeId = 2;
-                    break;
                 case EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED:
                     res.Value = "false";
                     res.ValueType = EnumValueTypes.Bool;
-                    res.SettingTypeId = 2;
-                    break;
-                case EnumSystemSettings.FULLTEXTSEARCH_ROWLIMIT:
-                    res.Value = "100000";
-                    res.ValueType = EnumValueTypes.Number;
                     res.SettingTypeId = 2;
                     break;
 
