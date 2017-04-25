@@ -32,14 +32,14 @@ namespace BL.Logic.Settings
             return val;
         }
 
-        public int GetFulltextRefreshTimeout(IContext ctx) =>
-             cliSett.GetSettingWithWriteDefaultIfEmpty<int>(ctx, EnumSystemSettings.FULLTEXTSEARCH_REFRESH_TIMEOUT);
+        public int GetFulltextRefreshTimeout() =>
+             genSett.GetSetting<int>(EnumGeneralSettings.FulltextRefreshTimeout);
 
         public bool GetFulltextWasInitialized(IContext ctx) =>
              cliSett.GetSettingWithWriteDefaultIfEmpty<bool>(ctx, EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED);
 
-        public int GetFulltextRowLimit(IContext ctx) =>
-            cliSett.GetSettingWithWriteDefaultIfEmpty<int>(ctx, EnumSystemSettings.FULLTEXTSEARCH_ROWLIMIT);
+        public int GetFulltextRowLimit() =>
+            genSett.GetSetting<int>( EnumGeneralSettings.FulltextRowLimit);
 
 
         public string GetFileStorePath()

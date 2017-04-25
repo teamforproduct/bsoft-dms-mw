@@ -1,7 +1,7 @@
 ﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
 using BL.Logic.DocumentCore.Interfaces;
-using BL.Model.Database;
+using BL.Model.Context;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 using System;
@@ -9,9 +9,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using BL.Database.DatabaseContext;
-using Ninject;
-using Ninject.Parameters;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -46,7 +43,7 @@ namespace DMS_WebAPI.Utilities
 
 
 
-        public object Verify(string regCode, LicenceInfo licence, IEnumerable<DatabaseModel> dbs, bool isThrowException)
+        public object Verify(string regCode, LicenceInfo licence, IEnumerable<DatabaseModelForAdminContext> dbs, bool isThrowException)
         {
             if (!VerifyLicenceKey(regCode, licence.LicenceKey))
             {
@@ -99,7 +96,7 @@ namespace DMS_WebAPI.Utilities
                 return false;
             }
         }
-        private void VerifyTrialMaxDocumentCount(LicenceInfo licence, IEnumerable<DatabaseModel> dbs)
+        private void VerifyTrialMaxDocumentCount(LicenceInfo licence, IEnumerable<DatabaseModelForAdminContext> dbs)
         {
             //TODO Проверить количество документов у клиента
             //TODO оптимизировать

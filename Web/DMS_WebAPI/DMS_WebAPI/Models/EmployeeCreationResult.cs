@@ -4,7 +4,7 @@
     {
         public EmployeeCreationResult() { }
 
-        public EmployeeCreationResult(UserCreationResult user) : base (user) { }
+        public EmployeeCreationResult(UserCreationResult user) : base ( user) { }
 
         public int EmployeeId { set; get; }
     }

@@ -99,7 +99,7 @@ namespace DMS_WebAPI.ControllersV3.System
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ISettingValues>();
-                var tmpItem = tmpService.GetFulltextRefreshTimeout(context);
+                var tmpItem = tmpService.GetFulltextRefreshTimeout();
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -116,7 +116,7 @@ namespace DMS_WebAPI.ControllersV3.System
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ISettingValues>();
-                var tmpItem = tmpService.GetFulltextRowLimit(context);
+                var tmpItem = tmpService.GetFulltextRowLimit();
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });

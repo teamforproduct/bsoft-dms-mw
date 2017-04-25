@@ -155,6 +155,8 @@
     <Compile Include="Common\BaseFilterCodeNameIsActive.cs" />
     <Compile Include="Common\ItemCheck.cs" />
     <Compile Include="Common\AutocompleteItem.cs" />
+    <Compile Include="Context\Client.cs" />
+    <Compile Include="Context\DatabaseModelForAdminContext.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgentPeoples.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgentUsers.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontRoles.cs" />
@@ -422,7 +424,7 @@
     <Compile Include="SystemCore\Filters\FilterSystemPermissions.cs" />
     <Compile Include="SystemCore\Modules.cs" />
     <Compile Include="SystemCore\StoreInfo.cs" />
-    <Compile Include="Database\DatabaseModel.cs" />
+    <Compile Include="Context\DatabaseModel.cs" />
     <Compile Include="Enums\EnumDatabaseType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryLinkType.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontDictionaryResultType.cs" />
@@ -652,7 +654,7 @@
     <Compile Include="Users\RestorePasswordAgentUser.cs" />
     <Compile Include="Users\ChangeLoginAgentUser.cs" />
     <Compile Include="Users\ChangePasswordAgentUser.cs" />
-    <Compile Include="Users\Employee.cs" />
+    <Compile Include="Context\Employee.cs" />
     <Compile Include="Users\CurrentPosition.cs" />
     <Compile Include="WebAPI\Filters\FilterAspNetClientRequests.cs" />
     <Compile Include="WebAPI\Filters\FilterAspNetClientServer.cs" />
