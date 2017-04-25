@@ -7,6 +7,7 @@ using BL.Model.Exception;
 using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
+using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Models;
 using DMS_WebAPI.Utilities;
 using Microsoft.AspNet.Identity;
@@ -80,7 +81,7 @@ namespace DMS_WebAPI.Providers
             if (!webService.ExistsUser(context.UserName, clientCode)) throw new UserIsNotDefined();
 
             // Нахожу пользователя по логину и паролю
-            ApplicationUser user = await webService.GetUser(context.UserName, context.Password);
+            AspNetUsers user = await webService.GetUser(context.UserName, context.Password);
 
             //context.SetError("invalid_grant", new UserNameOrPasswordIsIncorrect().Message); return;
             // Эта штука возвращает в респонсе {"error":"invalid_grant","error_description":"Привет!!"} - на фронте всплывает красный тостер с error_description
@@ -188,7 +189,7 @@ namespace DMS_WebAPI.Providers
 
                 var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
 
-                ApplicationUser user = userManager.FindById(userId);
+                AspNetUsers user = userManager.FindById(userId);
 
                 var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
 

@@ -8,6 +8,7 @@
         ServerForNewClient,
         MainHost,
         VirtualHost,
+        AuthDomain,
 
 
         #region MailDocum

@@ -13,6 +13,7 @@ using BL.Model.SystemCore.InternalModel;
 using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
+using DMS_WebAPI.DatabaseContext;
 using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Models;
 using EntityFramework.Extensions;

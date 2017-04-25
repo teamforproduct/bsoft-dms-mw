@@ -24,6 +24,13 @@ namespace BL.Model.DictionaryCore.IncomingModel
         [IgnoreDataMember]
         public string Password { get; set; }
 
+        [IgnoreDataMember]
+        public bool IsChangePasswordRequired { get; set; } = true;
+        [IgnoreDataMember]
+        public bool IsEmailConfirmRequired { get; set; } = true;
+        [IgnoreDataMember]
+        public bool EmailConfirmed { get; set; }
+
         /// <summary>
         /// Имейл, на который высылается письмо с приглашением
         /// </summary>

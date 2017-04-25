@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
-
-namespace BL.Model.AdminCore.WebUser
+﻿namespace BL.Model.AdminCore.WebUser
 {
     /// <summary>
     /// Модель для добавления нового аккаунта
@@ -33,6 +30,10 @@ namespace BL.Model.AdminCore.WebUser
         /// </summary>
         public string Password { get; set; }
 
+        public bool IsChangePasswordRequired { get; set; } = true;
 
+        public bool IsEmailConfirmRequired { get; set; } = true;
+
+        public bool EmailConfirmed { get; set; }
     }
 }

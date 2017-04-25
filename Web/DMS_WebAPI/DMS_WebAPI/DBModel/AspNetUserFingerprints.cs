@@ -43,7 +43,7 @@ namespace DMS_WebAPI.DBModel
         public DateTime LastChangeDate { get; set; }
 
         [ForeignKey("UserId")]
-        public ApplicationUser User { get; set; }
+        public AspNetUsers User { get; set; }
 
     }
 }

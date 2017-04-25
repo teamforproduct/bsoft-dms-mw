@@ -1,9 +1,6 @@
-﻿using DMS_WebAPI.DBModel;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
+﻿using System.Data.Entity;
 
-namespace DMS_WebAPI.Models
+namespace DMS_WebAPI.DatabaseContext
 {
     public class ApplicationDbInitializer : CreateDatabaseIfNotExists<ApplicationDbContext>
     {

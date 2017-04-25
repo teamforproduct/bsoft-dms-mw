@@ -253,8 +253,13 @@ namespace BL.Logic.Settings
             return val;
         }
 
+        public string GetAuthDomain()
+        {
+            var val = genSett.GetSetting<string>(EnumGeneralSettings.AuthDomain);
+            if (string.IsNullOrEmpty(val)) throw new SettingValueIsNotSet(EnumGeneralSettings.AuthDomain.ToString());
+            return val;
+        }
 
-
-
+        public string GetAuthAddress() => GetAuthDomain() + "." + GetMainHost();
     }
 }

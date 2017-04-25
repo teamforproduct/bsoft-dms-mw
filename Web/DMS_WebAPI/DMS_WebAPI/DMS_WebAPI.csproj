@@ -418,12 +418,15 @@
       <DependentUpon>201704240006103_ClientRequests.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="DBModel\AspNetUsers.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
     <Compile Include="Models\AccountBindingModels.cs" />
     <Compile Include="DatabaseContext\ApplicationDbInitializer.cs" />
     <Compile Include="Models\LicenseViewModels.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
-    <Compile Include="DatabaseContext\IdentityModels.cs" />
+    <Compile Include="DatabaseContext\ApplicationDbContext.cs" />
+    <Compile Include="Models\EmployeeCreationResult.cs" />
+    <Compile Include="Models\UserCreationResult.cs" />
     <Compile Include="Models\ModuleFeatureModel.cs" />
     <Compile Include="Models\WelcomeEmailModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

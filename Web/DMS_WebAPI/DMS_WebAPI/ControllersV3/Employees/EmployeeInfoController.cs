@@ -90,7 +90,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
 
             var tmpItem = webSeevice.AddUserEmployee(context, model);
 
-            return GetById(context, tmpItem);
+            return GetById(context, tmpItem.EmployeeId);
         }
 
         /// <summary>

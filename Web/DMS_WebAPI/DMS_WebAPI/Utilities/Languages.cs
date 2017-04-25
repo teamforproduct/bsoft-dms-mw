@@ -7,7 +7,7 @@ using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
-using DMS_WebAPI.Models;
+using DMS_WebAPI.DatabaseContext;
 using System;
 using System.Collections.Generic;
 using System.IO;
