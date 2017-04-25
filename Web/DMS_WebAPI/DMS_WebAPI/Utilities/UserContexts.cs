@@ -15,6 +15,7 @@ using Ninject;
 using Ninject.Parameters;
 using BL.Model.Enums;
 using BL.Model.SystemCore.Filters;
+using BL.Model.WebAPI.FrontModel;
 using DMS_WebAPI.Providers;
 
 namespace DMS_WebAPI.Utilities

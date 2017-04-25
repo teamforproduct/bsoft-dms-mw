@@ -14,6 +14,7 @@ using LinqKit;
 using BL.Database.Common;
 using BL.Logic.Common;
 using BL.Model.DictionaryCore.FrontModel.Employees;
+using BL.Model.WebAPI.FrontModel;
 
 namespace BL.Logic.Logging
 {

@@ -1,9 +1,8 @@
 ﻿using System;
 using BL.Model.Extensions;
 
-namespace BL.CrossCutting.Context
+namespace BL.Model.WebAPI.FrontModel
 {
-
     public class FrontSystemSession
     {
         //public string Token { get; set; }

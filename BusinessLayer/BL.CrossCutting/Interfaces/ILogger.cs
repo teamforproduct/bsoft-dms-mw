@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using BL.CrossCutting.Context;
 using System.Linq;
 using BL.Model.DictionaryCore.FrontModel.Employees;
+using BL.Model.WebAPI.FrontModel;
 
 namespace BL.CrossCutting.Interfaces
 {

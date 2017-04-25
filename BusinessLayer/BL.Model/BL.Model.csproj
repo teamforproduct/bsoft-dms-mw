@@ -675,6 +675,7 @@
     <Compile Include="WebAPI\FrontModel\FrontAspNetUserFingerprint.cs" />
     <Compile Include="WebAPI\FrontModel\FrontAspNetUserControlQuestion.cs" />
     <Compile Include="WebAPI\FrontModel\FrontAspNetUserClientServer.cs" />
+    <Compile Include="WebAPI\FrontModel\FrontSystemSession.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetUserControlQuestion.cs" />
     <Compile Include="WebAPI\IncomingModel\SetClientServer.cs" />
     <Compile Include="WebAPI\IncomingModel\SetUserLanguage.cs" />

@@ -25,6 +25,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
+using BL.Model.WebAPI.FrontModel;
 
 namespace DMS_WebAPI.ControllersV3.User
 {
