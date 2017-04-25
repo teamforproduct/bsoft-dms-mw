@@ -339,12 +339,12 @@ namespace BL.Database.Documents
                                             .Where(x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument)
                                             .Select(x => x.Id).ToList())
                     {
-                        var file = new DBModel.Document.DocumentFiles
+                        var file = new DocumentFiles
                         {
                             Id = docFileId,
                             IsMainVersion = false
                         };
-                        dbContext.DocumentFilesSet.Attach(file);
+                        dbContext.SafeAttach(file);
                         var entry = dbContext.Entry(file);
                         entry.Property(x => x.IsMainVersion).IsModified = true;
                     }
@@ -376,19 +376,19 @@ namespace BL.Database.Documents
                               .Where(x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument && x.Id != docFile.Id)
                               .Select(x => x.Id).ToList())
                     {
-                        var file = new DBModel.Document.DocumentFiles
+                        var file = new DocumentFiles
                         {
                             Id = docFileId,
                             IsMainVersion = false,
                         };
-                        dbContext.DocumentFilesSet.Attach(file);
+                        dbContext.SafeAttach(file);
                         var entryFile = dbContext.Entry(file);
                         entryFile.Property(x => x.IsMainVersion).IsModified = true;
                     }
                 }
 
                 var fl = ModelConverter.GetDbDocumentFile(docFile);
-                dbContext.DocumentFilesSet.Attach(fl);
+                dbContext.SafeAttach(fl);
                 var entry = dbContext.Entry(fl);
                 entry.Property(x => x.Name).IsModified = true;
                 entry.Property(x => x.Description).IsModified = true;
@@ -447,7 +447,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var fl = ModelConverter.GetDbDocumentFile(docFile);
-                dbContext.DocumentFilesSet.Attach(fl);
+                dbContext.SafeAttach(fl);
                 var entry = dbContext.Entry(fl);
                 entry.Property(x => x.IsPdfCreated).IsModified = true;
                 entry.Property(x => x.LastPdfAccessDate).IsModified = true;
@@ -466,7 +466,7 @@ namespace BL.Database.Documents
                 {
                     documentId = docFile.DocumentId;
                     var fl = ModelConverter.GetDbDocumentFile(docFile);
-                    dbContext.DocumentFilesSet.Attach(fl);
+                    dbContext.SafeAttach(fl);
                     var entry = dbContext.Entry(fl);
                     entry.Property(x => x.Name).IsModified = true;
                     entry.Property(x => x.LastChangeDate).IsModified = true;
@@ -566,7 +566,7 @@ namespace BL.Database.Documents
                         Id = fileId,
                         IsDeleted = true,
                     };
-                    dbContext.DocumentFilesSet.Attach(file);
+                    dbContext.SafeAttach(file);
                     var entry = dbContext.Entry(file);
 
                     if (docFile.Version > 0 && docFile.IsDeleted)

@@ -43,6 +43,8 @@ namespace BL.Model.DictionaryCore.IncomingModel
         [Required]
         //[EmailAddress]
         public string Login { get; set; }
+        [IgnoreDataMember]
+        public string Password { get; set; }
 
         public string Phone { get; set; }
 

@@ -156,7 +156,7 @@ namespace BL.Database.Admins
                     Name = model.Name,
                     IsDefault = model.IsDefault
                 };
-                dbContext.AdminLanguagesSet.Attach(item);
+                dbContext.SafeAttach(item);
                 var entity = dbContext.Entry(item);
 
                 entity.Property(x => x.Code).IsModified = true;
@@ -305,7 +305,7 @@ namespace BL.Database.Admins
                     Label = model.Label,
                     Value = model.Value
                 };
-                dbContext.AdminLanguageValuesSet.Attach(item);
+                dbContext.SafeAttach(item);
                 var entity = dbContext.Entry(item);
 
                 entity.Property(x => x.LanguageId).IsModified = true;

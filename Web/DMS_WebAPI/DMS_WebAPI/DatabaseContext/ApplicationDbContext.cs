@@ -1,54 +1,10 @@
-﻿using System.Security.Claims;
-using System.Threading.Tasks;
-using Microsoft.AspNet.Identity;
+﻿using DMS_WebAPI.DBModel;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.Data.Entity;
-using DMS_WebAPI.DBModel;
-using System.Collections.Generic;
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace DMS_WebAPI.Models
+namespace DMS_WebAPI.DatabaseContext
 {
-    // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
-    public class ApplicationUser : IdentityUser
-    {
-        public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager, string authenticationType)
-        {
-            // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
-            var userIdentity = await manager.CreateIdentityAsync(this, authenticationType);
-            // Add custom user claims here
-            return userIdentity;
-        }
-        [ForeignKey("UserId")]
-        public virtual ICollection<AspNetUserClientServer> ClientServer { get; set; }
-
-        [ForeignKey("UserId")]
-        public virtual ICollection<AspNetUserFingerprints> Fingerprints { get; set; }
-
-        [ForeignKey("UserId")]
-        public virtual ICollection<AspNetUserContexts> Contexts { get; set; }
-
-        public bool IsChangePasswordRequired { get; set; }
-        public bool IsEmailConfirmRequired { get; set; }
-        public bool IsLockout { get; set; }
-
-        public bool IsFingerprintEnabled { get; set; }
-
-        public int? ControlQuestionId { get; set; }
-
-        public string ControlAnswer { get; set; }
-
-        public DateTime CreateDate { get; set; }
-
-        public DateTime LastChangeDate { get; set; }
-
-        [ForeignKey("ControlQuestionId")]
-        public virtual SystemControlQuestions ControlQuestion { get; set; }
-
-    }
-
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<AspNetUsers>
     {
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

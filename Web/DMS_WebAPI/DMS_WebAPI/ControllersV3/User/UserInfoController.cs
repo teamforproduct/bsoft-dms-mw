@@ -3,11 +3,13 @@ using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
+using BL.Model.DictionaryCore.FrontModel.Employees;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
 using BL.Model.Users;
 using BL.Model.WebAPI.IncomingModel;
+using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Models;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
@@ -23,7 +25,6 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
-using BL.Model.DictionaryCore.FrontModel.Employees;
 
 namespace DMS_WebAPI.ControllersV3.User
 {
@@ -242,7 +243,7 @@ namespace DMS_WebAPI.ControllersV3.User
             }
 
             var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            ApplicationUser user = await userManager.FindByIdAsync(User.Identity.GetUserId());
+            AspNetUsers user = await userManager.FindByIdAsync(User.Identity.GetUserId());
 
             user.IsChangePasswordRequired = false;
 

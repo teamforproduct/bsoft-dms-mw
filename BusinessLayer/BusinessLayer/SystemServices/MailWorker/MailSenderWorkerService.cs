@@ -8,6 +8,8 @@ using BL.Database.SystemDb;
 using BL.Model.SystemCore.InternalModel;
 using Ninject;
 using Ninject.Parameters;
+using BL.Model.Enums;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.SystemServices.MailWorker
 {
@@ -53,17 +55,7 @@ namespace BL.Logic.SystemServices.MailWorker
                 {
                     var ctx = keyValuePair.Value;
 
-                    var msSetting = new InternalSendMailServerParameters
-                    {
-                        DatabaseKey = keyValuePair.Key,
-                        CheckInterval = SettingValues.GetMailSenderTimeoutMin(ctx),
-                        ServerType = SettingValues.GetMailInfoServerType(ctx),
-                        FromAddress = SettingValues.GetMailInfoSystemMail(ctx),
-                        Login = SettingValues.GetMailInfoLogin(ctx),
-                        Pass = SettingValues.GetMailInfoPassword(ctx),
-                        Server = SettingValues.GetMailInfoName(ctx),
-                        Port = SettingValues.GetMailInfoPort(ctx)
-                    };
+                    var msSetting = GetMailServerParameters(MailServers.Noreply, keyValuePair.Key);
 
                     // start timer only once. Do not do it regulary in case we don't know how much time sending of email take. So we can continue sending only when previous iteration was comlete
                     var tmr = new Timer(CheckForNewMessages, msSetting, msSetting.CheckInterval*60000, Timeout.Infinite); 
@@ -75,6 +67,52 @@ namespace BL.Logic.SystemServices.MailWorker
                 }
             }
         }
+
+        private InternalSendMailServerParameters GetMailServerParameters(MailServers server, string databaseKey = "") 
+        {
+            switch (server)
+            {
+                case MailServers.Docum:
+                    return new InternalSendMailServerParameters
+                    {
+                        DatabaseKey = databaseKey,
+                        CheckInterval = SettingValues.GetMailDocumSenderTimeoutMin(),
+                        ServerType = SettingValues.GetMailDocumServerType(),
+                        Server = SettingValues.GetMailDocumServerName(),
+                        Port = SettingValues.GetMailDocumServerPort(),
+                        FromAddress = SettingValues.GetMailDocumEmail(),
+                        Login = SettingValues.GetMailDocumLogin(),
+                        Pass = SettingValues.GetMailDocumPassword(),
+                    };
+                case MailServers.Noreply:
+                    return new InternalSendMailServerParameters
+                    {
+                        DatabaseKey = databaseKey,
+                        CheckInterval = SettingValues.GetMailNoreplySenderTimeoutMin(),
+                        ServerType = SettingValues.GetMailNoreplyServerType(),
+                        Server = SettingValues.GetMailNoreplyServerName(),
+                        Port = SettingValues.GetMailNoreplyServerPort(),
+                        FromAddress = SettingValues.GetMailNoreplyEmail(),
+                        Login = SettingValues.GetMailNoreplyLogin(),
+                        Pass = SettingValues.GetMailNoreplyPassword(),
+                    };
+                case MailServers.SMS:
+                    return new InternalSendMailServerParameters
+                    {
+                        DatabaseKey = databaseKey,
+                        CheckInterval = SettingValues.GetMailSMSSenderTimeoutMin(),
+                        ServerType = SettingValues.GetMailSMSServerType(),
+                        Server = SettingValues.GetMailSMSServerName(),
+                        Port = SettingValues.GetMailSMSServerPort(),
+                        FromAddress = SettingValues.GetMailSMSEmail(),
+                        Login = SettingValues.GetMailSMSLogin(),
+                        Pass = SettingValues.GetMailSMSPassword(),
+                    };
+            }
+
+            return null;
+        }
+
 
         public void CheckForNewMessages(object state)
         {
@@ -122,7 +160,7 @@ namespace BL.Logic.SystemServices.MailWorker
         }
 
 
-        public void SendMessage(IContext ctx, InternalSendMailParameters msSetting)
+        public void SendMessage(IContext context, InternalSendMailParameters msSetting)
         {
             var sender = DmsResolver.Current.Kernel.Get<IMailSender>(msSetting.ServerType.ToString());
             try
@@ -132,29 +170,21 @@ namespace BL.Logic.SystemServices.MailWorker
             }
             catch (Exception ex)
             {
-                Logger.Error(ctx, "Cannot send email!", msSetting, ex);
+                // Приходится высылать почту еще до создания клиента и клиентской базы
+                if (context != null) Logger.Error(context, "Cannot send email!", msSetting, ex);
             }
         }
 
-        public void SendMessage(IContext ctx, string toAddress, string subject, string body)
+        public void SendMessage(IContext context, MailServers server, string toAddress, string subject, string body)
         {
-            var msSetting = new InternalSendMailParameters(
-                    new InternalSendMailServerParameters
-                    {
-                        CheckInterval = SettingValues.GetMailSenderTimeoutMin(ctx),
-                        ServerType = SettingValues.GetMailInfoServerType(ctx),
-                        FromAddress = SettingValues.GetMailInfoSystemMail(ctx),
-                        Login = SettingValues.GetMailInfoLogin(ctx),
-                        Pass = SettingValues.GetMailInfoPassword(ctx),
-                        Server = SettingValues.GetMailInfoName(ctx),
-                        Port = SettingValues.GetMailInfoPort(ctx)
-                    })
+            var msSetting = new InternalSendMailParameters(GetMailServerParameters(server)
+                    )
             {
                 Body = body,
                 ToAddress = toAddress,
                 Subject = subject,
             };
-            SendMessage(ctx, msSetting);
+            SendMessage(context, msSetting);
         }
 
         public override void Dispose()

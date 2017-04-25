@@ -332,7 +332,7 @@ namespace BL.Database.Admins
 
         public Employee GetEmployeeForContext(IContext ctx, string userId)
         {
-            using (var dbContext = new DmsContext(ctx))// Тут контекст должен создаваться каждый раз т.к метод вызывается в случаях, когда рабочий контекст запроса еще не создан
+            var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var now = DateTime.UtcNow;
@@ -396,7 +396,7 @@ namespace BL.Database.Admins
             using (var transaction = Transactions.GetTransaction())
             {
                 AdminRoles dbModel = AdminModelConverter.GetDbRole(ctx, model);
-                dbContext.AdminRolesSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
 
@@ -1188,7 +1188,7 @@ namespace BL.Database.Admins
             using (var transaction = Transactions.GetTransaction())
             {
                 AdminSubordinations dbModel = AdminModelConverter.GetDbSubordination(ctx, model);
-                dbContext.AdminSubordinationsSet.Attach(dbModel);
+                dbContext.SafeAttach(dbModel);
                 dbContext.Entry(dbModel).State = System.Data.Entity.EntityState.Modified;
                 dbContext.SaveChanges();
                 transaction.Complete();

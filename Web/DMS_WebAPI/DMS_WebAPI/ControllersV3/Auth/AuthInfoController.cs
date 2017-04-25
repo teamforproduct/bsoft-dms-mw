@@ -6,6 +6,7 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Model.Users;
+using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Models;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
@@ -43,7 +44,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
 
             var webService = DmsResolver.Current.Get<WebAPIService>();
 
-            ApplicationUser user = await webService.GetUserAsync(ctx, Id);
+            AspNetUsers user = await webService.GetUserAsync(ctx, Id);
 
             if (user == null) throw new UserIsNotDefined();
 
@@ -172,7 +173,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
 
             var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
 
-            ApplicationUser user = await userManager.FindByIdAsync(userId);
+            AspNetUsers user = await userManager.FindByIdAsync(userId);
 
             if (user == null)
                 throw new UserIsNotDefined();

@@ -88,7 +88,6 @@ namespace DMS_WebAPI.Utilities
 
             var request_ctx = new UserContext(ctx);
             request_ctx.SetCurrentPosition(currentPositionId);
-            request_ctx.DbContext = DmsResolver.Current.Kernel.Get<DmsContext>(new ConstructorArgument("dbModel", request_ctx.CurrentDB));
             if (isThrowExeception && request_ctx.IsChangePasswordRequired)
                 throw new UserMustChangePassword();
 
@@ -167,7 +166,8 @@ namespace DMS_WebAPI.Utilities
             VerifyNumberOfConnectionsByNew(context, context.CurrentClientId, new List<DatabaseModel> { db });
 
             context.CurrentDB = db;
-
+            var dbCtx = DmsResolver.Current.Kernel.Get<DmsContext>(new ConstructorArgument("dbModel", context.CurrentDB));
+            context.DbContext = dbCtx;
             var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(context, context.CurrentEmployee.UserId);
 
             if (agentUser != null)
@@ -196,12 +196,15 @@ namespace DMS_WebAPI.Utilities
                 throw new UserAccessIsDenied();
             }
 
+            context.DbContext = null;
+            dbCtx.Dispose();
 
             KeepAlive(token);
 
         }
 
         /// <summary>
+        /// этап 3
         /// Формирование пользовательского контекста. 
         /// Добавляет к существующему пользовательскому контексту информации по логу
         /// </summary>
@@ -216,7 +219,8 @@ namespace DMS_WebAPI.Utilities
             if (!Contains(token)) throw new UserUnauthorized();
 
             var context = GetInternal(token);
-
+            var dbCtx = DmsResolver.Current.Kernel.Get<DmsContext>(new ConstructorArgument("dbModel", context.CurrentDB));
+            context.DbContext = dbCtx;
             var logger = DmsResolver.Current.Get<ILogger>();
 
             context.LoginLogInfo = browberInfo;
@@ -232,13 +236,14 @@ namespace DMS_WebAPI.Utilities
                     LogDateFrom = DateTime.UtcNow.AddMinutes(-60),
                     ObjectLog = $"\"FingerPrint\":\"{fingerPrint}\"",
                 });
-
+            context.DbContext = null;
+            dbCtx.Dispose();
             KeepAlive(token);
         }
 
         /// <summary>
         /// Формирование пользовательского контекста. 
-        /// Этап №3
+        /// Этап №4
         /// Добавляет к существующему пользовательскому контексту список занимаемых должностей и AccessLevel
         /// </summary>
         /// <param name="token"></param>

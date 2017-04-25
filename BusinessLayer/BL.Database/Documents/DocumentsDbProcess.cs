@@ -1468,7 +1468,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var doc = ModelConverter.GetDbDocument(document);
-                dbContext.DocumentsSet.Attach(doc);
+                dbContext.SafeAttach(doc);
                 var entry = dbContext.Entry(doc);
                 entry.Property(x => x.LastChangeDate).IsModified = true;
                 entry.Property(x => x.LastChangeUserId).IsModified = true;
@@ -1485,7 +1485,7 @@ namespace BL.Database.Documents
                 if (docAccess != null)
                 {
                     var acc = ModelConverter.GetDbDocumentAccess(docAccess);
-                    dbContext.DocumentAccessesSet.Attach(acc);
+                    dbContext.SafeAttach(acc);
                     var entryAcc = dbContext.Entry(acc);
                     entryAcc.Property(x => x.LastChangeDate).IsModified = true;
                     entryAcc.Property(x => x.LastChangeUserId).IsModified = true;
@@ -1791,7 +1791,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var doc = ModelConverter.GetDbDocument(document);
-                dbContext.DocumentsSet.Attach(doc);
+                dbContext.SafeAttach(doc);
                 var entry = dbContext.Entry(doc);
                 entry.Property(x => x.LastChangeDate).IsModified = true;
                 entry.Property(x => x.LastChangeUserId).IsModified = true;
@@ -1953,7 +1953,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var doc = ModelConverter.GetDbDocument(document);
-                dbContext.DocumentsSet.Attach(doc);
+                dbContext.SafeAttach(doc);
                 var entry = dbContext.Entry(doc);
                 entry.Property(x => x.LastChangeDate).IsModified = true;
                 entry.Property(x => x.LastChangeUserId).IsModified = true;
@@ -1990,7 +1990,7 @@ namespace BL.Database.Documents
                         dbContext.SaveChanges();
                         paper.LastPaperEventId = paperEventDb.Id;
                         var paperDb = ModelConverter.GetDbDocumentPaper(paper);
-                        dbContext.DocumentPapersSet.Attach(paperDb);
+                        dbContext.SafeAttach(paperDb);
                         var entryPaper = dbContext.Entry(paperDb);
                         entryPaper.Property(e => e.LastPaperEventId).IsModified = true;
                         entryPaper.Property(e => e.LastChangeUserId).IsModified = true;
@@ -2002,7 +2002,7 @@ namespace BL.Database.Documents
                 {
                     foreach (var fileDb in document.DocumentFiles.Select(ModelConverter.GetDbDocumentFile))
                     {
-                        dbContext.DocumentFilesSet.Attach(fileDb);
+                        dbContext.SafeAttach(fileDb);
                         var entryFile = dbContext.Entry(fileDb);
                         entryFile.Property(e => e.ExecutorPositionId).IsModified = true;
                         entryFile.Property(e => e.ExecutorPositionExecutorAgentId).IsModified = true;
@@ -2014,7 +2014,7 @@ namespace BL.Database.Documents
                 {
                     foreach (var taskDb in document.Tasks.Select(ModelConverter.GetDbDocumentTask))
                     {
-                        dbContext.DocumentTasksSet.Attach(taskDb);
+                        dbContext.SafeAttach(taskDb);
                         var entryTask = dbContext.Entry(taskDb);
                         entryTask.Property(e => e.PositionId).IsModified = true;
                         entryTask.Property(e => e.PositionExecutorAgentId).IsModified = true;
@@ -2163,7 +2163,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var doc = ModelConverter.GetDbDocument(document);
-                dbContext.DocumentsSet.Attach(doc);
+                dbContext.SafeAttach(doc);
                 var entry = dbContext.Entry(doc);
                 entry.Property(x => x.LastChangeDate).IsModified = true;
                 entry.Property(x => x.LastChangeUserId).IsModified = true;

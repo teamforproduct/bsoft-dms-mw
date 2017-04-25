@@ -19,7 +19,8 @@ namespace BL.Model.AdminCore.Clients
 
         [IgnoreDataMember]
         public string SMSCode { get; set; }
-
+        [IgnoreDataMember]
+        public string Password { get; set; }
 
         /// <summary>
         /// Доменное имя клиента сlient156454.ostrean.com

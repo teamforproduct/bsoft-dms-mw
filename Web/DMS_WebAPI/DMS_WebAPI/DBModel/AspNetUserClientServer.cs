@@ -21,7 +21,7 @@ namespace DMS_WebAPI.DBModel
 
 
         [ForeignKey("UserId")]
-        public ApplicationUser User { get; set; }
+        public AspNetUsers User { get; set; }
 
         [ForeignKey("ServerId")]
         public virtual AdminServers Server { get; set; }

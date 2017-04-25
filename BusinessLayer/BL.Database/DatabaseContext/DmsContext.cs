@@ -1,6 +1,4 @@
-﻿using System;
-using System.Data.Entity;
-using System.Data.Entity.Core.Objects.DataClasses;
+﻿using System.Data.Entity;
 using BL.Database.DBModel.Dictionary;
 using BL.Database.DBModel.Admin;
 using BL.Database.DBModel.Document;
@@ -49,21 +47,13 @@ namespace BL.Database.DatabaseContext
         {
         }
 
-
-        public bool CheckEntityIfExists<T>(T entity) where T : class
+        public void SafeAttach<T>(T entity) where T : class
         {
-            var objContext = ((IObjectContextAdapter)this).ObjectContext;
-            var objSet = objContext.CreateObjectSet<T>();
-            var entityKey = objContext.CreateEntityKey(objSet.EntitySet.Name, entity);
-
-            object foundEntity;
-            var exists = objContext.TryGetObjectByKey(entityKey, out foundEntity);
-
-            if (exists)
+            foreach (var entry in ChangeTracker.Entries<T>())
             {
-                objContext.Detach(foundEntity);
+                ((IObjectContextAdapter)this).ObjectContext.Detach(entry.Entity);
             }
-            return exists;
+            Set<T>().Attach(entity);
         }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Models;
 using DMS_WebAPI.Providers;
 using DMS_WebAPI.Results;
@@ -274,7 +275,7 @@ namespace DMS_WebAPI.Controllers
                 return new ChallengeResult(provider, this);
             }
 
-            ApplicationUser user = await UserManager.FindAsync(new UserLoginInfo(externalLogin.LoginProvider,
+            AspNetUsers user = await UserManager.FindAsync(new UserLoginInfo(externalLogin.LoginProvider,
                 externalLogin.ProviderKey));
 
             bool hasRegistered = user != null;

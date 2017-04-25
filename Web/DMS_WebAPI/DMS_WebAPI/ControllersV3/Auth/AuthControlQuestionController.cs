@@ -2,7 +2,7 @@
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Model.WebAPI.IncomingModel;
-using DMS_WebAPI.Models;
+using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Diagnostics;
@@ -55,7 +55,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
 
             var webService = DmsResolver.Current.Get<WebAPIService>();
 
-            ApplicationUser user = await webService.GetUser(model.UserName, model.Password);
+            AspNetUsers user = await webService.GetUser(model.UserName, model.Password);
 
             if (user == null) throw new UserNameOrPasswordIsIncorrect();
 
