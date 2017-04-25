@@ -22,7 +22,7 @@ namespace DMS_WebAPI.Utilities
     /// <summary>
     /// Коллекция пользовательских контекстов
     /// </summary>
-    public class UserContexts //: IDisposable
+    public class UserContexts
     {
         private readonly Dictionary<string, StoreInfo> _cacheContexts = new Dictionary<string, StoreInfo>();
         private const string _TOKEN_KEY = "Authorization";
@@ -392,6 +392,7 @@ namespace DMS_WebAPI.Utilities
             var keys = _cacheContexts.Where(x => x.Value.LastUsage.AddMinutes(_TIME_OUT_MIN) <= now).Select(x => x.Key).ToArray();
             foreach (var key in keys)
             {
+                // removeFromBase не убирать - это место исключение - его должно быть видно!!!
                 Remove(key, removeFromBase: false);
             }
         }
