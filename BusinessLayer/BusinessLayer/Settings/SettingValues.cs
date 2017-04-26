@@ -268,5 +268,7 @@ namespace BL.Logic.Settings
         }
 
         public string GetAuthAddress() => GetMainHostProtocol() + "://" + GetAuthDomain() + "." + GetMainHost();
+
+        public string GetClientAddress(string clientCode) => GetMainHostProtocol() + "://" + clientCode + "." + GetMainHost();
     }
 }

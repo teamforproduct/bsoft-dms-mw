@@ -345,8 +345,8 @@ namespace DMS_WebAPI.Utilities
                         {
                             UserName = res.UserName,
                             UserEmail = res.Email,
-                            ClientUrl = clientCode + "." + settVal.GetMainHost(),
-                            CabinetUrl = clientCode + "." + settVal.GetMainHost() + "/cabinet/",
+                            ClientUrl = settVal.GetClientAddress(clientCode),
+                            CabinetUrl = settVal.GetClientAddress(clientCode) + "/cabinet/",
                             OstreanEmail = settVal.GetMailDocumEmail(),
                             SpamUrl = settVal.GetMailNoreplyEmail(),
                         };
@@ -359,7 +359,7 @@ namespace DMS_WebAPI.Utilities
 
                 return res.EmployeeId;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 if (assignmentId > 0) dicService.ExecuteAction(EnumDictionaryActions.DeleteExecutor, context, assignmentId);
 
@@ -371,7 +371,7 @@ namespace DMS_WebAPI.Utilities
 
                 if (orgId > 0) dicService.ExecuteAction(EnumDictionaryActions.DeleteOrg, context, orgId);
 
-                throw e;
+                throw;
             }
         }
 
@@ -734,10 +734,10 @@ namespace DMS_WebAPI.Utilities
                 clientService.AddDictionary(ctx, model);
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 if (model.ClientId > 0) DeleteClient(model.ClientId);
-                throw e;
+                throw;
             }
 
             AddUserEmployeeInOrg(ctx, new AddEmployeeInOrg
@@ -979,7 +979,7 @@ namespace DMS_WebAPI.Utilities
                 UserName = user.UserName,
                 UserEmail = user.Email,
                 ClientUrl = callbackurl,
-                CabinetUrl = model.ClientCode + "." + settVal.GetMainHost() + "/cabinet/",
+                CabinetUrl = settVal.GetClientAddress(model.ClientCode) + "/cabinet/",
                 OstreanEmail = settVal.GetMailDocumEmail(),
                 SpamUrl = settVal.GetMailNoreplyEmail(),
             };
@@ -992,34 +992,6 @@ namespace DMS_WebAPI.Utilities
             mailService.SendMessage(null, MailServers.Noreply, model.Email, emailSubject, htmlContent);
         }
 
-        public void RestorePasswordAgentUser(RestorePasswordAgentUser model, string baseUrl, NameValueCollection query, string emailSubject, string renderPartialView)
-        {
-            if (query == null) query = new NameValueCollection();
-
-            var user = GetUser(model.Email);
-
-            if (user == null) throw new UserIsNotDefined();
-
-            if (user.IsLockout) throw new UserIsDeactivated(user.UserName);
-
-            var passwordResetToken = UserManager.GeneratePasswordResetToken(user.Id);
-
-            query.Add("UserId", user.Id);
-            query.Add("Code", passwordResetToken);
-
-
-            var builder = new UriBuilder(baseUrl);
-            builder.Query = query.ToString();
-            string callbackurl = builder.ToString();
-
-            var htmlContent = callbackurl.RenderPartialViewToString(renderPartialView);
-
-            var db = _webDb.GetClientServer(model.ClientCode);
-
-            var ctx = new AdminContext(db);
-            var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-            mailService.SendMessage(ctx, MailServers.Noreply, model.Email, emailSubject, htmlContent);
-        }
 
         public async Task ChangePasswordAgentUserAsync(ChangePasswordAgentUser model)
         {
