@@ -822,6 +822,7 @@ namespace DMS_WebAPI.Utilities
                 LastName = model.LastName,
                 HashCode = model.HashCode,
                 SMSCode = model.SMSCode,
+                CreateDate = DateTime.UtcNow,
             };
         }
 
