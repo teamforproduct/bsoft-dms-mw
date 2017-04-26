@@ -178,9 +178,9 @@ namespace DMS_WebAPI.Utilities
             VerifyNumberOfConnectionsByNew(context, context.Client.Id, new List<DatabaseModelForAdminContext> { db });
 
             context.CurrentDB = db;
-            var dbCtx = DmsResolver.Current.Kernel.Get<DmsContext>(new ConstructorArgument("dbModel", context.CurrentDB));
-            context.DbContext = dbCtx;
-            var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(context, context.Employee.UserId);
+
+            var admCtx = new AdminContext(new DatabaseModelForAdminContext(db));
+            var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(admCtx, context.Employee.UserId);
 
             if (agentUser != null)
             {
@@ -208,9 +208,6 @@ namespace DMS_WebAPI.Utilities
                 throw new UserAccessIsDenied();
             }
 
-            context.DbContext = null;
-            dbCtx.Dispose();
-
             KeepAlive(token);
 
         }
@@ -232,12 +229,11 @@ namespace DMS_WebAPI.Utilities
 
             if (context == null) throw new UserUnauthorized();
 
-            var dbCtx = DmsResolver.Current.Kernel.Get<DmsContext>(new ConstructorArgument("dbModel", context.CurrentDB));
-            context.DbContext = dbCtx;
             var logger = DmsResolver.Current.Get<ILogger>();
 
             context.LoginLogInfo = browserInfo;
-            context.LoginLogId = logger.Information(context, context.LoginLogInfo, (int)EnumObjects.System, (int)EnumSystemActions.Login, logDate: context.CreateDate, isCopyDate1: true);
+            var ctxDb = new AdminContext(new DatabaseModelForAdminContext(context.CurrentDB));// это необходимо т.к. если несколько сервисов одновременно попытаются установить позиции для одного контекста, то возникнет ошибка. 
+            context.LoginLogId = logger.Information(ctxDb, context.LoginLogInfo, (int)EnumObjects.System, (int)EnumSystemActions.Login, logDate: context.CreateDate, isCopyDate1: true);
 
             if (!string.IsNullOrEmpty(fingerPrint))
                 logger.DeleteSystemLogs(context, new FilterSystemLog
@@ -249,8 +245,6 @@ namespace DMS_WebAPI.Utilities
                     LogDateFrom = DateTime.UtcNow.AddMinutes(-60),
                     ObjectLog = $"\"FingerPrint\":\"{fingerPrint}\"",
                 });
-            context.DbContext = null;
-            dbCtx.Dispose();
             KeepAlive(token);
         }
 
@@ -266,12 +260,11 @@ namespace DMS_WebAPI.Utilities
             var context = GetContextInternal(token);
             if (context == null) throw new UserUnauthorized();
 
-            var dbCtx = DmsResolver.Current.Kernel.Get<DmsContext>(new ConstructorArgument("dbModel", context.CurrentDB));
-            context.DbContext = dbCtx;
-
+            var ctxDb = new UserContext(context);// это необходимо т.к. если несколько сервисов одновременно попытаются установить позиции для одного контекста, то возникнет ошибка. 
             context.CurrentPositionsIdList = positionsIdList;
-            context.CurrentPositionsAccessLevel = DmsResolver.Current.Get<IAdminService>().GetCurrentPositionsAccessLevel(context);
-            DmsResolver.Current.Get<IDictionaryService>().SetDictionaryAgentUserLastPositionChose(context, positionsIdList);
+            context.CurrentPositionsAccessLevel = DmsResolver.Current.Get<IAdminService>().GetCurrentPositionsAccessLevel(ctxDb);
+
+            DmsResolver.Current.Get<IDictionaryService>().SetDictionaryAgentUserLastPositionChose(ctxDb, positionsIdList);
             // Контекст полностью сформирован и готов к работе
             context.IsFormed = true;
             KeepAlive(token);
@@ -279,9 +272,6 @@ namespace DMS_WebAPI.Utilities
             // Сохраняю текущий контекст
             var webService = DmsResolver.Current.Get<WebAPIService>();
             webService.SaveUserContexts(context);
-
-            context.DbContext = null;
-            dbCtx.Dispose();
         }
 
         /// <summary>

@@ -71,10 +71,9 @@ namespace BL.CrossCutting.Context
                 Code = ctx.Client.Code
             };
 
-            IsChangePasswordRequired = ctx.IsChangePasswordRequired;
+            IsChangePasswordRequired = false;// for admin context that is not required
             DbContext =DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
             IsFormed = true;
-
         }
 
         /// <summary>
@@ -88,11 +87,15 @@ namespace BL.CrossCutting.Context
 
         public DatabaseModel CurrentDB { get; set; }
 
+        public bool CurrentPositionsIdListDefined => true;
+
         public List<int> CurrentPositionsIdList
         {
             get { return new List<int> { (int)EnumSystemPositions.AdminPosition }; }
             set { }
         }
+
+        public bool CurrentPositionsAccessLevelDefined => true;
 
         public Dictionary<int, int> CurrentPositionsAccessLevel
         {
@@ -101,7 +104,9 @@ namespace BL.CrossCutting.Context
         }
 
 
+        public bool CurrentPositionDefined => true;
         public int CurrentPositionId => _currentPositionId ?? (int)EnumSystemPositions.AdminPosition;
+        public bool CurrentAgentDefined => true;
 
         public int CurrentAgentId => (int)EnumSystemUsers.AdminUser;
 

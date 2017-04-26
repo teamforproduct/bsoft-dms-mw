@@ -39,8 +39,6 @@ namespace BL.Database.DatabaseContext
             {
                 this.Database.Initialize(true);
             }
-
-            //((IObjectContextAdapter)this).ObjectContext.ObjectMaterialized += (sender, e) => DateTimeKindAttribute.Apply(e.Entity);
         }
 
         public DmsContext(IContext context) : this(context.CurrentDB)

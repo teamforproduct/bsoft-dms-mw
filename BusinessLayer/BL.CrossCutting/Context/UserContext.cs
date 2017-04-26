@@ -81,32 +81,17 @@ namespace BL.CrossCutting.Context
 
                 DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
 
-                try
-                {
-                    _currentPositionId = ctx.CurrentPositionId;
-                }
-                catch (UserContextIsNotDefined)
-                {
-                    _currentPositionId = null;
-                }
+                _currentPositionId = ctx.CurrentPositionDefined
+                    ? ctx.CurrentPositionId
+                    :(int?)null;
 
-                try
-                {
-                    CurrentPositionsIdList = ctx.CurrentPositionsIdList?.ToList();
-                }
-                catch (UserContextIsNotDefined)
-                {
-                    CurrentPositionsIdList = null;
-                }
+                CurrentPositionsIdList = ctx.CurrentPositionsIdListDefined
+                    ? ctx.CurrentPositionsIdList?.ToList()
+                    :null;
 
-                try
-                {
-                    CurrentPositionsAccessLevel = ctx.CurrentPositionsAccessLevel?.ToDictionary(x => x.Key, x => x.Value);
-                }
-                catch (UserContextIsNotDefined)
-                {
-                    CurrentPositionsAccessLevel = null;
-                }
+                CurrentPositionsAccessLevel = ctx.CurrentPositionsAccessLevelDefined
+                    ? ctx.CurrentPositionsAccessLevel?.ToDictionary(x => x.Key, x => x.Value)
+                    :null;
             }
         }
 
@@ -119,6 +104,8 @@ namespace BL.CrossCutting.Context
             set { _isFormed = value; }
         }
 
+
+        public bool CurrentPositionsIdListDefined => !((_currentPositionsIdList == null) || !_currentPositionsIdList.Any());
 
         public List<int> CurrentPositionsIdList
         {
@@ -136,6 +123,8 @@ namespace BL.CrossCutting.Context
             }
         }
 
+        public bool CurrentPositionsAccessLevelDefined => !((_currentPositionsAccessLevel == null) || !_currentPositionsAccessLevel.Any());
+
         public Dictionary<int, int> CurrentPositionsAccessLevel
         {
             get
@@ -152,6 +141,8 @@ namespace BL.CrossCutting.Context
             }
         }
 
+        public bool CurrentPositionDefined => _currentPositionId.HasValue;
+
         public int CurrentPositionId
         {
             get
@@ -163,6 +154,8 @@ namespace BL.CrossCutting.Context
                 return _currentPositionId.Value;
             }
         }
+
+        public bool CurrentAgentDefined => Employee?.AgentId != null;
 
         public int CurrentAgentId
         {
