@@ -17,7 +17,9 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -69,23 +71,27 @@ namespace DMS_WebAPI.Providers
         /// <returns></returns>
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
+            // Подпорка для соапа
+            var scope = context.Request.Body.GetScope();
+
+            //if (scope == "fingerprint")
+            //{
+            //    using (StreamWriter sw = new StreamWriter(context.Request.Body, Encoding.Unicode))
+            //    {
+            //        sw.Write("&fingerprint=SoapUI");
+            //    }
+            //}
+
             var clientCode = context.Request.Body.GetClientCode();
             var clientSecret = context.Request.Body.GetClientSecret();
             var fingerprint = context.Request.Body.GetFingerprint();
-            var scope = context.Request.Body.GetScope();
-
-            // Подпорка для соапа
-            if (string.IsNullOrEmpty(fingerprint) && scope == "fingerprint")
-            {
-                fingerprint = "SoapUI";
-            }
-
+            
             // код клиента - обязательный параметр
             if (string.IsNullOrEmpty(clientCode?.Trim())) throw new ClientCodeRequired();
 
             // отпечаток - обязательный параметр (решили сделать обязательным, хотя дальше по логике он может не понадобиться)
             // не можем передавать из соапа
-            if (string.IsNullOrEmpty(fingerprint?.Trim())) throw new FingerprintRequired();
+            //if (string.IsNullOrEmpty(fingerprint?.Trim())) throw new FingerprintRequired();
 
             // Если передали несуществующие код клиента. дальше не пускаю
             var webService = DmsResolver.Current.Get<WebAPIService>();
