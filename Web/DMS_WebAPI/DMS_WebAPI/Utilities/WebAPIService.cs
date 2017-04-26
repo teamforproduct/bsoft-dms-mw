@@ -561,25 +561,42 @@ namespace DMS_WebAPI.Utilities
 
             if (string.IsNullOrEmpty(model.ClientName)) model.ClientName = model.ClientCode;
 
-            model.HashCode = model.ClientCode.md5();
-            model.SMSCode = DateTime.UtcNow.ToString("ssHHmm");
+            int res = 0;
 
-            var id = _webDb.AddClientRequest(model);
+            try
+            {
+                model.HashCode = model.ClientCode.md5();
+                model.SMSCode = DateTime.UtcNow.ToString("ssHHmm");
 
-            var tmpService = DmsResolver.Current.Get<ISettingValues>();
-            var addr = tmpService.GetAuthAddress();
-            var callbackurl = new Uri(new Uri(addr), "new-client").AbsoluteUri;
+                if (string.IsNullOrEmpty(model.Language))
+                {
+                    var languages = DmsResolver.Current.Get<ILanguages>();
+                    var language = languages.GetDefaultLanguage();
+                    if (language != null) model.Language = language.Code;
+                }
 
-            // isNew можно вычислить только на текущий момент времени (пользователь может сделать несколько компаний)
-            var isNew = !ExistsUser(model.Email);
+                res = _webDb.AddClientRequest(model);
 
-            callbackurl += String.Format("?hash={0}&login={1}&code={2}&isNew={3}", model.HashCode, model.Email, model.ClientCode, isNew);
+                var tmpService = DmsResolver.Current.Get<ISettingValues>();
+                var addr = tmpService.GetAuthAddress();
+                var callbackurl = new Uri(new Uri(addr), "new-client").AbsoluteUri;
 
-            var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.RestorePasswordAgentUserVerificationEmail);
-            var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-            mailService.SendMessage(null, MailServers.Docum, model.Email, "Ostrean. Создание клиента", htmlContent);
+                // isNew можно вычислить только на текущий момент времени (пользователь может сделать несколько компаний)
+                var isNew = !ExistsUser(model.Email);
 
-            return id;
+                callbackurl += String.Format("?hash={0}&login={1}&code={2}&isNew={3}&language={4}", model.HashCode, model.Email, model.ClientCode, isNew, model.Language);
+
+                var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.RestorePasswordAgentUserVerificationEmail);
+                var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
+                mailService.SendMessage(null, MailServers.Docum, model.Email, "Ostrean. Создание клиента", htmlContent);
+            }
+            catch (Exception)
+            {
+                if (res > 0) _webDb.DeleteClientRequest(new FilterAspNetClientRequests { IDs = new List<int> { res } });
+                throw;
+            }
+
+            return res;
         }
 
 

@@ -39,7 +39,7 @@ namespace BL.Logic.Settings
              cliSett.GetSettingWithWriteDefaultIfEmpty<bool>(ctx, EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED);
 
         public int GetFulltextRowLimit() =>
-            genSett.GetSetting<int>( EnumGeneralSettings.FulltextRowLimit);
+            genSett.GetSetting<int>(EnumGeneralSettings.FulltextRowLimit);
 
 
         public string GetFileStorePath()
@@ -246,6 +246,13 @@ namespace BL.Logic.Settings
             return val;
         }
 
+        public string GetMainHostProtocol()
+        {
+            var val = genSett.GetSetting<string>(EnumGeneralSettings.MainHostProtocol);
+            if (string.IsNullOrEmpty(val)) throw new SettingValueIsNotSet(EnumGeneralSettings.MainHostProtocol.ToString());
+            return val;
+        }
+
         public string GetVirtualHost()
         {
             var val = genSett.GetSetting<string>(EnumGeneralSettings.VirtualHost);
@@ -260,6 +267,6 @@ namespace BL.Logic.Settings
             return val;
         }
 
-        public string GetAuthAddress() => GetAuthDomain() + "." + GetMainHost();
+        public string GetAuthAddress() => GetMainHostProtocol() + "://" + GetAuthDomain() + "." + GetMainHost();
     }
 }
