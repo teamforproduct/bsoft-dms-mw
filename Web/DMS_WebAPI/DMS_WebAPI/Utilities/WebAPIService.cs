@@ -1220,13 +1220,10 @@ namespace DMS_WebAPI.Utilities
             {
                 return _webDb.AddUserContext(model);
             }
-            else
-            {
-                model.Id = uc.Id;
-                _webDb.UpdateUserContext(model);
-                return model.Id;
-            }
 
+            model.Id = uc.Id;
+            _webDb.UpdateUserContext(model);
+            return model.Id;
         }
 
         public void UpdateUserContextLastChangeDate(string token, DateTime date)

@@ -56,7 +56,15 @@ namespace BL.CrossCutting.Helpers.CashService
         public void AddOrUpdateCasheData(IContext ctx, string key, Func<object> getData)
         {
             var intK = GetInternalKey(key, ctx.Client.Id);
-            _queryCashe.AddOrUpdate(intK, getData);
+            _locker.EnterWriteLock();
+            try
+            {
+                _queryCashe.AddOrUpdate(intK, getData);
+            }
+            finally
+            {
+                _locker.ExitWriteLock();
+            }
             UpdateData(intK);
         }
 
