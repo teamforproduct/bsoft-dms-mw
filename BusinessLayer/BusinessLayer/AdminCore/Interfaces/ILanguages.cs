@@ -19,5 +19,7 @@ namespace BL.Logic.AdminCore.Interfaces
         int GetLanguageIdByCode(string languageCode);
 
         int GetLanguageIdByHttpContext();
+
+        InternalAdminLanguage GetDefaultLanguage();
     }
 }

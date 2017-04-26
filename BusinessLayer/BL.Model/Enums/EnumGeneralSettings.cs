@@ -7,6 +7,7 @@
     {
         ServerForNewClient,
         MainHost,
+        MainHostProtocol,
         VirtualHost,
         AuthDomain,
 

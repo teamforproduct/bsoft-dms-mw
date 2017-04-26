@@ -345,8 +345,8 @@ namespace DMS_WebAPI.Utilities
                         {
                             UserName = res.UserName,
                             UserEmail = res.Email,
-                            ClientUrl = clientCode + "." + settVal.GetMainHost(),
-                            CabinetUrl = clientCode + "." + settVal.GetMainHost() + "/cabinet/",
+                            ClientUrl = settVal.GetClientAddress(clientCode),
+                            CabinetUrl = settVal.GetClientAddress(clientCode) + "/cabinet/",
                             OstreanEmail = settVal.GetMailDocumEmail(),
                             SpamUrl = settVal.GetMailNoreplyEmail(),
                         };
@@ -359,7 +359,7 @@ namespace DMS_WebAPI.Utilities
 
                 return res.EmployeeId;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 if (assignmentId > 0) dicService.ExecuteAction(EnumDictionaryActions.DeleteExecutor, context, assignmentId);
 
@@ -371,7 +371,7 @@ namespace DMS_WebAPI.Utilities
 
                 if (orgId > 0) dicService.ExecuteAction(EnumDictionaryActions.DeleteOrg, context, orgId);
 
-                throw e;
+                throw;
             }
         }
 
@@ -561,29 +561,58 @@ namespace DMS_WebAPI.Utilities
 
             if (string.IsNullOrEmpty(model.ClientName)) model.ClientName = model.ClientCode;
 
-            model.HashCode = model.ClientCode.md5();
-            model.SMSCode = DateTime.UtcNow.ToString("ssHHmm");
+            int res = 0;
 
-            var id = _webDb.AddClientRequest(model);
+            try
+            {
+                model.HashCode = model.ClientCode.md5();
+                model.SMSCode = DateTime.UtcNow.ToString("ssHHmm");
 
-            var tmpService = DmsResolver.Current.Get<ISettingValues>();
-            var addr = tmpService.GetAuthAddress();
-            var callbackurl = new Uri(new Uri(addr), "new-client").AbsoluteUri;
+                if (string.IsNullOrEmpty(model.Language))
+                {
+                    var languages = DmsResolver.Current.Get<ILanguages>();
+                    var language = languages.GetDefaultLanguage();
+                    if (language != null) model.Language = language.Code;
+                }
 
-            // isNew можно вычислить только на текущий момент времени (пользователь может сделать несколько компаний)
-            var isNew = !ExistsUser(model.Email);
+                res = _webDb.AddClientRequest(model);
 
-            callbackurl += String.Format("?hash={0}&login={1}&code={2}&isNew={3}", model.HashCode, model.Email, model.ClientCode, isNew);
+                var tmpService = DmsResolver.Current.Get<ISettingValues>();
+                var addr = tmpService.GetAuthAddress();
+                var callbackurl = new Uri(new Uri(addr), "new-client").AbsoluteUri;
 
-            var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.RestorePasswordAgentUserVerificationEmail);
-            var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-            mailService.SendMessage(null, MailServers.Docum, model.Email, "Ostrean. Создание клиента", htmlContent);
+                // isNew можно вычислить только на текущий момент времени (пользователь может сделать несколько компаний)
+                var isNew = !ExistsUser(model.Email);
 
-            return id;
+                callbackurl += String.Format("?hash={0}&login={1}&code={2}&isNew={3}&language={4}", model.HashCode, model.Email, model.ClientCode, isNew, model.Language);
+
+                var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.RestorePasswordAgentUserVerificationEmail);
+                var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
+                mailService.SendMessage(null, MailServers.Docum, model.Email, "Ostrean. Создание клиента", htmlContent);
+            }
+            catch (Exception)
+            {
+                if (res > 0) _webDb.DeleteClientRequest(new FilterAspNetClientRequests { IDs = new List<int> { res } });
+                throw;
+            }
+
+            return res;
+        }
+
+        public void DeleteOldClientRequest()
+        {
+            // Заявки которые старее 24 часов
+            _webDb.DeleteClientRequest(new FilterAspNetClientRequests { DateCreateLess = DateTime.UtcNow.AddDays(-1) });
+        }
+
+        public void DeleteOldUserContexts()
+        {
+            // контексты, которые не испольвались 14 дней
+            _webDb.DeleteUserContexts(new FilterAspNetUserContext { LastUsegeDateLess = DateTime.UtcNow.AddDays(-14) });
         }
 
 
-        public void AddClientByEmail(AddClientFromHash model)
+public async Task AddClientByEmail(AddClientFromHash model)
         {
             var request = _webDb.GetClientRequests(new FilterAspNetClientRequests { HashCodeExact = model.Hash }).FirstOrDefault();
 
@@ -591,28 +620,29 @@ namespace DMS_WebAPI.Utilities
 
             request.Password = model.Password;
 
-            AddClientSaaS(request);
+            var isDone = await AddClientSaaS(request);
 
-            _webDb.DeleteClientRequest(new FilterAspNetClientRequests { HashCodeExact = model.Hash });
+            if (isDone) _webDb.DeleteClientRequest(new FilterAspNetClientRequests { HashCodeExact = model.Hash });
         }
 
-        public void AddClientBySMS(AddClientFromSMS model)
+        public async Task AddClientBySMS(AddClientFromSMS model)
         {
             var request = _webDb.GetClientRequests(new FilterAspNetClientRequests { SMSCodeExact = model.SMSCode }).FirstOrDefault();
 
             if (request == null) throw new ClientRequestIsNotFound();
 
-            AddClientSaaS(request);
+            var isDone = await AddClientSaaS(request);
 
-            _webDb.DeleteClientRequest(new FilterAspNetClientRequests { SMSCodeExact = model.SMSCode });
+            if (isDone) _webDb.DeleteClientRequest(new FilterAspNetClientRequests { SMSCodeExact = model.SMSCode });
         }
 
-        public async Task AddClientSaaS(AddClientSaaS model)
+        public async Task<bool> AddClientSaaS(AddClientSaaS model)
         {
             // Проверка уникальности доменного имени
             if (_webDb.ExistsClients(new FilterAspNetClients { Code = model.ClientCode })) throw new ClientCodeAlreadyExists(model.ClientCode);
 
             var client = new HttpClient();
+            var hostCreated = false;
 
             var tmpService = DmsResolver.Current.Get<ISettingValues>();
             var mHost = tmpService.GetMainHost();
@@ -627,7 +657,7 @@ namespace DMS_WebAPI.Utilities
             switch (responseString)
             {
                 case "Created":
-                    //- успешное выполнение
+                    hostCreated = true;//- успешное выполнение
                     break;
                 case "BadRequest":
                     throw new ClientCodeRequired(); //- не указан параметр fqdn
@@ -717,10 +747,16 @@ namespace DMS_WebAPI.Utilities
                 clientService.AddDictionary(ctx, model);
 
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 if (model.ClientId > 0) DeleteClient(model.ClientId);
-                throw e;
+                if (hostCreated)
+                {
+                    request = $"{vHost}/deletehost.pl?fqdn={model.ClientCode}.{mHost}";
+                    responseString = await client.GetStringAsync(request);
+                } 
+
+                throw;
             }
 
             AddUserEmployeeInOrg(ctx, new AddEmployeeInOrg
@@ -746,7 +782,7 @@ namespace DMS_WebAPI.Utilities
 
 
             //UserManager.AddLogin(userId, new UserLoginInfo {    })
-
+            return true;
 
         }
 
@@ -962,7 +998,7 @@ namespace DMS_WebAPI.Utilities
                 UserName = user.UserName,
                 UserEmail = user.Email,
                 ClientUrl = callbackurl,
-                CabinetUrl = model.ClientCode + "." + settVal.GetMainHost() + "/cabinet/",
+                CabinetUrl = settVal.GetClientAddress(model.ClientCode) + "/cabinet/",
                 OstreanEmail = settVal.GetMailDocumEmail(),
                 SpamUrl = settVal.GetMailNoreplyEmail(),
             };
@@ -975,34 +1011,6 @@ namespace DMS_WebAPI.Utilities
             mailService.SendMessage(null, MailServers.Noreply, model.Email, emailSubject, htmlContent);
         }
 
-        public void RestorePasswordAgentUser(RestorePasswordAgentUser model, string baseUrl, NameValueCollection query, string emailSubject, string renderPartialView)
-        {
-            if (query == null) query = new NameValueCollection();
-
-            var user = GetUser(model.Email);
-
-            if (user == null) throw new UserIsNotDefined();
-
-            if (user.IsLockout) throw new UserIsDeactivated(user.UserName);
-
-            var passwordResetToken = UserManager.GeneratePasswordResetToken(user.Id);
-
-            query.Add("UserId", user.Id);
-            query.Add("Code", passwordResetToken);
-
-
-            var builder = new UriBuilder(baseUrl);
-            builder.Query = query.ToString();
-            string callbackurl = builder.ToString();
-
-            var htmlContent = callbackurl.RenderPartialViewToString(renderPartialView);
-
-            var db = _webDb.GetClientServer(model.ClientCode);
-
-            var ctx = new AdminContext(db);
-            var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-            mailService.SendMessage(ctx, MailServers.Noreply, model.Email, emailSubject, htmlContent);
-        }
 
         public async Task ChangePasswordAgentUserAsync(ChangePasswordAgentUser model)
         {

@@ -561,6 +561,11 @@ namespace DMS_WebAPI.Utilities
                     qry = qry.Where(x => filter.SMSCodeExact.Equals(x.SMSCode));
                 }
 
+                if (filter.DateCreateLess.HasValue)
+                {
+                    qry = qry.Where(x => x.CreateDate < filter.DateCreateLess.Value);
+                }
+
             }
 
             return qry;
@@ -817,6 +822,7 @@ namespace DMS_WebAPI.Utilities
                 LastName = model.LastName,
                 HashCode = model.HashCode,
                 SMSCode = model.SMSCode,
+                CreateDate = DateTime.UtcNow,
             };
         }
 
@@ -1391,6 +1397,10 @@ namespace DMS_WebAPI.Utilities
                     qry = qry.Where(x => filter.TokenExact.Equals(x.Token, StringComparison.OrdinalIgnoreCase));
                 }
 
+                if (filter.LastUsegeDateLess.HasValue)
+                {
+                    qry = qry.Where(x => x.LastChangeDate < filter.LastUsegeDateLess.Value);
+                }
 
             }
 

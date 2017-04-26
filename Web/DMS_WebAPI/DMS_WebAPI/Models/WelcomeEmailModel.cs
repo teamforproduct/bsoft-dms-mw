@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace DMS_WebAPI.Models
+﻿namespace DMS_WebAPI.Models
 {
     public class WelcomeEmailModel
     {

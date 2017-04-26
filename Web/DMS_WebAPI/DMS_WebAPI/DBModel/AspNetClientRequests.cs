@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DMS_WebAPI.DBModel
@@ -40,6 +41,8 @@ namespace DMS_WebAPI.DBModel
 
         [MaxLength(32)]
         public string HashCode { get; set; }
+
+        public DateTime CreateDate { get; set; }
 
     }
 }

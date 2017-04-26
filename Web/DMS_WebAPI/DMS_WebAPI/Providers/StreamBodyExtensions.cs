@@ -19,6 +19,14 @@ namespace DMS_WebAPI.Providers
             return GetFromBody(Body, "fingerprint");
         }
 
+        public static string GetScope(this Stream Body)
+        {
+            return GetFromBody(Body, "scope");
+        }
+        public static string GetClientSecret(this Stream Body)
+        {
+            return GetFromBody(Body, "client_secret");
+        }
         public static string GetControlAnswer(this Stream Body)
         {
             var res = GetFromBody(Body, "answer");
@@ -51,5 +59,24 @@ namespace DMS_WebAPI.Providers
 
             return value;
         }
+
+
+        public static string GetString(this Stream Body)
+        {
+            var value = string.Empty;
+
+            try
+            {
+                Body.Position = 0;
+                var body = new StreamReader(Body);
+                //var bodyStr = HttpUtility.UrlDecode(body.ReadToEnd());
+                value = body.ReadToEnd();
+
+            }
+            catch (Exception ex) { }
+
+            return value;
+        }
+
     }
 }

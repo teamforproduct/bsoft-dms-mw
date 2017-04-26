@@ -210,6 +210,14 @@ namespace DMS_WebAPI.Utilities
 
         }
 
+        public InternalAdminLanguage GetDefaultLanguage()
+        {
+            var languageInfo = GetLanguageInfo();
+            var language = languageInfo.Languages.FirstOrDefault(x => x.IsDefault);
+            return language;
+
+        }
+
         public int GetLanguageIdByHttpContext()
         {
             var code = GetLanguageFromHttpContext(HttpContext.Current);

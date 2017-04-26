@@ -16,7 +16,7 @@ namespace DMS_WebAPI.DependencyInjection
             Bind<WebAPIDbProcess>().ToSelf().InSingletonScope();
             Bind<WebAPIService>().ToSelf().InSingletonScope();
 
-            Bind<UserContextsWorkerService>().ToSelf().InSingletonScope();
+            Bind<AuthWorkerService>().ToSelf().InSingletonScope();
             Bind<LicencesWorkerService>().ToSelf().InSingletonScope();
             //Bind<Languages>().ToSelf().InSingletonScope();
             Bind<ILanguages>().To <Languages>().InSingletonScope();

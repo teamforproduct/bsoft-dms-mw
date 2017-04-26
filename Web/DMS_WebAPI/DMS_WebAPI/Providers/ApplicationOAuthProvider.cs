@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.Enums;
@@ -8,7 +9,6 @@ using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
 using DMS_WebAPI.DBModel;
-using DMS_WebAPI.Models;
 using DMS_WebAPI.Utilities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -17,7 +17,9 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -69,9 +71,21 @@ namespace DMS_WebAPI.Providers
         /// <returns></returns>
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
-            var clientCode = context.Request.Body.GetClientCode();
-            var fingerprint = context.Request.Body.GetFingerprint();
+            // Подпорка для соапа
+            var scope = context.Request.Body.GetScope();
 
+            //if (scope == "fingerprint")
+            //{
+            //    using (StreamWriter sw = new StreamWriter(context.Request.Body, Encoding.Unicode))
+            //    {
+            //        sw.Write("&fingerprint=SoapUI");
+            //    }
+            //}
+
+            var clientCode = context.Request.Body.GetClientCode();
+            var clientSecret = context.Request.Body.GetClientSecret();
+            var fingerprint = context.Request.Body.GetFingerprint();
+            
             // код клиента - обязательный параметр
             if (string.IsNullOrEmpty(clientCode?.Trim())) throw new ClientCodeRequired();
 

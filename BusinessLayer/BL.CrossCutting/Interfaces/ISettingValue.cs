@@ -9,6 +9,7 @@ namespace BL.CrossCutting.Interfaces
         string GetMainHost();
         string GetVirtualHost();
 
+        string GetClientAddress(string clientCode);
         string GetAuthAddress();
 
         bool GetSubordinationsSendAllForExecution(IContext ctx);
