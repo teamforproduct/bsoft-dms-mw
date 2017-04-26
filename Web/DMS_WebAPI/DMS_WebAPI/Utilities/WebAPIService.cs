@@ -599,8 +599,20 @@ namespace DMS_WebAPI.Utilities
             return res;
         }
 
+        public void DeleteOldClientRequest()
+        {
+            // Заявки которые старее 24 часов
+            _webDb.DeleteClientRequest(new FilterAspNetClientRequests { DateCreateLess = DateTime.UtcNow.AddDays(-1) });
+        }
 
-        public async Task AddClientByEmail(AddClientFromHash model)
+        public void DeleteOldUserContexts()
+        {
+            // контексты, которые не испольвались 14 дней
+            _webDb.DeleteUserContexts(new FilterAspNetUserContext { LastUsegeDateLess = DateTime.UtcNow.AddDays(-14) });
+        }
+
+
+public async Task AddClientByEmail(AddClientFromHash model)
         {
             var request = _webDb.GetClientRequests(new FilterAspNetClientRequests { HashCodeExact = model.Hash }).FirstOrDefault();
 
@@ -630,6 +642,7 @@ namespace DMS_WebAPI.Utilities
             if (_webDb.ExistsClients(new FilterAspNetClients { Code = model.ClientCode })) throw new ClientCodeAlreadyExists(model.ClientCode);
 
             var client = new HttpClient();
+            var hostCreated = false;
 
             var tmpService = DmsResolver.Current.Get<ISettingValues>();
             var mHost = tmpService.GetMainHost();
@@ -644,7 +657,7 @@ namespace DMS_WebAPI.Utilities
             switch (responseString)
             {
                 case "Created":
-                    //- успешное выполнение
+                    hostCreated = true;//- успешное выполнение
                     break;
                 case "BadRequest":
                     throw new ClientCodeRequired(); //- не указан параметр fqdn
@@ -737,6 +750,12 @@ namespace DMS_WebAPI.Utilities
             catch (Exception)
             {
                 if (model.ClientId > 0) DeleteClient(model.ClientId);
+                if (hostCreated)
+                {
+                    request = $"{vHost}/deletehost.pl?fqdn={model.ClientCode}.{mHost}";
+                    responseString = await client.GetStringAsync(request);
+                } 
+
                 throw;
             }
 

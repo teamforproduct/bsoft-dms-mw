@@ -85,7 +85,7 @@ namespace DMS_WebAPI
 
 #if !DEBUG
             // Очистка устаревших пользовательских контекстов
-            var userContextService = DmsResolver.Current.Get<UserContextsWorkerService>();
+            var userContextService = DmsResolver.Current.Get<AuthWorkerService>();
             userContextService.Initialize();
 #endif
 

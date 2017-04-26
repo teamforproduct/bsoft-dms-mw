@@ -379,6 +379,7 @@ namespace DMS_WebAPI.Utilities
             .ForEach(x =>
                 {
                     var ctx = (x.Value.StoreObject as IContext);
+                    // трясу ежеминутно базу и записываю в нее даты построчно
                     logger.UpdateLogDate1(ctx, ctx.LoginLogId.Value, x.Value.LastUsage);
                 });
 
