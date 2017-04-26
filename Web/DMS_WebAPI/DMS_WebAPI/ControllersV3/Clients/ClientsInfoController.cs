@@ -3,6 +3,7 @@ using BL.Model.AdminCore.Clients;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using System.Threading.Tasks;
 using System.Web.Http;
 
 namespace DMS_WebAPI.ControllersV3.Clients
@@ -37,10 +38,10 @@ namespace DMS_WebAPI.ControllersV3.Clients
         /// <returns></returns>
         [HttpPost]
         [Route("Create/ByHash")]
-        public IHttpActionResult AddClient([FromBody]AddClientFromHash model)
+        public async Task<IHttpActionResult> AddClient([FromBody]AddClientFromHash model)
         {
             var tmpService = DmsResolver.Current.Get<WebAPIService>();
-            tmpService.AddClientByEmail(model);
+            await tmpService.AddClientByEmail(model);
             return new JsonResult(null, this);
         }
 
@@ -51,10 +52,10 @@ namespace DMS_WebAPI.ControllersV3.Clients
         /// <returns></returns>
         [HttpPost]
         [Route("Create/BySMS")]
-        public IHttpActionResult AddClient([FromBody]AddClientFromSMS model)
+        public async Task<IHttpActionResult> AddClient([FromBody]AddClientFromSMS model)
         {
             var tmpService = DmsResolver.Current.Get<WebAPIService>();
-            tmpService.AddClientBySMS(model);
+            await tmpService.AddClientBySMS(model);
             return new JsonResult(null, this);
         }
 

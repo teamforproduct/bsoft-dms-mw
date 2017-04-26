@@ -600,7 +600,7 @@ namespace DMS_WebAPI.Utilities
         }
 
 
-        public void AddClientByEmail(AddClientFromHash model)
+        public async Task AddClientByEmail(AddClientFromHash model)
         {
             var request = _webDb.GetClientRequests(new FilterAspNetClientRequests { HashCodeExact = model.Hash }).FirstOrDefault();
 
@@ -608,23 +608,23 @@ namespace DMS_WebAPI.Utilities
 
             request.Password = model.Password;
 
-            AddClientSaaS(request);
+            var isDone = await AddClientSaaS(request);
 
-            _webDb.DeleteClientRequest(new FilterAspNetClientRequests { HashCodeExact = model.Hash });
+            if (isDone) _webDb.DeleteClientRequest(new FilterAspNetClientRequests { HashCodeExact = model.Hash });
         }
 
-        public void AddClientBySMS(AddClientFromSMS model)
+        public async Task AddClientBySMS(AddClientFromSMS model)
         {
             var request = _webDb.GetClientRequests(new FilterAspNetClientRequests { SMSCodeExact = model.SMSCode }).FirstOrDefault();
 
             if (request == null) throw new ClientRequestIsNotFound();
 
-            AddClientSaaS(request);
+            var isDone = await AddClientSaaS(request);
 
-            _webDb.DeleteClientRequest(new FilterAspNetClientRequests { SMSCodeExact = model.SMSCode });
+            if (isDone) _webDb.DeleteClientRequest(new FilterAspNetClientRequests { SMSCodeExact = model.SMSCode });
         }
 
-        public async Task AddClientSaaS(AddClientSaaS model)
+        public async Task<bool> AddClientSaaS(AddClientSaaS model)
         {
             // Проверка уникальности доменного имени
             if (_webDb.ExistsClients(new FilterAspNetClients { Code = model.ClientCode })) throw new ClientCodeAlreadyExists(model.ClientCode);
@@ -763,7 +763,7 @@ namespace DMS_WebAPI.Utilities
 
 
             //UserManager.AddLogin(userId, new UserLoginInfo {    })
-
+            return true;
 
         }
 
