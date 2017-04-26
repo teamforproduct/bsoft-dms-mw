@@ -51,5 +51,24 @@ namespace DMS_WebAPI.Providers
 
             return value;
         }
+
+
+        public static string GetString(this Stream Body)
+        {
+            var value = string.Empty;
+
+            try
+            {
+                Body.Position = 0;
+                var body = new StreamReader(Body);
+                //var bodyStr = HttpUtility.UrlDecode(body.ReadToEnd());
+                value = body.ReadToEnd();
+
+            }
+            catch (Exception ex) { }
+
+            return value;
+        }
+
     }
 }

@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.Enums;
@@ -70,6 +71,8 @@ namespace DMS_WebAPI.Providers
         {
             var clientCode = context.Request.Body.GetClientCode();
             var fingerprint = context.Request.Body.GetFingerprint();
+
+            FileLogger.AppendTextToFile(context.Request.Body.GetString(), Properties.Settings.Default.ServerPath + "\\TOKEN_BODY.txt");
 
             // код клиента - обязательный параметр
             if (string.IsNullOrEmpty(clientCode?.Trim())) throw new ClientCodeRequired();
