@@ -19,6 +19,14 @@ namespace DMS_WebAPI.Providers
             return GetFromBody(Body, "fingerprint");
         }
 
+        public static string GetScope(this Stream Body)
+        {
+            return GetFromBody(Body, "scope");
+        }
+        public static string GetClientSecret(this Stream Body)
+        {
+            return GetFromBody(Body, "client_secret");
+        }
         public static string GetControlAnswer(this Stream Body)
         {
             var res = GetFromBody(Body, "answer");

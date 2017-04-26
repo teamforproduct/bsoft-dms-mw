@@ -70,9 +70,15 @@ namespace DMS_WebAPI.Providers
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
             var clientCode = context.Request.Body.GetClientCode();
+            var clientSecret = context.Request.Body.GetClientSecret();
             var fingerprint = context.Request.Body.GetFingerprint();
+            var scope = context.Request.Body.GetScope();
 
-            FileLogger.AppendTextToFile(context.Request.Body.GetString(), Properties.Settings.Default.ServerPath + "\\TOKEN_BODY.txt");
+            // Подпорка для соапа
+            if (string.IsNullOrEmpty(fingerprint) && scope == "fingerprint")
+            {
+                fingerprint = "SoapUI";
+            }
 
             // код клиента - обязательный параметр
             if (string.IsNullOrEmpty(clientCode?.Trim())) throw new ClientCodeRequired();
