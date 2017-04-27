@@ -10,6 +10,7 @@
         MainHostProtocol,
         VirtualHost,
         AuthDomain,
+        LocalHost,
 
 
         #region MailDocum

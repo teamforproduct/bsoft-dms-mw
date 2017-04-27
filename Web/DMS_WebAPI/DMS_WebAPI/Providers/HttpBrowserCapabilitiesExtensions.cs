@@ -15,8 +15,9 @@ namespace DMS_WebAPI.Providers
         public static string Info(this HttpBrowserCapabilities browser)
         {
             var userAgent = HttpContext.Current.Request.UserAgent;
+            var mobile = string.Empty;
 
-            var mobile = userAgent.Contains("Mobile") ? "Mobile; " : string.Empty;
+            if(userAgent != null) mobile = userAgent.Contains("Mobile") ? "Mobile; " : string.Empty;
 
             var ip = HttpContext.Current.Request.Headers["X-Real-IP"];
             if (string.IsNullOrEmpty(ip))

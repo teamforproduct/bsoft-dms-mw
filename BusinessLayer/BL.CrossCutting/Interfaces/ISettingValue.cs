@@ -12,6 +12,8 @@ namespace BL.CrossCutting.Interfaces
         string GetClientAddress(string clientCode);
         string GetAuthAddress();
 
+        string GetLocalHost();
+
         bool GetSubordinationsSendAllForExecution(IContext ctx);
         bool GetSubordinationsSendAllForInforming(IContext ctx);
 
@@ -84,7 +86,7 @@ namespace BL.CrossCutting.Interfaces
 
         int GetClearTrashDocumentsTimeoutMinuteForClear(IContext ctx);
 
-        
+
 
     }
 }

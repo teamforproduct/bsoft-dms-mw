@@ -236,7 +236,7 @@ namespace DMS_WebAPI.Utilities
             intContext.LoginLogId = logger.Information(context, intContext.LoginLogInfo, (int)EnumObjects.System, (int)EnumSystemActions.Login, logDate: intContext.CreateDate, isCopyDate1: true);
 
             if (!string.IsNullOrEmpty(fingerPrint))
-                logger.DeleteSystemLogs(intContext, new FilterSystemLog
+                logger.DeleteSystemLogs(context, new FilterSystemLog
                 {
                     ObjectIDs = new List<int> { (int)EnumObjects.System },
                     ActionIDs = new List<int> { (int)EnumSystemActions.Login },
