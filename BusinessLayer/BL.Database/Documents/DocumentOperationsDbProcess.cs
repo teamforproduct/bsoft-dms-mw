@@ -586,6 +586,10 @@ namespace BL.Database.Documents
 
                 var isNeedRegistrationFullNumber = !(filter?.Event?.DocumentId?.Any() ?? false);
 
+                var filterPositionContains = PredicateBuilder.New<DocumentEventAccesses>(false);
+                filterPositionContains = context.CurrentPositionsAccessLevel.Aggregate(filterPositionContains,
+                    (current, value) => current.Or(e => e.PositionId == value.Key && e.Document.Accesses.Any(x => x.PositionId == value.Key && x.AccessLevelId >= value.Value)).Expand());
+
                 var qryView = dbContext.DocumentEventsSet.Where(x => qryRes.Select(y => y.Id).Contains(x.Id))
                     //TODO Sort
                     .OrderByDescending(x => x.Date)
@@ -615,6 +619,7 @@ namespace BL.Database.Documents
                         //TargetPositionId = x.TargetPositionId,
                         //SourcePositionId = x.SourcePositionId,
                         //ReadDate = x.ReadDate,
+                        IsRead = !x.Accesses.AsQueryable().Where(filterPositionContains).Any(y=>!y.ReadDate.HasValue),
 
                         PaperId = x.Paper.Id,
                         PaperName = x.Paper.Name,
@@ -1611,15 +1616,15 @@ namespace BL.Database.Documents
 
                 var filterEventContains = PredicateBuilder.New<DocumentEventAccesses>(false);
                 filterEventContains = model.EventIds.Aggregate(filterEventContains,
-                    (current, value) => current.Or(e => e.Id == value).Expand());
-                var qry = dbContext.DocumentEventAccessesSet.Where(x => x.ClientId == context.CurrentClientId)
+                    (current, value) => current.Or(e => e.EventId == value).Expand());
+                var qry = dbContext.DocumentEventAccessesSet.Where(x => x.ClientId == context.Client.Id)
                     .Where(x => !x.ReadDate.HasValue).Where(filterEventContains);
 
                 if (!context.IsAdmin)
                 {
                     var filterPositionContains = PredicateBuilder.New<DocumentEventAccesses>(false);
-                    filterPositionContains = context.CurrentPositionsIdList.Aggregate(filterPositionContains,
-                        (current, value) => current.Or(e => e.PositionId == value).Expand());
+                    filterPositionContains = context.CurrentPositionsAccessLevel.Aggregate(filterPositionContains,
+                        (current, value) => current.Or(e => e.PositionId == value.Key && e.Document.Accesses.Any(x => x.PositionId == value.Key && x.AccessLevelId >= value.Value)).Expand());
 
                     qry = qry.Where(filterPositionContains);
                 }
@@ -3631,7 +3636,7 @@ namespace BL.Database.Documents
                     }
                     ).FirstOrDefault();
                 if (list == null) return null;
-                list.SourcePositionId = dbContext.DocumentEventsSet.Where(x => x.ClientId == context.CurrentClientId)
+                list.SourcePositionId = dbContext.DocumentEventsSet.Where(x => x.ClientId == context.Client.Id)
                     .FirstOrDefault(x => x.PaperListId.HasValue && itemId == x.PaperListId.Value)
                     .Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId;
                 transaction.Complete();

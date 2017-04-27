@@ -59,6 +59,13 @@ namespace BL.Database.Common
                     AccessGroupType = (EnumEventAccessGroupTypes)y.AccessGroupTypeId,
                     RecordId = y.AgentId ?? y.CompanyId ?? y.DepartmentId ?? y.PositionId ?? y.StandartSendListId,
                     Name = y.Agent.Name ?? y.Company.Agent.Name ?? y.Department.Name ?? y.Position.Name ?? y.StandartSendList.Name,
+                    Details = new List<string>
+                    {
+                        y.PositionId.HasValue ?
+                    y.Event.Accesses.Where(z=>z.PositionId == y.PositionId && y.AccessTypeId == z.AccessTypeId)
+                        .Select(z=> z.Agent.Name + (z.PositionExecutorType.Suffix != null ? " (" + z.PositionExecutorType.Suffix + ")" : null)).FirstOrDefault()
+                                            : null,
+                    },
                 }).ToList(),
             }).ToList();
             items.ForEach(x => x.AccessGroups = accGroups.Where(y => y.EventId == x.Id).Select(y => y.AccessGroups).FirstOrDefault());
@@ -80,6 +87,7 @@ namespace BL.Database.Common
                     AccessGroupType = (EnumEventAccessGroupTypes)y.AccessGroupTypeId,
                     RecordId = y.AgentId ?? y.CompanyId ?? y.DepartmentId ?? y.PositionId ?? y.StandartSendListId,
                     Name = y.Agent.Name ?? y.Company.Agent.Name ?? y.Department.Name ?? y.Position.Name ?? y.StandartSendList.Name,
+                    Details = new List<string> { y.PositionId.HasValue ? (y.Position.ExecutorAgent.Name + (y.Position.ExecutorType.Suffix != null ? " (" + y.Position.ExecutorType.Suffix + ")" : null)) : null },
                 }).ToList(),
             }).ToList();
             items.ForEach(x => x.AccessGroups = accGroups.Where(y => y.EventId == x.Id).Select(y => y.AccessGroups).FirstOrDefault());
@@ -116,7 +124,8 @@ namespace BL.Database.Common
                 {
                     AccessType = (EnumEventAccessTypes)y.AccessTypeId,
                     RecordId = y.PositionId ?? y.AgentId,
-                    Name = y.Agent.Name + (y.PositionExecutorType.Suffix != null ? " (" + y.PositionExecutorType.Suffix + ")" : null),
+                    Name = y.Position.Name ?? y.Agent.Name,
+                    Details = new List<string> { y.PositionId.HasValue ? ( y.Agent.Name + (y.PositionExecutorType.Suffix != null ? " (" + y.PositionExecutorType.Suffix + ")" : null) ) : null},
                     ReadDate = y.ReadDate,
                 }).ToList();
         }
@@ -703,7 +712,7 @@ namespace BL.Database.Common
                         var filteTargetPositionIdContains = PredicateBuilder.New<DocumentEventAccesses>(false);
                         filteTargetPositionIdContains = context.CurrentPositionsAccessLevel.Aggregate(filteTargetPositionIdContains,
                             (current, value) => current.Or(e => e.PositionId == value.Key && e.Document.Accesses.Any(x => x.PositionId == value.Key && x.AccessLevelId >= value.Value)).Expand());
-                        qry = qry.Where(x => x.Accesses.Where(filteTargetPositionIdContains).Any(y => !y.ReadDate.HasValue));
+                        qry = qry.Where(x => x.Accesses.AsQueryable().Where(filteTargetPositionIdContains).Any(y => !y.ReadDate.HasValue));
                         //!x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId).Where(filteTargetPositionIdContains);
                     }
                     //else
@@ -872,7 +881,7 @@ namespace BL.Database.Common
                 //filterPositionContains = context.CurrentPositionsAccessLevel.Aggregate(filterPositionContains,
                 //    (current, value) => current.Or(e => (e.TargetPositionId == value.Key || e.SourcePositionId == value.Key)
                 //    && e.Document.Accesses.Any(x => x.PositionId == value.Key && x.AccessLevelId >= value.Value)).Expand());
-                res.Add(qry.Where(x => x.Accesses.Any(filterPositionContains)));
+                res.Add(qry.Where(x => x.Accesses.AsQueryable().Where(filterPositionContains).Any()));
             }
             else
             {
@@ -1303,24 +1312,32 @@ namespace BL.Database.Common
 
             if (context != null && !context.IsAdmin)
             {
+
+                var filterPositionContains = PredicateBuilder.New<DocumentEventAccesses>(false);
+                filterPositionContains = context.CurrentPositionsAccessLevel.Aggregate(filterPositionContains,
+                    (current, value) => current.Or(e => e.PositionId == value.Key && e.Document.Accesses.Any(x => x.PositionId == value.Key && x.AccessLevelId >= value.Value)).Expand());
+                //var filterPositionContains = PredicateBuilder.New<DocumentEvents>(false);
+                //filterPositionContains = context.CurrentPositionsAccessLevel.Aggregate(filterPositionContains,
+                //    (current, value) => current.Or(e => (e.TargetPositionId == value.Key || e.SourcePositionId == value.Key)
+                //    && e.Document.Accesses.Any(x => x.PositionId == value.Key && x.AccessLevelId >= value.Value)).Expand());
                 //var filterContains = PredicateBuilder.New<DocumentAccesses>(false);
                 //filterContains = isVerifyAccessLevel
                 //    ? context.CurrentPositionsAccessLevel.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand())
                 //    : context.CurrentPositionsIdList.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
                 //qry = qry.Where(x => x.Document.Accesses.AsQueryable().Any(filterContains));
 
-                var filterOnEventPositionsContains = PredicateBuilder.New<DocumentWaits>(false);
-                filterOnEventPositionsContains = context.CurrentPositionsAccessLevel.Aggregate(filterOnEventPositionsContains,
-                    (current, value) => current.Or(e => e.OnEvent.Accesses.Any(y => y.PositionId == value.Key)
-                                                && e.Document.Accesses.Any(x => x.PositionId == value.Key && x.AccessLevelId >= value.Value)).Expand());
+                //var filterOnEventPositionsContains = PredicateBuilder.New<DocumentWaits>(false);
+                //filterOnEventPositionsContains = context.CurrentPositionsAccessLevel.Aggregate(filterOnEventPositionsContains,
+                //    (current, value) => current.Or(e => e.OnEvent.Accesses.Any(y => y.PositionId == value.Key)
+                //                                && e.Document.Accesses.Any(x => x.PositionId == value.Key && x.AccessLevelId >= value.Value)).Expand());
 
                 if (filter?.IsMyControl ?? false)
                 {
-                    res.Add(qry.Where(filterOnEventPositionsContains));
+                    res.Add(qry.Where(x => x.OnEvent.Accesses.AsQueryable().Where(filterPositionContains).Any()));
                 }
                 else
                 {
-                    res.Add(qry.Where(filterOnEventPositionsContains));
+                    res.Add(qry.Where(x => x.OnEvent.Accesses.AsQueryable().Where(filterPositionContains).Any()));
                 }
             }
             else

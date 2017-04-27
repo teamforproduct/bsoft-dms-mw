@@ -42,8 +42,7 @@ namespace BL.Database.DBModel.Document
         public string Description { get; set; }
         [MaxLength(2000)]
         public string AddDescription { get; set; }
-        [Index("IX_ReadDate", 4)]
-        [Index("IX_SourcePositionId",1)]
+
 
         public bool IsChanged { get; set; }
         public bool IsDeleted { get; set; }
@@ -115,6 +114,8 @@ namespace BL.Database.DBModel.Document
 
 
         //TODO DELETE
+        [Index("IX_ReadDate", 4)]
+        [Index("IX_SourcePositionId", 1)]
         public int? SourcePositionId { get; set; }
         public Nullable<int> SourcePositionExecutorAgentId { get; set; }
         public int? SourcePositionExecutorTypeId { get; set; }

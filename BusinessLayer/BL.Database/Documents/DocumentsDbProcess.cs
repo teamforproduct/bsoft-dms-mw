@@ -547,14 +547,14 @@ namespace BL.Database.Documents
                             doc.IsFavourite = docAccs.IsFavourite;
                             doc.IsInWork = docAccs.IsInWork;
                             doc.NewEventCount = (docAccs.NewEventCount ?? 0) != 0 ? docAccs.NewEventCount : null;
-                            //if ((docAccs.CountWaits ?? 0) !=0)
-                            //{
-                            //    doc.WaitCount = new UICounters
-                            //    {
-                            //        Counter1 = docAccs.CountWaits,
-                            //        Counter2 = (docAccs.OverDueCountWaits ?? 0) != 0 ? docAccs.OverDueCountWaits : null,
-                            //    };
-                            //}                           
+                            if ((docAccs.CountWaits ?? 0) != 0)
+                            {
+                                doc.WaitCount = new UICounters
+                                {
+                                    Counter1 = docAccs.CountWaits,
+                                    Counter2 = (docAccs.OverDueCountWaits ?? 0) != 0 ? docAccs.OverDueCountWaits : null,
+                                };
+                            }
                         }
                     }
                     docs =                              //TODO DEL???
@@ -2088,7 +2088,7 @@ namespace BL.Database.Documents
                 //    {
                 //        x.TargetPositionId = model.NewPositionId;
                 //    });
-                dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == context.CurrentClientId)  //TODO KEY!!!
+                dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == context.Client.Id)  //TODO KEY!!!
                     .Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId)
                     .ToList()
                     .ForEach(x =>
