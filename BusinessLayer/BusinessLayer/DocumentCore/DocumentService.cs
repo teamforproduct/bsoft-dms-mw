@@ -119,7 +119,7 @@ namespace BL.Logic.DocumentCore
             return doc;
         }
 
-        public IEnumerable<int> GetLinkedDocumentIds(IContext ctx, int documentId)
+        public FrontDocumentLinkShot GetLinkedDocumentIds(IContext ctx, int documentId)
         {
             return _documentDb.GetLinkedDocumentIds(ctx, documentId);
         }

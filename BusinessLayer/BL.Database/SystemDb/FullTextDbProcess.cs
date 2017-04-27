@@ -183,16 +183,16 @@ namespace BL.Database.SystemDb
                     case EnamFilterType.Slave:
                         break;
                     case EnamFilterType.SourcePositionExecutorAgentId:
-                        qry = qry.Where(x=>x.Main.SourcePositionExecutorAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SourcePositionExecutorAgentId.Value});
+                        //qry = qry.Where(x=>x.Main.SourcePositionExecutorAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SourcePositionExecutorAgentId.Value});
                         break;
                     case EnamFilterType.TargetPositionExecutorAgentId:
-                        qry = qry.Where(x=>x.Main.TargetPositionExecutorAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.TargetPositionExecutorAgentId.Value});
+                        //qry = qry.Where(x=>x.Main.TargetPositionExecutorAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.TargetPositionExecutorAgentId.Value});
                         break;
                     case EnamFilterType.SourceAgentId:
-                        qry = qry.Where(x=>x.Main.SourceAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SourceAgentId.Value});
+                        //qry = qry.Where(x=>x.Main.SourceAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SourceAgentId.Value});
                         break;
                     case EnamFilterType.TargetAgentId:
-                        qry = qry.Where(x=>x.Main.TargetAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.TargetAgentId.Value});
+                        //qry = qry.Where(x=>x.Main.TargetAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.TargetAgentId.Value});
                         break;
                     default:
                         throw new WrongParameterTypeError();
@@ -204,11 +204,11 @@ namespace BL.Database.SystemDb
                     ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DocumentEvents,
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
-                    Access = new List<int> { x.Main.TargetPositionId ?? 0,   x.Main.SourcePositionId ?? 0 }.Distinct()
-                                .Select(y=>new FullTextIndexItemAccessInfo {Key = y }).ToList(),
+                    //Access = new List<int> { x.Main.TargetPositionId ?? 0,   x.Main.SourcePositionId ?? 0 }.Distinct()
+                    //            .Select(y=>new FullTextIndexItemAccessInfo {Key = y }).ToList(),
                     ObjectText = x.Main.Description + " " + x.Main.Task.Task + " "
-                    + x.Main.SourcePositionExecutorAgent.Name + " "+ x.Main.SourceAgent.Name + " "
-                    + x.Main.TargetPositionExecutorAgent.Name + " "+ x.Main.TargetAgent.Name + " "
+                    //+ x.Main.SourcePositionExecutorAgent.Name + " "+ x.Main.SourceAgent.Name + " "
+                    //+ x.Main.TargetPositionExecutorAgent.Name + " "+ x.Main.TargetAgent.Name + " "
 
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -229,22 +229,22 @@ namespace BL.Database.SystemDb
                     case EnamFilterType.Slave:
                         break;
                     case EnamFilterType.SourcePositionId:
-                        qry = qry.Where(x=>x.Main.SourcePosition!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SourcePositionId});
+                        //qry = qry.Where(x=>x.Main.SourcePosition!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SourcePositionId});
                         break;
                     case EnamFilterType.TargetPositionId:
-                        qry = qry.Where(x=>x.Main.TargetPosition!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.TargetPositionId.Value});
+                        //qry = qry.Where(x=>x.Main.TargetPosition!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.TargetPositionId.Value});
                         break;
                     case EnamFilterType.SourcePositionExecutorAgentId:
-                        qry = qry.Where(x=>x.Main.SourcePosition.ExecutorAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SourcePosition.ExecutorAgentId.Value});
+                        //qry = qry.Where(x=>x.Main.SourcePosition.ExecutorAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SourcePosition.ExecutorAgentId.Value});
                         break;
                     case EnamFilterType.TargetPositionExecutorAgentId:
-                        qry = qry.Where(x=>x.Main.TargetPosition.ExecutorAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.TargetPosition.ExecutorAgentId.Value});
+                        //qry = qry.Where(x=>x.Main.TargetPosition.ExecutorAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.TargetPosition.ExecutorAgentId.Value});
                         break;
                     case EnamFilterType.SourceAgentId:
-                        qry = qry.Where(x=>x.Main.SourceAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SourceAgentId});
+                        //qry = qry.Where(x=>x.Main.SourceAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.SourceAgentId});
                         break;
                     case EnamFilterType.TargetAgentId:
-                        qry = qry.Where(x=>x.Main.TargetAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.TargetAgentId.Value});
+                        //qry = qry.Where(x=>x.Main.TargetAgent!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.TargetAgentId.Value});
                         break;
                     default:
                         throw new WrongParameterTypeError();
@@ -256,11 +256,11 @@ namespace BL.Database.SystemDb
                     ClientId = ctx.CurrentClientId,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DocumentSendLists,
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
-                    Access = new List<int> { x.Main.TargetPositionId??0, x.Main.SourcePositionId }.Where(y=>!x.Main.IsInitial).Distinct()
-                    .Select(y=>new FullTextIndexItemAccessInfo {Key = y }).ToList(),
+                    //Access = new List<int> { x.Main.TargetPositionId??0, x.Main.SourcePositionId }.Where(y=>!x.Main.IsInitial).Distinct()
+                    //.Select(y=>new FullTextIndexItemAccessInfo {Key = y }).ToList(),
                     ObjectText = x.Main.Description + " " + x.Main.Task.Task + " "
-                    + x.Main.SourcePosition.Name + " "+ x.Main.SourcePosition.ExecutorAgent.Name + " "+ x.Main.SourceAgent.Name + " "
-                    + x.Main.TargetPosition.Name + " "+ x.Main.TargetPosition.ExecutorAgent.Name + " "+ x.Main.TargetAgent.Name + " "
+                    //+ x.Main.SourcePosition.Name + " "+ x.Main.SourcePosition.ExecutorAgent.Name + " "+ x.Main.SourceAgent.Name + " "
+                    //+ x.Main.TargetPosition.Name + " "+ x.Main.TargetPosition.ExecutorAgent.Name + " "+ x.Main.TargetAgent.Name + " "
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
                 return res;

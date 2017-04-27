@@ -37,7 +37,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpGet]
         [Route("{Id:int}/" + Features.Links)]
-        [ResponseType(typeof(List<int>))]
+        [ResponseType(typeof(FrontDocumentLinkShot))]
         public async Task<IHttpActionResult> Get(int Id)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
@@ -53,7 +53,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpGet]
         [Route("{Id:int}/" + Features.Links+"/Documents")]
-        [ResponseType(typeof(List<FrontDocument>))]
+        [ResponseType(typeof(FrontDocumentLinkShot))]
         public async Task<IHttpActionResult> GetDocumentsByLinkId(int Id)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>

@@ -161,6 +161,7 @@
     <Compile Include="DictionaryCore\IncomingModel\AddEmployeeInOrg.cs" />
     <Compile Include="DictionaryCore\InternalModel\SortPositoin.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentEventAccess.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontDocumentLinkShot.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentSendListAccessGroup.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentEventAccessGroup.cs" />
     <Compile Include="DocumentCore\IncomingModel\AccessGroup.cs" />
@@ -456,7 +457,6 @@
     <Compile Include="FullTextSearch\FullTextSearch.cs" />
     <Compile Include="DocumentCore\Actions\AffixSigning.cs" />
     <Compile Include="DocumentCore\Actions\SendEventMessage.cs" />
-    <Compile Include="DocumentCore\Filters\FilterDocumentById.cs" />
     <Compile Include="DocumentCore\Filters\FilterDocumentTag.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentPaperEvent.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentPaperList.cs" />

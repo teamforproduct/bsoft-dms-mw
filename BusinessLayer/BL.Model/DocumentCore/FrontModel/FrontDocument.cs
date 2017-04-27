@@ -159,9 +159,11 @@ namespace BL.Model.DocumentCore.FrontModel
 		public int? LastChangeUserId { get; set; }
 		
         public DateTime? LastChangeDate { get { return _LastChangeDate; } set { _LastChangeDate=value.ToUTC(); } }
-        private DateTime?  _LastChangeDate; 
-        
-		public int? LinkId { get; set; }
+        private DateTime?  _LastChangeDate;
+        /// <summary>
+        /// ИД пакета связанных документов 
+        /// </summary>
+        public int? LinkId { get; set; }
         public bool? IsLaunchPlan { get; set; }
         public bool? IsHard { get; set; }
         public EnumDocumentDirections? DocumentDirection { get; set; }

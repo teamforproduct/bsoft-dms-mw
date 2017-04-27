@@ -1582,11 +1582,9 @@ namespace BL.Database.SystemDb
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                // RODO DestinationAgentEmail = "sergozubr@rambler.ru"
+                // TODO DestinationAgentEmail = "sergozubr@rambler.ru"
                 var res = dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId)
-                        .Where(x => (x.SendDate == null || x.SendDate < x.LastChangeDate)
-                                    && ((x.TargetAgentId != null && x.SourceAgentId != x.TargetAgentId)
-                                        || (x.TargetPositionId != null && x.SourcePositionId != x.TargetPositionId)))
+                        .Where(x => x.Accesses.Any(y=>!y.SendDate.HasValue)) //TODO уточнить критерии рассылки
                         .Select(x => new InternalDataForMail
                         {
                             EventId = x.Id,
@@ -1596,15 +1594,15 @@ namespace BL.Database.SystemDb
                             DocumentId = x.DocumentId,
                             DocumentName = x.Document.Description,
                             EventType = (EnumEventTypes)x.EventTypeId,
-                            DestinationAgentId = x.TargetAgentId ?? 0,
-                            DestinationAgentName = (x.TargetAgent == null) ? "" : x.TargetAgent.Name,
-                            DestinationPositionId = x.TargetPositionId ?? 0,
-                            DestinationPositionName = (x.TargetPosition == null) ? "" : x.TargetPosition.Name,
-                            SourceAgentId = x.SourceAgentId ?? 0,
-                            SourceAgentName = x.SourceAgent.Name,
-                            SourcePositiontId = x.SourcePositionId ?? 0,
-                            SourcePositionName = x.SourcePosition == null ? "" : x.SourcePosition.Name,
-                            WasUpdated = !(x.SendDate == null),
+                            //DestinationAgentId = x.TargetAgentId ?? 0,
+                            //DestinationAgentName = (x.TargetAgent == null) ? "" : x.TargetAgent.Name,
+                            //DestinationPositionId = x.TargetPositionId ?? 0,
+                            //DestinationPositionName = (x.TargetPosition == null) ? "" : x.TargetPosition.Name,
+                            //SourceAgentId = x.SourceAgentId ?? 0,
+                            //SourceAgentName = x.SourceAgent.Name,
+                            //SourcePositiontId = x.SourcePositionId ?? 0,
+                            //SourcePositionName = x.SourcePosition == null ? "" : x.SourcePosition.Name,
+                            //WasUpdated = !(x.SendDate == null),
                             DestinationAgentEmail = "sergozubr@rambler.ru"
                         }).ToList();
                 transaction.Complete();
@@ -1621,10 +1619,10 @@ namespace BL.Database.SystemDb
                 //TODO convert it to Update method
                 mailProcessed.ProcessedEventIds.ForEach(x =>
                 {
-                    var evt = new DocumentEvents { Id = x, SendDate = mailProcessed.ProcessedDate };
-                    dbContext.SafeAttach(evt);
-                    var entry = dbContext.Entry(evt);
-                    entry.Property(p => p.SendDate).IsModified = true;
+                    //var evt = new DocumentEvents { Id = x, SendDate = mailProcessed.ProcessedDate };
+                    //dbContext.SafeAttach(evt);
+                    //var entry = dbContext.Entry(evt);
+                    //entry.Property(p => p.SendDate).IsModified = true;
                 });
                 dbContext.SaveChanges();
                 transaction.Complete();

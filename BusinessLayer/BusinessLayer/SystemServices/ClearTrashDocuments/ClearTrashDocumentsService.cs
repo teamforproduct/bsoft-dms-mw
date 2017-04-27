@@ -82,7 +82,7 @@ namespace BL.Logic.SystemServices.ClearTrashDocuments
 
             if (ctx == null) return;
             ctx.DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", ctx.CurrentDB));
-            _docOperDb.MarkDocumentEventAsReadAuto(ctx);
+//            _docOperDb.MarkDocumentEventAsReadAuto(ctx);
             _docOperDb.ModifyDocumentAccessesStatistics(ctx);
             _documentServ.CheckIsInWorkForControls(ctx, new FilterDocumentAccess());
 

@@ -128,7 +128,7 @@ namespace BL.Logic.Common
                 {
                     sl.IsInitial = isInitial.Value;
                 }
-                if (sl.SourcePositionId == 0)
+                if (!sl.SourcePositionId.HasValue)
                 {
                     sl.SourcePositionId = context.CurrentPositionId;
                 }
@@ -189,6 +189,8 @@ namespace BL.Logic.Common
                 if (accessGroups == null) accessGroups = new List<AccessGroup>();
                 if (!accessGroups.Any(x => x.AccessType == EnumEventAccessTypes.Source))
                     accessGroups.Add(new AccessGroup { AccessType = EnumEventAccessTypes.Source, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = context.CurrentPositionId });
+                accessGroups = accessGroups.GroupBy(x => new { x.AccessGroupType, x.RecordId })
+                    .Select(x=> new AccessGroup { AccessType = x.Min(y=>y.AccessType), AccessGroupType = x.Key.AccessGroupType, RecordId = x.Key.RecordId }).ToList();
                 ev.AccessGroups = accessGroups.Select(x => new InternalDocumentEventAccessGroup
                 {
                     ClientId = ev.ClientId,

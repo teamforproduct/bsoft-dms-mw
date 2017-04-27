@@ -22,7 +22,7 @@ namespace BL.Database.Documents.Interfaces
         IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterBase filters, UIPaging paging, EnumGroupCountType? groupCountType = null);
         FrontDocument GetDocument(IContext ctx, int documentId);
         IEnumerable<FrontDocument> GetLinkedDocuments(IContext context, int linkId);
-        IEnumerable<int> GetLinkedDocumentIds(IContext ctx, int documentId);
+        FrontDocumentLinkShot GetLinkedDocumentIds(IContext ctx, int documentId);
         IEnumerable<FrontDocumentTag> GetDocumentTags(IContext context, FilterDocumentTag filter);
         int GetDocumentTagsCounter(IContext context, FilterDocumentTag filter);
         InternalDocument ReportDocumentForDigitalSignaturePrepare(IContext ctx, DigitalSignatureDocumentPdf model);

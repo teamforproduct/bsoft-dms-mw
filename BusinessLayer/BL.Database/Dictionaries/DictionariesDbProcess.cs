@@ -5082,17 +5082,9 @@ namespace BL.Database.Dictionaries
 
                 if (filter.DocumentIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.New<DBModel.Document.DocumentEvents>(false);
-                    filterContains = filter.DocumentIDs.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.DocumentId == value).Expand());
-
-                    qry = qry.Where(x =>
-                            dbContext.DocumentEventsSet.Where(y => y.ClientId == ctx.CurrentClientId)
-                                .Where(filterContains).Select(y => y.SourcePositionId).Contains(x.Id)
-                                ||
-                                dbContext.DocumentEventsSet.Where(y => y.ClientId == ctx.CurrentClientId)
-                                .Where(filterContains).Select(y => y.TargetPositionId).Contains(x.Id)
-                                );
+                    var filterContains = PredicateBuilder.New<DBModel.Document.DocumentEventAccesses>(false);
+                    filterContains = filter.DocumentIDs.Aggregate(filterContains, (current, value) => current.Or(e => e.DocumentId == value).Expand());
+                    qry = qry.Where(x => dbContext.DocumentEventAccessesSet.Where(y => y.ClientId == ctx.CurrentClientId).Where(filterContains).Any(y => y.PositionId==x.Id));
                 }
 
                 if (filter.RoleIDs?.Count > 0)

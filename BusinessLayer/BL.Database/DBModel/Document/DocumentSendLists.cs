@@ -23,14 +23,7 @@ namespace BL.Database.DBModel.Document
         public int? StageTypeId { get; set; }
         public int Stage { get; set; }
         public int SendTypeId { get; set; }
-        public int SourcePositionId { get; set; }
-        public int? SourcePositionExecutorAgentId { get; set; }
-        public int? SourcePositionExecutorTypeId { get; set; }
-        public int SourceAgentId { get; set; }
-        public int? TargetPositionId { get; set; }
-        public int? TargetPositionExecutorAgentId { get; set; }
-        public int? TargetPositionExecutorTypeId { get; set; }
-        public Nullable<int> TargetAgentId { get; set; }
+
         public Nullable<int> TaskId { get; set; }
         //public string TaskName { get; set; }
         [MaxLength(2000)]
@@ -62,6 +55,28 @@ namespace BL.Database.DBModel.Document
         public virtual DictionarySendTypes SendType { get; set; }
         [ForeignKey("TaskId")]
         public virtual DocumentTasks Task { get; set; }
+
+
+        [ForeignKey("AccessLevelId")]
+        public virtual AdminAccessLevels AccessLevel { get; set; }
+        [ForeignKey("StartEventId")]
+        public virtual DocumentEvents StartEvent { get; set; }
+        [ForeignKey("CloseEventId")]
+        public virtual DocumentEvents CloseEvent { get; set; }
+        [ForeignKey("SendListId")]
+        public virtual ICollection<DocumentEvents> PaperEvents { get; set; }
+        [ForeignKey("SendListId")]
+        public virtual ICollection<DocumentSendListAccessGroups> AccessGroups { get; set; }
+
+        //TODO DELETE
+        public int SourcePositionId { get; set; }
+        public int? SourcePositionExecutorAgentId { get; set; }
+        public int? SourcePositionExecutorTypeId { get; set; }
+        public int SourceAgentId { get; set; }
+        public int? TargetPositionId { get; set; }
+        public int? TargetPositionExecutorAgentId { get; set; }
+        public int? TargetPositionExecutorTypeId { get; set; }
+        public Nullable<int> TargetAgentId { get; set; }
         [ForeignKey("SourcePositionId")]
         public virtual DictionaryPositions SourcePosition { get; set; }
         [ForeignKey("SourcePositionExecutorAgentId")]
@@ -78,15 +93,5 @@ namespace BL.Database.DBModel.Document
         public virtual DictionaryAgents TargetPositionExecutorAgent { get; set; }
         [ForeignKey("TargetAgentId")]
         public virtual DictionaryAgents TargetAgent { get; set; }
-        [ForeignKey("AccessLevelId")]
-        public virtual AdminAccessLevels AccessLevel { get; set; }
-        [ForeignKey("StartEventId")]
-        public virtual DocumentEvents StartEvent { get; set; }
-        [ForeignKey("CloseEventId")]
-        public virtual DocumentEvents CloseEvent { get; set; }
-        [ForeignKey("SendListId")]
-        public virtual ICollection<DocumentEvents> PaperEvents { get; set; }
-        [ForeignKey("SendListId")]
-        public virtual ICollection<DocumentSendListAccessGroups> AccessGroups { get; set; }
     }
 }
