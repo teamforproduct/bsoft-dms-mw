@@ -50,7 +50,14 @@ namespace BL.CrossCutting.Helpers.CashService
                 }
 
             }
-            finally { _locker.ExitWriteLock(); }
+            catch (Exception ex)
+            {
+
+            }
+            finally
+            {
+                _locker.ExitWriteLock();
+            }
         }
 
         public void AddOrUpdateCasheData(IContext ctx, string key, Func<object> getData)

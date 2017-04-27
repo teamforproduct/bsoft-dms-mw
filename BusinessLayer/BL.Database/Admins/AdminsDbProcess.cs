@@ -28,6 +28,7 @@ using EntityFramework.Extensions;
 using LinqKit;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 
 namespace BL.Database.Admins
@@ -374,7 +375,6 @@ namespace BL.Database.Admins
 
         public int AddRole(IContext ctx, InternalAdminRole model)
         {
-            int res;
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
@@ -384,11 +384,10 @@ namespace BL.Database.Admins
                 model.Id = dbModel.Id;
 
                 CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.AdminRoles, EnumOperationType.AddNew);
+                _cacheService.RefreshKey(ctx, SettingConstants.ADMIN_ROLE_CASHE_KEY);
                 transaction.Complete();
-                res = dbModel.Id;
+                return dbModel.Id;
             }
-            _cacheService.RefreshKey(ctx, SettingConstants.ADMIN_ROLE_CASHE_KEY);
-            return res;
         }
 
         public void UpdateRole(IContext ctx, InternalAdminRole model)
@@ -402,9 +401,10 @@ namespace BL.Database.Admins
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.AdminRoles, EnumOperationType.UpdateFull);
+                _cacheService.RefreshKey(ctx, SettingConstants.ADMIN_ROLE_CASHE_KEY);
                 transaction.Complete();
             }
-            _cacheService.RefreshKey(ctx, SettingConstants.ADMIN_ROLE_CASHE_KEY);
+            
         }
 
         public void DeleteRoles(IContext ctx, FilterAdminRole filter)
@@ -415,10 +415,10 @@ namespace BL.Database.Admins
                 var qry = GetRolesQuery(ctx, dbContext, filter);
                 CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.AdminRoles, EnumOperationType.Delete);
                 qry.Delete();
-
+                _cacheService.RefreshKey(ctx, SettingConstants.ADMIN_ROLE_CASHE_KEY);
                 transaction.Complete();
             }
-            _cacheService.RefreshKey(ctx, SettingConstants.ADMIN_ROLE_CASHE_KEY);
+            
         }
 
         public InternalAdminRole GetInternalRole(IContext ctx, FilterAdminRole filter)
@@ -673,11 +673,11 @@ namespace BL.Database.Admins
                 model.Id = dbModel.Id;
 
                 CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.AdminPositionRoles, EnumOperationType.AddNew);
-                transaction.Complete();
                 _cacheService.RefreshKey(ctx, SettingConstants.ADMIN_POSITION_ROLE_KEY);
+                transaction.Complete();
+               
                 return dbModel.Id;
             }
-
         }
 
         public void DeletePositionRoles(IContext ctx, FilterAdminPositionRole filter)
@@ -688,9 +688,10 @@ namespace BL.Database.Admins
                 var qry = GetAdminPositionRoleQuery(ctx, dbContext, filter);
                 CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.AdminPositionRoles, EnumOperationType.Delete);
                 qry.Delete();
-                transaction.Complete();
                 _cacheService.RefreshKey(ctx, SettingConstants.ADMIN_POSITION_ROLE_KEY);
+                transaction.Complete();
             }
+            
         }
 
         public InternalAdminPositionRole GetInternalPositionRole(IContext ctx, FilterAdminPositionRole filter)
@@ -870,9 +871,10 @@ namespace BL.Database.Admins
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCacheInfo(ctx, list.Select(x => x.Id).ToList(), EnumObjects.AdminUserRoles, EnumOperationType.AddNew);
+                _cacheService.RefreshKey(ctx, SettingConstants.USER_ROLE_CASHE_KEY);
                 transaction.Complete();
             }
-            _cacheService.RefreshKey(ctx, SettingConstants.USER_ROLE_CASHE_KEY);
+            
         }
 
         public void DeleteUserRoles(IContext ctx, FilterAdminUserRole filter)
@@ -883,10 +885,10 @@ namespace BL.Database.Admins
                 var qry = GetUserRolesQuery(ctx, dbContext, filter);
                 CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.AdminUserRoles, EnumOperationType.Delete);
                 qry.Delete();
-
+                _cacheService.RefreshKey(ctx, SettingConstants.USER_ROLE_CASHE_KEY);
                 transaction.Complete();
             }
-            _cacheService.RefreshKey(ctx, SettingConstants.USER_ROLE_CASHE_KEY);
+            
         }
 
         public IEnumerable<InternalAdminUserRole> GetInternalUserRoles(IContext ctx, FilterAdminUserRole filter)
@@ -1557,7 +1559,6 @@ namespace BL.Database.Admins
 
         public int AddRolePermission(IContext ctx, InternalAdminRolePermission model)
         {
-            int res;
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
@@ -1565,11 +1566,10 @@ namespace BL.Database.Admins
                 dbContext.AdminRolePermissionsSet.Add(dbModel);
                 dbContext.SaveChanges();
                 model.Id = dbModel.Id;
+                _cacheService.RefreshKey(ctx, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
                 transaction.Complete();
-                res = dbModel.Id;
+                return dbModel.Id;
             }
-            _cacheService.RefreshKey(ctx, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
-            return res;
         }
 
         public void AddRolePermissions(IContext ctx, IEnumerable<AdminRolePermissions> models)
@@ -1577,12 +1577,12 @@ namespace BL.Database.Admins
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                //var dbModels = AdminModelConverter.GetDbRolePermissions(ctx, models);
                 dbContext.AdminRolePermissionsSet.AddRange(models);
                 dbContext.SaveChanges();
+                _cacheService.RefreshKey(ctx, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
                 transaction.Complete();
             }
-            _cacheService.RefreshKey(ctx, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
+           
         }
 
 
@@ -1593,9 +1593,10 @@ namespace BL.Database.Admins
             {
                 var qry = GetRolePermissionsQuery(ctx, dbContext, filter);
                 qry.Delete();
+                _cacheService.RefreshKey(ctx, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
                 transaction.Complete();
             }
-            _cacheService.RefreshKey(ctx, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
+            
         }
 
 
@@ -1673,12 +1674,13 @@ namespace BL.Database.Admins
         private void VerifyAdminSecurityCash(IContext ctx)
         {
             var admCtx = new AdminContext(ctx);
-            var dbCtx = admCtx.DbContext as DmsContext;
+            
             if (!_cacheService.Exists(ctx, SettingConstants.PERMISSION_CASHE_KEY))
             {
                 _cacheService.AddOrUpdateCasheData(ctx, SettingConstants.PERMISSION_CASHE_KEY, () =>
                 {
-
+                    var currCtx = new AdminContext(admCtx);
+                    var dbCtx = currCtx.DbContext as DmsContext;
                     return dbCtx.SystemPermissionsSet.Select(x => new InternalSystemPermission
                     {
                         Id = x.Id,
@@ -1700,7 +1702,8 @@ namespace BL.Database.Admins
             {
                 _cacheService.AddOrUpdateCasheData(ctx, SettingConstants.ACTION_CASHE_KEY, () =>
                 {
-
+                    var currCtx = new AdminContext(admCtx);
+                    var dbCtx = currCtx.DbContext as DmsContext;
                     return dbCtx.SystemActionsSet.Select(x => new InternalSystemAction
                     {
                         Id = x.Id,
@@ -1717,7 +1720,8 @@ namespace BL.Database.Admins
             {
                 _cacheService.AddOrUpdateCasheData(ctx, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY, () =>
                 {
-
+                    var currCtx = new AdminContext(admCtx);
+                    var dbCtx = currCtx.DbContext as DmsContext;
                     return dbCtx.AdminRolePermissionsSet.Select(x => new InternalAdminRolePermission
                     {
                         Id = x.Id,
@@ -1735,7 +1739,8 @@ namespace BL.Database.Admins
             {
                 _cacheService.AddOrUpdateCasheData(ctx, SettingConstants.ADMIN_ROLE_CASHE_KEY, () =>
                 {
-
+                    var currCtx = new AdminContext(admCtx);
+                    var dbCtx = currCtx.DbContext as DmsContext;
                     return dbCtx.AdminRolesSet.Select(x => new InternalAdminRole
                     {
                         Id = x.Id,
@@ -1753,7 +1758,8 @@ namespace BL.Database.Admins
             {
                 _cacheService.AddOrUpdateCasheData(ctx, SettingConstants.USER_ROLE_CASHE_KEY, () =>
                 {
-
+                    var currCtx = new AdminContext(admCtx);
+                    var dbCtx = currCtx.DbContext as DmsContext;
                     return dbCtx.AdminUserRolesSet.Select(x => new InternalAdminUserRole
                     {
                         Id = x.Id,
@@ -1769,7 +1775,8 @@ namespace BL.Database.Admins
             {
                 _cacheService.AddOrUpdateCasheData(ctx, SettingConstants.DICT_POSITION_EXECUTOR_CASHE_KEY, () =>
                 {
-
+                    var currCtx = new AdminContext(admCtx);
+                    var dbCtx = currCtx.DbContext as DmsContext;
                     return dbCtx.DictionaryPositionExecutorsSet.Select(x => new InternalDictionaryPositionExecutor
                     {
                         Id = x.Id,
@@ -1790,15 +1797,16 @@ namespace BL.Database.Admins
             {
                 _cacheService.AddOrUpdateCasheData(ctx, SettingConstants.ADMIN_POSITION_ROLE_KEY, () =>
                 {
-
-                    return dbCtx.AdminPositionRolesSet.Select(x => new InternalAdminPositionRole
+                    var currCtx = new AdminContext(admCtx);
+                    var dbCtx = currCtx.DbContext as DmsContext;
+                    var res = dbCtx.AdminPositionRolesSet.Select(x => new InternalAdminPositionRole
                     {
                         PositionId = x.PositionId,
                         Id = x.Id,
                         RoleId = x.RoleId,
                         ClientId = x.Role.ClientId
                     }).ToList();
-
+                    return res;
                 });
             }
         }
