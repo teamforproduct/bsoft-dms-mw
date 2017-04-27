@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using BL.CrossCutting.Interfaces;
-using BL.Model.Database;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
-using BL.Model.Users;
+using BL.Model.Context;
 using System;
 using BL.CrossCutting.DependencyInjection;
 using BL.Model.Enums;
@@ -23,13 +22,16 @@ namespace BL.CrossCutting.Context
         private List<int> _currentPositionsIdList;
         private Dictionary<int, int> _currentPositionsAccessLevel;
 
-        private DatabaseModel _currentDb;
-        public Employee CurrentEmployee { get; set; }
+        public Employee Employee { get; set; }
 
-        public UserContext()
-        {
-        }
+        public Client Client { get; set; }
 
+        public UserContext() { }
+
+        /// <summary>
+        /// Создает новый контекст пользователя и новое ПОДКЛЮЧЕНИЕ к базе
+        /// </summary>
+        /// <param name="ctx"></param>
         public UserContext(IContext ctx)
         {
             var def = ctx as UserContext;
@@ -49,6 +51,7 @@ namespace BL.CrossCutting.Context
                         UserPassword = ctx.CurrentDB.UserPassword,
                         DefaultSchema = ctx.CurrentDB.DefaultSchema,
                         ConnectionString = ctx.CurrentDB.ConnectionString,
+
                     };
                 }
                 catch (DatabaseIsNotSet)
@@ -56,15 +59,18 @@ namespace BL.CrossCutting.Context
                     CurrentDB = null;
                 }
                 DbContext = ctx.DbContext;
-                CurrentEmployee = new Employee
+                Employee = new Employee
                 {
-                    AgentId = ctx.CurrentEmployee.AgentId,
-                    LanguageId = ctx.CurrentEmployee.LanguageId,
-                    Name = ctx.CurrentEmployee.Name,
-                    Token = ctx.CurrentEmployee.Token,
-                    UserId = ctx.CurrentEmployee.UserId,
-                    ClientId = ctx.CurrentEmployee.ClientId,
-                    ClientCode = ctx.CurrentEmployee.ClientCode,
+                    AgentId = ctx.Employee.AgentId,
+                    LanguageId = ctx.Employee.LanguageId,
+                    Name = ctx.Employee.Name,
+                    Token = ctx.Employee.Token,
+                    UserId = ctx.Employee.UserId,
+                };
+                Client = new Client
+                {
+                    Id = ctx.Client.Id,
+                    Code = ctx.Client.Code,
                 };
 
                 ClientLicence = ctx.ClientLicence;
@@ -74,34 +80,20 @@ namespace BL.CrossCutting.Context
                 LoginLogInfo = ctx.LoginLogInfo;
                 UserName = ctx.UserName;
 
+                // тут поднимается коннекшн к базе
                 DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
 
-                try
-                {
-                    _currentPositionId = ctx.CurrentPositionId;
-                }
-                catch (UserContextIsNotDefined)
-                {
-                    _currentPositionId = null;
-                }
+                _currentPositionId = ctx.CurrentPositionDefined
+                    ? ctx.CurrentPositionId
+                    :(int?)null;
 
-                try
-                {
-                    CurrentPositionsIdList = ctx.CurrentPositionsIdList?.ToList();
-                }
-                catch (UserContextIsNotDefined)
-                {
-                    CurrentPositionsIdList = null;
-                }
+                CurrentPositionsIdList = ctx.CurrentPositionsIdListDefined
+                    ? ctx.CurrentPositionsIdList?.ToList()
+                    :null;
 
-                try
-                {
-                    CurrentPositionsAccessLevel = ctx.CurrentPositionsAccessLevel?.ToDictionary(x => x.Key, x => x.Value);
-                }
-                catch (UserContextIsNotDefined)
-                {
-                    CurrentPositionsAccessLevel = null;
-                }
+                CurrentPositionsAccessLevel = ctx.CurrentPositionsAccessLevelDefined
+                    ? ctx.CurrentPositionsAccessLevel?.ToDictionary(x => x.Key, x => x.Value)
+                    :null;
             }
         }
 
@@ -114,6 +106,7 @@ namespace BL.CrossCutting.Context
             set { _isFormed = value; }
         }
 
+        public bool CurrentPositionsIdListDefined => !((_currentPositionsIdList == null) || !_currentPositionsIdList.Any());
 
         public List<int> CurrentPositionsIdList
         {
@@ -131,6 +124,8 @@ namespace BL.CrossCutting.Context
             }
         }
 
+        public bool CurrentPositionsAccessLevelDefined => !((_currentPositionsAccessLevel == null) || !_currentPositionsAccessLevel.Any());
+
         public Dictionary<int, int> CurrentPositionsAccessLevel
         {
             get
@@ -147,6 +142,8 @@ namespace BL.CrossCutting.Context
             }
         }
 
+        public bool CurrentPositionDefined => _currentPositionId.HasValue;
+
         public int CurrentPositionId
         {
             get
@@ -159,15 +156,17 @@ namespace BL.CrossCutting.Context
             }
         }
 
+        public bool CurrentAgentDefined => Employee?.AgentId != null;
+
         public int CurrentAgentId
         {
             get
             {
-                if (CurrentEmployee?.AgentId == null)
+                if (Employee?.AgentId == null)
                 {
                     throw new UserContextIsNotDefined();
                 }
-                return CurrentEmployee.AgentId.GetValueOrDefault();
+                return Employee.AgentId.GetValueOrDefault();
             }
         }
 
@@ -195,10 +194,7 @@ namespace BL.CrossCutting.Context
         {
             get
             {
-                if (_currentDb == null)
-                {
-                    throw new DatabaseIsNotSet();
-                }
+                if (_currentDb == null) throw new DatabaseIsNotSet();
                 return _currentDb;
             }
             set
@@ -206,22 +202,7 @@ namespace BL.CrossCutting.Context
                 _currentDb = value;
             }
         }
-
-        public int CurrentClientId
-        {
-            get
-            {
-                if (CurrentEmployee.ClientId <= 0)
-                {
-                    return 0;
-                }
-                return CurrentEmployee.ClientId;
-            }
-            set
-            {
-                CurrentEmployee.ClientId = value;
-            }
-        }
+        private DatabaseModel _currentDb;
 
         public DateTime CreateDate { get; } = DateTime.UtcNow;
         public DateTime LastChangeDate { get; set; } = DateTime.UtcNow;

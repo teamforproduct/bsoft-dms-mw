@@ -1,17 +1,17 @@
-﻿using System.Data.Entity;
-using BL.Database.DBModel.Dictionary;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
+using BL.Database.Common;
 using BL.Database.DBModel.Admin;
+using BL.Database.DBModel.Dictionary;
 using BL.Database.DBModel.Document;
+using BL.Database.DBModel.Encryption;
 using BL.Database.DBModel.System;
 using BL.Database.DBModel.Template;
-using System.Data.Entity.ModelConfiguration.Conventions;
-using BL.CrossCutting.DependencyInjection;
-using BL.CrossCutting.Interfaces;
 using BL.Database.Helper;
-using BL.Database.DBModel.Encryption;
+using BL.Model.Context;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
-using BL.Database.Common;
-using BL.Model.Database;
+using System.Data.Entity.ModelConfiguration.Conventions;
 
 namespace BL.Database.DatabaseContext
 {
@@ -29,6 +29,10 @@ namespace BL.Database.DatabaseContext
                     (sender, e) => DateTimeKindAttribute.Apply(e.Entity);
         }
 
+        /////////////////////////////////////////////////////////////
+        // ПАРАМЕТР dbModel НИ В КОЕМ СЛУЧАЕ НЕ ПЕРЕИМЕНОВЫВАТЬ!!! //
+        // DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB)); //
+        /////////////////////////////////////////////////////////////
         public DmsContext(DatabaseModel dbModel): base(DmsResolver.Current.Get<ConnectionHelper>().GetConnection(dbModel), true)
         {
             _DefaultSchema = dbModel.DefaultSchema;
@@ -39,8 +43,6 @@ namespace BL.Database.DatabaseContext
             {
                 this.Database.Initialize(true);
             }
-
-            //((IObjectContextAdapter)this).ObjectContext.ObjectMaterialized += (sender, e) => DateTimeKindAttribute.Apply(e.Entity);
         }
 
         public DmsContext(IContext context) : this(context.CurrentDB)

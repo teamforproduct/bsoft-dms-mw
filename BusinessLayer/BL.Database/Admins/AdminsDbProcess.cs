@@ -16,6 +16,7 @@ using BL.Model.AdminCore.FrontModel;
 using BL.Model.AdminCore.InternalModel;
 using BL.Model.Common;
 using BL.Model.Constants;
+using BL.Model.Context;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
@@ -59,11 +60,11 @@ namespace BL.Database.Admins
 
                     var res = new AdminAccessInfo
                     {
-                        UserRoles = userRole.Where(x => x.ClientId == admCtx.CurrentClientId).ToList(),
-                        Roles = adminRole.Where(x => x.ClientId == admCtx.CurrentClientId).ToList(),
-                        PositionRoles = adminPos.Where(x => x.ClientId == admCtx.CurrentClientId).ToList(),
+                        UserRoles = userRole.Where(x => x.ClientId == admCtx.Client.Id).ToList(),
+                        Roles = adminRole.Where(x => x.ClientId == admCtx.Client.Id).ToList(),
+                        PositionRoles = adminPos.Where(x => x.ClientId == admCtx.Client.Id).ToList(),
                         Actions = sysAction.ToList(),
-                        RolePermissions = adminPermiss.Where(x => x.ClientId == admCtx.CurrentClientId).ToList()
+                        RolePermissions = adminPermiss.Where(x => x.ClientId == admCtx.Client.Id).ToList()
                     };
 
                     return res;
@@ -83,7 +84,7 @@ namespace BL.Database.Admins
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.DictionaryPositionExecutorsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).AsQueryable();
+                var qry = dbContext.DictionaryPositionExecutorsSet.Where(x => x.Agent.ClientId == ctx.Client.Id).AsQueryable();
 
                 var now = DateTime.UtcNow;
                 DateTime? maxDateTime = DateTime.UtcNow.AddYears(50);
@@ -129,7 +130,7 @@ namespace BL.Database.Admins
                 var filterAccessPositionContains = PredicateBuilder.New<DocumentAccesses>(false);
                 filterAccessPositionContains = positions.Aggregate(filterAccessPositionContains,
                     (current, value) => current.Or(e => e.PositionId == value).Expand());
-                var accessQry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(filterAccessPositionContains)
+                var accessQry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.Client.Id).Where(filterAccessPositionContains)
                                 .GroupBy(x => x.PositionId)
                                 .Select(x => new
                                 {
@@ -160,7 +161,7 @@ namespace BL.Database.Admins
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.DictionaryPositionExecutorsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).AsQueryable();
+                var qry = dbContext.DictionaryPositionExecutorsSet.Where(x => x.Agent.ClientId == ctx.Client.Id).AsQueryable();
 
                 var now = DateTime.UtcNow;
 
@@ -203,7 +204,7 @@ namespace BL.Database.Admins
                 var filterAccessPositionContains = PredicateBuilder.New<DocumentAccesses>(false);
                 filterAccessPositionContains = positions.Aggregate(filterAccessPositionContains,
                     (current, value) => current.Or(e => e.PositionId == value).Expand());
-                var accessQry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId).Where(filterAccessPositionContains)
+                var accessQry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.Client.Id).Where(filterAccessPositionContains)
                                 .GroupBy(x => x.PositionId)
                                 .Select(x => new
                                 {
@@ -227,7 +228,7 @@ namespace BL.Database.Admins
                 //filterNewEventTargetPositionContains = positionList.Aggregate(filterNewEventTargetPositionContains,
                 //    (current, value) => current.Or(e => e.TargetPositionId == value).Expand());
 
-                //var neweventQry = dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId)   //TODO include doc access
+                //var neweventQry = dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.Client.Id)   //TODO include doc access
                 //                .Where(x => !x.ReadDate.HasValue && x.TargetPositionId.HasValue && x.TargetPositionId != x.SourcePositionId)
                 //                .Where(filterNewEventTargetPositionContains)
                 //                .GroupBy(g => g.TargetPositionId)
@@ -238,7 +239,7 @@ namespace BL.Database.Admins
                 //filterOnEventPositionsContains = positionList.Aggregate(filterOnEventPositionsContains,
                 //    (current, value) => current.Or(e => e.OnEvent.TargetPositionId == value /*|| e.OnEvent.SourcePositionId == value*/).Expand());
 
-                //var waitQry = dbContext.DocumentWaitsSet.Where(x => x.ClientId == ctx.CurrentClientId)   //TODO include doc access
+                //var waitQry = dbContext.DocumentWaitsSet.Where(x => x.ClientId == ctx.Client.Id)   //TODO include doc access
                 //                .Where(x => !x.OffEventId.HasValue)
                 //                .Where(filterOnEventPositionsContains)
                 //                .GroupBy(y => new
@@ -338,7 +339,7 @@ namespace BL.Database.Admins
                 var now = DateTime.UtcNow;
 
                 // для авторизации 
-                var res = dbContext.DictionaryAgentUsersSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Where(x => x.UserId.Equals(userId))
+                var res = dbContext.DictionaryAgentUsersSet.Where(x => x.Agent.ClientId == ctx.Client.Id).Where(x => x.UserId.Equals(userId))
                     .Select(x => new Employee
                     {
                         AgentId = x.Id,
@@ -532,7 +533,7 @@ namespace BL.Database.Admins
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.AdminRolesSet.
-                    Where(x => x.ClientId == ctx.CurrentClientId).
+                    Where(x => x.ClientId == ctx.Client.Id).
                     Where(x => x.Id == id).
                     AsQueryable();
 
@@ -549,7 +550,7 @@ namespace BL.Database.Admins
             {
                 // Для заводских ролей отношение к типам ролей 1:1
                 var qry = dbContext.AdminRolesSet.
-                    Where(x => x.ClientId == ctx.CurrentClientId).
+                    Where(x => x.ClientId == ctx.Client.Id).
                     Where(x => x.RoleType.Code == item.ToString()).
                     AsQueryable();
 
@@ -577,7 +578,7 @@ namespace BL.Database.Admins
 
         private IQueryable<AdminRoles> GetRolesQuery(IContext ctx, DmsContext dbContext, FilterAdminRole filter)
         {
-            var qry = dbContext.AdminRolesSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.AdminRolesSet.Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -804,7 +805,7 @@ namespace BL.Database.Admins
 
         private IQueryable<AdminPositionRoles> GetAdminPositionRoleQuery(IContext ctx, DmsContext dbContext, FilterAdminPositionRole filter)
         {
-            var qry = dbContext.AdminPositionRolesSet.Where(x => x.Role.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.AdminPositionRolesSet.Where(x => x.Role.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -974,7 +975,7 @@ namespace BL.Database.Admins
 
         private IQueryable<AdminUserRoles> GetUserRolesQuery(IContext ctx, DmsContext dbContext, FilterAdminUserRole filter)
         {
-            var qry = dbContext.AdminUserRolesSet.Where(x => x.Role.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.AdminUserRolesSet.Where(x => x.Role.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -1109,7 +1110,7 @@ namespace BL.Database.Admins
 
         private IQueryable<AdminEmployeeDepartments> GetEmployeeDepartmentsQuery(IContext ctx, DmsContext dbContext, FilterAdminEmployeeDepartments filter)
         {
-            var qry = dbContext.AdminEmployeeDepartmentsSet.Where(x => x.Employee.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.AdminEmployeeDepartmentsSet.Where(x => x.Employee.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -1313,7 +1314,7 @@ namespace BL.Database.Admins
 
         private IQueryable<AdminSubordinations> GetSubordinationsQuery(IContext ctx, DmsContext dbContext, FilterAdminSubordination filter)
         {
-            var qry = dbContext.AdminSubordinationsSet.Where(x => x.SourcePosition.Department.Company.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.AdminSubordinationsSet.Where(x => x.SourcePosition.Department.Company.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -1489,7 +1490,7 @@ namespace BL.Database.Admins
 
         private IQueryable<AdminRegistrationJournalPositions> GetRegistrationJournalPositionQuery(IContext ctx, DmsContext dbContext, FilterAdminRegistrationJournalPosition filter)
         {
-            var qry = dbContext.AdminRegistrationJournalPositionsSet.Where(x => x.RegistrationJournal.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.AdminRegistrationJournalPositionsSet.Where(x => x.RegistrationJournal.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -1600,7 +1601,7 @@ namespace BL.Database.Admins
 
         private IQueryable<AdminRolePermissions> GetRolePermissionsQuery(IContext ctx, DmsContext dbContext, FilterAdminRolePermissions filter)
         { 
-            var qry = dbContext.AdminRolePermissionsSet.Where(x => x.Role.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.AdminRolePermissionsSet.Where(x => x.Role.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {

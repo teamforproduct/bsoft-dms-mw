@@ -190,7 +190,7 @@ namespace BL.Database.Dictionaries
         {
             var dbContext = ctx.DbContext as DmsContext;
 
-            var qry = dbContext.DictionaryAgentsSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.DictionaryAgentsSet.Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -383,7 +383,7 @@ namespace BL.Database.Dictionaries
         private static IQueryable<DictionaryAgentPeople> GetAgentPeoplesQuery(IContext ctx, FilterDictionaryAgentPeoples filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
-            var qry = dbContext.DictionaryAgentPeopleSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.DictionaryAgentPeopleSet.Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -667,7 +667,7 @@ namespace BL.Database.Dictionaries
         private IQueryable<DictionaryAgentPersons> GetAgentPersonsQuery(IContext ctx, FilterDictionaryAgentPerson filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
-            var qry = dbContext.DictionaryAgentPersonsSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.DictionaryAgentPersonsSet.Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
             // исключаю сотрудников из списка физлиц
             qry = qry.Where(x => x.Agent.AgentEmployee == null);
@@ -886,7 +886,7 @@ namespace BL.Database.Dictionaries
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var tmp = dbContext.DictionaryAgentEmployeesSet.Where(x => x.ClientId == ctx.CurrentClientId).AsEnumerable();
+                var tmp = dbContext.DictionaryAgentEmployeesSet.Where(x => x.ClientId == ctx.Client.Id).AsEnumerable();
                 var res = 0;
                 // Если нен ни одно сотрудника, то начинаю нумерацию с 1
                 if (!tmp.Any(x => 1 == 1))
@@ -1037,7 +1037,7 @@ namespace BL.Database.Dictionaries
         private IQueryable<DictionaryAgentEmployees> GetAgentEmployeesQuery(IContext ctx, FilterDictionaryAgentEmployee filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
-            var qry = dbContext.DictionaryAgentEmployeesSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.DictionaryAgentEmployeesSet.Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -1305,7 +1305,7 @@ namespace BL.Database.Dictionaries
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                //var u = dbContext.DictionaryAgentUsersSet.Where(x => x.Id == User.Id).Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+                //var u = dbContext.DictionaryAgentUsersSet.Where(x => x.Id == User.Id).Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
                 var dbModel = DictionaryModelConverter.GetDbAgentUser(ctx, User);
 
@@ -1326,7 +1326,7 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetAgentUsersQuery(ctx, new FilterDictionaryAgentUsers { IDs = new List<int> { id } });
-                // Where(x => x.ClientId == ctx.CurrentClientId).
+                // Where(x => x.ClientId == ctx.Client.Id).
                 var res = qry.Select(x => new FrontDictionaryAgentUser
                 {
                     Id = x.Id,
@@ -1361,7 +1361,7 @@ namespace BL.Database.Dictionaries
         private static IQueryable<DictionaryAgentUsers> GetAgentUsersQuery(IContext ctx, FilterDictionaryAgentUsers filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
-            var qry = dbContext.DictionaryAgentUsersSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.DictionaryAgentUsersSet.Where(x => x.Agent.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -1400,7 +1400,7 @@ namespace BL.Database.Dictionaries
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                // Where(x => x.ClientId == ctx.CurrentClientId).
+                // Where(x => x.ClientId == ctx.Client.Id).
                 var res = dbContext.DictionaryAgentsSet.Where(x => x.Id == id).Select(x => new InternalDictionaryAgentImage
                 {
                     Id = x.Id,
@@ -1420,7 +1420,7 @@ namespace BL.Database.Dictionaries
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.DictionaryAgentAddressesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).AsQueryable();
+                var qry = dbContext.DictionaryAgentAddressesSet.Where(x => x.Agent.ClientId == ctx.Client.Id).AsQueryable();
 
                 qry = qry.Where(x => x.Id == id);
 
@@ -1517,7 +1517,7 @@ namespace BL.Database.Dictionaries
         private static IQueryable<DictionaryAgentAddresses> GetAddressQuery(IContext ctx, FilterDictionaryAgentAddress filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
-            var qry = dbContext.DictionaryAgentAddressesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.DictionaryAgentAddressesSet.Where(x => x.Agent.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -1668,7 +1668,7 @@ namespace BL.Database.Dictionaries
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var res = dbContext.DictionaryAddressTypesSet.Where(x => x.ClientId == ctx.CurrentClientId & x.Id == addressTypeId & x.SpecCode != null).Any();
+                var res = dbContext.DictionaryAddressTypesSet.Where(x => x.ClientId == ctx.Client.Id & x.Id == addressTypeId & x.SpecCode != null).Any();
                 transaction.Complete();
                 return res;
             }
@@ -1724,7 +1724,7 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.DictionaryAddressTypesSet.
-                    Where(x => x.ClientId == ctx.CurrentClientId).
+                    Where(x => x.ClientId == ctx.Client.Id).
                     Where(x => x.Id == id).
                     AsQueryable();
 
@@ -1759,7 +1759,7 @@ namespace BL.Database.Dictionaries
         private static IQueryable<DictionaryAddressTypes> GetAddressTypeQuery(IContext ctx, FilterDictionaryAddressType filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
-            var qry = dbContext.DictionaryAddressTypesSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.DictionaryAddressTypesSet.Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -2113,7 +2113,7 @@ namespace BL.Database.Dictionaries
         private IQueryable<DictionaryCompanies> GetAgentOrgsQuery(IContext ctx, FilterDictionaryAgentOrg filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
-            var qry = dbContext.DictionaryAgentClientCompaniesSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.DictionaryAgentClientCompaniesSet.Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -2380,7 +2380,7 @@ namespace BL.Database.Dictionaries
         private IQueryable<DictionaryAgentCompanies> GetAgentCompaniesQuery(IContext ctx, FilterDictionaryAgentCompany filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
-            var qry = dbContext.DictionaryAgentCompaniesSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.DictionaryAgentCompaniesSet.Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -2651,7 +2651,7 @@ namespace BL.Database.Dictionaries
         private IQueryable<DictionaryAgentBanks> GetAgentBanksQuery(IContext ctx, FilterDictionaryAgentBank filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
-            var qry = dbContext.DictionaryAgentBanksSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.DictionaryAgentBanksSet.Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -2727,7 +2727,7 @@ namespace BL.Database.Dictionaries
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var res = dbContext.DictionaryAgentAccountsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).Where(x => x.Id == id).Select(x => new FrontDictionaryAgentAccount
+                var res = dbContext.DictionaryAgentAccountsSet.Where(x => x.Agent.ClientId == ctx.Client.Id).Where(x => x.Id == id).Select(x => new FrontDictionaryAgentAccount
                     {
                         Id = x.Id,
                         AccountNumber = x.AccountNumber,
@@ -2854,7 +2854,7 @@ namespace BL.Database.Dictionaries
         private IQueryable<DictionaryAgentAccounts> GetAgentAccountsQuery(IContext ctx, FilterDictionaryAgentAccount filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
-            var qry = dbContext.DictionaryAgentAccountsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.DictionaryAgentAccountsSet.Where(x => x.Agent.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -2998,7 +2998,7 @@ namespace BL.Database.Dictionaries
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var res = dbContext.DictionaryContactTypesSet.Where(x => x.ClientId == ctx.CurrentClientId & x.Id == contactTypeId & x.SpecCode != null).Any();
+                var res = dbContext.DictionaryContactTypesSet.Where(x => x.ClientId == ctx.Client.Id & x.Id == contactTypeId & x.SpecCode != null).Any();
                 transaction.Complete();
                 return res;
             }
@@ -3075,7 +3075,7 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.DictionaryContactTypesSet.
-                    Where(x => x.ClientId == ctx.CurrentClientId).
+                    Where(x => x.ClientId == ctx.Client.Id).
                     Where(x => x.Id == id).
                     AsQueryable();
 
@@ -3088,7 +3088,7 @@ namespace BL.Database.Dictionaries
         private static IQueryable<DictionaryContactTypes> GetContactTypeQuery(IContext ctx, FilterDictionaryContactType filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
-            var qry = dbContext.DictionaryContactTypesSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.DictionaryContactTypesSet.Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -3272,7 +3272,7 @@ namespace BL.Database.Dictionaries
         private IQueryable<DictionaryAgentContacts> GetContactsQuery(IContext ctx, FilterDictionaryContact filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
-            var qry = dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -3364,7 +3364,7 @@ namespace BL.Database.Dictionaries
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).AsQueryable();
+                var qry = dbContext.DictionaryAgentContactsSet.Where(x => x.Agent.ClientId == ctx.Client.Id).AsQueryable();
 
                 if (contacts.Any())
                 {
@@ -3388,7 +3388,7 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = dbContext.DictionaryContactTypesSet.
-                    Where(x => x.ClientId == ctx.CurrentClientId).
+                    Where(x => x.ClientId == ctx.Client.Id).
                     Where(x => x.SpecCode == type.ToString()).
                     AsQueryable();
 
@@ -3821,7 +3821,7 @@ namespace BL.Database.Dictionaries
         private static IQueryable<DictionaryDepartments> GetDepartmentsQuery(IContext ctx, FilterDictionaryDepartment filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
-            var qry = dbContext.DictionaryDepartmentsSet.Where(x => x.Company.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.DictionaryDepartmentsSet.Where(x => x.Company.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -4163,7 +4163,7 @@ namespace BL.Database.Dictionaries
         private static IQueryable<DictionaryDocumentTypes> GetDocumentTypesQuery(IContext ctx, FilterDictionaryDocumentType filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
-            var qry = dbContext.DictionaryDocumentTypesSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.DictionaryDocumentTypesSet.Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -4277,7 +4277,7 @@ namespace BL.Database.Dictionaries
                             (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
                         qry = qry.Where(x =>
-                                dbContext.DocumentEventsSet.Where(y => y.ClientId == ctx.CurrentClientId)
+                                dbContext.DocumentEventsSet.Where(y => y.ClientId == ctx.Client.Id)
                                     .Where(filterContains).Select(y => y.EventTypeId).Contains(x.Id)
                                     );
                     }
@@ -4348,7 +4348,7 @@ namespace BL.Database.Dictionaries
                             (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
                         qry = qry.Where(x =>
-                                dbContext.DocumentEventsSet.Where(y => y.ClientId == ctx.CurrentClientId)
+                                dbContext.DocumentEventsSet.Where(y => y.ClientId == ctx.Client.Id)
                                     .Where(filterContains).Select(y => y.EventType.ImportanceEventTypeId).Contains(x.Id)
                                     );
                     }
@@ -4496,7 +4496,7 @@ namespace BL.Database.Dictionaries
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == ctx.CurrentClientId).Where(x => x.Id >= 0);
+                var qry = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == ctx.Client.Id).Where(x => x.Id >= 0);
                 if (positionId?.Any() ?? false)
                     qry = qry.Where(x => positionId.Contains(x.Id));
                 var posUpd = qry.Select(x => new
@@ -4556,7 +4556,7 @@ namespace BL.Database.Dictionaries
                 var qry = dbContext.DictionaryPositionsSet.AsQueryable();
                 if (!ctx.IsAdmin)
                 {
-                    qry = qry.Where(x => x.Department.Company.ClientId == ctx.CurrentClientId);
+                    qry = qry.Where(x => x.Department.Company.ClientId == ctx.Client.Id);
                 }
                 res = qry.Where(x => x.Id == id)
                     .Select(x => new InternalDictionaryPositionExecutorForDocument
@@ -4584,7 +4584,7 @@ namespace BL.Database.Dictionaries
             {
                 var now = DateTime.UtcNow;
 
-                var res = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == ctx.CurrentClientId).Where(x => x.Id == id)
+                var res = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == ctx.Client.Id).Where(x => x.Id == id)
                     .Select(x => new FrontDictionaryPosition
                     {
                         Id = x.Id,
@@ -4985,7 +4985,7 @@ namespace BL.Database.Dictionaries
         private IQueryable<DictionaryPositions> GetPositionsQuery(IContext ctx, FilterDictionaryPosition filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
-            var qry = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -5354,7 +5354,7 @@ namespace BL.Database.Dictionaries
         private IQueryable<DictionaryPositionExecutors> GetPositionExecutorsQuery(IContext ctx, FilterDictionaryPositionExecutor filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
-            var qry = dbContext.DictionaryPositionExecutorsSet.Where(x => x.Position.Department.Company.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.DictionaryPositionExecutorsSet.Where(x => x.Position.Department.Company.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -5846,7 +5846,7 @@ namespace BL.Database.Dictionaries
         private IQueryable<DictionaryRegistrationJournals> GetRegistrationJournalsQuery(IContext ctx, FilterDictionaryRegistrationJournal filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
-            var qry = dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -6164,7 +6164,7 @@ namespace BL.Database.Dictionaries
         private IQueryable<DictionaryStandartSendListContents> GetStandartSendListContentsQuery(IContext ctx, FilterDictionaryStandartSendListContent filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
-            var qry = dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendList.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.DictionaryStandartSendListContentsSet.Where(x => x.StandartSendList.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -6373,7 +6373,7 @@ namespace BL.Database.Dictionaries
         private IQueryable<DictionaryStandartSendLists> GetStandartSendListQuery(IContext ctx, FilterDictionaryStandartSendList filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
-            var qry = dbContext.DictionaryStandartSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.DictionaryStandartSendListsSet.Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -6619,7 +6619,7 @@ namespace BL.Database.Dictionaries
         private IQueryable<DictionaryTags> GetTagsQuery(IContext ctx, FilterDictionaryTag filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
-            var qry = dbContext.DictionaryTagsSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.DictionaryTagsSet.Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -7050,7 +7050,7 @@ namespace BL.Database.Dictionaries
         private IQueryable<CustomDictionaryTypes> GetCustomDictionaryTypesQuery(IContext ctx, FilterCustomDictionaryType filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
-            var qry = dbContext.CustomDictionaryTypesSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.CustomDictionaryTypesSet.Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
             // Список первичных ключей
             if (filter != null)
@@ -7224,7 +7224,7 @@ namespace BL.Database.Dictionaries
         private IQueryable<CustomDictionaries> GetCustomDictionaryQuery(IContext ctx, FilterCustomDictionary filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
-            var qry = dbContext.CustomDictionariesSet.Where(x => x.CustomDictionaryType.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.CustomDictionariesSet.Where(x => x.CustomDictionaryType.ClientId == ctx.Client.Id).AsQueryable();
 
             // Список первичных ключей
             if (filter != null)
@@ -7377,7 +7377,7 @@ namespace BL.Database.Dictionaries
         private IQueryable<DictionaryAgentFavorites> GetAgentFavouriteQuery(IContext ctx, FilterAgentFavourite filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
-            var qry = dbContext.DictionaryAgentFavoritesSet.Where(x => x.Agent.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.DictionaryAgentFavoritesSet.Where(x => x.Agent.ClientId == ctx.Client.Id).AsQueryable();
 
             // Список первичных ключей
             if (filter != null)

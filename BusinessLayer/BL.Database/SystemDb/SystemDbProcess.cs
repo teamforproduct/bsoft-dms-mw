@@ -385,7 +385,7 @@ namespace BL.Database.SystemDb
 
         private IQueryable<SystemSearchQueryLogs> GetSystemSearchQueryLogsQuery(IContext ctx, DmsContext dbContext, FilterSystemSearchQueryLog filter)
         {
-            var qry = dbContext.SystemSearchQueryLogsSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.SystemSearchQueryLogsSet.Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -443,7 +443,7 @@ namespace BL.Database.SystemDb
 
         private IQueryable<SystemLogs> GetSystemLogsQuery(IContext ctx, DmsContext dbContext, FilterSystemLog filter)
         {
-            var qry = dbContext.LogSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.LogSet.Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -636,12 +636,12 @@ namespace BL.Database.SystemDb
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var cset = dbContext.SettingsSet.FirstOrDefault(x => ctx.CurrentClientId == x.ClientId && x.Key == model.Key);
+                var cset = dbContext.SettingsSet.FirstOrDefault(x => ctx.Client.Id == x.ClientId && x.Key == model.Key);
                 if (cset == null)
                 {
                     var nsett = new SystemSettings
                     {
-                        ClientId = ctx.CurrentClientId,
+                        ClientId = ctx.Client.Id,
                         ExecutorAgentId = model.AgentId,
                         Key = model.Key,
                         Value = model.Value,
@@ -684,13 +684,13 @@ namespace BL.Database.SystemDb
                 {
                     res = dbContext.SettingsSet.Where(
                             x =>
-                                ctx.CurrentClientId == x.ClientId && x.Key == filter.Key && x.ExecutorAgentId == filter.AgentId.Value)
+                                ctx.Client.Id == x.ClientId && x.Key == filter.Key && x.ExecutorAgentId == filter.AgentId.Value)
                             .Select(x => x.Value)
                             .FirstOrDefault();
                 }
                 else
                 {
-                    res = dbContext.SettingsSet.Where(x => ctx.CurrentClientId == x.ClientId && x.Key == filter.Key)
+                    res = dbContext.SettingsSet.Where(x => ctx.Client.Id == x.ClientId && x.Key == filter.Key)
                             .OrderBy(x => x.ExecutorAgentId)
                             .Select(x => x.Value)
                             .FirstOrDefault();
@@ -706,7 +706,7 @@ namespace BL.Database.SystemDb
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                dbContext.SettingsSet.Where(x => ctx.CurrentClientId == x.ClientId).Delete();
+                dbContext.SettingsSet.Where(x => ctx.Client.Id == x.ClientId).Delete();
                 transaction.Complete();
             }
         }
@@ -771,7 +771,7 @@ namespace BL.Database.SystemDb
 
         public IQueryable<SystemSettings> GetSettingsQuery(IContext ctx, DmsContext dbContext, FilterSystemSetting filter)
         {
-            var qry = dbContext.SettingsSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.SettingsSet.Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -1231,7 +1231,7 @@ namespace BL.Database.SystemDb
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry =
-                    dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == ctx.CurrentClientId).AsQueryable();
+                    dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == ctx.Client.Id).AsQueryable();
 
                 if (filter.PropertyLinkId != null)
                 {
@@ -1272,7 +1272,7 @@ namespace BL.Database.SystemDb
 
         private IQueryable<Properties> GetPropertiesQuery(DmsContext dbContext, IContext ctx, FilterProperty filter)
         {
-            var qry = dbContext.PropertiesSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.PropertiesSet.Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -1335,7 +1335,7 @@ namespace BL.Database.SystemDb
             {
                 var item = new Properties
                 {
-                    ClientId = ctx.CurrentClientId,
+                    ClientId = ctx.Client.Id,
                     Code = model.Code,
                     TypeCode = model.TypeCode,
                     Description = model.Description,
@@ -1370,7 +1370,7 @@ namespace BL.Database.SystemDb
                 var item = new Properties
                 {
                     Id = model.Id,
-                    ClientId = ctx.CurrentClientId,
+                    ClientId = ctx.Client.Id,
                     Code = model.Code,
                     TypeCode = model.TypeCode,
                     Description = model.Description,
@@ -1412,7 +1412,7 @@ namespace BL.Database.SystemDb
 
         private IQueryable<PropertyLinks> GetPropertyLinksQuery(IContext ctx, DmsContext dbContext, FilterPropertyLink filter)
         {
-            var qry = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -1583,7 +1583,7 @@ namespace BL.Database.SystemDb
             using (var transaction = Transactions.GetTransaction())
             {
                 // TODO DestinationAgentEmail = "sergozubr@rambler.ru"
-                var res = dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                var res = dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.Client.Id)
                         .Where(x => x.Accesses.Any(y=>!y.SendDate.HasValue)) //TODO уточнить критерии рассылки
                         .Select(x => new InternalDataForMail
                         {
@@ -1638,7 +1638,7 @@ namespace BL.Database.SystemDb
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == ctx.CurrentClientId).AsQueryable();
+                var qry = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == ctx.Client.Id).AsQueryable();
 
                 qry = qry.Where(x => x.ObjectId == (int)filter.Object);
 
@@ -1682,7 +1682,7 @@ namespace BL.Database.SystemDb
                     closedSendLists = closedSendLists.Where(x => x.DocumentId == documentId);
                 }
 
-                var sendLists = dbContext.DocumentSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                var sendLists = dbContext.DocumentSendListsSet.Where(x => x.ClientId == ctx.Client.Id)
                                     .Where(x => x.Document.IsLaunchPlan && !x.StartEventId.HasValue);
 
                 if (documentId.HasValue)
@@ -1720,7 +1720,7 @@ namespace BL.Database.SystemDb
             using (var transaction = Transactions.GetTransaction())
             {
                 var date = DateTime.UtcNow.AddMinutes(-timeMinForClearTrashDocuments);
-                var qry = dbContext.DocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                var qry = dbContext.DocumentsSet.Where(x => x.ClientId == ctx.Client.Id)
                     .Where(
                         x =>
                             !x.IsRegistered.HasValue && !x.Waits.Any() && !x.Subscriptions.Any() &&

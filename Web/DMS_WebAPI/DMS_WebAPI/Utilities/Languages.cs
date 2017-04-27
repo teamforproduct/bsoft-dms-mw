@@ -7,7 +7,7 @@ using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
-using DMS_WebAPI.Models;
+using DMS_WebAPI.DatabaseContext;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -210,6 +210,14 @@ namespace DMS_WebAPI.Utilities
 
         }
 
+        public InternalAdminLanguage GetDefaultLanguage()
+        {
+            var languageInfo = GetLanguageInfo();
+            var language = languageInfo.Languages.FirstOrDefault(x => x.IsDefault);
+            return language;
+
+        }
+
         public int GetLanguageIdByHttpContext()
         {
             var code = GetLanguageFromHttpContext(HttpContext.Current);
@@ -241,7 +249,7 @@ namespace DMS_WebAPI.Utilities
 
         public string GetTranslation(IContext context, string text)
         {
-            return GetTranslation(context.CurrentEmployee.LanguageId, text);
+            return GetTranslation(context.Employee.LanguageId, text);
         }
 
         public void RefreshLanguageValues()
@@ -261,7 +269,7 @@ namespace DMS_WebAPI.Utilities
             {
                 defContext = DmsResolver.Current.Get<UserContexts>().Get(keepAlive: false, restoreToken: false);
 
-                if (defContext.CurrentEmployee.LanguageId <= 0) defContext = null;
+                if (defContext.Employee.LanguageId <= 0) defContext = null;
             }
             catch
             { }

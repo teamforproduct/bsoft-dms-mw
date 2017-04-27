@@ -1,62 +1,69 @@
-﻿using BL.Model.Database;
-using System;
-using System.Collections.Generic;
-using System.Web;
-using BL.CrossCutting.Interfaces;
-using BL.Logic.AdminCore.Interfaces;
-using BL.Model.Exception;
-using System.Linq;
-using BL.CrossCutting.Context;
+﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
-using BL.Model.SystemCore;
-using BL.Model.WebAPI.FrontModel;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
-using BL.Model.WebAPI.IncomingModel;
+using BL.Model.Context;
+using BL.Model.Enums;
+using BL.Model.Exception;
+using BL.Model.SystemCore;
+using BL.Model.SystemCore.Filters;
+using BL.Model.WebAPI.FrontModel;
+using DMS_WebAPI.Providers;
 using Ninject;
 using Ninject.Parameters;
-using BL.Model.Enums;
-using BL.Model.SystemCore.Filters;
-using DMS_WebAPI.Providers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Web;
+using WebGrease.Css.Extensions;
 
 namespace DMS_WebAPI.Utilities
 {
     /// <summary>
     /// Коллекция пользовательских контекстов
     /// </summary>
-    public class UserContexts //: IDisposable
+    public class UserContexts
     {
         private readonly Dictionary<string, StoreInfo> _cacheContexts = new Dictionary<string, StoreInfo>();
         private const string _TOKEN_KEY = "Authorization";
         private const int _TIME_OUT_MIN = 15;
         private string Token { get { return HttpContext.Current.Request.Headers[_TOKEN_KEY]; } }
-
+        private ReaderWriterLockSlim locker = new ReaderWriterLockSlim();
         private string TokenLower { get { return string.IsNullOrEmpty(Token) ? string.Empty : Token.ToLower(); } }
 
 
         public IQueryable<FrontSystemSession> GetContextListQuery()
         {
-            var res = _cacheContexts.AsQueryable()
-                .Where(x => x.Value.StoreObject is IContext)
-                .Where(x => x.Value.LastUsage > DateTime.UtcNow.AddMinutes(-1))
-                .Select(x => new FrontSystemSession
-                {
-                    //Token = x.Key,
-                    LastUsage = x.Value.LastUsage,
-                    CreateDate = (x.Value.StoreObject as IContext).CreateDate,
-                    LoginLogInfo = (x.Value.StoreObject as IContext).LoginLogInfo,
-                    LoginLogId = (x.Value.StoreObject as IContext).LoginLogId,
-                    UserId = (x.Value.StoreObject as IContext).CurrentEmployee.UserId,
-                    AgentId = (x.Value.StoreObject as IContext).CurrentEmployee.AgentId,
-                    Name = (x.Value.StoreObject as IContext).CurrentEmployee.Name,
-                    ClientId = (x.Value.StoreObject as IContext).CurrentEmployee.ClientId,
-                    IsActive = true,
-                    IsSuccess = true,
-                });
-            return res;
+            locker.EnterReadLock();
+            try
+            {
+                var res = _cacheContexts.AsQueryable()
+                    .Where(x => x.Value.LastUsage > DateTime.UtcNow.AddMinutes(-1))
+                    .Where(x => x.Value.StoreObject is IContext)
+                    .Select(x => new FrontSystemSession
+                    {
+                        //Token = x.Key,
+                        LastUsage = x.Value.LastUsage,
+                        CreateDate = (x.Value.StoreObject as IContext).CreateDate,
+                        LoginLogInfo = (x.Value.StoreObject as IContext).LoginLogInfo,
+                        LoginLogId = (x.Value.StoreObject as IContext).LoginLogId,
+                        UserId = (x.Value.StoreObject as IContext).Employee.UserId,
+                        AgentId = (x.Value.StoreObject as IContext).Employee.AgentId,
+                        Name = (x.Value.StoreObject as IContext).Employee.Name,
+                        ClientId = (x.Value.StoreObject as IContext).Client.Id,
+                        IsActive = true,
+                        IsSuccess = true,
+                    });
+                return res;
+            }
+            finally
+            {
+                locker.ExitReadLock();
+            }
         }
-
-
 
         /// <summary>
         /// Gets setting value by its name.
@@ -77,7 +84,7 @@ namespace DMS_WebAPI.Utilities
 
             if (!Contains(token)) throw new UserUnauthorized();
 
-            var ctx = GetInternal(token);
+            var ctx = GetContextInternal(token);
 
 
             //TODO Licence
@@ -86,7 +93,7 @@ namespace DMS_WebAPI.Utilities
             //    throw ctx.ClientLicence.LicenceError as DmsExceptions;
             //}
 
-            //VerifyNumberOfConnections(ctx, ctx.CurrentClientId);
+            //VerifyNumberOfConnections(ctx, ctx.Client.Id);
 
             var request_ctx = new UserContext(ctx);
             request_ctx.SetCurrentPosition(currentPositionId);
@@ -118,22 +125,25 @@ namespace DMS_WebAPI.Utilities
         {
             token = token.ToLower();
 
-            if (Contains(token))
-                throw new TokenAlreadyExists();
+            if (Contains(token)) throw new TokenAlreadyExists();
 
-            var context =
-            new UserContext
+            var dbWeb = DmsResolver.Current.Get<WebAPIDbProcess>();
+
+            var context = new UserContext
             {
-                CurrentEmployee = new BL.Model.Users.Employee
+                Employee = new Employee
                 {
                     Token = token,
                     UserId = userId,
-                    ClientCode = clientCode
-                }
+                },
+                Client = new Client
+                {
+                    Id = dbWeb.GetClientId(clientCode),
+                    Code = clientCode
+                },
             };
 
-            var dbWeb = DmsResolver.Current.Get<WebAPIDbProcess>();
-            context.CurrentClientId = dbWeb.GetClientId(clientCode);
+
             context.IsChangePasswordRequired = IsChangePasswordRequired;
             context.UserName = userName;
 
@@ -151,26 +161,26 @@ namespace DMS_WebAPI.Utilities
         /// <param name="token">new server parameters</param>
         /// <param name="db">new server parameters</param>
         /// <returns></returns>
-        public void Set(string token, DatabaseModel db)
+        public void Set(string token, DatabaseModelForAdminContext db)
         {
             token = token.ToLower();
 
             // Исключения отлавливает Application_Error в Global.asax
 
-            if (!Contains(token)) throw new UserUnauthorized();
+            var intContext = GetContextInternal(token);
 
-            var context = GetInternal(token);
+            if (intContext == null) throw new UserUnauthorized();
 
             var dbWeb = DmsResolver.Current.Get<WebAPIDbProcess>();
 
-            context.ClientLicence = dbWeb.GetClientLicenceActive(context.CurrentClientId);
+            intContext.ClientLicence = dbWeb.GetClientLicenceActive(intContext.Client.Id);
 
-            VerifyNumberOfConnectionsByNew(context, context.CurrentClientId, new List<DatabaseModel> { db });
+            VerifyNumberOfConnectionsByNew(intContext, intContext.Client.Id, new List<DatabaseModelForAdminContext> { db });
 
-            context.CurrentDB = db;
-            var dbCtx = DmsResolver.Current.Kernel.Get<DmsContext>(new ConstructorArgument("dbModel", context.CurrentDB));
-            context.DbContext = dbCtx;
-            var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(context, context.CurrentEmployee.UserId);
+            intContext.CurrentDB = db;
+
+            var context = new UserContext(intContext);
+            var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(context, intContext.Employee.UserId);
 
             if (agentUser != null)
             {
@@ -188,18 +198,15 @@ namespace DMS_WebAPI.Utilities
                     throw new UserNotExecuteAnyPosition(agentUser.Name);
                 }
 
-                context.CurrentEmployee.AgentId = agentUser.AgentId;
-                context.CurrentEmployee.Name = agentUser.Name;
-                context.CurrentEmployee.LanguageId = agentUser.LanguageId;
+                intContext.Employee.AgentId = agentUser.AgentId;
+                intContext.Employee.Name = agentUser.Name;
+                intContext.Employee.LanguageId = agentUser.LanguageId;
             }
             else
             {
                 Remove(token);
                 throw new UserAccessIsDenied();
             }
-
-            context.DbContext = null;
-            dbCtx.Dispose();
 
             KeepAlive(token);
 
@@ -211,35 +218,34 @@ namespace DMS_WebAPI.Utilities
         /// Добавляет к существующему пользовательскому контексту информации по логу
         /// </summary>
         /// <param name="token">new server parameters</param>
-        /// <param name="browberInfo">clientId</param>
+        /// <param name="browserInfo">clientId</param>
         /// <param name="fingerPrint">clientId</param>
         /// <returns></returns>
-        public void Set(string token, string browberInfo, string fingerPrint)
+        public void Set(string token, string browserInfo, string fingerPrint)
         {
             token = token.ToLower();
 
-            if (!Contains(token)) throw new UserUnauthorized();
+            var intContext = GetContextInternal(token);
 
-            var context = GetInternal(token);
-            var dbCtx = DmsResolver.Current.Kernel.Get<DmsContext>(new ConstructorArgument("dbModel", context.CurrentDB));
-            context.DbContext = dbCtx;
+            if (intContext == null) throw new UserUnauthorized();
+
             var logger = DmsResolver.Current.Get<ILogger>();
 
-            context.LoginLogInfo = browberInfo;
-            context.LoginLogId = logger.Information(context, context.LoginLogInfo, (int)EnumObjects.System, (int)EnumSystemActions.Login, logDate: context.CreateDate, isCopyDate1: true);
+            intContext.LoginLogInfo = browserInfo;
+            var context = new UserContext(intContext);// это необходимо т.к. если несколько сервисов одновременно попытаются установить позиции для одного контекста, то возникнет ошибка. 
+            intContext.LoginLogId = logger.Information(context, intContext.LoginLogInfo, (int)EnumObjects.System, (int)EnumSystemActions.Login, logDate: intContext.CreateDate, isCopyDate1: true);
 
             if (!string.IsNullOrEmpty(fingerPrint))
-                logger.DeleteSystemLogs(context, new FilterSystemLog
+                logger.DeleteSystemLogs(intContext, new FilterSystemLog
                 {
                     ObjectIDs = new List<int> { (int)EnumObjects.System },
                     ActionIDs = new List<int> { (int)EnumSystemActions.Login },
                     LogLevels = new List<int> { (int)EnumLogTypes.Error },
-                    ExecutorAgentIDs = new List<int> { context.CurrentAgentId },
+                    ExecutorAgentIDs = new List<int> { intContext.CurrentAgentId },
                     LogDateFrom = DateTime.UtcNow.AddMinutes(-60),
                     ObjectLog = $"\"FingerPrint\":\"{fingerPrint}\"",
                 });
-            context.DbContext = null;
-            dbCtx.Dispose();
+
             KeepAlive(token);
         }
 
@@ -252,56 +258,89 @@ namespace DMS_WebAPI.Utilities
         /// <param name="positionsIdList"></param>
         public void SetUserPositions(string token, List<int> positionsIdList)
         {
-            var context = GetInternal(token);
-            var dbCtx = DmsResolver.Current.Kernel.Get<DmsContext>(new ConstructorArgument("dbModel", context.CurrentDB));
-            context.DbContext = dbCtx;
+            var intContext = GetContextInternal(token);
+            if (intContext == null) throw new UserUnauthorized();
 
-            context.CurrentPositionsIdList = positionsIdList;
-            context.CurrentPositionsAccessLevel = DmsResolver.Current.Get<IAdminService>().GetCurrentPositionsAccessLevel(context);
+            intContext.CurrentPositionsIdList = positionsIdList;
+
+            var context = new UserContext(intContext);// это необходимо т.к. если несколько сервисов одновременно попытаются установить позиции для одного контекста, то возникнет ошибка. 
+            intContext.CurrentPositionsAccessLevel = DmsResolver.Current.Get<IAdminService>().GetCurrentPositionsAccessLevel(context);
+            context.CurrentPositionsAccessLevel = intContext.CurrentPositionsAccessLevel;
+
             DmsResolver.Current.Get<IDictionaryService>().SetDictionaryAgentUserLastPositionChose(context, positionsIdList);
             // Контекст полностью сформирован и готов к работе
-            context.IsFormed = true;
+            intContext.IsFormed = true;
             KeepAlive(token);
 
             // Сохраняю текущий контекст
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            webService.SaveUserContexts(context);
-
-            context.DbContext = null;
-            dbCtx.Dispose();
+            webService.SaveUserContexts(intContext);
         }
 
         /// <summary>
         /// UpdateChangePasswordRequired
         /// </summary>
-        /// <param name="IsChangePasswordRequired"></param>
+        /// <param name="isChangePasswordRequired"></param>
         /// <param name="userId">Id Web-пользователя</param>
         /// <returns></returns>
-        public void UpdateChangePasswordRequired(string userId, bool IsChangePasswordRequired)
+        public void UpdateChangePasswordRequired(string userId, bool isChangePasswordRequired)
         {
-            var keys = _cacheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentEmployee.UserId == userId; } catch { } return false; }).Select(x => x.Key).ToArray();
-            foreach (var key in keys)
+            locker.EnterReadLock();
+            try
             {
-                try
-                {
-                    ((IContext)(_cacheContexts[key].StoreObject)).IsChangePasswordRequired = IsChangePasswordRequired;
-                }
-                catch { }
+                _cacheContexts.Select(x => x.Value.StoreObject as IContext)
+                    .Where(x => x != null && x.Employee.UserId == userId)
+                    .ForEach(x => x.IsChangePasswordRequired = isChangePasswordRequired);
+            }
+            catch (Exception ex)
+            {
+                //should not happen. add log here
+            }
+            finally
+            {
+                locker.ExitReadLock();
             }
         }
 
-        private void Save(string token, IContext val)
+        private void Add(string token, IContext context)
         {
-            _cacheContexts.Add(token.ToLower(), new StoreInfo() { StoreObject = val, LastUsage = DateTime.UtcNow });
+            // контекст добавленный в коллекцию считаю внутренним, его нельзя использовать для подключения к базе
+            //context.IsInternal = true;
+            _cacheContexts.Add(token.ToLower(), new StoreInfo() { StoreObject = context, LastUsage = DateTime.UtcNow });
+
         }
 
-        public void VerifyLicence(int clientId, IEnumerable<DatabaseModel> dbs)
+        private void Save(string token, IContext context)
         {
-            var clientUsers = _cacheContexts
-                    .Select(x => (IContext)x.Value.StoreObject)
-                    .Where(x => x.CurrentClientId == clientId);
+            locker.EnterWriteLock();
+            try
+            {
+                Add(token, context);
+            }
+            finally
+            {
+                locker.ExitWriteLock();
+            }
 
-            if (clientUsers.Count() <= 0)
+        }
+
+        public void VerifyLicence(int clientId, IEnumerable<DatabaseModelForAdminContext> dbs)
+        {
+            IEnumerable<IContext> clientUsers = new List<IContext>();
+            locker.EnterReadLock();
+            try
+            {
+                clientUsers = _cacheContexts
+                        .Select(x => (IContext)x.Value.StoreObject)
+                        .Where(x => x.Client.Id == clientId);
+            }
+            finally
+            {
+                locker.ExitReadLock();
+            }
+
+
+            if (!clientUsers.Any())
                 return;
 
             var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
@@ -313,16 +352,24 @@ namespace DMS_WebAPI.Utilities
 
             if (lic.IsConcurenteLicence)
             {
-                var qry = _cacheContexts
+                locker.EnterReadLock();
+                try
+                {
+                    var qry = _cacheContexts
                    .Select(x => (IContext)x.Value.StoreObject)
-                   .Where(x => x.CurrentClientId == clientId)
-                   .Select(x => x.CurrentEmployee.UserId)
+                   .Where(x => x.Client.Id == clientId)
+                   .Select(x => x.Employee.UserId)
                    .Distinct();
 
-                lic.ConcurenteNumberOfConnectionsNow = qry.Count();
+                    lic.ConcurenteNumberOfConnectionsNow = qry.Count();
+                }
+                finally
+                {
+                    locker.ExitReadLock();
+                }
             }
 
-            object licenceError = null;
+            object licenceError;
 
             try
             {
@@ -347,23 +394,34 @@ namespace DMS_WebAPI.Utilities
         {
             if (string.IsNullOrEmpty(token)) token = TokenLower;
 
-            if (!Contains(token)) return null;
 
-            var ctx = new UserContext(GetInternal(token));
+            var tknCtx = GetContextInternal(token);
+
+            if (tknCtx == null) return null;
+
+            var ctx = new UserContext(tknCtx);
             var logger = DmsResolver.Current.Get<ILogger>();
+            // TODO  ctx.LoginLogId.Value - стреляется если нет LoginLogId
             logger.UpdateLogDate1(ctx, ctx.LoginLogId.Value, _cacheContexts[token].LastUsage);
-            // удаляю пользовательский контекст из коллекции
-            _cacheContexts.Remove(token);
 
-            if (removeFromBase)
+            locker.EnterWriteLock();
+            try
             {
-                //HttpContext.Current.GetOwinContext().Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
+                // удаляю пользовательский контекст из коллекции
+                _cacheContexts.Remove(token);
 
-                var webService = DmsResolver.Current.Get<WebAPIService>();
-                webService.DeleteUserContext(token);
+                if (removeFromBase)
+                {
+                    //HttpContext.Current.GetOwinContext().Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
+
+                    var webService = DmsResolver.Current.Get<WebAPIService>();
+                    webService.DeleteUserContext(token);
+                }
             }
-
-
+            finally
+            {
+                locker.ExitWriteLock();
+            }
             return ctx;
         }
 
@@ -373,13 +431,21 @@ namespace DMS_WebAPI.Utilities
         public void SaveLogContextsLastUsage()
         {
             var logger = DmsResolver.Current.Get<ILogger>();
-            _cacheContexts.Where(x => (x.Value.StoreObject is IContext) && ((IContext)x.Value.StoreObject).LoginLogId.HasValue).ToList()
-            .ForEach(x =>
-                {
-                    var ctx = (x.Value.StoreObject as IContext);
-                    logger.UpdateLogDate1(ctx, ctx.LoginLogId.Value, x.Value.LastUsage);
-                });
-
+            locker.EnterReadLock();
+            try
+            {
+                _cacheContexts.Where(x => (x.Value.StoreObject is IContext) && ((IContext)x.Value.StoreObject).LoginLogId.HasValue)
+                    .ToList()
+                    .ForEach(x =>
+                    {
+                        var ctx = (x.Value.StoreObject as IContext);
+                        logger.UpdateLogDate1(ctx, ctx.LoginLogId.Value, x.Value.LastUsage);
+                    });
+            }
+            finally
+            {
+                locker.ExitReadLock();
+            }
         }
 
         /// <summary>
@@ -388,10 +454,20 @@ namespace DMS_WebAPI.Utilities
         public void RemoveByTimeout()
         {
             var now = DateTime.UtcNow;
-            var keys = _cacheContexts.Where(x => x.Value.LastUsage.AddMinutes(_TIME_OUT_MIN) <= now).Select(x => x.Key).ToArray();
+            List<string> keys;
+            locker.EnterReadLock();
+            try
+            {
+                keys = _cacheContexts.Where(x => x.Value.LastUsage.AddMinutes(_TIME_OUT_MIN) <= now).Select(x => x.Key).ToList();
+            }
+            finally
+            {
+                locker.ExitReadLock();
+            }
             foreach (var key in keys)
             {
-                Remove(key, removeFromBase: false);
+                // removeFromBase не убирать - это место исключение - его должно быть видно!!!
+                Remove(key, false);
             }
         }
 
@@ -401,7 +477,16 @@ namespace DMS_WebAPI.Utilities
         /// <param name="agentId"></param>
         public void RemoveByAgentId(int agentId)
         {
-            var keys = _cacheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentAgentId == agentId; } catch { } return false; }).Select(x => x.Key).ToArray();
+            List<string> keys;
+            locker.EnterReadLock();
+            try
+            {
+                keys = _cacheContexts.Where(x => x.Value.StoreObject is IContext && ((IContext)x.Value.StoreObject).CurrentAgentId == agentId).Select(x => x.Key).ToList();
+            }
+            finally
+            {
+                locker.ExitReadLock();
+            }
             foreach (var key in keys)
             {
                 Remove(key);
@@ -414,7 +499,16 @@ namespace DMS_WebAPI.Utilities
         /// <param name="userId"></param>
         public void RemoveByUserId(string userId)
         {
-            var keys = _cacheContexts.Where(x => { try { return ((IContext)x.Value.StoreObject).CurrentEmployee.UserId == userId; } catch { } return false; }).Select(x => x.Key).ToArray();
+            List<string> keys;
+            locker.EnterReadLock();
+            try
+            {
+                keys = _cacheContexts.Where(x => x.Value.StoreObject is IContext && ((IContext)x.Value.StoreObject).Employee.UserId == userId).Select(x => x.Key).ToList();
+            }
+            finally
+            {
+                locker.ExitReadLock();
+            }
             foreach (var key in keys)
             {
                 Remove(key);
@@ -423,7 +517,7 @@ namespace DMS_WebAPI.Utilities
 
 
 
-        public void VerifyNumberOfConnectionsByNew(IContext context, int clientId, IEnumerable<DatabaseModel> dbs)
+        public void VerifyNumberOfConnectionsByNew(IContext context, int clientId, IEnumerable<DatabaseModelForAdminContext> dbs)
         {
             if (clientId <= 0) return;
 
@@ -441,15 +535,23 @@ namespace DMS_WebAPI.Utilities
 
             if (lic.IsConcurenteLicence)
             {
-                var qry = _cacheContexts
+                var qry = new List<string>();
+                locker.EnterReadLock();
+                try
+                {
+                    qry = _cacheContexts
                     .Select(x => (IContext)x.Value.StoreObject)
-                    .Where(x => x.CurrentClientId == clientId)
-                    .Select(x => x.CurrentEmployee.UserId)
-                    .Distinct();
+                    .Where(x => x.Client.Id == clientId)
+                    .Select(x => x.Employee.UserId)
+                    .Distinct().ToList();
+                }
+                finally
+                {
+                    locker.ExitReadLock();
+                }
+                var count = qry.Count;
 
-                var count = qry.Count();
-
-                if (!qry.Any(x => x == context.CurrentEmployee.UserId))
+                if (qry.All(x => x != context.Employee.UserId))
                 {
                     count++;
                 }
@@ -471,13 +573,21 @@ namespace DMS_WebAPI.Utilities
 
         public void UpdateLanguageId(int agentId, int languageId)
         {
-            var contexts = _cacheContexts
+            List<IContext> contexts;
+            locker.EnterReadLock();
+            try
+            {
+                contexts = _cacheContexts
                         .Select(x => (IContext)x.Value.StoreObject)
-                        .Where(x => x.CurrentEmployee.AgentId == agentId).ToList();
-
+                        .Where(x => x.Employee.AgentId == agentId).ToList();
+            }
+            finally
+            {
+                locker.ExitReadLock();
+            }
             foreach (var context in contexts)
             {
-                context.CurrentEmployee.LanguageId = languageId;
+                context.Employee.LanguageId = languageId;
             }
         }
 
@@ -486,46 +596,98 @@ namespace DMS_WebAPI.Utilities
         /// </summary>
         public void Clear()
         {
-            _cacheContexts.Clear();
+            locker.EnterWriteLock();
+            try
+            {
+                _cacheContexts.Clear();
+            }
+            finally
+            {
+                locker.ExitWriteLock();
+            }
         }
 
-        private bool Contains(string token) => _cacheContexts.ContainsKey(token);
+        private bool Contains(string token)
+        {
+            locker.EnterReadLock();
+            try
+            {
+                return _cacheContexts.ContainsKey(token);
+            }
+            finally
+            {
+                locker.ExitReadLock();
+            }
+        }
+
 
         /// <summary>
         /// Количество активных пользователей
         /// </summary>
         public int Count
         {
-            get { return _cacheContexts.Count; }
+            get
+            {
+                locker.EnterReadLock();
+                try
+                {
+                    return _cacheContexts.Count;
+                }
+                finally
+                {
+                    locker.ExitReadLock();
+                }
+            }
         }
 
-        private IContext GetInternal(string token)
-        {
-            var storeInfo = _cacheContexts[token];
 
+        private IContext GetContextInternal(string token)
+        {
+            locker.EnterReadLock();
             try
             {
-                return (IContext)storeInfo.StoreObject;
+                if (_cacheContexts.ContainsKey(token))
+                {
+                    var storeInfo = (IContext)_cacheContexts[token].StoreObject;
+                    return storeInfo;
+                }
+                return null;
             }
-            catch (InvalidCastException invalidCastException)
+            finally
             {
-                // TODO Это правильно, что при InvalidCastException выбрасывается new Exception()
-                throw new Exception();
+                locker.ExitReadLock();
+            }
+        }
+
+        private StoreInfo GetStoreInfoInternal(string token)
+        {
+            locker.EnterReadLock();
+            try
+            {
+                if (_cacheContexts.ContainsKey(token))
+                {
+                    return _cacheContexts[token];
+                }
+                return null;
+            }
+            finally
+            {
+                locker.ExitReadLock();
             }
         }
 
         private void KeepAlive(string token)
         {
-            if (!_cacheContexts.ContainsKey(token))
+            var storeInfo = GetStoreInfoInternal(token);
+            if (storeInfo == null)
             {
                 throw new UserUnauthorized();
             }
 
-            var storeInfo = _cacheContexts[token];
             // KeepAlive: Продление жизни пользовательского контекста
             storeInfo.LastUsage = DateTime.UtcNow;
 
-            var ctx = GetInternal(token);
+            var ctx = (IContext)storeInfo.StoreObject;
 
             // не чаше, чем раз в 5 минут обновляю LastChangeDate
             if (ctx.LastChangeDate.AddMinutes(_TIME_OUT_MIN / 3) < DateTime.UtcNow)
@@ -539,42 +701,133 @@ namespace DMS_WebAPI.Utilities
 
         private void Restore(string token)
         {
-            // Попытка восстановить восстановленный контекст
-            if (Contains(token)) return;
+            locker.EnterWriteLock();
+            try
+            {
+                // Попытка восстановить восстановленный контекст
+                if (_cacheContexts.ContainsKey(token)) return;
 
-            var webService = DmsResolver.Current.Get<WebAPIService>();
-            var item = webService.GetUserContexts(new BL.Model.WebAPI.Filters.FilterAspNetUserContext() { TokenExact = token }).FirstOrDefault();
+                var webService = DmsResolver.Current.Get<WebAPIService>();
+                var item = webService.GetUserContexts(new BL.Model.WebAPI.Filters.FilterAspNetUserContext()
+                {
+                    TokenExact = token
+                }).FirstOrDefault();
 
-            if (item == null) return;
+                if (item == null) return;
 
-            var clientCode = webService.GetClientCode(item.ClientId);
+                var clientCode = webService.GetClientCode(item.ClientId);
 
-            if (string.IsNullOrEmpty(clientCode)) return;
+                if (string.IsNullOrEmpty(clientCode)) return;
 
-            var server = webService.GetClientServer(item.ClientId);
+                var server = webService.GetClientServer(item.ClientId);
 
-            if (server == null) return;
+                if (server == null) return;
 
-            var user = webService.GetUserById(item.UserId);
+                var user = webService.GetUserById(item.UserId);
 
-            if (user == null) return;
+                if (user == null) return;
 
-            // Получаю информацию о браузере (она могла обновиться с момента предыдущего входа, например версия)
-            var message = HttpContext.Current.Request.Browser.Info();
+                // Получаю информацию о браузере (она могла обновиться с момента предыдущего входа, например версия)
+                var message = HttpContext.Current.Request.Browser.Info();
 
+                // Тут нет никакого фингерпринта, он передается один раз с токеном
+                var fingerPrint = HttpContext.Current.Request.InputStream.GetFingerprint();
 
-            // Тут нет никакого фингерпринта, он передается один раз с токеном
-            var fingerPrint = HttpContext.Current.Request.InputStream.GetFingerprint();
+                //Set(item.Token, item.UserId, user.UserName, user.IsChangePasswordRequired, clientCode);
 
+                token = item.Token.ToLower();
 
-            // Залипуха от многопоточности. Пока ныряли в базу другой поток уже мог начать восстанавливать контекст
-            // TODO - это нужно решать по правильному
-            if (Contains(token)) return;
+                var dbWeb = DmsResolver.Current.Get<WebAPIDbProcess>();
 
-            Set(item.Token, item.UserId, user.UserName, user.IsChangePasswordRequired, clientCode);
-            Set(item.Token, server);
-            Set(item.Token, message, fingerPrint);
-            SetUserPositions(item.Token, item.CurrentPositionsIdList.Split(',').Select(n => Convert.ToInt32(n)).ToList());
+                var context = new UserContext
+                {
+                    Employee = new Employee
+                    {
+                        Token = token,
+                        UserId = item.UserId,
+                    },
+                    Client = new Client
+                    {
+                        Id = dbWeb.GetClientId(clientCode),
+                        Code = clientCode
+                    },
+                    IsChangePasswordRequired = user.IsChangePasswordRequired,
+                    UserName = user.UserName,
+                };
+
+                //Set(item.Token, server);
+
+                context.ClientLicence = dbWeb.GetClientLicenceActive(context.Client.Id);
+
+                VerifyNumberOfConnectionsByNew(context, context.Client.Id, new List<DatabaseModelForAdminContext> { server });//LONG
+
+                context.CurrentDB = server;
+                var dbCtx = DmsResolver.Current.Kernel.Get<DmsContext>(new ConstructorArgument("dbModel", context.CurrentDB));
+                context.DbContext = dbCtx;
+                var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(context, context.Employee.UserId);
+
+                if (agentUser != null)
+                {
+                    // эти проверки уже есть на получении токена
+                    // проверка активности сотрудника
+                    if (!agentUser.IsActive)
+                    {
+                        throw new UserIsDeactivated(agentUser.Name);
+                    }
+
+                    if (agentUser.PositionExecutorsCount == 0)
+                    {
+                        throw new UserNotExecuteAnyPosition(agentUser.Name);
+                    }
+
+                    context.Employee.AgentId = agentUser.AgentId;
+                    context.Employee.Name = agentUser.Name;
+                    context.Employee.LanguageId = agentUser.LanguageId;
+                }
+                else
+                {
+                    throw new UserAccessIsDenied();
+                }
+
+                //Set(item.Token, message, fingerPrint);
+
+                var logger = DmsResolver.Current.Get<ILogger>();
+
+                context.LoginLogInfo = message;
+                context.LoginLogId = logger.Information(context, context.LoginLogInfo, (int)EnumObjects.System, (int)EnumSystemActions.Login, logDate: context.CreateDate, isCopyDate1: true);
+
+                if (!string.IsNullOrEmpty(fingerPrint))
+                    logger.DeleteSystemLogs(context, new FilterSystemLog
+                    {
+                        ObjectIDs = new List<int> { (int)EnumObjects.System },
+                        ActionIDs = new List<int> { (int)EnumSystemActions.Login },
+                        LogLevels = new List<int> { (int)EnumLogTypes.Error },
+                        ExecutorAgentIDs = new List<int> { context.CurrentAgentId },
+                        LogDateFrom = DateTime.UtcNow.AddMinutes(-60),
+                        ObjectLog = $"\"FingerPrint\":\"{fingerPrint}\"",
+                    });
+
+                //SetUserPositions(item.Token,item.CurrentPositionsIdList.Split(',').Select(n => Convert.ToInt32(n)).ToList());
+                var positionsIdList = item.CurrentPositionsIdList.Split(',').Select(n => Convert.ToInt32(n)).ToList();
+
+                context.CurrentPositionsIdList = positionsIdList;
+                context.CurrentPositionsAccessLevel = DmsResolver.Current.Get<IAdminService>().GetCurrentPositionsAccessLevel(context);
+                DmsResolver.Current.Get<IDictionaryService>().SetDictionaryAgentUserLastPositionChose(context, positionsIdList);
+                // Контекст полностью сформирован и готов к работе
+                context.IsFormed = true;
+
+                // Сохраняю текущий контекст
+                webService.SaveUserContexts(context);//TODO надоли это если мы только что отресторили токен? - дата проставляется свежая
+
+                context.DbContext = null;
+                dbCtx.Dispose();
+
+                Add(token, context);
+            }
+            finally
+            {
+                locker.ExitWriteLock();
+            }
         }
 
     }

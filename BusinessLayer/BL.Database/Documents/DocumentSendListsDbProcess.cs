@@ -256,7 +256,7 @@ namespace BL.Database.Documents
                 var linkId = dbContext.DocumentsSet.Where(y => y.Id == model.DocumentId)
                     .Where(y => y.Accesses.Any(z => z.PositionId == model.CurrentPositionId && z.IsInWork))
                     .Select(y => y.LinkId).FirstOrDefault();
-                var qry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                var qry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.Client.Id)
                     .Where(x => x.DocumentId != model.DocumentId && x.Document.LinkId == linkId);
                 var filterContains = PredicateBuilder.New<DocumentAccesses>(false);
                 filterContains = model.Positions.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
@@ -289,7 +289,7 @@ namespace BL.Database.Documents
                 var filterPositionsContains = PredicateBuilder.New<DictionaryPositions>(false);
                 filterPositionsContains = model.Positions.Aggregate(filterPositionsContains,
                     (current, value) => current.Or(e => e.Id == value).Expand());
-                res.Positions = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == ctx.CurrentClientId).Where(filterPositionsContains)
+                res.Positions = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == ctx.Client.Id).Where(filterPositionsContains)
                     .Select(x => new FrontDictionaryPosition
                     {
                         Id = x.Id,

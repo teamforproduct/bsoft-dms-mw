@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using BL.CrossCutting.Interfaces;
-using BL.Model.Database;
-using BL.Model.Users;
+using BL.Model.Context;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
 using System;
@@ -17,7 +16,7 @@ namespace BL.CrossCutting.Context
         private const string _USER_NAME = "DmsAdmin";
         private const string _USER_PASS = "UkrPr0100_th3B3ssTC0nTry";
 
-        public AdminContext(DatabaseModel dbModel)
+        public AdminContext(DatabaseModelForAdminContext dbModel)
         {
             //TODO ClientId
             CurrentDB = new DatabaseModel
@@ -33,11 +32,15 @@ namespace BL.CrossCutting.Context
                 DefaultSchema = dbModel.DefaultSchema,
                 ConnectionString = dbModel.ConnectionString,
             };
-            CurrentEmployee = new Employee
+            Employee = new Employee
             {
                 Name = "System user",
                 AgentId = (int)EnumSystemUsers.AdminUser,
-                ClientId = dbModel.ClientId,
+            };
+            Client = new Client
+            {
+                Id = dbModel.ClientId,
+                Code = dbModel.ClientCode
             };
             DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
         }
@@ -57,17 +60,20 @@ namespace BL.CrossCutting.Context
                 DefaultSchema = ctx.CurrentDB.DefaultSchema,
                 ConnectionString = ctx.CurrentDB.ConnectionString,
             };
-            CurrentEmployee = new Employee
+            Employee = new Employee
             {
                 Name = "System user",
-                AgentId = (int) EnumSystemUsers.AdminUser,
-                ClientId = ctx.CurrentClientId
+                AgentId = (int)EnumSystemUsers.AdminUser,
+            };
+            Client = new Client
+            {
+                Id = ctx.Client.Id,
+                Code = ctx.Client.Code
             };
 
-            IsChangePasswordRequired = ctx.IsChangePasswordRequired;
-            DbContext =DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
+            IsChangePasswordRequired = false;// for admin context that is not required
+            DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
             IsFormed = true;
-
         }
 
         /// <summary>
@@ -75,12 +81,21 @@ namespace BL.CrossCutting.Context
         /// </summary>
         public bool IsFormed { get; set; }
 
-        public Employee CurrentEmployee { get; set; }
+        public Employee Employee { get; set; }
+
+        public Client Client { get; set; }
+
+        public DatabaseModel CurrentDB { get; set; }
+
+        public bool CurrentPositionsIdListDefined => true;
+
         public List<int> CurrentPositionsIdList
         {
             get { return new List<int> { (int)EnumSystemPositions.AdminPosition }; }
             set { }
         }
+
+        public bool CurrentPositionsAccessLevelDefined => true;
 
         public Dictionary<int, int> CurrentPositionsAccessLevel
         {
@@ -88,9 +103,10 @@ namespace BL.CrossCutting.Context
             set { }
         }
 
-        public DatabaseModel CurrentDB { get; set; }
 
+        public bool CurrentPositionDefined => true;
         public int CurrentPositionId => _currentPositionId ?? (int)EnumSystemPositions.AdminPosition;
+        public bool CurrentAgentDefined => true;
 
         public int CurrentAgentId => (int)EnumSystemUsers.AdminUser;
 
@@ -106,22 +122,6 @@ namespace BL.CrossCutting.Context
 
         public bool IsAdmin => true;
         public LicenceInfo ClientLicence { get; set; }
-
-        public int CurrentClientId
-        {
-            get
-            {
-                if (CurrentEmployee.ClientId <= 0)
-                {
-                    return 0;
-                }
-                return CurrentEmployee.ClientId;
-            }
-            set
-            {
-                CurrentEmployee.ClientId = value;
-            }
-        }
 
         public DateTime CreateDate { get; } = DateTime.UtcNow;
         public DateTime LastChangeDate { get; set; } = DateTime.UtcNow;

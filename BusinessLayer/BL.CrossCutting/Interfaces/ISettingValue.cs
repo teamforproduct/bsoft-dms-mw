@@ -9,6 +9,9 @@ namespace BL.CrossCutting.Interfaces
         string GetMainHost();
         string GetVirtualHost();
 
+        string GetClientAddress(string clientCode);
+        string GetAuthAddress();
+
         bool GetSubordinationsSendAllForExecution(IContext ctx);
         bool GetSubordinationsSendAllForInforming(IContext ctx);
 
@@ -52,8 +55,8 @@ namespace BL.CrossCutting.Interfaces
         #region [+] Fulltext ...
         string GetFulltextStorePath();
 
-        int GetFulltextRefreshTimeout(IContext ctx);
-        int GetFulltextRowLimit(IContext ctx);
+        int GetFulltextRefreshTimeout();
+        int GetFulltextRowLimit();
 
         bool GetFulltextWasInitialized(IContext ctx);
 

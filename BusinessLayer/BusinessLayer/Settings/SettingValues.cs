@@ -32,14 +32,14 @@ namespace BL.Logic.Settings
             return val;
         }
 
-        public int GetFulltextRefreshTimeout(IContext ctx) =>
-             cliSett.GetSettingWithWriteDefaultIfEmpty<int>(ctx, EnumSystemSettings.FULLTEXTSEARCH_REFRESH_TIMEOUT);
+        public int GetFulltextRefreshTimeout() =>
+             genSett.GetSetting<int>(EnumGeneralSettings.FulltextRefreshTimeout);
 
         public bool GetFulltextWasInitialized(IContext ctx) =>
              cliSett.GetSettingWithWriteDefaultIfEmpty<bool>(ctx, EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED);
 
-        public int GetFulltextRowLimit(IContext ctx) =>
-            cliSett.GetSettingWithWriteDefaultIfEmpty<int>(ctx, EnumSystemSettings.FULLTEXTSEARCH_ROWLIMIT);
+        public int GetFulltextRowLimit() =>
+            genSett.GetSetting<int>(EnumGeneralSettings.FulltextRowLimit);
 
 
         public string GetFileStorePath()
@@ -246,6 +246,13 @@ namespace BL.Logic.Settings
             return val;
         }
 
+        public string GetMainHostProtocol()
+        {
+            var val = genSett.GetSetting<string>(EnumGeneralSettings.MainHostProtocol);
+            if (string.IsNullOrEmpty(val)) throw new SettingValueIsNotSet(EnumGeneralSettings.MainHostProtocol.ToString());
+            return val;
+        }
+
         public string GetVirtualHost()
         {
             var val = genSett.GetSetting<string>(EnumGeneralSettings.VirtualHost);
@@ -253,8 +260,15 @@ namespace BL.Logic.Settings
             return val;
         }
 
+        public string GetAuthDomain()
+        {
+            var val = genSett.GetSetting<string>(EnumGeneralSettings.AuthDomain);
+            if (string.IsNullOrEmpty(val)) throw new SettingValueIsNotSet(EnumGeneralSettings.AuthDomain.ToString());
+            return val;
+        }
 
+        public string GetAuthAddress() => GetMainHostProtocol() + "://" + GetAuthDomain() + "." + GetMainHost();
 
-
+        public string GetClientAddress(string clientCode) => GetMainHostProtocol() + "://" + clientCode + "." + GetMainHost();
     }
 }

@@ -335,7 +335,7 @@ namespace BL.Logic.Common
             var res = new InternalDocumentAccess
             {
                 DocumentId = documentId ?? 0,
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
                 EntityTypeId = entityTypeId,
                 AccessLevel = accessLevel ?? EnumAccessLevels.PersonallyAndIOAndReferents,
                 IsInWork = true,
@@ -358,7 +358,7 @@ namespace BL.Logic.Common
             var res = accesses.Select(x => new InternalDocumentAccess
             {
                 DocumentId = x.DocumentId,
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
                 EntityTypeId = entityTypeId,
                 AccessLevel = accessLevel,
                 IsInWork = true,
@@ -377,7 +377,7 @@ namespace BL.Logic.Common
             var res = new InternalDocumentEvent
             {
                 DocumentId = model.DocumentId != 0 ? model.DocumentId : 0,
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
                 EntityTypeId = model.EntityTypeId,
                 EventType = eventType ?? (EnumEventTypes)Enum.Parse(typeof(EnumEventTypes), model.SendType.ToString()),
                 TaskId = model.TaskId,
@@ -413,7 +413,7 @@ namespace BL.Logic.Common
             var targetPositionExecutor = GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId);
             var res = new InternalDocumentEvent
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
                 EntityTypeId = entityTypeId,
                 DocumentId = documentId ?? 0,
                 EventType = eventType,
@@ -449,7 +449,7 @@ namespace BL.Logic.Common
         {
             var res = new InternalDocumentWait
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
                 EntityTypeId = entityTypeId,
                 DocumentId = documentId,
                 OnEvent = onEvent,
@@ -462,7 +462,7 @@ namespace BL.Logic.Common
         {
             var res = new InternalDocumentWait
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
                 EntityTypeId = entityTypeId,
                 DocumentId = controlOnModel.DocumentId,
                 DueDate = controlOnModel.DueDate,
@@ -493,7 +493,7 @@ namespace BL.Logic.Common
                 accessess.AddRange(ConvertToAccessGroup(sendListModel.AccessGroups.Where(x => x.AccessType != EnumEventAccessTypes.Source && x.AccessType != EnumEventAccessTypes.Target).ToList()));
             var res = new InternalDocumentWait
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
                 EntityTypeId = sendListModel.EntityTypeId,
                 DocumentId = sendListModel.DocumentId,
                 DueDate = eventType == EnumEventTypes.ControlOn && !isTakeMainDueDate
@@ -543,7 +543,7 @@ namespace BL.Logic.Common
                 accessess.AddRange(ConvertToAccessGroup(sendListModel.AccessGroups.Where(x => x.AccessType != EnumEventAccessTypes.Source && x.AccessType != EnumEventAccessTypes.Target).ToList()));
             var res = new InternalDocumentSubscription
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
                 EntityTypeId = sendListModel.EntityTypeId,
                 DocumentId = sendListModel.DocumentId,
                 SubscriptionStates = EnumSubscriptionStates.No,
@@ -574,7 +574,7 @@ namespace BL.Logic.Common
         {
             var res = new InternalDocumentSendList
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
                 EntityTypeId = entityTypeId,
                 DocumentId = model.DocumentId,
                 Stage = model.Stage,
@@ -611,7 +611,7 @@ namespace BL.Logic.Common
         {
             var res = new InternalDocumentRestrictedSendList
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
                 EntityTypeId = entityTypeId,
                 AccessLevel = model.AccessLevel,
                 DocumentId = model.DocumentId,
@@ -625,7 +625,7 @@ namespace BL.Logic.Common
         {
             var res = new InternalTemplateAttachedFile
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
                 EntityTypeId = src.EntityTypeId,
                 DocumentId = src.DocumentId,
                 Extension = src.Extension,
@@ -648,7 +648,7 @@ namespace BL.Logic.Common
         {
             var res = new InternalDocumentAttachedFile
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
                 EntityTypeId = src.EntityTypeId,
                 Extension = src.Extension,
                 Name = src.Name,
@@ -681,7 +681,7 @@ namespace BL.Logic.Common
         {
             var res = new InternalDocumentPaper
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
                 EntityTypeId = entityTypeId,
                 DocumentId = model.DocumentId,
                 Name = model.Name,
@@ -741,7 +741,7 @@ namespace BL.Logic.Common
             var targetPositionExecutor = GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId);
             var res = new InternalDocumentEvent
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
                 EntityTypeId = entityTypeId,
                 DocumentId = documentId,
                 PaperId = paperId ?? 0,

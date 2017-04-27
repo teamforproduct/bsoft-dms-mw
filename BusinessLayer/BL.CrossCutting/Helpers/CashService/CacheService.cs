@@ -55,8 +55,16 @@ namespace BL.CrossCutting.Helpers.CashService
 
         public void AddOrUpdateCasheData(IContext ctx, string key, Func<object> getData)
         {
-            var intK = GetInternalKey(key, ctx.CurrentClientId);
-            _queryCashe.AddOrUpdate(intK, getData);
+            var intK = GetInternalKey(key, ctx.Client.Id);
+            _locker.EnterWriteLock();
+            try
+            {
+                _queryCashe.AddOrUpdate(intK, getData);
+            }
+            finally
+            {
+                _locker.ExitWriteLock();
+            }
             UpdateData(intK);
         }
 
@@ -65,7 +73,7 @@ namespace BL.CrossCutting.Helpers.CashService
             _locker.EnterReadLock();
             try
             {
-                return _queryCashe.Exists(GetInternalKey(key, ctx.CurrentClientId));
+                return _queryCashe.Exists(GetInternalKey(key, ctx.Client.Id));
             }
             finally { _locker.ExitReadLock(); }
         }
@@ -76,7 +84,7 @@ namespace BL.CrossCutting.Helpers.CashService
             try
             {
                 object rv;
-                return _dataCashe.TryGet(GetInternalKey(key, ctx.CurrentClientId), out rv) ? rv : null;
+                return _dataCashe.TryGet(GetInternalKey(key, ctx.Client.Id), out rv) ? rv : null;
             }
             finally { _locker.ExitReadLock(); }
         }
@@ -87,7 +95,7 @@ namespace BL.CrossCutting.Helpers.CashService
             try
             {
                 object rv;
-                return _dataCashe.TryGet(GetInternalKey(key, ctx.CurrentClientId), out rv) ? rv : null;
+                return _dataCashe.TryGet(GetInternalKey(key, ctx.Client.Id), out rv) ? rv : null;
             }
             catch 
             {
@@ -97,7 +105,7 @@ namespace BL.CrossCutting.Helpers.CashService
 
         public void RefreshKey(IContext ctx, string key)
         {
-            var intK = GetInternalKey(key, ctx.CurrentClientId);
+            var intK = GetInternalKey(key, ctx.Client.Id);
             if (_queryCashe.Exists(intK))
             {
                 UpdateData(intK);
@@ -106,12 +114,12 @@ namespace BL.CrossCutting.Helpers.CashService
 
         public void AddUpdateDependency(IContext ctx, string depends, string dependsFrom)
         {
-            _updateDependency.Add(new KeyValuePair<string, string>(GetInternalKey(dependsFrom, ctx.CurrentClientId), GetInternalKey(depends, ctx.CurrentClientId)));
+            _updateDependency.Add(new KeyValuePair<string, string>(GetInternalKey(dependsFrom, ctx.Client.Id), GetInternalKey(depends, ctx.Client.Id)));
         }
 
         public void RemoveUpdateDependency(IContext ctx, string depends, string dependsFrom)
         {
-            _updateDependency.RemoveAll(x => x.Key == GetInternalKey(dependsFrom, ctx.CurrentClientId) && x.Value == GetInternalKey(depends, ctx.CurrentClientId));
+            _updateDependency.RemoveAll(x => x.Key == GetInternalKey(dependsFrom, ctx.Client.Id) && x.Value == GetInternalKey(depends, ctx.Client.Id));
         }
 
         public void Dispose()

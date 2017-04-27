@@ -69,5 +69,13 @@ namespace BL.Model.DictionaryCore.IncomingModel
         [Required]
         public EnumAccessLevels AccessLevel { get; set; }
 
+
+        [IgnoreDataMember]
+        public bool IsChangePasswordRequired { get; set; } = true;
+        [IgnoreDataMember]
+        public bool IsEmailConfirmRequired { get; set; } = true;
+        [IgnoreDataMember]
+        public bool EmailConfirmed { get; set; }
+
     }
 }

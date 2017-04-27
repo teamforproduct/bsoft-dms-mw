@@ -11,7 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using BL.CrossCutting.Context;
+using BL.Model.WebAPI.FrontModel;
 using DMS_WebAPI.Models;
 
 namespace DMS_WebAPI.ControllersV3.Lists

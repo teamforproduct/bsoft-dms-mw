@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DMS_WebAPI.Models
+namespace DMS_WebAPI.DatabaseContext
 {
     public static class ApplicationDbImportData
     {

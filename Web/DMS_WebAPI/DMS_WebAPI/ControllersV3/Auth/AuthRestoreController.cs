@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Model.SystemCore;
 using BL.Model.Users;
 using DMS_WebAPI.Results;
@@ -59,7 +60,9 @@ namespace DMS_WebAPI.ControllersV3.Auth
         public async Task<IHttpActionResult> RestorePassword(RestorePasswordAgentUser model)
         {
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            await webService.RestorePasswordAgentUserAsync(model, new Uri(new Uri(ConfigurationManager.AppSettings["WebSiteUrl"]), "restore-password").ToString(), null, "Restore Password");
+            var tmpService = DmsResolver.Current.Get<ISettingValues>();
+            var addr = tmpService.GetAuthAddress();
+            await webService.RestorePasswordAgentUserAsync(model, new Uri(new Uri(addr), "restore-password").ToString(), null, "Restore Password");
             return new JsonResult(null, this);
         }
 

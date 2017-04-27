@@ -1,5 +1,4 @@
-﻿using BL.CrossCutting.Context;
-using BL.CrossCutting.DependencyInjection;
+﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Model.FullTextSearch;
 using BL.Model.SystemCore;
@@ -10,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Web.Http;
 using System.Web.Http.Description;
+using BL.Model.WebAPI.FrontModel;
 
 namespace DMS_WebAPI.ControllersV3.Auditlog
 {

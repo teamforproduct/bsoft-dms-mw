@@ -7,7 +7,9 @@
     {
         ServerForNewClient,
         MainHost,
+        MainHostProtocol,
         VirtualHost,
+        AuthDomain,
 
 
         #region MailDocum
@@ -55,6 +57,9 @@
         FileStorePath,
 
         FulltextStorePath,
+
+        FulltextRefreshTimeout,
+        FulltextRowLimit,
 
     }
 }

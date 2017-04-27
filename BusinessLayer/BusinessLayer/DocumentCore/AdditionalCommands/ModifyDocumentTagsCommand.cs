@@ -50,7 +50,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         {
             DocTags = new InternalDocumentTag
             {
-                ClientId = _context.CurrentClientId,
+                ClientId = _context.Client.Id,
                 EntityTypeId = _document.EntityTypeId,
                 DocumentId = Model.DocumentId,
                 Tags = Model.Tags
