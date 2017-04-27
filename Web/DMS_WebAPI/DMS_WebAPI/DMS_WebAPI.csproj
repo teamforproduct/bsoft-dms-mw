@@ -455,7 +455,7 @@
     <Compile Include="Utilities\WebAPIDbProcess.cs" />
     <Compile Include="Utilities\Languages.cs" />
     <Compile Include="Utilities\SystemInfo.cs" />
-    <Compile Include="Utilities\UserContextsWorkerService.cs" />
+    <Compile Include="Utilities\AuthWorkerService.cs" />
     <Compile Include="Utilities\UserContexts.cs" />
     <Compile Include="Utilities\WebAPIService.cs" />
   </ItemGroup>
