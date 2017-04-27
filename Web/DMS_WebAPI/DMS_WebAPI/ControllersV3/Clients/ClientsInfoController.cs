@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
 using BL.Model.AdminCore.Clients;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
@@ -42,6 +43,22 @@ namespace DMS_WebAPI.ControllersV3.Clients
         {
             var tmpService = DmsResolver.Current.Get<WebAPIService>();
             await tmpService.AddClientByEmail(model);
+
+            var setVal = DmsResolver.Current.Get<ISettingValues>();
+            var mHost = setVal.GetMainHost();
+
+            // есть задача авторизовать по темному нового пользователя
+
+            //if (!string.IsNullOrEmpty( model.Password))
+            //{ 
+            //var request = $"{mHost}//api/v3/token";
+
+            //var responseString = await client.GetStringAsync(request);
+
+            //    switch (responseString)
+            //        }
+
+
             return new JsonResult(null, this);
         }
 

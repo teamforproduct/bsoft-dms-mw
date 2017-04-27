@@ -71,21 +71,10 @@ namespace DMS_WebAPI.Providers
         /// <returns></returns>
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
-            // Подпорка для соапа
-            var scope = context.Request.Body.GetScope();
-
-            //if (scope == "fingerprint")
-            //{
-            //    using (StreamWriter sw = new StreamWriter(context.Request.Body, Encoding.Unicode))
-            //    {
-            //        sw.Write("&fingerprint=SoapUI");
-            //    }
-            //}
-
             var clientCode = context.Request.Body.GetClientCode();
             var clientSecret = context.Request.Body.GetClientSecret();
             var fingerprint = context.Request.Body.GetFingerprint();
-            
+
             // код клиента - обязательный параметр
             if (string.IsNullOrEmpty(clientCode?.Trim())) throw new ClientCodeRequired();
 
@@ -121,7 +110,7 @@ namespace DMS_WebAPI.Providers
             {
                 var answer = context.Request.Body.GetControlAnswer();
                 var rememberFingerprint = context.Request.Body.GetRememberFingerprint();
-                
+
 
                 if (string.IsNullOrEmpty(fingerprint?.Trim())) ThrowErrorGrantResourceOwnerCredentials(context, new FingerprintRequired());
 
@@ -227,6 +216,15 @@ namespace DMS_WebAPI.Providers
                 var message = HttpContext.Current.Request.Browser.Info();
 
                 var fingerPrint = context.Request.Body.GetFingerprint();
+
+                #region Подпорка для соапа
+                if (string.IsNullOrEmpty(fingerPrint))
+                {
+                    var scope = context.Request.Body.GetScope();
+
+                    if (scope == "fingerprint") fingerPrint = "SoapUI";
+                }
+                #endregion
 
                 // Добавляю в пользовательский контекст сведения о браузере
                 userContexts.Set(token, message, fingerPrint);

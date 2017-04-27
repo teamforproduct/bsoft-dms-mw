@@ -96,7 +96,6 @@ namespace DMS_WebAPI.ControllersV3.User
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 tmpService.VerifyAccess(context, new VerifyAccess() { PositionsIdList = positionsIdList });
 
-                //TODO Здесь необходима проверка на то, что список должностей из доступных
                 userContexts.SetUserPositions(context.Employee.Token, positionsIdList);
                 //context.CurrentPositionsIdList = positionsIdList;
                 //ctx.CurrentPositions = new List<CurrentPosition>() { new CurrentPosition { CurrentPositionId = positionId } };

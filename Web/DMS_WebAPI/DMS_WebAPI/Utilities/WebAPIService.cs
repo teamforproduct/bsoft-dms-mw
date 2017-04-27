@@ -612,7 +612,7 @@ namespace DMS_WebAPI.Utilities
         }
 
 
-public async Task AddClientByEmail(AddClientFromHash model)
+        public async Task AddClientByEmail(AddClientFromHash model)
         {
             var request = _webDb.GetClientRequests(new FilterAspNetClientRequests { HashCodeExact = model.Hash }).FirstOrDefault();
 
@@ -754,7 +754,7 @@ public async Task AddClientByEmail(AddClientFromHash model)
                 {
                     request = $"{vHost}/deletehost.pl?fqdn={model.ClientCode}.{mHost}";
                     responseString = await client.GetStringAsync(request);
-                } 
+                }
 
                 throw;
             }

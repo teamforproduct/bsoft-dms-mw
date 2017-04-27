@@ -22,15 +22,16 @@ namespace BL.CrossCutting.Context
         private List<int> _currentPositionsIdList;
         private Dictionary<int, int> _currentPositionsAccessLevel;
 
-
         public Employee Employee { get; set; }
 
         public Client Client { get; set; }
 
-        public UserContext()
-        {
-        }
+        public UserContext() { }
 
+        /// <summary>
+        /// Создает новый контекст пользователя и новое ПОДКЛЮЧЕНИЕ к базе
+        /// </summary>
+        /// <param name="ctx"></param>
         public UserContext(IContext ctx)
         {
             var def = ctx as UserContext;
@@ -79,6 +80,7 @@ namespace BL.CrossCutting.Context
                 LoginLogInfo = ctx.LoginLogInfo;
                 UserName = ctx.UserName;
 
+                // тут поднимается коннекшн к базе
                 DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
 
                 _currentPositionId = ctx.CurrentPositionDefined
@@ -103,7 +105,6 @@ namespace BL.CrossCutting.Context
             get { return _isFormed; }
             set { _isFormed = value; }
         }
-
 
         public bool CurrentPositionsIdListDefined => !((_currentPositionsIdList == null) || !_currentPositionsIdList.Any());
 

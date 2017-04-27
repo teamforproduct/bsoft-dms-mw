@@ -15,6 +15,7 @@ namespace BL.CrossCutting.Context
         private int? _currentPositionId;
         private const string _USER_NAME = "DmsAdmin";
         private const string _USER_PASS = "UkrPr0100_th3B3ssTC0nTry";
+        private readonly bool _isInternal = false;
 
         public AdminContext(DatabaseModelForAdminContext dbModel)
         {
@@ -63,7 +64,7 @@ namespace BL.CrossCutting.Context
             Employee = new Employee
             {
                 Name = "System user",
-                AgentId = (int) EnumSystemUsers.AdminUser,
+                AgentId = (int)EnumSystemUsers.AdminUser,
             };
             Client = new Client
             {
@@ -72,7 +73,7 @@ namespace BL.CrossCutting.Context
             };
 
             IsChangePasswordRequired = false;// for admin context that is not required
-            DbContext =DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
+            DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
             IsFormed = true;
         }
 

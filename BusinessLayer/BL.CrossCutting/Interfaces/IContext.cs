@@ -8,6 +8,7 @@ namespace BL.CrossCutting.Interfaces
     public interface IContext
     {
         bool IsFormed { get; set; }
+
         Client Client { get; set; }
         Employee Employee { get; set; }
         bool CurrentPositionsIdListDefined { get; }
