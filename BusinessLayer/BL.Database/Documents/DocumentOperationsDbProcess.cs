@@ -530,7 +530,7 @@ namespace BL.Database.Documents
                         //    Counter3 = qrys.Sum(qry => qry.Count()),
                         //};
 
-                        paging.TotalItemsCount = paging.Counters.Counter3.GetValueOrDefault();
+                        paging.TotalItemsCount = qrys.Sum(qry => qry.Count());//paging.Counters.Counter3.GetValueOrDefault();
                     }
 
                     if (paging.IsOnlyCounter ?? false)
