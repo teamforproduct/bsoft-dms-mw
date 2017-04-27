@@ -267,6 +267,13 @@ namespace BL.Logic.Settings
             return val;
         }
 
+        public string GetLocalHost()
+        {
+            var val = genSett.GetSetting<string>(EnumGeneralSettings.LocalHost);
+            if (string.IsNullOrEmpty(val)) throw new SettingValueIsNotSet(EnumGeneralSettings.LocalHost.ToString());
+            return val;
+        }
+
         public string GetAuthAddress() => GetMainHostProtocol() + "://" + GetAuthDomain() + "." + GetMainHost();
 
         public string GetClientAddress(string clientCode) => GetMainHostProtocol() + "://" + clientCode + "." + GetMainHost();

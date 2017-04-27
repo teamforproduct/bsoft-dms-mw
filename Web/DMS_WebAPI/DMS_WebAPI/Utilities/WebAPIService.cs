@@ -629,12 +629,12 @@ namespace DMS_WebAPI.Utilities
             //---------------------------------------------------
 
             // есть задача авторизовать по темному нового пользователя
-            var setVal = DmsResolver.Current.Get<ISettingValues>();
-            var clAddress = setVal.GetClientAddress(request.ClientCode);
 
             if (!string.IsNullOrEmpty(model.Password))
             {
-                var uri = new Uri(new Uri("http://localhost:80/"), ApiPrefix.V3 + "token");
+                var setVal = DmsResolver.Current.Get<ISettingValues>();
+                var localHost = setVal.GetLocalHost();
+                var uri = new Uri(new Uri(localHost), ApiPrefix.V3 + "token");
 
                 var values = new Dictionary<string, string>
                 {
@@ -644,7 +644,7 @@ namespace DMS_WebAPI.Utilities
                    { "client_secret", request.ClientCode },
                    { "scope", "" },
                    { "grant_type", "password" },
-                   { "fingerprint", "темная авторизация" }
+                   { "fingerprint", "Dark authorization" }
                 };
 
                 var content = new FormUrlEncodedContent(values);
@@ -784,11 +784,6 @@ namespace DMS_WebAPI.Utilities
             catch (Exception)
             {
                 if (model.ClientId > 0) DeleteClient(model.ClientId);
-                if (hostCreated)
-                {
-                    request = $"{vHost}/deletehost.pl?fqdn={model.ClientCode}.{mHost}";
-                    responseString = await httpClient.GetStringAsync(request);
-                }
 
                 throw;
             }
@@ -820,9 +815,11 @@ namespace DMS_WebAPI.Utilities
 
         }
 
-        public void DeleteClient(int Id)
+        public async Task DeleteClient(int Id)
         {
-            if (!_webDb.ExistsClients(new FilterAspNetClients { ClientIds = new List<int> { Id } })) throw new ClientIsNotFound();
+            var client = _webDb.GetClients(new FilterAspNetClients { ClientIds = new List<int> { Id } }).FirstOrDefault();
+
+            if (client == null) throw new ClientIsNotFound();
 
             if (Id == 1) throw new ClientIsNotFound();
 
@@ -846,11 +843,13 @@ namespace DMS_WebAPI.Utilities
 
                 //transaction.Complete();
             }
+            var httpClient = DmsResolver.Current.Get<HttpClient>();
 
-
-
-            //_webDb.DeleteUserFingerprints(new FilterAspNetUserFingerprint { UserIDs = users });
-            //пользователя пока не удаляю
+            var tmpService = DmsResolver.Current.Get<ISettingValues>();
+            var mHost = tmpService.GetMainHost();
+            var vHost = tmpService.GetVirtualHost();
+            var request = $"{vHost}/deletehost.pl?fqdn={client.Code}.{mHost}";
+            var responseString = await httpClient.GetStringAsync(request);
 
         }
 
