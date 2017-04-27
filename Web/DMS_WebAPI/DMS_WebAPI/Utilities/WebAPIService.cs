@@ -634,7 +634,7 @@ namespace DMS_WebAPI.Utilities
 
             if (!string.IsNullOrEmpty(model.Password))
             {
-                var uri = new Uri(new Uri(clAddress), ApiPrefix.V3 + "token");
+                var uri = new Uri(new Uri("http://localhost"), ApiPrefix.V3 + "token");
 
                 var values = new Dictionary<string, string>
                 {
