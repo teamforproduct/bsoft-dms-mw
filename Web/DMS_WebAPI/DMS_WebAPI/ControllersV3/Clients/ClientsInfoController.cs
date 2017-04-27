@@ -4,8 +4,12 @@ using BL.Model.AdminCore.Clients;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using System.Net;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Results;
 
 namespace DMS_WebAPI.ControllersV3.Clients
 {
@@ -42,24 +46,14 @@ namespace DMS_WebAPI.ControllersV3.Clients
         public async Task<IHttpActionResult> AddClient([FromBody]AddClientFromHash model)
         {
             var tmpService = DmsResolver.Current.Get<WebAPIService>();
-            await tmpService.AddClientByEmail(model);
+            var json = await tmpService.AddClientByEmail(model);
 
-            var setVal = DmsResolver.Current.Get<ISettingValues>();
-            var mHost = setVal.GetMainHost();
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent(json, Encoding.UTF8, "application/json")
+            };
+            return new ResponseMessageResult(response);
 
-            // есть задача авторизовать по темному нового пользователя
-
-            //if (!string.IsNullOrEmpty( model.Password))
-            //{ 
-            //var request = $"{mHost}//api/v3/token";
-
-            //var responseString = await client.GetStringAsync(request);
-
-            //    switch (responseString)
-            //        }
-
-
-            return new JsonResult(null, this);
         }
 
         /// <summary>

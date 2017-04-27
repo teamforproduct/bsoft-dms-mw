@@ -612,8 +612,10 @@ namespace DMS_WebAPI.Utilities
         }
 
 
-        public async Task AddClientByEmail(AddClientFromHash model)
+        public async Task<string> AddClientByEmail(AddClientFromHash model)
         {
+            var responseString = string.Empty;
+
             var request = _webDb.GetClientRequests(new FilterAspNetClientRequests { HashCodeExact = model.Hash }).FirstOrDefault();
 
             if (request == null) throw new ClientRequestIsNotFound();
@@ -623,6 +625,38 @@ namespace DMS_WebAPI.Utilities
             var isDone = await AddClientSaaS(request);
 
             if (isDone) _webDb.DeleteClientRequest(new FilterAspNetClientRequests { HashCodeExact = model.Hash });
+
+            //---------------------------------------------------
+
+            // есть задача авторизовать по темному нового пользователя
+            var setVal = DmsResolver.Current.Get<ISettingValues>();
+            var clAddress = setVal.GetClientAddress(request.ClientCode);
+
+            if (!string.IsNullOrEmpty(model.Password))
+            {
+                var uri = new Uri(new Uri(clAddress), ApiPrefix.V3 + "token");
+
+                var values = new Dictionary<string, string>
+                {
+                   { "username", request.Email },
+                   { "password", model.Password },
+                   { "client_id", request.ClientCode },
+                   { "client_secret", request.ClientCode },
+                   { "scope", "" },
+                   { "grant_type", "password" },
+                   { "fingerprint", "темная авторизация" }
+                };
+
+                var content = new FormUrlEncodedContent(values);
+
+                var httpClient = DmsResolver.Current.Get<HttpClient>();
+                var response = await httpClient.PostAsync(uri, content);
+
+                responseString = await response.Content.ReadAsStringAsync();
+
+            }
+
+            return responseString;
         }
 
         public async Task AddClientBySMS(AddClientFromSMS model)
@@ -641,7 +675,7 @@ namespace DMS_WebAPI.Utilities
             // Проверка уникальности доменного имени
             if (_webDb.ExistsClients(new FilterAspNetClients { Code = model.ClientCode })) throw new ClientCodeAlreadyExists(model.ClientCode);
 
-            var client = new HttpClient();
+            var httpClient = DmsResolver.Current.Get<HttpClient>();
             var hostCreated = false;
 
             var tmpService = DmsResolver.Current.Get<ISettingValues>();
@@ -652,7 +686,7 @@ namespace DMS_WebAPI.Utilities
 #endif
             var request = $"{vHost}/newhost.pl?fqdn={model.ClientCode}.{mHost}";
 
-            var responseString = await client.GetStringAsync(request);
+            var responseString = await httpClient.GetStringAsync(request);
 
             switch (responseString)
             {
@@ -753,7 +787,7 @@ namespace DMS_WebAPI.Utilities
                 if (hostCreated)
                 {
                     request = $"{vHost}/deletehost.pl?fqdn={model.ClientCode}.{mHost}";
-                    responseString = await client.GetStringAsync(request);
+                    responseString = await httpClient.GetStringAsync(request);
                 }
 
                 throw;

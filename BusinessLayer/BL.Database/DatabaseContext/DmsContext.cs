@@ -29,6 +29,10 @@ namespace BL.Database.DatabaseContext
                     (sender, e) => DateTimeKindAttribute.Apply(e.Entity);
         }
 
+        /////////////////////////////////////////////////////////////
+        // ПАРАМЕТР dbModel НИ В КОЕМ СЛУЧАЕ НЕ ПЕРЕИМЕНОВЫВАТЬ!!! //
+        // DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB)); //
+        /////////////////////////////////////////////////////////////
         public DmsContext(DatabaseModel dbModel): base(DmsResolver.Current.Get<ConnectionHelper>().GetConnection(dbModel), true)
         {
             _DefaultSchema = dbModel.DefaultSchema;

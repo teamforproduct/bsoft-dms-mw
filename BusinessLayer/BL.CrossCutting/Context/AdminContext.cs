@@ -15,7 +15,6 @@ namespace BL.CrossCutting.Context
         private int? _currentPositionId;
         private const string _USER_NAME = "DmsAdmin";
         private const string _USER_PASS = "UkrPr0100_th3B3ssTC0nTry";
-        private readonly bool _isInternal = false;
 
         public AdminContext(DatabaseModelForAdminContext dbModel)
         {
