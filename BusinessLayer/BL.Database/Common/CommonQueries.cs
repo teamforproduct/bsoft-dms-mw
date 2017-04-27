@@ -235,7 +235,9 @@ namespace BL.Database.Common
 
                 if (filter.AllLinkedDocuments && filter.DocumentId?.Count() == 1)
                 {
-                    filter.DocumentId = GetLinkedDocumentIds(context, filter.DocumentId.First()).DocumentId.ToList();
+                    var linkedDocumentIds = GetLinkedDocumentIds(context, filter.DocumentId.First()).DocumentId.ToList();
+                    if (linkedDocumentIds?.Any() ?? false)
+                        filter.DocumentId = linkedDocumentIds;
                 }
 
                 if (filter.DocumentId?.Count() > 0)
@@ -693,7 +695,9 @@ namespace BL.Database.Common
 
                 if (filter.AllLinkedDocuments && filter.DocumentId?.Count() == 1)
                 {
-                    filter.DocumentId = GetLinkedDocumentIds(context, filter.DocumentId.First()).DocumentId.ToList();
+                    var linkedDocumentIds = GetLinkedDocumentIds(context, filter.DocumentId.First()).DocumentId.ToList();
+                    if (linkedDocumentIds?.Any() ?? false)
+                        filter.DocumentId = linkedDocumentIds;
                 }
 
                 if (filter.DocumentId?.Count() > 0)
@@ -921,7 +925,9 @@ namespace BL.Database.Common
 
                 if (filter.AllLinkedDocuments && filter.DocumentId?.Count() == 1)
                 {
-                    filter.DocumentId = GetLinkedDocumentIds(context, filter.DocumentId.First()).DocumentId.ToList();
+                    var linkedDocumentIds = GetLinkedDocumentIds(context, filter.DocumentId.First()).DocumentId.ToList();
+                    if (linkedDocumentIds?.Any() ?? false)
+                        filter.DocumentId = linkedDocumentIds;
                 }
 
                 if (filter.DocumentId?.Count > 0)
@@ -1081,7 +1087,9 @@ namespace BL.Database.Common
             {
                 if (filter.AllLinkedDocuments && filter.DocumentId?.Count() == 1)
                 {
-                    filter.DocumentId = GetLinkedDocumentIds(context, filter.DocumentId.First()).DocumentId.ToList();
+                    var linkedDocumentIds = GetLinkedDocumentIds(context, filter.DocumentId.First()).DocumentId.ToList();
+                    if (linkedDocumentIds?.Any() ?? false)
+                        filter.DocumentId = linkedDocumentIds;
                 }
 
                 if (filter.DocumentId?.Count() > 0)
