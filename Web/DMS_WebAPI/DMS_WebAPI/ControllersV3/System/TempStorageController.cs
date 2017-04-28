@@ -65,7 +65,7 @@ namespace DMS_WebAPI.ControllersV3.System
                 var fileContent = Convert.ToBase64String(buffer);
 
                 var tmpService = DmsResolver.Current.Get<ITempStorageService>();
-                var imgageId = tmpService.AddToStore(EnumObjects.DictionaryAgents, -1, 0, fileContent);
+                var imgageId = tmpService.AddToStore(EnumObjects.DictionaryAgents, context.CurrentAgentId, 0, fileContent);
                 return new JsonResult(imgageId, this);
             }, HttpContext.Current.Request.Files[0]);
         }

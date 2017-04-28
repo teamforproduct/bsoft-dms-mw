@@ -229,10 +229,10 @@ namespace BL.Database.SystemDb
                     dbContext.Entry(item).State = EntityState.Added;
                     dbContext.SaveChanges();
                 }
-
-                transaction.Complete();
                 _cacheService.RefreshKey(ctx, SettingConstants.PERMISSION_CASHE_KEY);
                 _cacheService.RefreshKey(ctx, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
+                transaction.Complete();
+
             }
 
         }
@@ -956,11 +956,11 @@ namespace BL.Database.SystemDb
             {
                 var qry = GetSystemActionsQuery(ctx, dbContext, filter);
                 qry.Delete();
-
+                _cacheService.RefreshKey(ctx, SettingConstants.ACTION_CASHE_KEY);
                 transaction.Complete();
 
             }
-            _cacheService.RefreshKey(ctx, SettingConstants.ACTION_CASHE_KEY);
+            
         }
 
         public void AddSystemAction(IContext ctx, SystemActions item)
@@ -971,10 +971,10 @@ namespace BL.Database.SystemDb
                 dbContext.SystemActionsSet.Add(item);
 
                 dbContext.SaveChanges();
-
+                _cacheService.RefreshKey(ctx, SettingConstants.ACTION_CASHE_KEY);
                 transaction.Commit();
             }
-            _cacheService.RefreshKey(ctx, SettingConstants.ACTION_CASHE_KEY);
+            
         }
 
         public void UpdateSystemAction(IContext ctx, SystemActions item)
@@ -985,8 +985,9 @@ namespace BL.Database.SystemDb
                 dbContext.SafeAttach(item);
                 dbContext.Entry(item).State = EntityState.Modified;
                 dbContext.SaveChanges();
-                transaction.Complete();
+               
                 _cacheService.RefreshKey(ctx, SettingConstants.ACTION_CASHE_KEY);
+                transaction.Complete();
             }
         }
 

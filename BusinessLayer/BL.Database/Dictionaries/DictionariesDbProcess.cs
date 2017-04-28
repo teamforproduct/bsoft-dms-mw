@@ -5126,7 +5126,6 @@ namespace BL.Database.Dictionaries
         #region [+] PositionExecutors ...
         public int AddExecutor(IContext ctx, InternalDictionaryPositionExecutor executor)
         {
-            int res;
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
@@ -5136,11 +5135,10 @@ namespace BL.Database.Dictionaries
                 CommonQueries.AddFullTextCacheInfo(ctx, dc.Id, EnumObjects.DictionaryPositionExecutors, EnumOperationType.AddNew);
                 executor.Id = dc.Id;
                 UpdateExecutorsInPositions(ctx, new List<int> { dc.PositionId });
+                _cacheService.RefreshKey(ctx, SettingConstants.DICT_POSITION_EXECUTOR_CASHE_KEY);
                 transaction.Complete();
-                res = dc.Id;
+                return dc.Id;
             }
-            _cacheService.RefreshKey(ctx, SettingConstants.DICT_POSITION_EXECUTOR_CASHE_KEY);
-            return res;
         }
 
         public void UpdateExecutor(IContext ctx, InternalDictionaryPositionExecutor executor)
@@ -5154,9 +5152,10 @@ namespace BL.Database.Dictionaries
                 dbContext.SaveChanges();
                 CommonQueries.AddFullTextCacheInfo(ctx, drj.Id, EnumObjects.DictionaryPositionExecutors, EnumOperationType.UpdateFull);
                 UpdateExecutorsInPositions(ctx, new List<int> { executor.PositionId });
+                _cacheService.RefreshKey(ctx, SettingConstants.DICT_POSITION_EXECUTOR_CASHE_KEY);
                 transaction.Complete();
             }
-            _cacheService.RefreshKey(ctx, SettingConstants.DICT_POSITION_EXECUTOR_CASHE_KEY);
+           
         }
 
 
@@ -5170,9 +5169,10 @@ namespace BL.Database.Dictionaries
 
                 UpdateExecutorsInPositions(ctx,  list);
                 CommonQueries.AddFullTextCacheInfo(ctx, list, EnumObjects.DictionaryPositionExecutors, EnumOperationType.Delete);
+                _cacheService.RefreshKey(ctx, SettingConstants.DICT_POSITION_EXECUTOR_CASHE_KEY);
                 transaction.Complete();
             }
-            _cacheService.RefreshKey(ctx, SettingConstants.DICT_POSITION_EXECUTOR_CASHE_KEY);
+            
         }
 
         public IEnumerable<FrontDictionaryPositionExecutor> GetPositionExecutors(IContext ctx, FilterDictionaryPositionExecutor filter, EnumSortPositionExecutors sort = EnumSortPositionExecutors.StartDate_PositionExecutorType)
