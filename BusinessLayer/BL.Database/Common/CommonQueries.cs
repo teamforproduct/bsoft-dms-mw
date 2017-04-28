@@ -2974,11 +2974,11 @@ namespace BL.Database.Common
                     .Select(y => new
                     {
                         CountWaits = y.Count(z => !z.OffEventId.HasValue
-                            && z.OnEvent.Accesses.Any(zz => !zz.ReadDate.HasValue && zz.PositionId == x.PositionId)),
+                            && z.OnEvent.Accesses.Any(zz => zz.PositionId == x.PositionId)),
                         OverDueCountWaits = y.Count(z => !z.OffEventId.HasValue && z.DueDate.HasValue && z.DueDate.Value < DateTime.UtcNow
-                            && z.OnEvent.Accesses.Any(zz => !zz.ReadDate.HasValue && zz.PositionId == x.PositionId)),
+                            && z.OnEvent.Accesses.Any(zz => zz.PositionId == x.PositionId)),
                         MinDueDate = y.Where(z => !z.OffEventId.HasValue && z.DueDate.HasValue
-                            && z.OnEvent.Accesses.Any(zz => !zz.ReadDate.HasValue && zz.PositionId == x.PositionId)).Min(z => z.DueDate),
+                            && z.OnEvent.Accesses.Any(zz => zz.PositionId == x.PositionId)).Min(z => z.DueDate),
                     }).FirstOrDefault(),
             }
             )
