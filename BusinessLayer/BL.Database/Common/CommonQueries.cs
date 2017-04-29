@@ -2889,8 +2889,8 @@ namespace BL.Database.Common
         #endregion
 
         #region TaskAccesses
-        public static void ModifyDocumentTaskAccesses(IContext context, int documentId, int? taskId = null)
-        {
+        //public static void ModifyDocumentTaskAccesses(IContext context, int documentId, int? taskId = null)
+        //{
             //var dbContext = context.DbContext as DmsContext;
             //var qry0 = dbContext.DocumentEventsSet.Where(x => x.ClientId == context.CurrentClientId)
             //    .Where(x => x.DocumentId == documentId);
@@ -2930,19 +2930,19 @@ namespace BL.Database.Common
             ////TODO DELETE or CLIENT
             //dbContext.DocumentTaskAccessesSet.AddRange(insTA.Select(x => new DocumentTaskAccesses { TaskId = x.TaskId, PositionId = x.PositionId }));
 
-        }
+        //}
 
-        public static List<int> GetEventsSourceTarget(InternalDocumentEvent events)
-        {
-            return events != null ? GetEventsSourceTarget(new List<InternalDocumentEvent> { events }) : null;
-        }
-        public static List<int> GetEventsSourceTarget(List<InternalDocumentEvent> events)
-        {
-            if (!(events?.Any() ?? false)) return null;
-            var res = events.Where(x => x.SourcePositionId.HasValue).Select(x => x.SourcePositionId.Value).
-                Concat(events.Where(x => x.TargetPositionId.HasValue).Select(x => x.TargetPositionId.Value)).Distinct().ToList();
-            return res;
-        }
+        //public static List<int> GetEventsSourceTarget(InternalDocumentEvent events)
+        //{
+        //    return events != null ? GetEventsSourceTarget(new List<InternalDocumentEvent> { events }) : null;
+        //}
+        //public static List<int> GetEventsSourceTarget(List<InternalDocumentEvent> events)
+        //{
+        //    if (!(events?.Any() ?? false)) return null;
+        //    var res = events.Where(x => x.SourcePositionId.HasValue).Select(x => x.SourcePositionId.Value).
+        //        Concat(events.Where(x => x.TargetPositionId.HasValue).Select(x => x.TargetPositionId.Value)).Distinct().ToList();
+        //    return res;
+        //}
         public static void ModifyDocumentAccessesStatistics(IContext context, int documentId, int positionId)
         {
             ModifyDocumentAccessesStatistics(context, documentId, new List<int> { positionId });

@@ -1019,7 +1019,8 @@ namespace BL.Database.Documents
                     var waitDb = ModelConverter.GetDbDocumentWaits(document.Waits).ToList();
                     dbContext.DocumentWaitsSet.AddRange(waitDb);
                     dbContext.SaveChanges();
-                    CommonQueries.ModifyDocumentAccessesStatistics(context, document.Id, CommonQueries.GetEventsSourceTarget(document.Waits.Select(x => x.OnEvent).ToList()));
+                    var positions = document.Waits.SelectMany(x => x.OnEvent.Accesses).Where(x=>x.PositionId.HasValue).Select(x => x.PositionId.Value).ToList();
+                    CommonQueries.ModifyDocumentAccessesStatistics(context, document.Id, positions);
                 }
                 CommonQueries.AddFullTextCacheInfo(context, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
 
@@ -1068,8 +1069,8 @@ namespace BL.Database.Documents
                     entry.Property(x => x.LastChangeUserId).IsModified = true;
                     dbContext.SaveChanges();
                 }
-
-                CommonQueries.ModifyDocumentAccessesStatistics(context, wait.DocumentId, CommonQueries.GetEventsSourceTarget(wait.ParentWait.OnEvent));
+                var positions = wait.ParentWait.OnEvent.Accesses.Where(x => x.PositionId.HasValue).Select(x => x.PositionId.Value).ToList();
+                CommonQueries.ModifyDocumentAccessesStatistics(context, wait.DocumentId, positions);
                 CommonQueries.AddFullTextCacheInfo(context, wait.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
 
@@ -1198,7 +1199,8 @@ namespace BL.Database.Documents
                         entry.Property(x => x.CertificatePositionExecutorTypeId).IsModified = true;
                     }
                     dbContext.SaveChanges();
-                    CommonQueries.ModifyDocumentAccessesStatistics(context, document.Id, CommonQueries.GetEventsSourceTarget(document.Waits.Select(x => x.OnEvent).ToList()));
+                    var positions = document.Waits.SelectMany(x => x.OffEvent.Accesses).Where(x => x.PositionId.HasValue).Select(x => x.PositionId.Value).ToList();
+                    CommonQueries.ModifyDocumentAccessesStatistics(context, document.Id, positions);
                     CommonQueries.AddFullTextCacheInfo(context, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
                     transaction.Complete();
                 }
@@ -1252,7 +1254,8 @@ namespace BL.Database.Documents
 
                 dbContext.DocumentSubscriptionsSet.Add(subscriptionDb);
                 dbContext.SaveChanges();
-                CommonQueries.ModifyDocumentAccessesStatistics(context, document.Id, CommonQueries.GetEventsSourceTarget(document.Events.ToList()));
+                var positions = document.Events.SelectMany(x => x.Accesses).Where(x => x.PositionId.HasValue).Select(x => x.PositionId.Value).ToList();
+                CommonQueries.ModifyDocumentAccessesStatistics(context, document.Id, positions);
                 CommonQueries.AddFullTextCacheInfo(context, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
 
                 transaction.Complete();
@@ -1595,7 +1598,8 @@ namespace BL.Database.Documents
                     var eventsDb = ModelConverter.GetDbDocumentEvents(document.Events);
                     dbContext.DocumentEventsSet.AddRange(eventsDb);
                     dbContext.SaveChanges();
-                    CommonQueries.ModifyDocumentAccessesStatistics(context, document.Id, CommonQueries.GetEventsSourceTarget(document.Events.ToList()));
+                    var positions = document.Events.SelectMany(x => x.Accesses).Where(x => x.PositionId.HasValue).Select(x => x.PositionId.Value).ToList();
+                    CommonQueries.ModifyDocumentAccessesStatistics(context, document.Id, positions);
                 }
                 //CommonQueries.ModifyDocumentTaskAccesses(dbContext, context, document.Id);
                 dbContext.SaveChanges();
@@ -1910,13 +1914,10 @@ namespace BL.Database.Documents
 
                 }
 
-                var list = CommonQueries.GetEventsSourceTarget(sendList.StartEvent);
-                if (document?.Waits?.Any() ?? false)
-                    list = list.Concat(CommonQueries.GetEventsSourceTarget(document?.Waits?.Select(x => x.OnEvent).ToList())).ToList();
-                if (document?.Events?.Any() ?? false)
-                    list = list.Concat(CommonQueries.GetEventsSourceTarget(document?.Events?.ToList())).ToList();
+                var positions = document.Events.SelectMany(x => x.Accesses).Where(x => x.PositionId.HasValue).Select(x => x.PositionId.Value).ToList();
+                positions = positions.Concat(document.Waits.SelectMany(x => x.OnEvent.Accesses).Where(x => x.PositionId.HasValue).Select(x => x.PositionId.Value)).ToList();
 
-                CommonQueries.ModifyDocumentAccessesStatistics(context, document.Id, list);
+                CommonQueries.ModifyDocumentAccessesStatistics(context, document.Id, positions);
                 CommonQueries.AddFullTextCacheInfo(context, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
 
@@ -3479,7 +3480,8 @@ namespace BL.Database.Documents
                         entry.Property(e => e.LastChangeUserId).IsModified = true;
                         entry.Property(e => e.LastChangeDate).IsModified = true;
                         dbContext.SaveChanges();
-                        CommonQueries.ModifyDocumentAccessesStatistics(context, paper.DocumentId, CommonQueries.GetEventsSourceTarget(paper.LastPaperEvent));
+                        var positions = paper.LastPaperEvent.Accesses.Where(x => x.PositionId.HasValue).Select(x => x.PositionId.Value).ToList();
+                        CommonQueries.ModifyDocumentAccessesStatistics(context, paper.DocumentId, positions);
                     }
                 }
                 transaction.Complete();
