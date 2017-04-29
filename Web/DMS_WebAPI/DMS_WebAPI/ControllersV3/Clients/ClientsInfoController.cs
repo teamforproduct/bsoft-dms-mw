@@ -48,11 +48,17 @@ namespace DMS_WebAPI.ControllersV3.Clients
             var tmpService = DmsResolver.Current.Get<WebAPIService>();
             var json = await tmpService.AddClientByEmail(model);
 
-            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            if (json.IsEmpty()) return new JsonResult(null, this);
+            else
             {
-                Content = new StringContent(json, Encoding.UTF8, "application/json")
-            };
-            return new ResponseMessageResult(response);
+                var response = new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(json, Encoding.UTF8, "application/json")
+                };
+                return new ResponseMessageResult(response);
+            }
+
+            
 
         }
 

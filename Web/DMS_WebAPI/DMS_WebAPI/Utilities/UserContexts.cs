@@ -733,6 +733,11 @@ namespace DMS_WebAPI.Utilities
                 // Тут нет никакого фингерпринта, он передается один раз с токеном
                 var fingerPrint = HttpContext.Current.Request.InputStream.GetFingerprint();
 
+                if (fingerPrint == null)
+                {
+
+                }
+
                 //Set(item.Token, item.UserId, user.UserName, user.IsChangePasswordRequired, clientCode);
 
                 token = item.Token.ToLower();
