@@ -69,29 +69,29 @@ namespace BL.Database.DBModel.Document
         public virtual ICollection<DocumentSendListAccessGroups> AccessGroups { get; set; }
 
         //TODO DELETE
-        public int SourcePositionId { get; set; }
-        public int? SourcePositionExecutorAgentId { get; set; }
-        public int? SourcePositionExecutorTypeId { get; set; }
-        public int SourceAgentId { get; set; }
-        public int? TargetPositionId { get; set; }
-        public int? TargetPositionExecutorAgentId { get; set; }
-        public int? TargetPositionExecutorTypeId { get; set; }
-        public Nullable<int> TargetAgentId { get; set; }
-        [ForeignKey("SourcePositionId")]
-        public virtual DictionaryPositions SourcePosition { get; set; }
-        [ForeignKey("SourcePositionExecutorAgentId")]
-        public virtual DictionaryAgents SourcePositionExecutorAgent { get; set; }
-        [ForeignKey("SourcePositionExecutorTypeId")]
-        public virtual DictionaryPositionExecutorTypes SourcePositionExecutorType { get; set; }
-        [ForeignKey("SourceAgentId")]
-        public virtual DictionaryAgents SourceAgent { get; set; }
-        [ForeignKey("TargetPositionId")]
-        public virtual DictionaryPositions TargetPosition { get; set; }
-        [ForeignKey("TargetPositionExecutorTypeId")]
-        public virtual DictionaryPositionExecutorTypes TargetPositionExecutorType { get; set; }
-        [ForeignKey("TargetPositionExecutorAgentId")]
-        public virtual DictionaryAgents TargetPositionExecutorAgent { get; set; }
-        [ForeignKey("TargetAgentId")]
-        public virtual DictionaryAgents TargetAgent { get; set; }
+        //public int SourcePositionId { get; set; }
+        //public int? SourcePositionExecutorAgentId { get; set; }
+        //public int? SourcePositionExecutorTypeId { get; set; }
+        //public int SourceAgentId { get; set; }
+        //public int? TargetPositionId { get; set; }
+        //public int? TargetPositionExecutorAgentId { get; set; }
+        //public int? TargetPositionExecutorTypeId { get; set; }
+        //public Nullable<int> TargetAgentId { get; set; }
+        //[ForeignKey("SourcePositionId")]
+        //public virtual DictionaryPositions SourcePosition { get; set; }
+        //[ForeignKey("SourcePositionExecutorAgentId")]
+        //public virtual DictionaryAgents SourcePositionExecutorAgent { get; set; }
+        //[ForeignKey("SourcePositionExecutorTypeId")]
+        //public virtual DictionaryPositionExecutorTypes SourcePositionExecutorType { get; set; }
+        //[ForeignKey("SourceAgentId")]
+        //public virtual DictionaryAgents SourceAgent { get; set; }
+        //[ForeignKey("TargetPositionId")]
+        //public virtual DictionaryPositions TargetPosition { get; set; }
+        //[ForeignKey("TargetPositionExecutorTypeId")]
+        //public virtual DictionaryPositionExecutorTypes TargetPositionExecutorType { get; set; }
+        //[ForeignKey("TargetPositionExecutorAgentId")]
+        //public virtual DictionaryAgents TargetPositionExecutorAgent { get; set; }
+        //[ForeignKey("TargetAgentId")]
+        //public virtual DictionaryAgents TargetAgent { get; set; }
     }
 }

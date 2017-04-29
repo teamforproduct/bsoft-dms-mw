@@ -28,7 +28,6 @@ namespace BL.Database.DBModel.Document
         public int ClientId { get; set; }
         [Index("IX_EntityTypeId", 1)]
         public int EntityTypeId { get; set; }
-        [Index("IX_ReadDate", 3)]
         [Index("IX_DocumentId",1)]
         public int DocumentId { get; set; }
         public int EventTypeId { get; set; }
@@ -114,40 +113,35 @@ namespace BL.Database.DBModel.Document
 
 
         //TODO DELETE
-        [Index("IX_ReadDate", 4)]
-        [Index("IX_SourcePositionId", 1)]
-        public int? SourcePositionId { get; set; }
-        public Nullable<int> SourcePositionExecutorAgentId { get; set; }
-        public int? SourcePositionExecutorTypeId { get; set; }
-        public int? SourceAgentId { get; set; }
-        [Index("IX_ReadDate", 2)]
-        [Index("IX_TargetPositionId", 1)]
-        public Nullable<int> TargetPositionId { get; set; }
-        public Nullable<int> TargetPositionExecutorAgentId { get; set; }
-        public int? TargetPositionExecutorTypeId { get; set; }
-        public Nullable<int> TargetAgentId { get; set; }
-        public Nullable<DateTime> SendDate { get; set; }
-        [Index("IX_ReadDate", 1)]
-        public Nullable<DateTime> ReadDate { get; set; }
-        public Nullable<int> ReadAgentId { get; set; }
-        [ForeignKey("SourcePositionId")]
-        public virtual DictionaryPositions SourcePosition { get; set; }
-        [ForeignKey("SourcePositionExecutorAgentId")]
-        public virtual DictionaryAgents SourcePositionExecutorAgent { get; set; }
-        [ForeignKey("SourcePositionExecutorTypeId")]
-        public virtual DictionaryPositionExecutorTypes SourcePositionExecutorType { get; set; }
-        [ForeignKey("SourceAgentId")]
-        public virtual DictionaryAgents SourceAgent { get; set; }
-        [ForeignKey("TargetPositionId")]
-        public virtual DictionaryPositions TargetPosition { get; set; }
-        [ForeignKey("TargetPositionExecutorAgentId")]
-        public virtual DictionaryAgents TargetPositionExecutorAgent { get; set; }
-        [ForeignKey("TargetPositionExecutorTypeId")]
-        public virtual DictionaryPositionExecutorTypes TargetPositionExecutorType { get; set; }
-        [ForeignKey("TargetAgentId")]
-        public virtual DictionaryAgents TargetAgent { get; set; }
-        [ForeignKey("ReadAgentId")]
-        public virtual DictionaryAgents ReadAgent { get; set; }
+        //public int? SourcePositionId { get; set; }
+        //public Nullable<int> SourcePositionExecutorAgentId { get; set; }
+        //public int? SourcePositionExecutorTypeId { get; set; }
+        //public int? SourceAgentId { get; set; }
+        //public Nullable<int> TargetPositionId { get; set; }
+        //public Nullable<int> TargetPositionExecutorAgentId { get; set; }
+        //public int? TargetPositionExecutorTypeId { get; set; }
+        //public Nullable<int> TargetAgentId { get; set; }
+        //public Nullable<DateTime> SendDate { get; set; }
+        //public Nullable<DateTime> ReadDate { get; set; }
+        //public Nullable<int> ReadAgentId { get; set; }
+        //[ForeignKey("SourcePositionId")]
+        //public virtual DictionaryPositions SourcePosition { get; set; }
+        //[ForeignKey("SourcePositionExecutorAgentId")]
+        //public virtual DictionaryAgents SourcePositionExecutorAgent { get; set; }
+        //[ForeignKey("SourcePositionExecutorTypeId")]
+        //public virtual DictionaryPositionExecutorTypes SourcePositionExecutorType { get; set; }
+        //[ForeignKey("SourceAgentId")]
+        //public virtual DictionaryAgents SourceAgent { get; set; }
+        //[ForeignKey("TargetPositionId")]
+        //public virtual DictionaryPositions TargetPosition { get; set; }
+        //[ForeignKey("TargetPositionExecutorAgentId")]
+        //public virtual DictionaryAgents TargetPositionExecutorAgent { get; set; }
+        //[ForeignKey("TargetPositionExecutorTypeId")]
+        //public virtual DictionaryPositionExecutorTypes TargetPositionExecutorType { get; set; }
+        //[ForeignKey("TargetAgentId")]
+        //public virtual DictionaryAgents TargetAgent { get; set; }
+        //[ForeignKey("ReadAgentId")]
+        //public virtual DictionaryAgents ReadAgent { get; set; }
 
     }
 }
