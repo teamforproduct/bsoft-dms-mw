@@ -17,5 +17,9 @@ namespace BL.Model.DocumentCore.FrontModel
         /// ИД пакета связанных документов 
         /// </summary>
         public int? LinkId { get; set; }
+        /// <summary>
+        /// Счетчик связанных документов
+        /// </summary>
+        public int? Counter { get; set; }
     }
 }

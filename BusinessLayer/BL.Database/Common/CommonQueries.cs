@@ -2034,6 +2034,7 @@ namespace BL.Database.Common
                 res.DocumentId = CommonQueries.GetDocumentQuery(context).Where(x => x.LinkId.HasValue && res.LinkId == x.LinkId).Select(x => x.Id).ToList();
             else
                 res.DocumentId = new List<int>();
+            res.Counter = res.DocumentId.Count() < 2 ? 0 : res.DocumentId.Count() - 1;
             return res;
         }
         #endregion
