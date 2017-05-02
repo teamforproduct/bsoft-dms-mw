@@ -32,5 +32,7 @@ namespace BL.CrossCutting.Interfaces
         IDmsDatabaseContext DbContext { get; set; }
 
         string UserName { get; set; }
+        string UserFingerprint { get; set; }
+
     }
 }

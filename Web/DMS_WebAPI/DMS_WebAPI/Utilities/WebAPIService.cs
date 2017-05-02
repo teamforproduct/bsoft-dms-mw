@@ -229,7 +229,7 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public int AddUserEmployeeInOrg(IContext context, AddEmployeeInOrg model, bool sendEmail = true)
+        public int AddUserEmployeeInOrg(IContext context, AddEmployeeInOrg model, bool sendEmail = true, bool createJournals = false)
         {
             var dicService = DmsResolver.Current.Get<IDictionaryService>();
             var admService = DmsResolver.Current.Get<IAdminService>();
@@ -282,6 +282,46 @@ namespace DMS_WebAPI.Utilities
                         dep.Index = model.DepartmentIndex;
 
                         depId = (int)dicService.ExecuteAction(EnumDictionaryActions.AddDepartment, context, dep);
+                    }
+
+                    // не ожидал такой поворот событий. Добавляю тут журналы чтобы при создании должности на них проставились доступы по умолчанию
+                    // нужно дробить логику создания должности на блоки и выносить в сервис из команды
+
+                    if (createJournals)
+                    {
+                        var languages = DmsResolver.Current.Get<ILanguages>();
+                        var jrn = new AddRegistrationJournal
+                        {
+                            DepartmentId = depId,
+                            IsActive = true,
+                            IsIncoming = true,
+                            Index = EnumDocumentDirections.Incoming.ToString(),
+                            Name = languages.GetTranslation(context.Employee.LanguageId, languages.GetLabel("Journals", EnumDocumentDirections.Incoming.ToString())),
+                        };
+
+                        dicService.ExecuteAction(EnumDictionaryActions.AddRegistrationJournal, context, jrn);
+
+                        jrn = new AddRegistrationJournal
+                        {
+                            DepartmentId = depId,
+                            IsActive = true,
+                            IsOutcoming = true,
+                            Index = EnumDocumentDirections.Outcoming.ToString(),
+                            Name = languages.GetTranslation(context.Employee.LanguageId, languages.GetLabel("Journals", EnumDocumentDirections.Outcoming.ToString())),
+                        };
+
+                        dicService.ExecuteAction(EnumDictionaryActions.AddRegistrationJournal, context, jrn);
+
+                        jrn = new AddRegistrationJournal
+                        {
+                            DepartmentId = depId,
+                            IsActive = true,
+                            IsInternal = true,
+                            Index = EnumDocumentDirections.Internal.ToString(),
+                            Name = languages.GetTranslation(context.Employee.LanguageId, languages.GetLabel("Journals", EnumDocumentDirections.Internal.ToString())),
+                        };
+
+                        dicService.ExecuteAction(EnumDictionaryActions.AddRegistrationJournal, context, jrn);
                     }
 
                     if (model.PositionId == null && !string.IsNullOrEmpty(model.PositionName))
@@ -647,10 +687,18 @@ namespace DMS_WebAPI.Utilities
                    { "client_secret", request.ClientCode },
                    { "scope", "" },
                    { "grant_type", "password" },
-                   { "fingerprint", "Dark authorization" }
+                   { "fingerprint", "SystemAuthorization" }
                 };
 
                 var content = new FormUrlEncodedContent(values);
+
+                var httpContext = HttpContext.Current;
+
+                // Начиняю Headers запроса параметрами из текущего запроса
+                foreach (var key in httpContext.Request.Headers.AllKeys)
+                {
+                    content.Headers.Add(key, httpContext.Request.Headers.Get(key));
+                }
 
                 var httpClient = DmsResolver.Current.Get<HttpClient>();
                 var response = await httpClient.PostAsync(uri, content);
@@ -810,7 +858,7 @@ namespace DMS_WebAPI.Utilities
                 EmailConfirmed = true,
                 IsChangePasswordRequired = false,
                 IsEmailConfirmRequired = false,
-            }, sendEmail: false);
+            }, sendEmail: false, createJournals: true);
 
 
             //UserManager.AddLogin(userId, new UserLoginInfo {    })
@@ -1252,6 +1300,7 @@ namespace DMS_WebAPI.Utilities
                 CurrentPositionsIdList = string.Join(",", context.CurrentPositionsIdList),
                 UserId = context.Employee.UserId,
                 LastChangeDate = DateTime.UtcNow,
+                Fingerprint = context.UserFingerprint,
             };
 
 

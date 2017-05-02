@@ -23,5 +23,8 @@ namespace DMS_WebAPI.DBModel
         public string CurrentPositionsIdList { get; set; }
         
         public DateTime LastChangeDate { get; set; }
+
+        [MaxLength(36)]
+        public string Fingerprint { get; set; }
     }
 }

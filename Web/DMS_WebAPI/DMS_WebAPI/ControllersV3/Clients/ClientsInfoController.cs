@@ -59,8 +59,6 @@ namespace DMS_WebAPI.ControllersV3.Clients
                 return new ResponseMessageResult(response);
             }
 
-            
-
         }
 
         /// <summary>

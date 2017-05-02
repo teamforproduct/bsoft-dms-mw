@@ -1,5 +1,4 @@
-﻿using DMS_WebAPI.Models;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -16,27 +15,27 @@ namespace DMS_WebAPI.DBModel
         /// <summary>
         /// Пользовательское наименование отпечатка
         /// </summary>
-        [MaxLength(2000)]
+        [MaxLength(256)]
         //[Index("IX_UserName", 2, IsUnique = true)]
         public string Name { get; set; }
 
         /// <summary>
         /// Отпечаток
         /// </summary>
-        [MaxLength(2000)]
+        [MaxLength(36)]
         [Index("IX_UserFingerprint", 2, IsUnique = true)]
         public string Fingerprint { get; set; }
 
         /// <summary>
         /// Браузер
         /// </summary>
-        [MaxLength(2000)]
+        [MaxLength(40)]
         public string Browser { get; set; }
 
         /// <summary>
         /// Операционная система
         /// </summary>
-        [MaxLength(2000)]
+        [MaxLength(40)]
         public string Platform { get; set; }
         public bool IsActive{ get; set; }
 

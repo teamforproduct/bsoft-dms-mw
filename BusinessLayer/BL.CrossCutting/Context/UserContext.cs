@@ -214,5 +214,7 @@ namespace BL.CrossCutting.Context
         public IDmsDatabaseContext DbContext { get; set; }
 
         public string UserName { get; set; }
+
+        public string UserFingerprint { get; set; }
     }
 }

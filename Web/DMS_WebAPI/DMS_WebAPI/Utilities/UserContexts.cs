@@ -234,6 +234,7 @@ namespace DMS_WebAPI.Utilities
             intContext.LoginLogInfo = browserInfo;
             var context = new UserContext(intContext);// это необходимо т.к. если несколько сервисов одновременно попытаются установить позиции для одного контекста, то возникнет ошибка. 
             intContext.LoginLogId = logger.Information(context, intContext.LoginLogInfo, (int)EnumObjects.System, (int)EnumSystemActions.Login, logDate: intContext.CreateDate, isCopyDate1: true);
+            intContext.UserFingerprint = fingerPrint;
 
             if (!string.IsNullOrEmpty(fingerPrint))
                 logger.DeleteSystemLogs(context, new FilterSystemLog
@@ -735,7 +736,7 @@ namespace DMS_WebAPI.Utilities
 
                 if (fingerPrint == null)
                 {
-
+                    fingerPrint = item.Fingerprint;
                 }
 
                 //Set(item.Token, item.UserId, user.UserName, user.IsChangePasswordRequired, clientCode);
