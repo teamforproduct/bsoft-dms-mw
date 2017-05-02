@@ -1,17 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <con:soapui-project id="df017b62-f3f1-4724-a168-9bf680e89ffe" activeEnvironment="Default" name="docum" resourceRoot="" soapui-version="5.3.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config">
   <con:settings>
-    <con:setting id="com.eviware.soapui.impl.wsdl.actions.iface.tools.soapui.LoadTestRunnerAction@values-local"><![CDATA[
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
+    <con:setting id="com.eviware.soapui.impl.wsdl.actions.iface.tools.soapui.LoadTestRunnerAction@values-local">
+      <![CDATA[
       <xml-fragment xmlns:con="http://eviware.com/soapui/config">
   <con:entry key="Environment" value="Default"/>
   <con:entry key="Global Properties" value=""/>
@@ -41,17 +32,8 @@
   <con:entry key="ThreadCount" value=""/>
   <con:entry key="Limit" value=""/>
 </xml-fragment>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    ]]></con:setting>
+    ]]>
+    </con:setting>
   </con:settings>
   <con:interface xsi:type="con:RestService" id="04414674-bb52-45f0-b55f-c7f270d5072f" wadlVersion="http://wadl.dev.java.net/2009/02" name="ostrean" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <con:settings/>
@@ -3025,7 +3007,7 @@
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
               <con:jmsPropertyConfig/>
               <con:parameters>
-                <con:entry key="PageSize" value="20"/>
+                <con:entry key="PageSize" value="${#Project#PageSize}"/>
                 <con:entry key="CurrentPage" value="1"/>
               </con:parameters>
               <con:parameterOrder>
@@ -3125,7 +3107,7 @@
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
               <con:jmsPropertyConfig/>
               <con:parameters>
-                <con:entry key="PageSize" value="20"/>
+                <con:entry key="PageSize" value="${#Project#PageSize}"/>
                 <con:entry key="CurrentPage" value="1"/>
               </con:parameters>
               <con:parameterOrder>
@@ -3207,7 +3189,10 @@
                 </con:credentials>
                 <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
                 <con:jmsPropertyConfig/>
-                <con:parameters/>
+                <con:parameters>
+                  <con:entry key="PageSize" value="${#Project#PageSize}"/>
+                  <con:entry key="CurrentPage" value="1"/>
+                </con:parameters>
               </con:request>
             </con:method>
           </con:resource>
@@ -3293,7 +3278,113 @@
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
               <con:jmsPropertyConfig/>
               <con:parameters>
-                <con:entry key="PageSize" value="20"/>
+                <con:entry key="PageSize" value="${#Project#PageSize}"/>
+                <con:entry key="CurrentPage" value="1"/>
+              </con:parameters>
+              <con:parameterOrder>
+                <con:entry>CurrentPage</con:entry>
+                <con:entry>PageSize</con:entry>
+                <con:entry>IsOnlyCounter</con:entry>
+                <con:entry>IsAll</con:entry>
+                <con:entry>IDs</con:entry>
+                <con:entry>Name</con:entry>
+                <con:entry>IsActive</con:entry>
+                <con:entry>Code</con:entry>
+                <con:entry>CompanyIDs</con:entry>
+                <con:entry>DepartmentIDs</con:entry>
+                <con:entry>DocumentDirection</con:entry>
+              </con:parameterOrder>
+            </con:request>
+          </con:method>
+        </con:resource>
+        <con:resource name="SendLists" path="SendLists" id="7547e94e-f7eb-4f7a-9ec5-b62a6b63e3bc">
+          <con:settings/>
+          <con:parameters>
+            <con:parameter>
+              <con:name>CurrentPage</con:name>
+              <con:value/>
+              <con:style>QUERY</con:style>
+              <con:default/>
+              <con:description xsi:nil="true"/>
+            </con:parameter>
+            <con:parameter>
+              <con:name>PageSize</con:name>
+              <con:value/>
+              <con:style>QUERY</con:style>
+              <con:default/>
+              <con:description xsi:nil="true"/>
+            </con:parameter>
+            <con:parameter>
+              <con:name>IsOnlyCounter</con:name>
+              <con:value/>
+              <con:style>QUERY</con:style>
+              <con:default/>
+              <con:description xsi:nil="true"/>
+            </con:parameter>
+            <con:parameter>
+              <con:name>IsAll</con:name>
+              <con:value/>
+              <con:style>QUERY</con:style>
+              <con:default/>
+              <con:description xsi:nil="true"/>
+            </con:parameter>
+            <con:parameter>
+              <con:name>DepartmentIDs</con:name>
+              <con:value/>
+              <con:style>QUERY</con:style>
+              <con:default/>
+              <con:description xsi:nil="true"/>
+            </con:parameter>
+            <con:parameter>
+              <con:name>DocumentDirection</con:name>
+              <con:value/>
+              <con:style>QUERY</con:style>
+              <con:default/>
+              <con:description xsi:nil="true"/>
+            </con:parameter>
+          </con:parameters>
+          <con:method name="List/SendLists" id="4e9f2492-7a4c-494f-8772-729a04aaa487" method="GET">
+            <con:settings/>
+            <con:parameters/>
+            <con:representation type="FAULT">
+              <con:mediaType>application/json; charset=utf-8</con:mediaType>
+              <con:status>401</con:status>
+              <con:params/>
+              <con:element xmlns:add="http://10.88.12.22/api/v3/List/AddressTypes">add:Fault</con:element>
+            </con:representation>
+            <con:representation type="RESPONSE">
+              <con:mediaType>application/json; charset=utf-8</con:mediaType>
+              <con:status>200</con:status>
+              <con:params/>
+              <con:element xmlns:add="http://10.88.12.22/api/v3/List/AddressTypes">add:Response</con:element>
+            </con:representation>
+            <con:representation type="RESPONSE">
+              <con:mediaType xsi:nil="true"/>
+              <con:status>0</con:status>
+              <con:params/>
+              <con:element>data</con:element>
+            </con:representation>
+            <con:representation type="FAULT">
+              <con:mediaType>text/html</con:mediaType>
+              <con:status>404</con:status>
+              <con:params/>
+              <con:element xmlns:xht="http://www.w3.org/1999/xhtml">xht:html</con:element>
+            </con:representation>
+            <con:request name="Get List/SendLists" id="c475681f-f0bf-498d-a994-341f5db0ad41" mediaType="application/json">
+              <con:settings>
+                <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+              </con:settings>
+              <con:endpoint>http://localhost:21182/</con:endpoint>
+              <con:request/>
+              <con:originalUri>http://10.88.12.22/api/v3/List/AddressTypes</con:originalUri>
+              <con:credentials>
+                <con:selectedAuthProfile>lh docum t@t.t</con:selectedAuthProfile>
+                <con:authType>OAuth 2.0</con:authType>
+              </con:credentials>
+              <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+              <con:jmsPropertyConfig/>
+              <con:parameters>
+                <con:entry key="PageSize" value="${#Project#PageSize}"/>
                 <con:entry key="CurrentPage" value="1"/>
               </con:parameters>
               <con:parameterOrder>
@@ -8453,7 +8544,7 @@
           </con:method>
         </con:resource>
       </con:resource>
-      
+
     </con:resource>
   </con:interface>
   <con:properties>
@@ -8498,15 +8589,15 @@
       <con:clientID>docum</con:clientID>
       <con:clientSecret>-</con:clientSecret>
       <con:accessTokenURI>http://localhost:21182/api/v3/token</con:accessTokenURI>
-      <con:accessToken>weV4jCPkDxqTzHmj5MFxdTP-_u3TVl7cKQAoHs0Ytma3Xs8QDuYmpMbGCmmKY9qi19xQa9OFcU5_faUP9z5F1lYwbYvie3En93LJ4L1iQxLUom8Vd3ShsF1dRaRR4Aum433Pc4555yrMWpR8EWUyonjuN0a2bdYd4ShLK7Nfps5Gd-ODOh_62pnbm_XbqO4Ea7f5M-ngk22OrSVULAIVzH_z-lvFN9a6AY8xuootXvH-xH5kl1rUeZgpYRjtA1d9Q4emE1_N9PJdH93rGLwJQ9BolbZL4_Ejoh82iysagXIZeiVkDCuLbFRUf9cM1qSSgYlxUgKUYtQGHTRU8lE7bMV9KwmeZUzjrHp_9btvx2l2KnNo_KuGgJueXxo-pyIy02szjINjwyHg4H3v2AlIdMW67qh32dMF-YrRa0n29kiImgDiNExlV1PG3A2D0lc94OkYV1IZ7X7k7R4CbGmfs0qyZ2hWwR8pgcI5YSjOfiE</con:accessToken>
+      <con:accessToken>TIzj5vIa59j4BKyMaG_iEBPerHD4XSV4k-OD2mS2s7awhKWHVa8iHqMe3aWbet_vw_tOAsv20cRxiOrn3XIQqHOQ1XWmDGM9j01UeFLCOy0JH5itk3BssH3Z7dD0xwc2I391PvfozHCLOEhfYYhxY3AjMaQxZkn8MCKWK7_OdFKzHUXjRUXjckx8ccNzfsFVn5V3lc9g47mvg1eL8YCEUAJPEWMyeybor6irUUE0y8e--0CDTzKGsjF9yAe2wg28na28N6AhYCHRvi2Jf7JJAwZnl4MsiOJ_gpBKn4yN9L3hiuLlszCntfacFPlO9h4PM48syBDOQHyGwTENaZMEtHI-82_xgVvAUULj1H-MSxl_QJqH5IpkjdjH0lYyshWDPkEk-teuRBo30qA2MsUnmpaLLZiZ_G6hapd-8kkxFG3Hki3M9NaIVo1RQQSs5Z7bMHVC7WOnukt5r-BcGshN9lvSKtdpjsbtsepNCky1Soc</con:accessToken>
       <con:accessTokenPosition>HEADER</con:accessTokenPosition>
       <con:oAuth2Flow>RESOURCE_OWNER_PASSWORD_CREDENTIALS</con:oAuth2Flow>
       <con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod>
       <con:scope>fingerprint</con:scope>
-      <con:accessTokenStatus>UNKNOWN</con:accessTokenStatus>
+      <con:accessTokenStatus>RETRIEVED_FROM_SERVER</con:accessTokenStatus>
       <con:accessTokenStartingStatus>RETRIEVED_FROM_SERVER</con:accessTokenStartingStatus>
       <con:accessTokenExpirationTime>1209599</con:accessTokenExpirationTime>
-      <con:accessTokenIssuedTime>1493402690</con:accessTokenIssuedTime>
+      <con:accessTokenIssuedTime>1493750651</con:accessTokenIssuedTime>
       <con:resourceOwnerName>t@t.t</con:resourceOwnerName>
       <con:resourceOwnerPassword>P@ssw0rd</con:resourceOwnerPassword>
     </con:oAuth2Profile>
@@ -8520,7 +8611,7 @@
       <con:oAuth2Flow>RESOURCE_OWNER_PASSWORD_CREDENTIALS</con:oAuth2Flow>
       <con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod>
       <con:scope>fingerprint</con:scope>
-      <con:accessTokenStatus>UNKNOWN</con:accessTokenStatus>
+      <con:accessTokenStatus>ENTERED_MANUALLY</con:accessTokenStatus>
       <con:accessTokenStartingStatus>ENTERED_MANUALLY</con:accessTokenStartingStatus>
       <con:accessTokenExpirationTime>1209599</con:accessTokenExpirationTime>
       <con:accessTokenIssuedTime>1493402841</con:accessTokenIssuedTime>
