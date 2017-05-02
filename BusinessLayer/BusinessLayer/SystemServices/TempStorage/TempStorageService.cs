@@ -44,6 +44,17 @@ namespace BL.Logic.SystemServices.TempStorage
 
         }
 
+        public List<object> GetStoreObjectList(EnumObjects ownerType, int ownerId, int objectId)
+        {
+            var lstObj = storeObjects.Where(x => x.ObjectId == objectId && x.OwnerId == ownerId && x.OwnerType == ownerType).ToList();
+            foreach (var obj in lstObj)
+            {
+                obj.LastUsage = DateTime.Now;
+            }
+                
+            return lstObj.Select(x=>x.StoreObject).ToList();
+        }
+
         public object GetStoreObject(EnumObjects ownerType, int ownerId, int objectId)
         {
             var obj = storeObjects.FirstOrDefault(x => x.ObjectId == objectId && x.OwnerId == ownerId && x.OwnerType == ownerType);
@@ -56,6 +67,17 @@ namespace BL.Logic.SystemServices.TempStorage
             var obj = storeObjects.FirstOrDefault(x => x.Id == objectId);
             if (obj != null) obj.LastUsage = DateTime.Now;
             return obj?.StoreObject;
+        }
+
+        public List<object> ExtractStoreObjectList(EnumObjects ownerType, int ownerId, int objectId)
+        {
+            var lstObj = storeObjects.Where(x => x.ObjectId == objectId && x.OwnerId == ownerId && x.OwnerType == ownerType).ToList();
+            foreach (var obj in lstObj)
+            {
+                RemoveObject(obj);
+            }
+
+            return lstObj.Select(x => x.StoreObject).ToList();
         }
 
         public object ExtractStoreObject(EnumObjects ownerType, int ownerId, int objectId)
