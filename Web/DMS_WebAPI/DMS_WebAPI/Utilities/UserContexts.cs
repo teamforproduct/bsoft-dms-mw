@@ -9,6 +9,7 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
+using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.FrontModel;
 using DMS_WebAPI.Providers;
 using Ninject;
@@ -229,9 +230,29 @@ namespace DMS_WebAPI.Utilities
 
             if (intContext == null) throw new UserUnauthorized();
 
+            var message = browserInfo;
+
+            if (!string.IsNullOrEmpty(fingerPrint))
+            {
+                var webService = DmsResolver.Current.Get<WebAPIService>();
+                var fps = webService.GetUserFingerprints(new FilterAspNetUserFingerprint { FingerprintExact = fingerPrint });
+
+                if (fps.Any())
+                {
+                    var fp = fps.First();
+                    message = $"{message};{fp.Fingerprint};{fp.Name}";
+                }
+                else
+                {
+                    message = $"{message};{fingerPrint.Substring(1, 8) + "..."};Not Saved";
+                }
+            }
+
             var logger = DmsResolver.Current.Get<ILogger>();
 
-            intContext.LoginLogInfo = browserInfo;
+
+
+            intContext.LoginLogInfo = message;
             var context = new UserContext(intContext);// это необходимо т.к. если несколько сервисов одновременно попытаются установить позиции для одного контекста, то возникнет ошибка. 
             intContext.LoginLogId = logger.Information(context, intContext.LoginLogInfo, (int)EnumObjects.System, (int)EnumSystemActions.Login, logDate: intContext.CreateDate, isCopyDate1: true);
             intContext.UserFingerprint = fingerPrint;
@@ -792,10 +813,25 @@ namespace DMS_WebAPI.Utilities
                 // Получаю информацию о браузере (она могла обновиться с момента предыдущего входа, например версия)
                 var message = HttpContext.Current.Request.Browser.Info();
 
-                context.UserFingerprint = item.Fingerprint;
+                if (!string.IsNullOrEmpty(item.Fingerprint))
+                {
+                    var fps = webService.GetUserFingerprints(new FilterAspNetUserFingerprint { FingerprintExact = item.Fingerprint });
+
+                    if (fps.Any())
+                    {
+                        var fp = fps.First();
+                        message = $"{message};{fp.Fingerprint};{fp.Name}";
+                    }
+                    else
+                    {
+                        message = $"{message};{item.Fingerprint.Substring(1, 8) + "..."};Not Saved";
+                    }
+                }
+
 
                 context.LoginLogInfo = message;
                 context.LoginLogId = logger.Information(context, context.LoginLogInfo, (int)EnumObjects.System, (int)EnumSystemActions.Login, logDate: context.CreateDate, isCopyDate1: true);
+                context.UserFingerprint = item.Fingerprint;
 
                 if (!string.IsNullOrEmpty(context.UserFingerprint))
                     logger.DeleteSystemLogs(context, new FilterSystemLog

@@ -3,6 +3,7 @@
   <con:settings>
     <con:setting id="com.eviware.soapui.impl.wsdl.actions.iface.tools.soapui.LoadTestRunnerAction@values-local">
       <![CDATA[
+      
       <xml-fragment xmlns:con="http://eviware.com/soapui/config">
   <con:entry key="Environment" value="Default"/>
   <con:entry key="Global Properties" value=""/>
@@ -32,6 +33,7 @@
   <con:entry key="ThreadCount" value=""/>
   <con:entry key="Limit" value=""/>
 </xml-fragment>
+    
     ]]>
     </con:setting>
   </con:settings>
@@ -45,6 +47,94 @@
     <con:resource name="v3" path="api/v3" id="b03f803d-b33d-48e5-8577-5807a79d3bfa">
       <con:settings/>
       <con:parameters/>
+      <con:resource name="Dev$" path="Dev" id="ebceafdb-0a8d-4010-ba46-050fc09438f7">
+        <con:settings/>
+        <con:parameters/>
+        <con:resource name="RefreshPermissions" path="RefreshPermissions" id="37911e08-2ce1-40b9-82d9-2715ece72cc2">
+          <con:settings/>
+          <con:parameters/>
+          <con:method name="RefreshPermissions" id="a5b9bab4-61c3-4e42-a919-4e943010c89a" method="POST">
+            <con:settings/>
+            <con:parameters/>
+            <con:request name="RefreshPermissions" id="4866d10f-d4c8-406e-8ca2-9ee697313d99" mediaType="application/json" postQueryString="false">
+              <con:settings>
+                <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+              </con:settings>
+              <con:endpoint>http://10.88.12.22:80/</con:endpoint>
+              <con:request/>
+              <con:credentials>
+                <con:authType>No Authorization</con:authType>
+              </con:credentials>
+              <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+              <con:jmsPropertyConfig/>
+              <con:parameters/>
+            </con:request>
+          </con:method>
+        </con:resource>
+        <con:resource name="RefreshSystemActions" path="RefreshSystemActions" id="0626097a-ed7d-41ca-8d87-de71eff904ce">
+          <con:settings/>
+          <con:parameters/>
+          <con:method name="RefreshSystemActions" id="912d787f-ee16-418c-b2fe-d62ce0c59243" method="POST">
+            <con:settings/>
+            <con:parameters/>
+            <con:request name="RefreshSystemActions" id="c2a444cc-3f4a-4766-9dd7-99d950b8b4e0" mediaType="application/json" postQueryString="false">
+              <con:settings>
+                <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+              </con:settings>
+              <con:endpoint>http://10.88.12.22:80/</con:endpoint>
+              <con:request/>
+              <con:credentials>
+                <con:authType>No Authorization</con:authType>
+              </con:credentials>
+              <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+              <con:jmsPropertyConfig/>
+              <con:parameters/>
+            </con:request>
+          </con:method>
+        </con:resource>
+        <con:resource name="RefreshSystemObjects" path="RefreshSystemObjects" id="c65bb6e4-5cd4-458a-ad5a-c7f861dd0e3e">
+          <con:settings/>
+          <con:parameters/>
+          <con:method name="RefreshSystemObjects" id="3bab6c24-4233-4626-8908-51bf29c84900" method="POST">
+            <con:settings/>
+            <con:parameters/>
+            <con:request name="RefreshSystemObjects" id="4fac8d44-0a23-4cd8-bbf3-0fa4b6b0e301" mediaType="application/json" postQueryString="false">
+              <con:settings>
+                <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+              </con:settings>
+              <con:endpoint>http://10.88.12.22:80/</con:endpoint>
+              <con:request/>
+              <con:credentials>
+                <con:authType>No Authorization</con:authType>
+              </con:credentials>
+              <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+              <con:jmsPropertyConfig/>
+              <con:parameters/>
+            </con:request>
+          </con:method>
+        </con:resource>
+        <con:resource name="RemoveSessions" path="RemoveSessions" id="e73cf265-6a2d-4703-98a5-51643dc29e10">
+          <con:settings/>
+          <con:parameters/>
+          <con:method name="RemoveSessions" id="bf84b460-2cc2-4783-bd45-505c7042f480" method="POST">
+            <con:settings/>
+            <con:parameters/>
+            <con:request name="RemoveSessions" id="979ad78d-bfe0-417c-a768-71c04951368a" mediaType="application/json" postQueryString="false">
+              <con:settings>
+                <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+              </con:settings>
+              <con:endpoint>http://10.88.12.22:80/</con:endpoint>
+              <con:request/>
+              <con:credentials>
+                <con:authType>No Authorization</con:authType>
+              </con:credentials>
+              <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+              <con:jmsPropertyConfig/>
+              <con:parameters/>
+            </con:request>
+          </con:method>
+        </con:resource>
+      </con:resource>
       <con:resource name="User" path="User" id="59a08f92-1f5c-43e4-b757-361fa3484a99">
         <con:settings/>
         <con:parameters/>
@@ -168,7 +258,7 @@
               <con:mediaType>application/json</con:mediaType>
               <con:params/>
             </con:representation>
-            <con:request name="Post User/Assignments" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
+            <con:request name="Add User/Assignments" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -310,7 +400,7 @@
           <con:method name="User/Addresses" id="a00e49a4-0117-46c4-a0c5-adf353ecc14b" method="POST">
             <con:settings/>
             <con:parameters/>
-            <con:request name="Post User/Addresses" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
+            <con:request name="Add User/Addresses" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -345,7 +435,7 @@
           <con:method name="User/Addresses" id="a00e49a4-0117-46c4-a0c5-adf353ecc14b" method="PUT">
             <con:settings/>
             <con:parameters/>
-            <con:request name="Put User/Addresses" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
+            <con:request name="Chg User/Addresses" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -504,7 +594,7 @@
           <con:method name="User/Contacts" id="a00e49a4-0117-46c4-a0c5-adf353ecc14b" method="POST">
             <con:settings/>
             <con:parameters/>
-            <con:request name="Post User/Contacts" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
+            <con:request name="Add User/Contacts" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -531,7 +621,7 @@
           <con:method name="User/Contacts" id="a00e49a4-0117-46c4-a0c5-adf353ecc14b" method="PUT">
             <con:settings/>
             <con:parameters/>
-            <con:request name="Put User/Contacts" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
+            <con:request name="Chg User/Contacts" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -588,7 +678,7 @@
           <con:method name="User/ControlQuestion" id="a00e49a4-0117-46c4-a0c5-adf353ecc14b" method="PUT">
             <con:settings/>
             <con:parameters/>
-            <con:request name="Put User/ControlQuestion" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
+            <con:request name="Chg User/ControlQuestion" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -633,7 +723,7 @@
             <con:method name="User/Favorites/Bulk" id="c4894c0b-8f48-4366-81cd-adb2af79a6f1" method="POST">
               <con:settings/>
               <con:parameters/>
-              <con:request name="Post User/Favorites/Bulk" id="784c4770-5f4b-45c5-89a9-a08d528f599b" mediaType="application/json" postQueryString="false">
+              <con:request name="Add User/Favorites/Bulk" id="784c4770-5f4b-45c5-89a9-a08d528f599b" mediaType="application/json" postQueryString="false">
                 <con:settings>
                   <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                 </con:settings>
@@ -737,7 +827,7 @@
               <con:mediaType>application/json</con:mediaType>
               <con:params/>
             </con:representation>
-            <con:request name="Post User/Favorites" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
+            <con:request name="Add User/Favorites" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -920,7 +1010,7 @@
                 <con:params/>
                 <con:element xmlns:enab="http://10.88.12.22/api/v3/User/Fingerprints/Enabled">enab:Response</con:element>
               </con:representation>
-              <con:request name="Put User/Fingerprints" id="3c3d7321-ffc6-47d0-91cb-51b138f52a90" mediaType="application/json" postQueryString="false">
+              <con:request name="Chg User/Fingerprints" id="3c3d7321-ffc6-47d0-91cb-51b138f52a90" mediaType="application/json" postQueryString="false">
                 <con:settings>
                   <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                 </con:settings>
@@ -980,7 +1070,7 @@
           <con:method name="User/Fingerprints" id="a00e49a4-0117-46c4-a0c5-adf353ecc14b" method="POST">
             <con:settings/>
             <con:parameters/>
-            <con:request name="Post User/Fingerprints" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
+            <con:request name="Add User/Fingerprints" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -1006,7 +1096,7 @@
           <con:method name="User/Fingerprints" id="a00e49a4-0117-46c4-a0c5-adf353ecc14b" method="PUT">
             <con:settings/>
             <con:parameters/>
-            <con:request name="Put User/Fingerprints" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
+            <con:request name="Chg User/Fingerprints" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -1062,7 +1152,7 @@
           <con:method name="User/Image" id="a00e49a4-0117-46c4-a0c5-adf353ecc14b" method="PUT">
             <con:settings/>
             <con:parameters/>
-            <con:request name="Put User/Image" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
+            <con:request name="Chg User/Image" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -1138,7 +1228,7 @@
           <con:method name="User/Notifications" id="a00e49a4-0117-46c4-a0c5-adf353ecc14b" method="PUT">
             <con:settings/>
             <con:parameters/>
-            <con:request name="Put User/Notifications" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
+            <con:request name="Chg User/Notifications" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -1192,7 +1282,7 @@
           <con:method name="User/Passport" id="a00e49a4-0117-46c4-a0c5-adf353ecc14b" method="PUT">
             <con:settings/>
             <con:parameters/>
-            <con:request name="Put User/Passport" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
+            <con:request name="Chg User/Passport" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -1360,7 +1450,7 @@
             <con:method name="User/Positions/Executors" id="f463dcda-0ea2-4840-a046-e274da21e557" method="POST">
               <con:settings/>
               <con:parameters/>
-              <con:request name="Post User/Positions/Executors" id="d5542db3-5fe1-45fe-83b0-98e54490f5c8" mediaType="application/json" postQueryString="false">
+              <con:request name="Add User/Positions/Executors" id="d5542db3-5fe1-45fe-83b0-98e54490f5c8" mediaType="application/json" postQueryString="false">
                 <con:settings>
                   <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                 </con:settings>
@@ -1377,7 +1467,7 @@
             <con:method name="User/Positions/Executors" id="f463dcda-0ea2-4840-a046-e274da21e557" method="PUT">
               <con:settings/>
               <con:parameters/>
-              <con:request name="Put User/Positions/Executors" id="d5542db3-5fe1-45fe-83b0-98e54490f5c8" mediaType="application/json" postQueryString="false">
+              <con:request name="Chg User/Positions/Executors" id="d5542db3-5fe1-45fe-83b0-98e54490f5c8" mediaType="application/json" postQueryString="false">
                 <con:settings>
                   <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                 </con:settings>
@@ -1804,7 +1894,7 @@
           <con:method name="Documents/AccessList" id="a63e55fe-84a1-4f82-86ba-761329b32d99" method="GET">
             <con:settings/>
             <con:parameters/>
-            <con:request name="Post Documents/AccessList" id="c55238d6-cce7-4a89-80c7-342282d5280b" mediaType="application/json">
+            <con:request name="Add Documents/AccessList" id="c55238d6-cce7-4a89-80c7-342282d5280b" mediaType="application/json">
               <con:settings/>
               <con:endpoint>http://10.88.12.22:80/</con:endpoint>
               <con:request/>
@@ -1819,7 +1909,7 @@
           <con:method name="Documents/AccessList" id="a63e55fe-84a1-4f82-86ba-761329b32d99" method="GET">
             <con:settings/>
             <con:parameters/>
-            <con:request name="Put Documents/AccessList" id="c55238d6-cce7-4a89-80c7-342282d5280b" mediaType="application/json">
+            <con:request name="Chg Documents/AccessList" id="c55238d6-cce7-4a89-80c7-342282d5280b" mediaType="application/json">
               <con:settings/>
               <con:endpoint>http://10.88.12.22:80/</con:endpoint>
               <con:request/>
@@ -3973,7 +4063,7 @@
             <con:method name="Auth/Info/ChangeLogin" id="0f278fc0-6701-41b4-bde5-3df159a0ffda" method="PUT">
               <con:settings/>
               <con:parameters/>
-              <con:request name="Put Auth/Info/ChangeLogin" id="3f6b2f15-777a-4231-b66b-5084423bb19b" mediaType="application/json" postQueryString="false">
+              <con:request name="Chg Auth/Info/ChangeLogin" id="3f6b2f15-777a-4231-b66b-5084423bb19b" mediaType="application/json" postQueryString="false">
                 <con:settings>
                   <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                 </con:settings>
@@ -4001,7 +4091,7 @@
             <con:method name="Auth/Info/ChangePassword" id="0f278fc0-6701-41b4-bde5-3df159a0ffda" method="PUT">
               <con:settings/>
               <con:parameters/>
-              <con:request name="Put Auth/Info/ChangePassword" id="3f6b2f15-777a-4231-b66b-5084423bb19b" mediaType="application/json" postQueryString="false">
+              <con:request name="Chg Auth/Info/ChangePassword" id="3f6b2f15-777a-4231-b66b-5084423bb19b" mediaType="application/json" postQueryString="false">
                 <con:settings>
                   <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                 </con:settings>
@@ -4031,7 +4121,7 @@
             <con:method name="Auth/Info/ChangeLockout" id="0f278fc0-6701-41b4-bde5-3df159a0ffda" method="PUT">
               <con:settings/>
               <con:parameters/>
-              <con:request name="Put Auth/Info/ChangeLockout" id="3f6b2f15-777a-4231-b66b-5084423bb19b" mediaType="application/json" postQueryString="false">
+              <con:request name="Chg Auth/Info/ChangeLockout" id="3f6b2f15-777a-4231-b66b-5084423bb19b" mediaType="application/json" postQueryString="false">
                 <con:settings>
                   <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                 </con:settings>
@@ -4059,7 +4149,7 @@
             <con:method name="Auth/Info/KillSessions" id="0f278fc0-6701-41b4-bde5-3df159a0ffda" method="PUT">
               <con:settings/>
               <con:parameters/>
-              <con:request name="Put Auth/Info/KillSessions" id="3f6b2f15-777a-4231-b66b-5084423bb19b" mediaType="application/json" postQueryString="false">
+              <con:request name="Chg Auth/Info/KillSessions" id="3f6b2f15-777a-4231-b66b-5084423bb19b" mediaType="application/json" postQueryString="false">
                 <con:settings>
                   <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                 </con:settings>
@@ -4085,7 +4175,7 @@
             <con:method name="Auth/Info/SetMustChangePassword" id="0f278fc0-6701-41b4-bde5-3df159a0ffda" method="PUT">
               <con:settings/>
               <con:parameters/>
-              <con:request name="Put Auth/Info/SetMustChangePassword" id="3f6b2f15-777a-4231-b66b-5084423bb19b" mediaType="application/json" postQueryString="false">
+              <con:request name="Chg Auth/Info/SetMustChangePassword" id="3f6b2f15-777a-4231-b66b-5084423bb19b" mediaType="application/json" postQueryString="false">
                 <con:settings>
                   <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                 </con:settings>
@@ -4112,7 +4202,7 @@
             <con:method name="Auth/Info/SwitchOffFingerprint" id="0f278fc0-6701-41b4-bde5-3df159a0ffda" method="PUT">
               <con:settings/>
               <con:parameters/>
-              <con:request name="Put Auth/Info/SwitchOffFingerprint" id="3f6b2f15-777a-4231-b66b-5084423bb19b" mediaType="application/json" postQueryString="false">
+              <con:request name="Chg Auth/Info/SwitchOffFingerprint" id="3f6b2f15-777a-4231-b66b-5084423bb19b" mediaType="application/json" postQueryString="false">
                 <con:settings>
                   <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                 </con:settings>
@@ -4198,7 +4288,7 @@
           <con:method name="Auth/ConfirmEmail" id="b7afdfc2-e76b-41a7-8806-b73816d5a90d" method="POST">
             <con:settings/>
             <con:parameters/>
-            <con:request name="Post Auth/ConfirmEmail" id="15b5eeea-968f-476a-bed9-ea8b231dc046" mediaType="application/json" postQueryString="false">
+            <con:request name="Add Auth/ConfirmEmail" id="15b5eeea-968f-476a-bed9-ea8b231dc046" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -4225,7 +4315,7 @@
           <con:method name="Auth/RestorePassword" id="f909768e-94ec-4329-b2d4-ce15de481a15" method="POST">
             <con:settings/>
             <con:parameters/>
-            <con:request name="Post Auth/RestorePassword" id="9d5b9981-e1cb-4c96-9c9e-e41dea8c7246" mediaType="application/json" postQueryString="false">
+            <con:request name="Add Auth/RestorePassword" id="9d5b9981-e1cb-4c96-9c9e-e41dea8c7246" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -4252,7 +4342,7 @@
           <con:method name="Auth/ConfirmRestorePassword" id="de76d248-9e16-4675-b2ba-a02ed6b19b7a" method="POST">
             <con:settings/>
             <con:parameters/>
-            <con:request name="Post Auth/ConfirmRestorePassword" id="da8576fe-a2cb-4463-bcb0-800e0ca91a7b" mediaType="application/json" postQueryString="false">
+            <con:request name="Add Auth/ConfirmRestorePassword" id="da8576fe-a2cb-4463-bcb0-800e0ca91a7b" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -4289,7 +4379,7 @@
             <con:method name="Clients/Create/ByHash" id="9e8ec008-7571-4493-bb2a-03d3f9cebaf7" method="POST">
               <con:settings/>
               <con:parameters/>
-              <con:request name="Post Clients/Create/ByHash" id="7cb7bb80-d34b-420c-92b7-e9f00eaf2b7f" mediaType="application/json" postQueryString="false">
+              <con:request name="Add Clients/Create/ByHash" id="7cb7bb80-d34b-420c-92b7-e9f00eaf2b7f" mediaType="application/json" postQueryString="false">
                 <con:settings>
                   <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                 </con:settings>
@@ -4316,7 +4406,7 @@
             <con:method name="Clients/Create/BySMS" id="9e8ec008-7571-4493-bb2a-03d3f9cebaf7" method="POST">
               <con:settings/>
               <con:parameters/>
-              <con:request name="Post Clients/Create/BySMS" id="7cb7bb80-d34b-420c-92b7-e9f00eaf2b7f" mediaType="application/json" postQueryString="false">
+              <con:request name="Add Clients/Create/BySMS" id="7cb7bb80-d34b-420c-92b7-e9f00eaf2b7f" mediaType="application/json" postQueryString="false">
                 <con:settings>
                   <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                 </con:settings>
@@ -4335,7 +4425,7 @@
           <con:method name="Clients/Create" id="8b95f0d4-8a08-411e-a3d2-7b3d4e02629f" method="POST">
             <con:settings/>
             <con:parameters/>
-            <con:request name="Post Clients/Create" id="2ea5e3b1-2d25-46ce-9833-5a17fa4554ac" mediaType="application/json" postQueryString="false">
+            <con:request name="Add Clients/Create" id="2ea5e3b1-2d25-46ce-9833-5a17fa4554ac" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -4766,7 +4856,7 @@
               <con:mediaType>application/x-www-form-urlencoded</con:mediaType>
               <con:params/>
             </con:representation>
-            <con:request name="Post Bank/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
+            <con:request name="Add Bank/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">
                   &lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
@@ -4816,7 +4906,7 @@
               <con:params/>
               <con:element xmlns:info="http://10.88.12.22/api/v3/Bank/Info">info:Response</con:element>
             </con:representation>
-            <con:request name="Put Bank/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
+            <con:request name="Chg Bank/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -4952,7 +5042,7 @@
               <con:params/>
               <con:element xmlns:add="http://10.88.12.22/api/v3/Bank/Addresses">add:Response</con:element>
             </con:representation>
-            <con:request name="Post Bank/Addresses" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+            <con:request name="Add Bank/Addresses" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -4997,7 +5087,7 @@
               <con:params/>
               <con:element xmlns:add="http://10.88.12.22/api/v3/Bank/Addresses">add:Response</con:element>
             </con:representation>
-            <con:request name="Put Bank/Addresses" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+            <con:request name="Chg Bank/Addresses" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -5134,7 +5224,7 @@
               <con:params/>
               <con:element xmlns:add="http://10.88.12.22/api/v3/Bank/Addresses">add:Response</con:element>
             </con:representation>
-            <con:request name="Post Bank/Contacts" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+            <con:request name="Add Bank/Contacts" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -5179,7 +5269,7 @@
               <con:params/>
               <con:element xmlns:add="http://10.88.12.22/api/v3/Bank/Addresses">add:Response</con:element>
             </con:representation>
-            <con:request name="Put Bank/Contacts" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+            <con:request name="Chg Bank/Contacts" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -5655,7 +5745,7 @@
               <con:mediaType>application/x-www-form-urlencoded</con:mediaType>
               <con:params/>
             </con:representation>
-            <con:request name="Post Company/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
+            <con:request name="Add Company/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">
                   &lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
@@ -5705,7 +5795,7 @@
               <con:params/>
               <con:element xmlns:info="http://10.88.12.22/api/v3/Company/Info">info:Response</con:element>
             </con:representation>
-            <con:request name="Put Company/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
+            <con:request name="Chg Company/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -5841,7 +5931,7 @@
               <con:params/>
               <con:element xmlns:add="http://10.88.12.22/api/v3/Company/Addresses">add:Response</con:element>
             </con:representation>
-            <con:request name="Post Company/Addresses" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+            <con:request name="Add Company/Addresses" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -5886,7 +5976,7 @@
               <con:params/>
               <con:element xmlns:add="http://10.88.12.22/api/v3/Company/Addresses">add:Response</con:element>
             </con:representation>
-            <con:request name="Put Company/Addresses" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+            <con:request name="Chg Company/Addresses" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -6023,7 +6113,7 @@
               <con:params/>
               <con:element xmlns:add="http://10.88.12.22/api/v3/Company/Addresses">add:Response</con:element>
             </con:representation>
-            <con:request name="Post Company/Contacts" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+            <con:request name="Add Company/Contacts" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -6068,7 +6158,7 @@
               <con:params/>
               <con:element xmlns:add="http://10.88.12.22/api/v3/Company/Addresses">add:Response</con:element>
             </con:representation>
-            <con:request name="Put Company/Contacts" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+            <con:request name="Chg Company/Contacts" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -6471,7 +6561,7 @@
               <con:mediaType>application/x-www-form-urlencoded</con:mediaType>
               <con:params/>
             </con:representation>
-            <con:request name="Post Employee/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
+            <con:request name="Add Employee/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">
                   &lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
@@ -6521,7 +6611,7 @@
               <con:params/>
               <con:element xmlns:info="http://10.88.12.22/api/v3/Employee/Info">info:Response</con:element>
             </con:representation>
-            <con:request name="Put Employee/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
+            <con:request name="Chg Employee/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -6657,7 +6747,7 @@
               <con:params/>
               <con:element xmlns:add="http://10.88.12.22/api/v3/Employee/Addresses">add:Response</con:element>
             </con:representation>
-            <con:request name="Post Employee/Addresses" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+            <con:request name="Add Employee/Addresses" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -6702,7 +6792,7 @@
               <con:params/>
               <con:element xmlns:add="http://10.88.12.22/api/v3/Employee/Addresses">add:Response</con:element>
             </con:representation>
-            <con:request name="Put Employee/Addresses" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+            <con:request name="Chg Employee/Addresses" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -6839,7 +6929,7 @@
               <con:params/>
               <con:element xmlns:add="http://10.88.12.22/api/v3/Employee/Addresses">add:Response</con:element>
             </con:representation>
-            <con:request name="Post Employee/Contacts" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+            <con:request name="Add Employee/Contacts" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -6884,7 +6974,7 @@
               <con:params/>
               <con:element xmlns:add="http://10.88.12.22/api/v3/Employee/Addresses">add:Response</con:element>
             </con:representation>
-            <con:request name="Put Employee/Contacts" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+            <con:request name="Chg Employee/Contacts" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -7286,7 +7376,7 @@
               <con:mediaType>application/x-www-form-urlencoded</con:mediaType>
               <con:params/>
             </con:representation>
-            <con:request name="Post Person/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
+            <con:request name="Add Person/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">
                   &lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
@@ -7336,7 +7426,7 @@
               <con:params/>
               <con:element xmlns:info="http://10.88.12.22/api/v3/Person/Info">info:Response</con:element>
             </con:representation>
-            <con:request name="Put Person/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
+            <con:request name="Chg Person/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -7472,7 +7562,7 @@
               <con:params/>
               <con:element xmlns:add="http://10.88.12.22/api/v3/Person/Addresses">add:Response</con:element>
             </con:representation>
-            <con:request name="Post Person/Addresses" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+            <con:request name="Add Person/Addresses" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -7517,7 +7607,7 @@
               <con:params/>
               <con:element xmlns:add="http://10.88.12.22/api/v3/Person/Addresses">add:Response</con:element>
             </con:representation>
-            <con:request name="Put Person/Addresses" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+            <con:request name="Chg Person/Addresses" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -7654,7 +7744,7 @@
               <con:params/>
               <con:element xmlns:add="http://10.88.12.22/api/v3/Person/Addresses">add:Response</con:element>
             </con:representation>
-            <con:request name="Post Person/Contacts" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+            <con:request name="Add Person/Contacts" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -7699,7 +7789,7 @@
               <con:params/>
               <con:element xmlns:add="http://10.88.12.22/api/v3/Person/Addresses">add:Response</con:element>
             </con:representation>
-            <con:request name="Put Person/Contacts" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+            <con:request name="Chg Person/Contacts" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -8102,7 +8192,7 @@
               <con:mediaType>application/x-www-form-urlencoded</con:mediaType>
               <con:params/>
             </con:representation>
-            <con:request name="Post Org/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
+            <con:request name="Add Org/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">
                   &lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
@@ -8152,7 +8242,7 @@
               <con:params/>
               <con:element xmlns:info="http://10.88.12.22/api/v3/Org/Info">info:Response</con:element>
             </con:representation>
-            <con:request name="Put Org/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
+            <con:request name="Chg Org/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -8288,7 +8378,7 @@
               <con:params/>
               <con:element xmlns:add="http://10.88.12.22/api/v3/Org/Addresses">add:Response</con:element>
             </con:representation>
-            <con:request name="Post Org/Addresses" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+            <con:request name="Add Org/Addresses" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -8333,7 +8423,7 @@
               <con:params/>
               <con:element xmlns:add="http://10.88.12.22/api/v3/Org/Addresses">add:Response</con:element>
             </con:representation>
-            <con:request name="Put Org/Addresses" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+            <con:request name="Chg Org/Addresses" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -8470,7 +8560,7 @@
               <con:params/>
               <con:element xmlns:add="http://10.88.12.22/api/v3/Org/Addresses">add:Response</con:element>
             </con:representation>
-            <con:request name="Post Org/Contacts" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+            <con:request name="Add Org/Contacts" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -8515,7 +8605,7 @@
               <con:params/>
               <con:element xmlns:add="http://10.88.12.22/api/v3/Org/Addresses">add:Response</con:element>
             </con:representation>
-            <con:request name="Put Org/Contacts" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+            <con:request name="Chg Org/Contacts" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -8545,6 +8635,94 @@
         </con:resource>
       </con:resource>
 
+      <con:resource name="Dev$" path="Dev" id="ebceafdb-0a8d-4010-ba46-050fc09438f7">
+        <con:settings/>
+        <con:parameters/>
+        <con:resource name="RefreshPermissions" path="RefreshPermissions" id="37911e08-2ce1-40b9-82d9-2715ece72cc2">
+          <con:settings/>
+          <con:parameters/>
+          <con:method name="RefreshPermissions" id="a5b9bab4-61c3-4e42-a919-4e943010c89a" method="POST">
+            <con:settings/>
+            <con:parameters/>
+            <con:request name="RefreshPermissions" id="4866d10f-d4c8-406e-8ca2-9ee697313d99" mediaType="application/json" postQueryString="false">
+              <con:settings>
+                <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+              </con:settings>
+              <con:endpoint>http://10.88.12.22:80/</con:endpoint>
+              <con:request/>
+              <con:credentials>
+                <con:authType>No Authorization</con:authType>
+              </con:credentials>
+              <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+              <con:jmsPropertyConfig/>
+              <con:parameters/>
+            </con:request>
+          </con:method>
+        </con:resource>
+        <con:resource name="RefreshSystemActions" path="RefreshSystemActions" id="0626097a-ed7d-41ca-8d87-de71eff904ce">
+          <con:settings/>
+          <con:parameters/>
+          <con:method name="RefreshSystemActions" id="912d787f-ee16-418c-b2fe-d62ce0c59243" method="POST">
+            <con:settings/>
+            <con:parameters/>
+            <con:request name="RefreshSystemActions" id="c2a444cc-3f4a-4766-9dd7-99d950b8b4e0" mediaType="application/json" postQueryString="false">
+              <con:settings>
+                <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+              </con:settings>
+              <con:endpoint>http://10.88.12.22:80/</con:endpoint>
+              <con:request/>
+              <con:credentials>
+                <con:authType>No Authorization</con:authType>
+              </con:credentials>
+              <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+              <con:jmsPropertyConfig/>
+              <con:parameters/>
+            </con:request>
+          </con:method>
+        </con:resource>
+        <con:resource name="RefreshSystemObjects" path="RefreshSystemObjects" id="c65bb6e4-5cd4-458a-ad5a-c7f861dd0e3e">
+          <con:settings/>
+          <con:parameters/>
+          <con:method name="RefreshSystemObjects" id="3bab6c24-4233-4626-8908-51bf29c84900" method="POST">
+            <con:settings/>
+            <con:parameters/>
+            <con:request name="RefreshSystemObjects" id="4fac8d44-0a23-4cd8-bbf3-0fa4b6b0e301" mediaType="application/json" postQueryString="false">
+              <con:settings>
+                <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+              </con:settings>
+              <con:endpoint>http://10.88.12.22:80/</con:endpoint>
+              <con:request/>
+              <con:credentials>
+                <con:authType>No Authorization</con:authType>
+              </con:credentials>
+              <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+              <con:jmsPropertyConfig/>
+              <con:parameters/>
+            </con:request>
+          </con:method>
+        </con:resource>
+        <con:resource name="RemoveSessions" path="RemoveSessions" id="e73cf265-6a2d-4703-98a5-51643dc29e10">
+          <con:settings/>
+          <con:parameters/>
+          <con:method name="RemoveSessions" id="bf84b460-2cc2-4783-bd45-505c7042f480" method="POST">
+            <con:settings/>
+            <con:parameters/>
+            <con:request name="RemoveSessions" id="979ad78d-bfe0-417c-a768-71c04951368a" mediaType="application/json" postQueryString="false">
+              <con:settings>
+                <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+              </con:settings>
+              <con:endpoint>http://10.88.12.22:80/</con:endpoint>
+              <con:request/>
+              <con:credentials>
+                <con:authType>No Authorization</con:authType>
+              </con:credentials>
+              <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+              <con:jmsPropertyConfig/>
+              <con:parameters/>
+            </con:request>
+          </con:method>
+        </con:resource>
+      </con:resource>
     </con:resource>
   </con:interface>
   <con:properties>
@@ -8594,7 +8772,7 @@
       <con:oAuth2Flow>RESOURCE_OWNER_PASSWORD_CREDENTIALS</con:oAuth2Flow>
       <con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod>
       <con:scope>fingerprint</con:scope>
-      <con:accessTokenStatus>RETRIEVED_FROM_SERVER</con:accessTokenStatus>
+      <con:accessTokenStatus>UNKNOWN</con:accessTokenStatus>
       <con:accessTokenStartingStatus>RETRIEVED_FROM_SERVER</con:accessTokenStartingStatus>
       <con:accessTokenExpirationTime>1209599</con:accessTokenExpirationTime>
       <con:accessTokenIssuedTime>1493750651</con:accessTokenIssuedTime>

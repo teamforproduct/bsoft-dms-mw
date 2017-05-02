@@ -18,6 +18,7 @@ using Microsoft.Owin.Security.OAuth;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -225,6 +226,7 @@ namespace DMS_WebAPI.Providers
                     if (scope == "fingerprint") fingerPrint = "SoapUI";
                 }
                 #endregion
+
 
                 // Добавляю в пользовательский контекст сведения о браузере
                 userContexts.Set(token, message, fingerPrint);
