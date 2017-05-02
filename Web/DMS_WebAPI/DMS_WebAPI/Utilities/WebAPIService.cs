@@ -1295,12 +1295,12 @@ namespace DMS_WebAPI.Utilities
 
             var model = new AspNetUserContexts
             {
-                Token = context.Employee.Token,
+                Token = context.Token,
                 ClientId = context.Client.Id,
                 CurrentPositionsIdList = string.Join(",", context.CurrentPositionsIdList),
-                UserId = context.Employee.UserId,
+                UserId = context.User.Id,
                 LastChangeDate = DateTime.UtcNow,
-                Fingerprint = context.UserFingerprint,
+                Fingerprint = context.User.Fingerprint,
             };
 
 
@@ -1358,6 +1358,11 @@ namespace DMS_WebAPI.Utilities
         public DatabaseModel GetServer(int Id)
         {
             return _webDb.GetServer(Id);
+        }
+
+        public FrontAspNetClientLicence GetClientLicenceActive(int clientId)
+        {
+            return _webDb.GetClientLicenceActive(clientId);
         }
 
     }

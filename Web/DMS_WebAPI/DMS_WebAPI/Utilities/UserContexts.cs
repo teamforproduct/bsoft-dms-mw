@@ -1,7 +1,6 @@
 ﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
-using BL.Database.DatabaseContext;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.Context;
@@ -12,8 +11,6 @@ using BL.Model.SystemCore.Filters;
 using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.FrontModel;
 using DMS_WebAPI.Providers;
-using Ninject;
-using Ninject.Parameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,8 +48,8 @@ namespace DMS_WebAPI.Utilities
                         CreateDate = (x.Value.StoreObject as IContext).CreateDate,
                         LoginLogInfo = (x.Value.StoreObject as IContext).LoginLogInfo,
                         LoginLogId = (x.Value.StoreObject as IContext).LoginLogId,
-                        UserId = (x.Value.StoreObject as IContext).Employee.UserId,
-                        AgentId = (x.Value.StoreObject as IContext).Employee.AgentId,
+                        UserId = (x.Value.StoreObject as IContext).User.Id,
+                        AgentId = (x.Value.StoreObject as IContext).Employee.Id,
                         Name = (x.Value.StoreObject as IContext).Employee.Name,
                         ClientId = (x.Value.StoreObject as IContext).Client.Id,
                         IsActive = true,
@@ -98,7 +95,7 @@ namespace DMS_WebAPI.Utilities
 
             var request_ctx = new UserContext(ctx);
             request_ctx.SetCurrentPosition(currentPositionId);
-            if (isThrowExeception && request_ctx.IsChangePasswordRequired)
+            if (isThrowExeception && request_ctx.User.IsChangePasswordRequired)
                 throw new UserMustChangePassword();
 
             // KeepAlive: Продление жизни пользовательского контекста
@@ -114,166 +111,120 @@ namespace DMS_WebAPI.Utilities
         /// Формирование пользовательского контекста. 
         /// Этап №1
         /// Добавляет пользовательский контекст с базовыми параметрами (token, userId, clientCode)
+        /// Добавляет к существующему пользовательскому контексту доступные лицензии, указанную базу, профиль пользователя
+        /// Добавляет к существующему пользовательскому контексту информации по логу
         /// </summary>
         /// <param name="token"></param>
         /// <param name="userId">Id Web-пользователя</param>
         /// <param name="userName">Id Web-пользователя</param>
         /// <param name="clientCode">доменное имя клиента</param>
         /// <param name="IsChangePasswordRequired">доменное имя клиента</param>
+        /// <param name="db">new server parameters</param>
+        /// <param name="browserInfo">clientId</param>
+        /// <param name="fingerPrint">clientId</param>
         /// <returns></returns>
         /// <exception cref="TokenAlreadyExists"></exception>
-        public IContext Set(string token, string userId, string userName, bool IsChangePasswordRequired, string clientCode)
+        public IContext Set(string token, string userId, string userName, bool IsChangePasswordRequired, string clientCode, DatabaseModelForAdminContext db, string browserInfo, string fingerPrint)
         {
             token = token.ToLower();
 
             if (Contains(token)) throw new TokenAlreadyExists();
 
-            var dbWeb = DmsResolver.Current.Get<WebAPIDbProcess>();
+            var intContext = GetContextInternal(token, userId, userName, IsChangePasswordRequired, clientCode, db, browserInfo, fingerPrint);
 
-            var context = new UserContext
-            {
-                Employee = new Employee
-                {
-                    Token = token,
-                    UserId = userId,
-                },
-                Client = new Client
-                {
-                    Id = dbWeb.GetClientId(clientCode),
-                    Code = clientCode
-                },
-            };
+            // TODO вернуть, когда перейдем к лицензиям
+            //VerifyNumberOfConnectionsByNew(intContext, new List<DatabaseModelForAdminContext> { db });
 
+            // запись в лог создает новый дб контекст, поэтому передаю internal
+            WriteLog(intContext);
 
-            context.IsChangePasswordRequired = IsChangePasswordRequired;
-            context.UserName = userName;
+            Save(token, intContext);
 
-            Save(token, context);
-            return context;
+            return intContext;
+
         }
 
+        
 
-
-        /// <summary>
-        /// Формирование пользовательского контекста. 
-        /// Этап №2
-        /// Добавляет к существующему пользовательскому контексту доступные лицензии, указанную базу, профиль пользователя
-        /// </summary>
-        /// <param name="token">new server parameters</param>
-        /// <param name="db">new server parameters</param>
-        /// <returns></returns>
-        public void Set(string token, DatabaseModelForAdminContext db)
+        private IContext GetContextInternal(string token, string userId, string userName, bool IsChangePasswordRequired, string clientCode, DatabaseModelForAdminContext db, string browserInfo, string fingerPrint)
         {
-            token = token.ToLower();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            var clientId = webService.GetClientId(clientCode);
 
-            // Исключения отлавливает Application_Error в Global.asax
+            #region LoginLogInfo
 
-            var intContext = GetContextInternal(token);
+            var logInfo = browserInfo;
 
-            if (intContext == null) throw new UserUnauthorized();
+            if (!string.IsNullOrEmpty(fingerPrint))
+            {
+                var fp = webService.GetUserFingerprints(new FilterAspNetUserFingerprint { UserIDs = new List<string> { userId }, FingerprintExact = fingerPrint }).FirstOrDefault();
 
-            var dbWeb = DmsResolver.Current.Get<WebAPIDbProcess>();
+                if (fp != null)
+                {
+                    logInfo = $"{logInfo};{fp.Fingerprint};{fp.Name}";
+                }
+                else
+                {
+                    logInfo = $"{logInfo};{fingerPrint.Truncate(8)};Not Saved";
+                }
+            }
+            #endregion
 
-            intContext.ClientLicence = dbWeb.GetClientLicenceActive(intContext.Client.Id);
-
-            VerifyNumberOfConnectionsByNew(intContext, intContext.Client.Id, new List<DatabaseModelForAdminContext> { db });
-
-            intContext.CurrentDB = db;
+            var intContext = new UserContext
+            {
+                Token = token,
+                User = new User
+                {
+                    Id = userId,
+                    Name = userName,
+                    Fingerprint = fingerPrint,
+                    IsChangePasswordRequired = IsChangePasswordRequired,
+                    LanguageId = -1,
+                },
+                Employee = new Employee { },
+                Client = new Client
+                {
+                    Id = clientId,
+                    Code = clientCode
+                },
+                
+                CurrentDB = db,
+                ClientLicence = webService.GetClientLicenceActive(clientId),
+                LoginLogInfo = logInfo,
+            };
 
             var context = new UserContext(intContext);
-            var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(context, intContext.Employee.UserId);
+            var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(context, userId);
 
             if (agentUser != null)
             {
-                // эти проверки уже есть на получении токена
                 // проверка активности сотрудника
                 if (!agentUser.IsActive)
                 {
-                    Remove(token);
                     throw new UserIsDeactivated(agentUser.Name);
                 }
 
                 if (agentUser.PositionExecutorsCount == 0)
                 {
-                    Remove(token);
                     throw new UserNotExecuteAnyPosition(agentUser.Name);
                 }
 
-                intContext.Employee.AgentId = agentUser.AgentId;
+                intContext.Employee.Id = agentUser.Id;
                 intContext.Employee.Name = agentUser.Name;
                 intContext.Employee.LanguageId = agentUser.LanguageId;
+                intContext.User.LanguageId = agentUser.LanguageId;
             }
             else
             {
-                Remove(token);
                 throw new UserAccessIsDenied();
             }
 
-            KeepAlive(token);
-
-        }
-
-        /// <summary>
-        /// этап 3
-        /// Формирование пользовательского контекста. 
-        /// Добавляет к существующему пользовательскому контексту информации по логу
-        /// </summary>
-        /// <param name="token">new server parameters</param>
-        /// <param name="browserInfo">clientId</param>
-        /// <param name="fingerPrint">clientId</param>
-        /// <returns></returns>
-        public void Set(string token, string browserInfo, string fingerPrint)
-        {
-            token = token.ToLower();
-
-            var intContext = GetContextInternal(token);
-
-            if (intContext == null) throw new UserUnauthorized();
-
-            var message = browserInfo;
-
-            if (!string.IsNullOrEmpty(fingerPrint))
-            {
-                var webService = DmsResolver.Current.Get<WebAPIService>();
-                var fps = webService.GetUserFingerprints(new FilterAspNetUserFingerprint { FingerprintExact = fingerPrint });
-
-                if (fps.Any())
-                {
-                    var fp = fps.First();
-                    message = $"{message};{fp.Fingerprint};{fp.Name}";
-                }
-                else
-                {
-                    message = $"{message};{fingerPrint.Substring(0, 7) + "..."};Not Saved";
-                }
-            }
-
-            var logger = DmsResolver.Current.Get<ILogger>();
-
-
-
-            intContext.LoginLogInfo = message;
-            var context = new UserContext(intContext);// это необходимо т.к. если несколько сервисов одновременно попытаются установить позиции для одного контекста, то возникнет ошибка. 
-            intContext.LoginLogId = logger.Information(context, intContext.LoginLogInfo, (int)EnumObjects.System, (int)EnumSystemActions.Login, logDate: intContext.CreateDate, isCopyDate1: true);
-            intContext.UserFingerprint = fingerPrint;
-
-            if (!string.IsNullOrEmpty(fingerPrint))
-                logger.DeleteSystemLogs(context, new FilterSystemLog
-                {
-                    ObjectIDs = new List<int> { (int)EnumObjects.System },
-                    ActionIDs = new List<int> { (int)EnumSystemActions.Login },
-                    LogLevels = new List<int> { (int)EnumLogTypes.Error },
-                    ExecutorAgentIDs = new List<int> { intContext.CurrentAgentId },
-                    LogDateFrom = DateTime.UtcNow.AddMinutes(-60),
-                    ObjectLog = $"\"FingerPrint\":\"{fingerPrint}\"",
-                });
-
-            KeepAlive(token);
+            return intContext;
         }
 
         /// <summary>
         /// Формирование пользовательского контекста. 
-        /// Этап №4
+        /// Этап №2
         /// Добавляет к существующему пользовательскому контексту список занимаемых должностей и AccessLevel
         /// </summary>
         /// <param name="token"></param>
@@ -283,17 +234,29 @@ namespace DMS_WebAPI.Utilities
             var intContext = GetContextInternal(token);
             if (intContext == null) throw new UserUnauthorized();
 
+            SetUserPositions(intContext, positionsIdList);
+
+            SaveInBase(intContext);
+
+            KeepAlive(token);
+        }
+
+        private void SetUserPositions(IContext intContext, List<int> positionsIdList)
+        {
             intContext.CurrentPositionsIdList = positionsIdList;
 
             var context = new UserContext(intContext);// это необходимо т.к. если несколько сервисов одновременно попытаются установить позиции для одного контекста, то возникнет ошибка. 
+
             intContext.CurrentPositionsAccessLevel = DmsResolver.Current.Get<IAdminService>().GetCurrentPositionsAccessLevel(context);
             context.CurrentPositionsAccessLevel = intContext.CurrentPositionsAccessLevel;
 
             DmsResolver.Current.Get<IDictionaryService>().SetDictionaryAgentUserLastPositionChose(context, positionsIdList);
             // Контекст полностью сформирован и готов к работе
             intContext.IsFormed = true;
-            KeepAlive(token);
+        }
 
+        private void SaveInBase(IContext intContext)
+        {
             // Сохраняю текущий контекст
             var webService = DmsResolver.Current.Get<WebAPIService>();
             webService.SaveUserContexts(intContext);
@@ -311,8 +274,8 @@ namespace DMS_WebAPI.Utilities
             try
             {
                 _cacheContexts.Select(x => x.Value.StoreObject as IContext)
-                    .Where(x => x != null && x.Employee.UserId == userId)
-                    .ForEach(x => x.IsChangePasswordRequired = isChangePasswordRequired);
+                    .Where(x => x != null && x.User.Id == userId)
+                    .ForEach(x => x.User.IsChangePasswordRequired = isChangePasswordRequired);
             }
             catch (Exception ex)
             {
@@ -380,7 +343,7 @@ namespace DMS_WebAPI.Utilities
                     var qry = _cacheContexts
                    .Select(x => (IContext)x.Value.StoreObject)
                    .Where(x => x.Client.Id == clientId)
-                   .Select(x => x.Employee.UserId)
+                   .Select(x => x.User.Id)
                    .Distinct();
 
                     lic.ConcurenteNumberOfConnectionsNow = qry.Count();
@@ -525,7 +488,7 @@ namespace DMS_WebAPI.Utilities
             locker.EnterReadLock();
             try
             {
-                keys = _cacheContexts.Where(x => x.Value.StoreObject is IContext && ((IContext)x.Value.StoreObject).Employee.UserId == userId).Select(x => x.Key).ToList();
+                keys = _cacheContexts.Where(x => x.Value.StoreObject is IContext && ((IContext)x.Value.StoreObject).User.Id == userId).Select(x => x.Key).ToList();
             }
             finally
             {
@@ -539,9 +502,9 @@ namespace DMS_WebAPI.Utilities
 
 
 
-        public void VerifyNumberOfConnectionsByNew(IContext context, int clientId, IEnumerable<DatabaseModelForAdminContext> dbs)
+        public void VerifyNumberOfConnectionsByNew(IContext context, IEnumerable<DatabaseModelForAdminContext> dbs)
         {
-            if (clientId <= 0) return;
+            if (context.Client.Id <= 0) return;
 
             var si = new SystemInfo();
 
@@ -550,7 +513,7 @@ namespace DMS_WebAPI.Utilities
             if (lic == null)
             {
                 var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
-                context.ClientLicence = lic = dbProc.GetClientLicenceActive(clientId);
+                context.ClientLicence = lic = dbProc.GetClientLicenceActive(context.Client.Id);
             }
 
             var regCode = si.GetRegCode(lic);
@@ -563,8 +526,8 @@ namespace DMS_WebAPI.Utilities
                 {
                     qry = _cacheContexts
                     .Select(x => (IContext)x.Value.StoreObject)
-                    .Where(x => x.Client.Id == clientId)
-                    .Select(x => x.Employee.UserId)
+                    .Where(x => x.Client.Id == context.Client.Id)
+                    .Select(x => x.User.Id)
                     .Distinct().ToList();
                 }
                 finally
@@ -573,7 +536,7 @@ namespace DMS_WebAPI.Utilities
                 }
                 var count = qry.Count;
 
-                if (qry.All(x => x != context.Employee.UserId))
+                if (qry.All(x => x != context.User.Id))
                 {
                     count++;
                 }
@@ -601,7 +564,7 @@ namespace DMS_WebAPI.Utilities
             {
                 contexts = _cacheContexts
                         .Select(x => (IContext)x.Value.StoreObject)
-                        .Where(x => x.Employee.AgentId == agentId).ToList();
+                        .Where(x => x.Employee.Id == agentId).ToList();
             }
             finally
             {
@@ -610,6 +573,7 @@ namespace DMS_WebAPI.Utilities
             foreach (var context in contexts)
             {
                 context.Employee.LanguageId = languageId;
+                context.User.LanguageId = languageId;
             }
         }
 
@@ -730,7 +694,7 @@ namespace DMS_WebAPI.Utilities
                 if (_cacheContexts.ContainsKey(token)) return;
 
                 var webService = DmsResolver.Current.Get<WebAPIService>();
-                var item = webService.GetUserContexts(new BL.Model.WebAPI.Filters.FilterAspNetUserContext()
+                var item = webService.GetUserContexts(new FilterAspNetUserContext()
                 {
                     TokenExact = token
                 }).FirstOrDefault();
@@ -749,122 +713,47 @@ namespace DMS_WebAPI.Utilities
 
                 if (user == null) return;
 
-                
+                var brInfo = HttpContext.Current.Request.Browser.Info();
 
-                //Set(item.Token, item.UserId, user.UserName, user.IsChangePasswordRequired, clientCode);
+                var intContext = GetContextInternal(item.Token, user.Id, user.UserName, user.IsChangePasswordRequired, clientCode,
+                     server, brInfo, item.Fingerprint);
 
-                token = item.Token.ToLower();
+                // TODO вернуть, когда перейдем к лицензиям 
+                //VerifyNumberOfConnectionsByNew(context, new List<DatabaseModelForAdminContext> { server });//LONG
 
-                var dbWeb = DmsResolver.Current.Get<WebAPIDbProcess>();
-
-                var context = new UserContext
-                {
-                    Employee = new Employee
-                    {
-                        Token = token,
-                        UserId = item.UserId,
-                    },
-                    Client = new Client
-                    {
-                        Id = dbWeb.GetClientId(clientCode),
-                        Code = clientCode
-                    },
-                    IsChangePasswordRequired = user.IsChangePasswordRequired,
-                    UserName = user.UserName,
-                };
-
-                //Set(item.Token, server);
-
-                context.ClientLicence = dbWeb.GetClientLicenceActive(context.Client.Id);
-
-                VerifyNumberOfConnectionsByNew(context, context.Client.Id, new List<DatabaseModelForAdminContext> { server });//LONG
-
-                context.CurrentDB = server;
-                var dbCtx = DmsResolver.Current.Kernel.Get<DmsContext>(new ConstructorArgument("dbModel", context.CurrentDB));
-                context.DbContext = dbCtx;
-                var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(context, context.Employee.UserId);
-
-                if (agentUser != null)
-                {
-                    // эти проверки уже есть на получении токена
-                    // проверка активности сотрудника
-                    if (!agentUser.IsActive)
-                    {
-                        throw new UserIsDeactivated(agentUser.Name);
-                    }
-
-                    if (agentUser.PositionExecutorsCount == 0)
-                    {
-                        throw new UserNotExecuteAnyPosition(agentUser.Name);
-                    }
-
-                    context.Employee.AgentId = agentUser.AgentId;
-                    context.Employee.Name = agentUser.Name;
-                    context.Employee.LanguageId = agentUser.LanguageId;
-                }
-                else
-                {
-                    throw new UserAccessIsDenied();
-                }
-
-                //Set(item.Token, message, fingerPrint);
-
-                var logger = DmsResolver.Current.Get<ILogger>();
-                // Получаю информацию о браузере (она могла обновиться с момента предыдущего входа, например версия)
-                var message = HttpContext.Current.Request.Browser.Info();
-
-                if (!string.IsNullOrEmpty(item.Fingerprint))
-                {
-                    var fps = webService.GetUserFingerprints(new FilterAspNetUserFingerprint { FingerprintExact = item.Fingerprint });
-
-                    if (fps.Any())
-                    {
-                        var fp = fps.First();
-                        message = $"{message};{fp.Fingerprint};{fp.Name}";
-                    }
-                    else
-                    {
-                        message = $"{message};{item.Fingerprint.Substring(0, 7) + "..."};Not Saved";
-                    }
-                }
+                WriteLog(intContext);
 
 
-                context.LoginLogInfo = message;
-                context.LoginLogId = logger.Information(context, context.LoginLogInfo, (int)EnumObjects.System, (int)EnumSystemActions.Login, logDate: context.CreateDate, isCopyDate1: true);
-                context.UserFingerprint = item.Fingerprint;
+                SetUserPositions(intContext, item.CurrentPositionsIdList.Split(',').Select(n => Convert.ToInt32(n)).ToList());
 
-                if (!string.IsNullOrEmpty(context.UserFingerprint))
-                    logger.DeleteSystemLogs(context, new FilterSystemLog
-                    {
-                        ObjectIDs = new List<int> { (int)EnumObjects.System },
-                        ActionIDs = new List<int> { (int)EnumSystemActions.Login },
-                        LogLevels = new List<int> { (int)EnumLogTypes.Error },
-                        ExecutorAgentIDs = new List<int> { context.CurrentAgentId },
-                        LogDateFrom = DateTime.UtcNow.AddMinutes(-60),
-                        ObjectLog = $"\"FingerPrint\":\"{context.UserFingerprint}\"",
-                    });
+                //TODO надоли это если мы только что отресторили токен? - Да, дата проставляется свежая
+                SaveInBase(intContext);
 
-                //SetUserPositions(item.Token,item.CurrentPositionsIdList.Split(',').Select(n => Convert.ToInt32(n)).ToList());
-                var positionsIdList = item.CurrentPositionsIdList.Split(',').Select(n => Convert.ToInt32(n)).ToList();
-
-                context.CurrentPositionsIdList = positionsIdList;
-                context.CurrentPositionsAccessLevel = DmsResolver.Current.Get<IAdminService>().GetCurrentPositionsAccessLevel(context);
-                DmsResolver.Current.Get<IDictionaryService>().SetDictionaryAgentUserLastPositionChose(context, positionsIdList);
-                // Контекст полностью сформирован и готов к работе
-                context.IsFormed = true;
-
-                // Сохраняю текущий контекст
-                webService.SaveUserContexts(context);//TODO надоли это если мы только что отресторили токен? - дата проставляется свежая
-
-                context.DbContext = null;
-                dbCtx.Dispose();
-
-                Add(token, context);
+                Add(token, intContext);
             }
             finally
             {
                 locker.ExitWriteLock();
             }
+        }
+
+        private void WriteLog(IContext context)
+        {
+            var logger = DmsResolver.Current.Get<ILogger>();
+            context.LoginLogId = logger.Information(context, context.LoginLogInfo, (int)EnumObjects.System, (int)EnumSystemActions.Login, logDate: context.CreateDate, isCopyDate1: true);
+
+            // не понятно чего это такое
+            if (!string.IsNullOrEmpty(context.User.Fingerprint))
+                logger.DeleteSystemLogs(context, new FilterSystemLog
+                {
+                    ObjectIDs = new List<int> { (int)EnumObjects.System },
+                    ActionIDs = new List<int> { (int)EnumSystemActions.Login },
+                    LogLevels = new List<int> { (int)EnumLogTypes.Error },
+                    ExecutorAgentIDs = new List<int> { context.CurrentAgentId },
+                    LogDateFrom = DateTime.UtcNow.AddMinutes(-60),
+                    ObjectLog = $"\"FingerPrint\":\"{context.User.Fingerprint}\"",
+                });
+
         }
 
     }

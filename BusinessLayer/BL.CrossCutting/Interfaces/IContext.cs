@@ -7,10 +7,12 @@ namespace BL.CrossCutting.Interfaces
 {
     public interface IContext
     {
+        string Token { get; set; }
         bool IsFormed { get; set; }
 
         Client Client { get; set; }
         Employee Employee { get; set; }
+        User User { get; set; }
         bool CurrentPositionsIdListDefined { get; }
         List<int> CurrentPositionsIdList { get; set; }
         bool CurrentPositionsAccessLevelDefined { get; }
@@ -26,13 +28,9 @@ namespace BL.CrossCutting.Interfaces
         LicenceInfo ClientLicence { get; set; }
         DateTime CreateDate { get; }
         DateTime LastChangeDate { get; set; }
-        bool IsChangePasswordRequired { get; set; }
         int? LoginLogId { get; set; }
         string LoginLogInfo { get; set; }
         IDmsDatabaseContext DbContext { get; set; }
-
-        string UserName { get; set; }
-        string UserFingerprint { get; set; }
 
     }
 }

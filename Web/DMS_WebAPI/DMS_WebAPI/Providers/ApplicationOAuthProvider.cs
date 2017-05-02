@@ -203,18 +203,8 @@ namespace DMS_WebAPI.Providers
 
                 var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
 
-                //var clientCode = GetClientCodeFromBody(context.Request.Body);
-
-                var userContexts = DmsResolver.Current.Get<UserContexts>();
-
-                // Создаю пользовательский контекст
-                var ctx = userContexts.Set(token, userId, user.UserName, user.IsChangePasswordRequired, clientCode);
-
-                // Добавляю в пользовательский контекст сервер
-                userContexts.Set(token, server);
-
                 // Получаю информацию о браузере
-                var message = HttpContext.Current.Request.Browser.Info();
+                var brInfo = HttpContext.Current.Request.Browser.Info();
 
                 var fingerPrint = context.Request.Body.GetFingerprint();
 
@@ -224,12 +214,18 @@ namespace DMS_WebAPI.Providers
                     var scope = context.Request.Body.GetScope();
 
                     if (scope == "fingerprint") fingerPrint = "SoapUI finger";
+
                 }
                 #endregion
 
+                var userContexts = DmsResolver.Current.Get<UserContexts>();
 
-                // Добавляю в пользовательский контекст сведения о браузере
-                userContexts.Set(token, message, fingerPrint);
+                // Создаю пользовательский контекст
+                var ctx = userContexts.Set(token, userId, user.UserName, user.IsChangePasswordRequired, clientCode, server, brInfo, fingerPrint);
+
+
+                // --------------------------------------------------------------------------------
+
 
                 context.AdditionalResponseParameters.Add("ChangePasswordRequired", user.IsChangePasswordRequired);
 
@@ -289,7 +285,7 @@ namespace DMS_WebAPI.Providers
             if (user != null)
             {
                 var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(ctx, user.Id);
-                agentId = agentUser?.AgentId;
+                agentId = agentUser?.Id;
             }
 
             var exceptionText = (ex is DmsExceptions) ? "DmsExceptions:" + ex.GetType().Name : ex.Message;

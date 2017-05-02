@@ -22,12 +22,9 @@ namespace BL.CrossCutting.Context
         private List<int> _currentPositionsIdList;
         private Dictionary<int, int> _currentPositionsAccessLevel;
 
-        public Employee Employee { get; set; }
-
-        public Client Client { get; set; }
 
         public UserContext() { }
-
+        
         /// <summary>
         /// Создает новый контекст пользователя и новое ПОДКЛЮЧЕНИЕ к базе
         /// </summary>
@@ -58,14 +55,23 @@ namespace BL.CrossCutting.Context
                 {
                     CurrentDB = null;
                 }
+                Token = ctx.Token;
                 DbContext = ctx.DbContext;
+                User = new User
+                {
+                   Id = ctx.User.Id,
+                   Name = ctx.User.Name,
+                   Fingerprint = ctx.User.Fingerprint,
+                   IsChangePasswordRequired = ctx.User.IsChangePasswordRequired,
+                   LanguageId = ctx.User.LanguageId,
+                };
                 Employee = new Employee
                 {
-                    AgentId = ctx.Employee.AgentId,
+                    Id = ctx.Employee.Id,
                     LanguageId = ctx.Employee.LanguageId,
                     Name = ctx.Employee.Name,
-                    Token = ctx.Employee.Token,
-                    UserId = ctx.Employee.UserId,
+                    IsActive = ctx.Employee.IsActive,
+                    PositionExecutorsCount = ctx.Employee.PositionExecutorsCount,
                 };
                 Client = new Client
                 {
@@ -74,11 +80,9 @@ namespace BL.CrossCutting.Context
                 };
 
                 ClientLicence = ctx.ClientLicence;
-                IsChangePasswordRequired = ctx.IsChangePasswordRequired;
                 IsFormed = ctx.IsFormed;
                 LoginLogId = ctx.LoginLogId;
                 LoginLogInfo = ctx.LoginLogInfo;
-                UserName = ctx.UserName;
 
                 // тут поднимается коннекшн к базе
                 DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
@@ -96,6 +100,18 @@ namespace BL.CrossCutting.Context
                     :null;
             }
         }
+
+        /// <summary>
+        /// Токен из авторизации
+        /// </summary>
+        public string Token { get; set; }
+
+
+        public Employee Employee { get; set; }
+
+        public Client Client { get; set; }
+
+        public User User { get; set; }
 
         /// <summary>
         ///  Флаг TRUE если контекст сформирован и готов к работе
@@ -156,17 +172,17 @@ namespace BL.CrossCutting.Context
             }
         }
 
-        public bool CurrentAgentDefined => Employee?.AgentId != null;
+        public bool CurrentAgentDefined => Employee?.Id != null;
 
         public int CurrentAgentId
         {
             get
             {
-                if (Employee?.AgentId == null)
+                if (Employee?.Id == null)
                 {
                     throw new UserContextIsNotDefined();
                 }
-                return Employee.AgentId.GetValueOrDefault();
+                return Employee.Id.GetValueOrDefault();
             }
         }
 
@@ -206,15 +222,11 @@ namespace BL.CrossCutting.Context
 
         public DateTime CreateDate { get; } = DateTime.UtcNow;
         public DateTime LastChangeDate { get; set; } = DateTime.UtcNow;
-        public bool IsChangePasswordRequired { get; set; }
 
         public int? LoginLogId { get; set; }
 
         public string LoginLogInfo { get; set; }
         public IDmsDatabaseContext DbContext { get; set; }
 
-        public string UserName { get; set; }
-
-        public string UserFingerprint { get; set; }
     }
 }
