@@ -165,7 +165,7 @@ namespace DMS_WebAPI.Utilities
                 }
                 else
                 {
-                    logInfo = $"{logInfo};{fingerPrint.Truncate(8)};Not Saved";
+                    logInfo = $"{logInfo};{fingerPrint.TruncateHard(8)};Not Saved";
                 }
             }
             #endregion

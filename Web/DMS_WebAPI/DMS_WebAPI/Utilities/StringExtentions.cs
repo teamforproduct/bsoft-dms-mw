@@ -290,6 +290,26 @@ namespace DMS_WebAPI.Utilities
             return stringBuilder.ToString();
         }
 
+        public static string TruncateHard(this string source, int length)
+        {
+            if (string.IsNullOrEmpty(source))
+            {
+                return source;
+            }
+
+            source = source.Trim();
+
+            //source = HttpUtility.HtmlDecode(source);
+
+            if (source.Length <= length)
+            {
+                return source;
+            }
+
+            return source.Substring(0, length - 1);
+
+        }
+
         public static string ToQueryString(this Dictionary<string, string> qs)
         {
             return string.Join("&", qs.Select(e => string.Format("{0}={1}", HttpUtility.UrlEncode(e.Key), HttpUtility.UrlEncode(e.Value))));
