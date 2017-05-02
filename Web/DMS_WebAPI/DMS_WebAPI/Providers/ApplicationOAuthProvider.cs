@@ -223,7 +223,7 @@ namespace DMS_WebAPI.Providers
                 {
                     var scope = context.Request.Body.GetScope();
 
-                    if (scope == "fingerprint") fingerPrint = "SoapUI";
+                    if (scope == "fingerprint") fingerPrint = "SoapUI finger";
                 }
                 #endregion
 
