@@ -1263,7 +1263,7 @@ namespace DMS_WebAPI.Utilities
                 var items = qry.Select(x => new FrontAspNetUserFingerprint
                 {
                     Id = x.Id,
-                    Fingerprint = x.Fingerprint.Substring(1, 8) + "...",
+                    Fingerprint = x.Fingerprint.Substring(0, 7) + "...",
                     Name = x.Name,
                     Browser = x.Browser,
                     Platform = x.Platform,

@@ -244,7 +244,7 @@ namespace DMS_WebAPI.Utilities
                 }
                 else
                 {
-                    message = $"{message};{fingerPrint.Substring(1, 8) + "..."};Not Saved";
+                    message = $"{message};{fingerPrint.Substring(0, 7) + "..."};Not Saved";
                 }
             }
 
@@ -824,7 +824,7 @@ namespace DMS_WebAPI.Utilities
                     }
                     else
                     {
-                        message = $"{message};{item.Fingerprint.Substring(1, 8) + "..."};Not Saved";
+                        message = $"{message};{item.Fingerprint.Substring(0, 7) + "..."};Not Saved";
                     }
                 }
 
