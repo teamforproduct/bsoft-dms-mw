@@ -3055,7 +3055,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetContactTypeQuery(ctx, filter);
 
-                qry = qry.OrderBy(x => x.Name);
+                qry = qry.OrderBy(x => x.Id).ThenBy(x => x.Name);
 
                 var res = qry.Select(x => new FrontShortListContactType
                 {
