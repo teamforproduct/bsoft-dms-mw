@@ -48,6 +48,7 @@ namespace DMS_WebAPI.ControllersV3.Clients
             var tmpService = DmsResolver.Current.Get<WebAPIService>();
             var json = await tmpService.AddClientByEmail(model);
 
+            // Андрей Х. просил возвращать стандартнй ответ если пусто
             if (json.IsEmpty()) return new JsonResult(null, this);
             else
             {

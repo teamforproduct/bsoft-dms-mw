@@ -621,6 +621,9 @@ namespace DMS_WebAPI.Utilities
             if (request == null) throw new ClientRequestIsNotFound();
 
             request.Password = model.Password;
+            request.OrgName = model.OrgName;
+            request.DepartmentName = model.DepartmentName;
+            request.PositionName = model.PositionName;
 
             var isDone = await AddClientSaaS(request);
 
@@ -793,9 +796,9 @@ namespace DMS_WebAPI.Utilities
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 MiddleName = model.MiddleName,
-                OrgName = languages.GetTranslation(ctx.Employee.LanguageId, "##l@Clients:" + "MyCompany" + "@l##"),
-                DepartmentName = languages.GetTranslation(ctx.Employee.LanguageId, "##l@Clients:" + "MyDepartment" + "@l##"),
-                PositionName = languages.GetTranslation(ctx.Employee.LanguageId, "##l@Clients:" + "MyPosition" + "@l##"),
+                OrgName = model.OrgName, // languages.GetTranslation(ctx.Employee.LanguageId, "##l@Clients:" + "MyCompany" + "@l##"),
+                DepartmentName = model.DepartmentName, // languages.GetTranslation(ctx.Employee.LanguageId, "##l@Clients:" + "MyDepartment" + "@l##"),
+                PositionName = model.PositionName, // languages.GetTranslation(ctx.Employee.LanguageId, "##l@Clients:" + "MyPosition" + "@l##"),
                 ExecutorType = EnumPositionExecutionTypes.Personal,
                 AccessLevel = EnumAccessLevels.Personally,
                 LanguageId = ctx.Employee.LanguageId,
