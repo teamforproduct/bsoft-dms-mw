@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using BL.Model.DictionaryCore.FrontModel.Employees;
+using BL.Model.DictionaryCore.FrontModel;
 
 namespace DMS_WebAPI.ControllersV3.User
 {
@@ -29,7 +30,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Image)]
-        [ResponseType(typeof(FrontAgentEmployeeUser))]
+        [ResponseType(typeof(FrontFile))]
         public async Task<IHttpActionResult> Get()
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>

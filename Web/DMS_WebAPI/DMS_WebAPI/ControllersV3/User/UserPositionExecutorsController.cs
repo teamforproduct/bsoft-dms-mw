@@ -60,7 +60,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Positions/" + Features.Executors + " /{Id:int}")]
+        [Route("Positions/" + Features.Executors + "/{Id:int}")]
         [ResponseType(typeof(FrontDictionaryPositionExecutor))]
         public async Task<IHttpActionResult> Get(int Id)
         {
