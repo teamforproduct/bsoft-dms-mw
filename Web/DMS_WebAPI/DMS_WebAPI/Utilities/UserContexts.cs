@@ -728,16 +728,7 @@ namespace DMS_WebAPI.Utilities
 
                 if (user == null) return;
 
-                // Получаю информацию о браузере (она могла обновиться с момента предыдущего входа, например версия)
-                var message = HttpContext.Current.Request.Browser.Info();
-
-                // Тут нет никакого фингерпринта, он передается один раз с токеном
-                var fingerPrint = HttpContext.Current.Request.InputStream.GetFingerprint();
-
-                if (fingerPrint == null)
-                {
-                    fingerPrint = item.Fingerprint;
-                }
+                
 
                 //Set(item.Token, item.UserId, user.UserName, user.IsChangePasswordRequired, clientCode);
 
@@ -798,11 +789,15 @@ namespace DMS_WebAPI.Utilities
                 //Set(item.Token, message, fingerPrint);
 
                 var logger = DmsResolver.Current.Get<ILogger>();
+                // Получаю информацию о браузере (она могла обновиться с момента предыдущего входа, например версия)
+                var message = HttpContext.Current.Request.Browser.Info();
+
+                context.UserFingerprint = item.Fingerprint;
 
                 context.LoginLogInfo = message;
                 context.LoginLogId = logger.Information(context, context.LoginLogInfo, (int)EnumObjects.System, (int)EnumSystemActions.Login, logDate: context.CreateDate, isCopyDate1: true);
 
-                if (!string.IsNullOrEmpty(fingerPrint))
+                if (!string.IsNullOrEmpty(context.UserFingerprint))
                     logger.DeleteSystemLogs(context, new FilterSystemLog
                     {
                         ObjectIDs = new List<int> { (int)EnumObjects.System },
@@ -810,7 +805,7 @@ namespace DMS_WebAPI.Utilities
                         LogLevels = new List<int> { (int)EnumLogTypes.Error },
                         ExecutorAgentIDs = new List<int> { context.CurrentAgentId },
                         LogDateFrom = DateTime.UtcNow.AddMinutes(-60),
-                        ObjectLog = $"\"FingerPrint\":\"{fingerPrint}\"",
+                        ObjectLog = $"\"FingerPrint\":\"{context.UserFingerprint}\"",
                     });
 
                 //SetUserPositions(item.Token,item.CurrentPositionsIdList.Split(',').Select(n => Convert.ToInt32(n)).ToList());
