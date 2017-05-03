@@ -1,25 +1,28 @@
 ﻿using System;
-using System.IO;
 using System.Web.Mvc;
 using BL.CrossCutting.DependencyInjection;
 using BL.Logic.DocumentCore.Interfaces;
+using BL.Logic.SystemServices.FileService;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Enums;
 using DMS_WebAPI.Utilities;
 
 namespace DMS_WebAPI.ControllersV3.System
 {
-    [global::System.Web.Http.Authorize]
-    public class ImageController : WebApiController
+    [Authorize]
+    [RoutePrefix(ApiPrefix.V3)]
+    public class ImageController : Controller
     {
         [HttpGet]
+        [Route("files/{clientId}/{fileType}/{fileId}")]
         public ActionResult GetFile(int clientId, int fileType, int fileId)
         {
             var context = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentFileService>();
+            var fileSrv = DmsResolver.Current.Get<IFileService>();
             var fType = (EnumDocumentFileType)fileType;
             FrontDocumentAttachedFile item;
-            string contentType;
+            
             switch (fType)
             {
                 case EnumDocumentFileType.UserFile:
@@ -36,20 +39,19 @@ namespace DMS_WebAPI.ControllersV3.System
             }
             
             string filename = item.Name+"."+item.Extension;
+            string contentType = fileSrv.GetMimetype(item.Extension);
+            byte[] filedata = Convert.FromBase64String(item.FileContent);
 
-            //byte[] filedata = fs.ToArray();
-            //string contentType = "application/vnd.ms-excel";
+            var cd = new global::System.Net.Mime.ContentDisposition
+            {
+                FileName = filename,
+                Inline = true,
+            };
 
-            //var cd = new System.Net.Mime.ContentDisposition
-            //{
-            //    FileName = filename,
-            //    Inline = true,
-            //};
+            Response.AppendHeader("Content-Disposition", cd.ToString());
 
-            //Response.AppendHeader("Content-Disposition", cd.ToString());
+            return File(filedata, contentType);
 
-            //return File(filedata, contentType);
-            return null;
         }
     }
 }

@@ -5,6 +5,7 @@ using BL.Database.FileWorker;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using System.ComponentModel;
 
 namespace BL.Logic.SystemServices.FileService
 {
@@ -17,6 +18,37 @@ namespace BL.Logic.SystemServices.FileService
         {
             _fileStore = fileStore;
             _dbProcess = dbProcess;
+        }
+
+        private string GetDescription(MimeTypes Band)
+        {
+            System.Reflection.FieldInfo oFieldInfo = Band.GetType().GetField(Band.ToString());
+            DescriptionAttribute[] attributes =
+                (DescriptionAttribute[]) oFieldInfo.GetCustomAttributes(typeof (DescriptionAttribute), false);
+
+            if (attributes.Length > 0)
+            {
+                return attributes[0].Description;
+            }
+
+            return Band.ToString();
+        }
+
+        public string GetMimetype(string fileExt)
+        {
+            if (string.IsNullOrEmpty(fileExt)) throw new ArgumentException();
+            try
+            {
+                var ext = fileExt.Replace(".", "").ToLower();
+                var mimeType = (MimeTypes)Enum.Parse(typeof(MimeTypes), ext);
+
+                string description = GetDescription(mimeType);
+                return description;
+            }
+            catch 
+            {
+                return "application/octet-stream";
+            }
         }
 
         public string GetFileUri(string serverUrl, IContext ctx, EnumDocumentFileType fileType, int id)
