@@ -420,6 +420,8 @@
     <Compile Include="SystemServices\AutoPlan\AutoPlanService.cs" />
     <Compile Include="SystemServices\AutoPlan\IAutoPlanService.cs" />
     <Compile Include="SystemServices\BaseSystemWorkerService.cs" />
+    <Compile Include="SystemServices\FileService\FileService.cs" />
+    <Compile Include="SystemServices\FileService\IFileService.cs" />
     <Compile Include="SystemServices\FullTextSearch\CaseInsensitiveWhitespaceAnalyzer.cs" />
     <Compile Include="SystemServices\FullTextSearch\FullTextIndexWorker.cs" />
     <Compile Include="SystemServices\FullTextSearch\FullTextSearchService.cs" />

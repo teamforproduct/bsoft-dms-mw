@@ -108,5 +108,9 @@ namespace BL.Model.DocumentCore.FrontModel
 		
         public string ExecutorPositionName { get; set; }
         public string ExecutorPositionExecutorAgentName { get; set; }
+
+        public string PdfFileLink { get; set; }
+        public string PreviewFileLink { get; set; }
+        public string FileLink { get; set; }
     }
 }

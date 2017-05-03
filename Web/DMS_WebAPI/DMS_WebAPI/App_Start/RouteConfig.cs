@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using System.Web.Routing;
 
 namespace DMS_WebAPI
@@ -16,8 +12,12 @@ namespace DMS_WebAPI
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
-            );
+                defaults: new {controller = "Home", action = "Index", id = UrlParameter.Optional});
+
+            //routes.MapRoute(
+            //    name: "GetFiles",
+            //    url: "/api/v3/image/files/{clientId:int}/{fileType:int}/{fileId:int}",
+            //    defaults: new {controller = "Image", action = "GetFile", clientId = UrlParameter.Optional, fileType = UrlParameter.Optional, fileId = UrlParameter.Optional});
         }
     }
 }
