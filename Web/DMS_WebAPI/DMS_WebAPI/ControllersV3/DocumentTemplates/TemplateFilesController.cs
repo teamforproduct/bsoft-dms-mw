@@ -83,13 +83,13 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Files)]
-        public async Task<IHttpActionResult> Post([FromUri] AddTemplateAttachedFile model)
+        public async Task<IHttpActionResult> Post([FromBody] AddTemplateAttachedFile model)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpItem = Action.Execute(context, EnumDocumentActions.AddTemplateAttachedFile, model);
                 return GetById(context, tmpItem);
-            }, HttpContext.Current.Request.Files[0]);
+            });
         }
 
         /// <summary>

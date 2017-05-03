@@ -116,7 +116,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Files)]
-        public async Task<IHttpActionResult> Post([FromUri]AddDocumentFile model)
+        public async Task<IHttpActionResult> Post([FromBody]AddDocumentFile model)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
@@ -132,7 +132,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
                 var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentFile, model, model.CurrentPositionId);
                 var res = new JsonResult(tmpItem, this);
                 return res;
-            }, HttpContext.Current.Request.Files[0]);
+            });
         }
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Files + "/AddUseMainNameFile")]
-        public async Task<IHttpActionResult> PostAddUseMainNameFile([FromUri]AddDocumentFile model)
+        public async Task<IHttpActionResult> PostAddUseMainNameFile([FromBody]AddDocumentFile model)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
@@ -150,7 +150,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
                 var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentFileUseMainNameFile, model, model.CurrentPositionId);
                 var res = new JsonResult(tmpItem, this);
                 return res;
-            }, HttpContext.Current.Request.Files[0]);
+            });
         }
 
         /// <summary>

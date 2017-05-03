@@ -17,6 +17,7 @@ using LinqKit;
 using BL.Model.Exception;
 using BL.Database.DBModel.Document;
 using BL.Model.Common;
+using EntityFramework.Extensions;
 
 namespace BL.Database.Documents
 {
@@ -351,28 +352,11 @@ namespace BL.Database.Documents
 
                 if (docFile.IsMainVersion)
                 {
-                    foreach (var docFileId in dbContext.DocumentFilesSet
-                                            .Where(x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument)
-                                            .Select(x => x.Id).ToList())
-                    {
-                        var file = new DocumentFiles
-                        {
-                            Id = docFileId,
-                            IsMainVersion = false
-                        };
-                        dbContext.SafeAttach(file);
-                        var entry = dbContext.Entry(file);
-                        entry.Property(x => x.IsMainVersion).IsModified = true;
-                    }
-
+                    dbContext.DocumentFilesSet.Where(x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument)
+                        .Update(x => new DocumentFiles { IsMainVersion = false });
                 }
-
                 var fl = ModelConverter.GetDbDocumentFile(docFile);
                 dbContext.DocumentFilesSet.Add(fl);
-                if (docFile.Events != null && docFile.Events.Any(x => x.Id == 0))
-                {
-                    dbContext.DocumentEventsSet.AddRange(ModelConverter.GetDbDocumentEvents(docFile.Events.Where(x => x.Id == 0)).ToList());
-                }
                 dbContext.SaveChanges();
                 docFile.Id = fl.Id;
                 CommonQueries.AddFullTextCacheInfo(ctx, fl.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
@@ -388,21 +372,9 @@ namespace BL.Database.Documents
             {
                 if (docFile.IsMainVersion)
                 {
-                    foreach (var docFileId in dbContext.DocumentFilesSet
-                              .Where(x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument && x.Id != docFile.Id)
-                              .Select(x => x.Id).ToList())
-                    {
-                        var file = new DocumentFiles
-                        {
-                            Id = docFileId,
-                            IsMainVersion = false,
-                        };
-                        dbContext.SafeAttach(file);
-                        var entryFile = dbContext.Entry(file);
-                        entryFile.Property(x => x.IsMainVersion).IsModified = true;
-                    }
+                    dbContext.DocumentFilesSet.Where(x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument && x.Id != docFile.Id)
+                        .Update(x => new DocumentFiles { IsMainVersion = false });
                 }
-
                 var fl = ModelConverter.GetDbDocumentFile(docFile);
                 dbContext.SafeAttach(fl);
                 var entry = dbContext.Entry(fl);
@@ -419,10 +391,10 @@ namespace BL.Database.Documents
                 entry.Property(x => x.IsMainVersion).IsModified = true;
                 //entry.Property(x => x.Date).IsModified = true;//we do not update that
                 dbContext.SaveChanges();
-                if (docFile.Events != null && docFile.Events.Any(x => x.Id == 0))
+                if (docFile.Event != null)
                 {
-                    var dbEvents = ModelConverter.GetDbDocumentEvents(docFile.Events.Where(x => x.Id == 0)).ToList();
-                    dbContext.DocumentEventsSet.AddRange(dbEvents);
+                    var dbEvent = ModelConverter.GetDbDocumentEvent(docFile.Event);
+                    dbContext.DocumentEventsSet.Add(dbEvent);
                     dbContext.SaveChanges();
                 }
                 CommonQueries.AddFullTextCacheInfo(ctx, fl.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
@@ -564,10 +536,10 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                if (docFile.Events != null && docFile.Events.Any(x => x.Id == 0))
+                if (docFile.Event != null)
                 {
-                    var dbEvents = ModelConverter.GetDbDocumentEvents(docFile.Events.Where(x => x.Id == 0)).ToList();
-                    dbContext.DocumentEventsSet.AddRange(dbEvents);
+                    var dbEvent = ModelConverter.GetDbDocumentEvent(docFile.Event);
+                    dbContext.DocumentEventsSet.Add(dbEvent);
                     dbContext.SaveChanges();
                 }
 

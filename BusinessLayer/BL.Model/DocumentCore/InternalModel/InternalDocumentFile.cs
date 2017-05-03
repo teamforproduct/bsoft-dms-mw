@@ -55,6 +55,10 @@ namespace BL.Model.DocumentCore.InternalModel
         public int? ExecutorPositionId { get; set; }
         public int ExecutorPositionExecutorAgentId { get; set; }
         public int? ExecutorPositionExecutorTypeId { get; set; }
-        public IEnumerable<InternalDocumentEvent> Events { get; set; }
+        /// <summary>
+        /// ИД события
+        /// </summary>
+        public int? EventId { get; set; }
+        public InternalDocumentEvent Event { get; set; }
     }
 }

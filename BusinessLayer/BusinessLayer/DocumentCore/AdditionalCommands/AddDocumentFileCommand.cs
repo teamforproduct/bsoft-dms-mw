@@ -138,7 +138,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 _fStore.SaveFile(_context, att);
                 if (_document.IsRegistered.HasValue)
                 {
-                    att.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, att.DocumentId,
+                    att.Event = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, att.DocumentId,
                         EnumEventTypes.AddDocumentFile, null, null, att.File.FileName, null, null,
                         att.Type != EnumFileTypes.Additional ? (int?) null : _document.ExecutorPositionId);
                 }
