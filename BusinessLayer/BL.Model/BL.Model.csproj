@@ -150,6 +150,7 @@
     <Compile Include="AdminCore\InternalModel\InternalAdminLanguage.cs" />
     <Compile Include="AdminCore\InternalModel\InternalRegistrationJournalPosition.cs" />
     <Compile Include="AdminCore\InternalModel\InternalSystemPermission.cs" />
+    <Compile Include="Common\BaseFile.cs" />
     <Compile Include="Common\BaseFilterCodeName.cs" />
     <Compile Include="Common\BaseFilterName.cs" />
     <Compile Include="Common\BaseFilterCodeNameIsActive.cs" />
@@ -465,7 +466,7 @@
     <Compile Include="DocumentCore\FrontModel\FrontDocumentPaperEvent.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentPaperList.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentTag.cs" />
-    <Compile Include="DocumentCore\FrontModel\FrontDocumentAttachedFile.cs" />
+    <Compile Include="DocumentCore\FrontModel\FrontDocumentFile.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentPaper.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentInfo.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontRegistrationFullNumber.cs" />
@@ -503,12 +504,12 @@
     <Compile Include="DocumentCore\InternalModel\InternalDocumentPaperList.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentTag.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalActionRecord.cs" />
-    <Compile Include="DocumentCore\InternalModel\InternalDocumentAttachedFile.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalDocumentFile.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentSavedFilter.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentPaper.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentTask.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentTaskAccess.cs" />
-    <Compile Include="DocumentCore\InternalModel\InternalTemplateAttachedFile.cs" />
+    <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentFile.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocument.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentRestrictedSendList.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateDocumentSendList.cs" />

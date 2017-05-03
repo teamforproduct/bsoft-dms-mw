@@ -1,13 +1,14 @@
 ﻿using System;
 using BL.Model.Enums;
 using BL.Model.Extensions;
+using BL.Model.Common;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
     /// <summary>
     /// Модель файла документа для отображения пользователю
     /// </summary>
-    public class FrontDocumentAttachedFile : FrontRegistrationFullNumber
+    public class FrontDocumentFile : FrontRegistrationFullNumber
     {
         /// <summary>
         /// ИД.
@@ -45,31 +46,33 @@ namespace BL.Model.DocumentCore.FrontModel
         /// </summary>
         public bool IsNotAllWorkedOut { get; set; }
         /// <summary>
+        /// Файл
+        /// </summary>
+        public BaseFile File { get; set; }
+        /// <summary>
         /// содержимое файла
         /// </summary>
-        public string FileContent { get; set; }
+        //public string FileContent { get; set; }
         /// <summary>
         /// Название файла без расширения
         /// </summary>
-        public string Name { get; set; }
+        //public string Name { get; set; }
         /// <summary>
         /// Расширение файла
         /// </summary>
-        public string Extension { get; set; }
+        //public string Extension { get; set; }
+        /// <summary>
+        /// Тип файла
+        /// </summary>
+        //public string FileType { get; set; }
+        /// <summary>
+        /// Размер файла
+        /// </summary>
+        //public long FileSize { get; set; }
         /// <summary>
         /// Описание файла
         /// </summary>
         public string Description { get; set; }
-        /// <summary>
-        /// Тип файла
-        /// </summary>
-        public string FileType { get; set; }
-
-        /// <summary>
-        /// Размер файла
-        /// </summary>
-        public long FileSize { get; set; }
-
         /// <summary>
         /// Хэш файла. для проверки целостности файла в хранилище
         /// </summary>

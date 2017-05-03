@@ -155,7 +155,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public int SendListStageMax { get; set; }
         public IEnumerable<InternalDocumentEvent> Events { get; set; }
         public IEnumerable<InternalDocumentAccess> Accesses { get; set; }
-        public IEnumerable<InternalDocumentAttachedFile> DocumentFiles { get; set; }
+        public IEnumerable<InternalDocumentFile> DocumentFiles { get; set; }
         public IEnumerable<InternalDocumentLink> Links { get; set; }
         public IEnumerable<InternalDocumentLink> OldLinks { get; set; }
         public IEnumerable<int> OldLinkSet { get; set; }

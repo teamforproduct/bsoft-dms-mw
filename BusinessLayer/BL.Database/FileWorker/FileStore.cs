@@ -20,28 +20,28 @@ namespace BL.Database.FileWorker
             return sett.GetFileStorePath();
         }
 
-        private string GetFullDocumentFilePath(FrontDocumentAttachedFile attFile)
+        private string GetFullDocumentFilePath(FrontDocumentFile attFile)
         {
             var path = GetStorePath();
             path = Path.Combine(path, SettingConstants.FILE_STORE_DOCUMENT_FOLDER, attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString(), attFile.Version.ToString());
             return path;
         }
 
-        private string GetFullDocumentFilePath(FrontTemplateAttachedFile attFile)
+        private string GetFullDocumentFilePath(FrontTemplateDocumentFile attFile)
         {
             var path = GetStorePath();
             path = Path.Combine(new[] { path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
             return path;
         }
 
-        private string GetFullDocumentFilePath(InternalDocumentAttachedFile attFile)
+        private string GetFullDocumentFilePath(InternalDocumentFile attFile)
         {
             var path = GetStorePath();
             path = Path.Combine(path, SettingConstants.FILE_STORE_DOCUMENT_FOLDER, attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString(), attFile.Version.ToString());
             return path;
         }
 
-        private string GetFullDocumentFilePath(InternalTemplateAttachedFile attFile)
+        private string GetFullDocumentFilePath(InternalTemplateDocumentFile attFile)
         {
             var path = GetStorePath();
             path = Path.Combine(new[] { path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
@@ -81,32 +81,32 @@ namespace BL.Database.FileWorker
             throw new UserFileNotExists();
         }
 
-        public string SaveFile(IContext ctx, InternalTemplateAttachedFile attFile, bool isOverride = true)
+        public string SaveFile(IContext ctx, InternalTemplateDocumentFile attFile, bool isOverride = true)
         {
             try
             {
-                var docFile = attFile as InternalDocumentAttachedFile;
+                var docFile = attFile as InternalDocumentFile;
                 var path = docFile == null ? GetFullDocumentFilePath(attFile) : GetFullDocumentFilePath(docFile);
 
                 if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
                 }
-                var localFilePath = path + "\\" + attFile.Name + "." + attFile.Extension;
+                var localFilePath = path + "\\" + attFile.File.Name + "." + attFile.File.Extension;
 
                 if (File.Exists(localFilePath) && isOverride)
                 {
                     File.Delete(localFilePath);
                 }
 
-                if (attFile.PostedFileData != null)
-                    attFile.PostedFileData.SaveAs(localFilePath);
-                else
-                    File.WriteAllBytes(localFilePath, attFile.FileData);
+                //if (attFile.PostedFileData != null)
+                //    attFile.PostedFileData.SaveAs(localFilePath);
+                //else
+                File.WriteAllBytes(localFilePath, attFile.File.FileContent);
 
                 FileInfo fileInfo = new FileInfo(localFilePath);
 
-                attFile.FileSize = fileInfo.Length;
+                attFile.File.FileSize = fileInfo.Length;
 
                 //File.WriteAllBytes(localFilePath, attFile.FileContent);
                 attFile.Hash = FileToSha512(localFilePath);
@@ -120,20 +120,20 @@ namespace BL.Database.FileWorker
             }
         }
 
-        public bool CreatePdfFile(IContext ctx, InternalTemplateAttachedFile attFile, bool isOverride = true)
+        public bool CreatePdfFile(IContext ctx, InternalTemplateDocumentFile attFile, bool isOverride = true)
         {
             try
             {
-                var docFile = attFile as InternalDocumentAttachedFile;
+                var docFile = attFile as InternalDocumentFile;
                 var path = docFile == null ? GetFullDocumentFilePath(attFile) : GetFullDocumentFilePath(docFile);
 
                 if (!Directory.Exists(path))
                 {
                     return false;
                 }
-                var localFilePath = path + "\\" + attFile.Name + "." + attFile.Extension;
-                var pdfFileName = path + "\\" + attFile.Name + ".pdf";
-                var previewFile = path + "\\" + attFile.Name + ".jpg";
+                var localFilePath = path + "\\" + attFile.File.Name + "." + attFile.File.Extension;
+                var pdfFileName = path + "\\" + attFile.File.Name + ".pdf";
+                var previewFile = path + "\\" + attFile.File.Name + ".jpg";
 
                 if (!PdfGenerator.IsAcceptedFileType(localFilePath)) return false;
 
@@ -165,19 +165,19 @@ namespace BL.Database.FileWorker
             }
         }
 
-        public bool RenameFile(IContext ctx, InternalTemplateAttachedFile attFile, string newName)
+        public bool RenameFile(IContext ctx, InternalTemplateDocumentFile attFile, string newName)
         {
             try
             {
-                var docFile = attFile as InternalDocumentAttachedFile;
+                var docFile = attFile as InternalDocumentFile;
                 var path = docFile == null ? GetFullDocumentFilePath(attFile) : GetFullDocumentFilePath(docFile);
 
                 if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
                 }
-                var localFilePath = path + "\\" + attFile.Name + "." + attFile.Extension;
-                var localFilePathNew = path + "\\" + newName + "." + attFile.Extension;
+                var localFilePath = path + "\\" + attFile.File.Name + "." + attFile.File.Extension;
+                var localFilePathNew = path + "\\" + newName + "." + attFile.File.Extension;
 
                 if (File.Exists(localFilePath))
                 {
@@ -194,10 +194,10 @@ namespace BL.Database.FileWorker
                 if (attFile.PdfCreated)
                 {
 
-                    var pdfFileName = path + "\\" + attFile.Name + ".pdf";
+                    var pdfFileName = path + "\\" + attFile.File.Name + ".pdf";
                     var pdfFilePathNew = path + "\\" + newName + ".pdf";
 
-                    var previewFileName = path + "\\" + attFile.Name + ".jpg";
+                    var previewFileName = path + "\\" + attFile.File.Name + ".jpg";
                     var previewFilePathNew = path + "\\" + newName + ".jpg";
 
                     if (File.Exists(pdfFileName))
@@ -237,13 +237,13 @@ namespace BL.Database.FileWorker
             }
         }
 
-        public bool IsFileCorrect(IContext ctx, InternalDocumentAttachedFile docFile)
+        public bool IsFileCorrect(IContext ctx, InternalDocumentFile docFile)
         {
             try
             {
                 var path = GetFullDocumentFilePath(docFile);
 
-                var localFilePath = path + "\\" + docFile.Name + "." + docFile.Extension;
+                var localFilePath = path + "\\" + docFile.File.Name + "." + docFile.File.Extension;
 
                 if (!File.Exists(localFilePath))
                     return false;
@@ -260,29 +260,27 @@ namespace BL.Database.FileWorker
             }
         }
 
-        public byte[] GetFile(IContext ctx, FrontTemplateAttachedFile attFile, EnumDocumentFileType fileType = EnumDocumentFileType.UserFile)
+        public byte[] GetFile(IContext ctx, FrontTemplateDocumentFile attFile, EnumDocumentFileType fileType = EnumDocumentFileType.UserFile)
         {
             try
             {
-                var path = GetFullDocumentFilePath( attFile);
+                var path = GetFullDocumentFilePath(attFile);
 
-                var localFilePath = GetFilePath(path, attFile.Name, attFile.Extension, fileType);
+                var localFilePath = GetFilePath(path, attFile.File.Name, attFile.File.Extension, fileType);
 
 
                 if (fileType != EnumDocumentFileType.UserFile && !File.Exists(localFilePath)) // если просят ПДФ или превью а оно не создано
                 {
-                    var doc = new InternalTemplateAttachedFile(attFile);
+                    var doc = new InternalTemplateDocumentFile(attFile);
                     if (!CreatePdfFile(ctx, doc))
                     {
                         throw new UserPdfFileNotExists();
                     }
                 }
 
-                var fileContent = File.ReadAllBytes(localFilePath);
+                attFile.File.FileContent = File.ReadAllBytes(localFilePath);
 
-                attFile.FileContent = Convert.ToBase64String(fileContent);
-
-                return fileContent;
+                return attFile.File.FileContent;
             }
             catch (UserFileNotExists)
             {
@@ -297,17 +295,17 @@ namespace BL.Database.FileWorker
             }
         }
 
-        public byte[] GetFile(IContext ctx, FrontDocumentAttachedFile attFile, EnumDocumentFileType fileType = EnumDocumentFileType.UserFile)
+        public byte[] GetFile(IContext ctx, FrontDocumentFile attFile, EnumDocumentFileType fileType = EnumDocumentFileType.UserFile)
         {
             try
             {
                 var path = GetFullDocumentFilePath(attFile);
 
-                var localFilePath = GetFilePath(path, attFile.Name, attFile.Extension, fileType);
+                var localFilePath = GetFilePath(path, attFile.File.Name, attFile.File.Extension, fileType);
 
                 if (fileType != EnumDocumentFileType.UserFile && !File.Exists(localFilePath)) // если просят ПДФ или превью а оно не создано
                 {
-                    var doc = new InternalDocumentAttachedFile(attFile);
+                    var doc = new InternalDocumentFile(attFile);
                     if (!CreatePdfFile(ctx, doc))
                     {
                         throw new UserPdfFileNotExists();
@@ -318,7 +316,7 @@ namespace BL.Database.FileWorker
 
                 if (fileType != EnumDocumentFileType.UserFile) return fileContent;
 
-                attFile.FileContent = Convert.ToBase64String(fileContent);
+                attFile.File.FileContent = fileContent;
 
                 attFile.WasChangedExternal = attFile.Hash != FileToSha512(localFilePath);
 
@@ -342,18 +340,18 @@ namespace BL.Database.FileWorker
             }
         }
 
-        public byte[] GetFile(IContext ctx, InternalTemplateAttachedFile attFile, EnumDocumentFileType fileType = EnumDocumentFileType.UserFile)
+        public byte[] GetFile(IContext ctx, InternalTemplateDocumentFile attFile, EnumDocumentFileType fileType = EnumDocumentFileType.UserFile)
         {
             try
             {
-                var docFile = attFile as InternalDocumentAttachedFile;
+                var docFile = attFile as InternalDocumentFile;
                 var path = (docFile == null) ? GetFullDocumentFilePath(attFile) : GetFullDocumentFilePath(docFile);
 
-                var localFilePath = GetFilePath(path, attFile.Name, attFile.Extension, fileType);
+                var localFilePath = GetFilePath(path, attFile.File.Name, attFile.File.Extension, fileType);
 
                 var fileContent = File.ReadAllBytes(localFilePath);
 
-                attFile.FileContent = Convert.ToBase64String(fileContent);
+                attFile.File.FileContent = fileContent;
 
                 if (docFile == null || fileType != EnumDocumentFileType.UserFile) return fileContent;
 
@@ -430,17 +428,17 @@ namespace BL.Database.FileWorker
         /// </summary>
         /// <param name="ctx"></param>
         /// <param name="attFile"></param>
-        public void DeletePdfCopy(IContext ctx, InternalTemplateAttachedFile attFile)
+        public void DeletePdfCopy(IContext ctx, InternalTemplateDocumentFile attFile)
         {
             try
             {
-                var docFile = attFile as InternalDocumentAttachedFile;
+                var docFile = attFile as InternalDocumentFile;
                 var path = docFile == null
                     ? GetFullDocumentFilePath(attFile)
                     : GetFullDocumentFilePath(docFile);
 
-                var localPdfFilePath = path + "\\" + attFile.Name + ".pdf";
-                var localPreviewFilePathNew = path + "\\" + attFile.Name + ".jpg";
+                var localPdfFilePath = path + "\\" + attFile.File.Name + ".pdf";
+                var localPreviewFilePathNew = path + "\\" + attFile.File.Name + ".jpg";
 
                 if (File.Exists(localPdfFilePath))
                 {
@@ -465,12 +463,12 @@ namespace BL.Database.FileWorker
         /// </summary>
         /// <param name="ctx"></param>
         /// <param name="attFile"></param>
-        public void DeleteFile(IContext ctx, InternalTemplateAttachedFile attFile)
+        public void DeleteFile(IContext ctx, InternalTemplateDocumentFile attFile)
         {
             try
             {
                 var path = GetStorePath();
-                path = Path.Combine(new[] { path, ((attFile is InternalDocumentAttachedFile) ? SettingConstants.FILE_STORE_DOCUMENT_FOLDER : SettingConstants.FILE_STORE_TEMPLATE_FOLDER), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
+                path = Path.Combine(new[] { path, ((attFile is InternalDocumentFile) ? SettingConstants.FILE_STORE_DOCUMENT_FOLDER : SettingConstants.FILE_STORE_TEMPLATE_FOLDER), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
 
                 Directory.Delete(path, true);
             }
@@ -487,7 +485,7 @@ namespace BL.Database.FileWorker
         /// </summary>
         /// <param name="ctx"></param>
         /// <param name="attFile"></param>
-        public void DeleteFileVersion(IContext ctx, InternalDocumentAttachedFile attFile)
+        public void DeleteFileVersion(IContext ctx, InternalDocumentFile attFile)
         {
             try
             {
@@ -502,17 +500,17 @@ namespace BL.Database.FileWorker
             }
         }
 
-        public void CopyFile(IContext ctx, InternalTemplateAttachedFile fromTempl, InternalTemplateAttachedFile toTempl)
+        public void CopyFile(IContext ctx, InternalTemplateDocumentFile fromTempl, InternalTemplateDocumentFile toTempl)
         {
             try
             {
-                var fromDoc = fromTempl as InternalDocumentAttachedFile;
-                var toDoc = toTempl as InternalDocumentAttachedFile;
+                var fromDoc = fromTempl as InternalDocumentFile;
+                var toDoc = toTempl as InternalDocumentFile;
                 var fromPath = (fromDoc == null) ? GetFullDocumentFilePath(fromTempl) : GetFullDocumentFilePath(fromDoc);
                 var toPath = (toDoc == null) ? GetFullDocumentFilePath(toTempl) : GetFullDocumentFilePath(toDoc);
 
-                var localFromPath = fromPath + "\\" + fromTempl.Name + "." + fromTempl.Extension;
-                var localToPath = toPath + "\\" + toTempl.Name + "." + toTempl.Extension;
+                var localFromPath = fromPath + "\\" + fromTempl.File.Name + "." + fromTempl.File.Extension;
+                var localToPath = toPath + "\\" + toTempl.File.Name + "." + toTempl.File.Extension;
 
                 if (!File.Exists(localFromPath))
                 {
@@ -526,9 +524,9 @@ namespace BL.Database.FileWorker
 
                 foreach (var fl in Directory.GetFiles(fromPath))
                 {
-                    if (Path.GetFileNameWithoutExtension(fl) == fromTempl.Name)
+                    if (Path.GetFileNameWithoutExtension(fl) == fromTempl.File.Name)
                     {
-                        File.Copy(fl, Path.Combine(toPath, toTempl.Name + Path.GetExtension(fl)), true);
+                        File.Copy(fl, Path.Combine(toPath, toTempl.File.Name + Path.GetExtension(fl)), true);
                     }
                 }
 

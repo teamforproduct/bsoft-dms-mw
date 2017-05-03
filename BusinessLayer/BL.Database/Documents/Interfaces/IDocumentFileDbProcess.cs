@@ -9,21 +9,21 @@ namespace BL.Database.Documents.Interfaces
 {
     public interface IDocumentFileDbProcess
     {
-        IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterBase filter, UIPaging paging = null);
-        FrontDocumentAttachedFile GetDocumentFileVersion(IContext ctx, int id);
+        IEnumerable<FrontDocumentFile> GetDocumentFiles(IContext ctx, FilterBase filter, UIPaging paging = null);
+        FrontDocumentFile GetDocumentFileVersion(IContext ctx, int id);
         int CheckFileForDocument(IContext ctx, int documentId, string fileName, string fileExt);
         InternalDocument AddDocumentFilePrepare(IContext ctx, int documentId);
-        int AddNewFileOrVersion(IContext ctx, InternalDocumentAttachedFile docFile);
-        void UpdateFileOrVersion(IContext ctx, InternalDocumentAttachedFile docFile);
-        void UpdateFilePdfView(IContext ctx, InternalDocumentAttachedFile docFile);
-        IEnumerable<InternalDocumentAttachedFile> GetOldPdfForAttachedFiles(IContext ctx, int pdfAge);
-        void RenameFile(IContext ctx, IEnumerable<InternalDocumentAttachedFile> docFiles, IEnumerable<InternalDocumentEvent> docFileEvents);
+        int AddNewFileOrVersion(IContext ctx, InternalDocumentFile docFile);
+        void UpdateFileOrVersion(IContext ctx, InternalDocumentFile docFile);
+        void UpdateFilePdfView(IContext ctx, InternalDocumentFile docFile);
+        IEnumerable<InternalDocumentFile> GetOldPdfForAttachedFiles(IContext ctx, int pdfAge);
+        void RenameFile(IContext ctx, IEnumerable<InternalDocumentFile> docFiles, IEnumerable<InternalDocumentEvent> docFileEvents);
         InternalDocument ModifyDocumentFilePrepare(IContext ctx, int documentId, int orderNumber, int version);
         InternalDocument RenameDocumentFilePrepare(IContext ctx, int documentId, int orderNumber);
         InternalDocument DeleteDocumentFilePrepare(IContext ctx, int id);
-        void DeleteAttachedFile(IContext ctx, InternalDocumentAttachedFile docFile);
+        void DeleteAttachedFile(IContext ctx, InternalDocumentFile docFile);
         int GetNextFileOrderNumber(IContext ctx, int documentId);
         int GetFileNextVersion(IContext ctx, int documentId, int fileOrder);
-        InternalDocumentAttachedFile GetInternalAttachedFile(IContext ctx, int fileId);
+        InternalDocumentFile GetInternalAttachedFile(IContext ctx, int fileId);
     }
 }

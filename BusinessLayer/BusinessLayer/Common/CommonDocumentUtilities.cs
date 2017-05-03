@@ -621,19 +621,29 @@ namespace BL.Logic.Common
             return res;
         }
 
-        public static InternalTemplateAttachedFile GetNewTemplateAttachedFile(IContext context, InternalTemplateAttachedFile src, int? newOrderNumber = null)
+        public static InternalTemplateDocumentFile GetNewTemplateDocumentFile(IContext context, int entityTypeId, AddTemplateAttachedFile model, BaseFile file)
         {
-            var res = new InternalTemplateAttachedFile
+            var res = new InternalTemplateDocumentFile
+            {
+                ClientId = context.Client.Id,
+                EntityTypeId = entityTypeId,
+                DocumentId = model.DocumentId,
+                Type = model.Type,
+                Description = model.Description,
+                File = file,
+            };
+            SetLastChange(context, res);
+            return res;
+        }
+        public static InternalTemplateDocumentFile GetNewTemplateDocumentFile(IContext context, InternalTemplateDocumentFile src, int? newOrderNumber = null)
+        {
+            var res = new InternalTemplateDocumentFile
             {
                 ClientId = context.Client.Id,
                 EntityTypeId = src.EntityTypeId,
                 DocumentId = src.DocumentId,
-                Extension = src.Extension,
-                Name = src.Name,
-                FileType = src.FileType,
-                FileSize = src.FileSize,
+                File = src.File,
                 Type = src.Type,
-                FileContent = src.FileContent,
                 OrderInDocument = newOrderNumber ?? src.OrderInDocument,
                 Hash = src.Hash,
                 Description = src.Description,
@@ -643,23 +653,45 @@ namespace BL.Logic.Common
             SetLastChange(context, res);
             return res;
         }
-
-        public static InternalDocumentAttachedFile GetNewDocumentAttachedFile(IContext context, InternalDocumentAttachedFile src, int? newOrderNumber = null, int? newVersion = null)
+        public static InternalDocumentFile GetNewDocumentFile(IContext context, int entityTypeId, int documentExecutorPositionId, AddDocumentFile model, BaseFile file, InternalDictionaryPositionExecutorForDocument executorPositionExecutor)
         {
-            var res = new InternalDocumentAttachedFile
+            var res = new InternalDocumentFile
+            {
+                ClientId = context.Client.Id,
+                EntityTypeId = (int)EnumEntytiTypes.Document,
+                DocumentId = model.DocumentId,
+                Date = DateTime.UtcNow,
+                Type = model.Type,
+                IsMainVersion =
+                        model.Type == EnumFileTypes.Additional ||
+                        (model.Type == EnumFileTypes.Main && documentExecutorPositionId == context.CurrentPositionId) ||
+                        context.IsAdmin,
+                File = file,
+                Description = model.Description,
+                IsWorkedOut =
+                        (model.Type == EnumFileTypes.Main && documentExecutorPositionId != context.CurrentPositionId)
+                            ? false
+                            : (bool?)null,
+                WasChangedExternal = false,
+                ExecutorPositionId = context.CurrentPositionId,
+                ExecutorPositionExecutorAgentId = executorPositionExecutor.ExecutorAgentId.Value,
+                ExecutorPositionExecutorTypeId = executorPositionExecutor.ExecutorTypeId,
+            };
+            SetLastChange(context, res);
+            return res;
+        }
+        public static InternalDocumentFile GetNewDocumentFile(IContext context, InternalDocumentFile src, int? newOrderNumber = null, int? newVersion = null)
+        {
+            var res = new InternalDocumentFile
             {
                 ClientId = context.Client.Id,
                 EntityTypeId = src.EntityTypeId,
-                Extension = src.Extension,
-                Name = src.Name,
-                FileType = src.FileType,
-                FileSize = src.FileSize,
+                File = src.File,
                 Type = src.Type,
                 Description = src.Description,
                 IsMainVersion = true,
                 IsWorkedOut = src.IsWorkedOut,
                 IsDeleted = src.IsDeleted,
-                FileContent = src.FileContent,
                 Hash = src.Hash,
                 OrderInDocument = newOrderNumber ?? src.OrderInDocument,
                 Date = DateTime.UtcNow,

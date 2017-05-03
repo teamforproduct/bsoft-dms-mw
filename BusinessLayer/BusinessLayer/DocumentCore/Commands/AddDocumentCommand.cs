@@ -86,7 +86,7 @@ namespace BL.Logic.DocumentCore.Commands
             Document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, EnumAccessLevels.PersonallyAndIOAndReferents, Document.Events.First().Accesses);
 
             // prepare file list in Document. It will save it with document in DB
-            var toCopy = new Dictionary<InternalDocumentAttachedFile, InternalTemplateAttachedFile>();
+            var toCopy = new Dictionary<InternalDocumentFile, InternalTemplateDocumentFile>();
             var newOrdNum = 1;
             _document.DocumentFiles.ToList().ForEach(x =>
             {
@@ -94,9 +94,9 @@ namespace BL.Logic.DocumentCore.Commands
                 x.ExecutorPositionExecutorAgentId = _document.ExecutorPositionExecutorAgentId;
                 x.ExecutorPositionExecutorTypeId = _document.ExecutorPositionExecutorTypeId;
 
-                var fileToCopy = CommonDocumentUtilities.GetNewTemplateAttachedFile(_context,x);
+                var fileToCopy = CommonDocumentUtilities.GetNewTemplateDocumentFile(_context,x);
 
-                var newDoc = CommonDocumentUtilities.GetNewDocumentAttachedFile(_context, x, newOrdNum, 1);
+                var newDoc = CommonDocumentUtilities.GetNewDocumentFile(_context, x, newOrdNum, 1);
                 newDoc.LastPdfAccess = DateTime.Now;
                 newOrdNum++;
                 toCopy.Add(newDoc, fileToCopy);

@@ -25,6 +25,7 @@ using BL.Model.DictionaryCore.FrontModel;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.DependencyInjection;
 using System.Text.RegularExpressions;
+using BL.Model.Common;
 
 namespace BL.Database.Documents
 {
@@ -1188,20 +1189,23 @@ namespace BL.Database.Documents
                 doc.DocumentFiles =
                     dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.Client.Id)
                         .Where(x => x.DocumentId == templateDocumentId)
-                        .Select(x => new InternalDocumentAttachedFile
+                        .Select(x => new InternalDocumentFile
                         {
                             Id = x.Id,
                             ClientId = doc.ClientId,
                             EntityTypeId = doc.EntityTypeId,
                             DocumentId = x.DocumentId,
-                            Extension = x.Extention,
-                            Name = x.Name,
-                            FileType = x.FileType,
-                            FileSize = x.FileSize,
                             OrderInDocument = x.OrderNumber,
                             Type = (EnumFileTypes)x.TypeId,
                             Hash = x.Hash,
                             Description = x.Description,
+                            File = new BaseFile
+                            {
+                                Extension = x.Extention,
+                                Name = x.Name,
+                                FileType = x.FileType,
+                                FileSize = x.FileSize,
+                            }
                         }).ToList();
                 doc.Papers =
                     dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.Client.Id)
@@ -1879,7 +1883,7 @@ namespace BL.Database.Documents
                         x =>
                             x.DocumentId == model.DocumentId && x.ExecutorPositionId == doc.ExecutorPositionId &&
                             x.TypeId == (int)EnumFileTypes.Main) // !x.IsAdditional)
-                    .Select(x => new InternalDocumentAttachedFile
+                    .Select(x => new InternalDocumentFile
                     {
                         Id = x.Id,
                         ClientId = x.ClientId,
@@ -1928,7 +1932,7 @@ namespace BL.Database.Documents
                         x =>
                             x.DocumentId == model.DocumentId && x.ExecutorPositionId == doc.ExecutorPositionId &&
                             x.TypeId == (int)EnumFileTypes.Main) //!x.IsAdditional)
-                    .Select(x => new InternalDocumentAttachedFile
+                    .Select(x => new InternalDocumentFile
                     {
                         Id = x.Id,
                         ClientId = x.ClientId,

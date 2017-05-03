@@ -427,9 +427,9 @@ namespace DMS_WebAPI.Utilities
             if (model.ImageId.HasValue)
             {
                 var avaFile = tmpStore.GetStoreObject(model.ImageId.Value);
-                if (avaFile is string)
+                if (avaFile is BaseFile)
                 {
-                    model.PostedFileData = avaFile as string;
+                    model.PostedFileData = Convert.ToBase64String((avaFile as BaseFile).FileContent);
                 }
             }
 

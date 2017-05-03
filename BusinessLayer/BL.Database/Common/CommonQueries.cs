@@ -35,6 +35,7 @@ using BL.Model.Reports.FrontModel;
 using System.Globalization;
 using BL.Database.DBModel.Admin;
 using BL.CrossCutting.Helpers;
+using BL.Model.Common;
 
 namespace BL.Database.Common
 {
@@ -1024,36 +1025,36 @@ namespace BL.Database.Common
             return qry;
         }
 
-        public static IEnumerable<InternalDocumentAttachedFile> GetInternalDocumentFiles(IContext context, int documentId)
+        public static IEnumerable<InternalDocumentFile> GetInternalDocumentFiles(IContext context, int documentId)
         {
             var sq = GetDocumentFileQuery(context, new FilterDocumentFile { DocumentId = new List<int> { documentId } });
 
             return
-                sq.Select(x => new InternalDocumentAttachedFile
+                sq.Select(x => new InternalDocumentFile
                 {
                     Id = x.Id,
                     ClientId = x.ClientId,
                     EntityTypeId = x.EntityTypeId,
                     Date = x.Date,
                     DocumentId = x.DocumentId,
-                    Extension = x.Extension,
-                    FileContent = x.Content,
-                    FileType = x.FileType,
-                    FileSize = x.FileSize,
                     Type = (EnumFileTypes)x.TypeId,
-
                     IsMainVersion = x.IsMainVersion,
                     Description = x.Description,
                     IsDeleted = x.IsDeleted,
                     IsWorkedOut = x.IsWorkedOut,
-
                     Hash = x.Hash,
                     LastChangeDate = x.LastChangeDate,
                     LastChangeUserId = x.LastChangeUserId,
-                    Name = x.Name,
                     OrderInDocument = x.OrderNumber,
                     Version = x.Version,
-                    WasChangedExternal = false
+                    WasChangedExternal = false,
+                    File = new BaseFile
+                    {
+                        Extension = x.Extension,
+                        FileType = x.FileType,
+                        FileSize = x.FileSize,
+                        Name = x.Name,
+                    }
                 }).ToList();
         }
         #endregion
@@ -2695,10 +2696,10 @@ namespace BL.Database.Common
                 foreach (var docFile in doc.DocumentFiles.OrderBy(x => x.Id))
                 {
                     stringDocument.Append(docFile.Id);
-                    stringDocument.Append(docFile.FileSize);
+                    stringDocument.Append(docFile.File.FileSize);
                     stringDocument.Append(docFile.LastChangeDate);
-                    stringDocument.Append(docFile.Extension);
-                    stringDocument.Append(docFile.Name);
+                    stringDocument.Append(docFile.File.Extension);
+                    stringDocument.Append(docFile.File.Name);
                     if (isFull)
                         stringDocument.Append(docFile.Hash);
                 }
@@ -2765,19 +2766,23 @@ namespace BL.Database.Common
                 {
                     foreach (var file in doc.DocumentFiles.Where(x => x.IsMainVersion && x.Type != EnumFileTypes.SubscribePdf))
                     {
-                        var fileBytes = fileStore.GetFile(context, new InternalDocumentAttachedFile
+                        var fileBytes = fileStore.GetFile(context, new InternalDocumentFile
                         {
                             ClientId = file.ClientId,
                             EntityTypeId = file.EntityTypeId,
                             DocumentId = file.DocumentId,
                             OrderInDocument = file.OrderInDocument,
                             Version = file.Version,
-                            Name = file.Name,
-                            Extension = file.Extension,
-                            Hash = file.Hash
+                            Hash = file.Hash,
+                            File = new BaseFile
+                            {
+                                Name = file.File.Name,
+                                Extension = file.File.Extension,
+                            }
+
                         });
 
-                        PdfFileSpecification pfs = PdfFileSpecification.FileEmbedded(stamper.Writer, null, $"{file.Name}.{file.Extension}", fileBytes);
+                        PdfFileSpecification pfs = PdfFileSpecification.FileEmbedded(stamper.Writer, null, $"{file.File.Name}.{file.File.Extension}", fileBytes);
 
                         stamper.AddFileAttachment(file.Description, pfs);
                     }
@@ -2812,30 +2817,31 @@ namespace BL.Database.Common
             if (executorPositionExecutorAgentId == 0)
                 executorPositionExecutorAgentId = context.CurrentAgentId;
 
-            var att = new InternalDocumentAttachedFile
+            var att = new InternalDocumentFile
             {
                 DocumentId = doc.Id,
                 ClientId = doc.ClientId,
                 EntityTypeId = doc.EntityTypeId,
                 Date = DateTime.UtcNow,
-                PostedFileData = null,
-                FileData = pdf.FileContent,
                 Type = EnumFileTypes.SubscribePdf,
                 IsMainVersion = true,
-                FileType = "",
-                Name = $"{doc.Id}",
-                Extension = "pdf",
                 Description = string.Empty,
                 IsWorkedOut = (bool?)null,
-
                 WasChangedExternal = false,
                 ExecutorPositionId = positionId,
                 ExecutorPositionExecutorAgentId = executorPositionExecutorAgentId,
+                File = new BaseFile
+                {
+                    FileType = "",
+                    Name = $"{doc.Id}",
+                    Extension = "pdf",
+                    FileContent = pdf.FileContent,
+                }
             };
 
             var operationDb = DmsResolver.Current.Get<IDocumentFileDbProcess>();
 
-            var ordInDoc = operationDb.CheckFileForDocument(context, att.DocumentId, att.Name, att.Extension);
+            var ordInDoc = operationDb.CheckFileForDocument(context, att.DocumentId, att.File.Name, att.File.Extension);
 
             FileLogger.AppendTextToFile(DateTime.Now + " GetDocumentCertificateSignPdf CheckFileForDocument " + ordInDoc.ToString(), @"C:\TEMPLOGS\sign.log");
 

@@ -35,10 +35,10 @@ namespace BL.Logic.DocumentCore
         IEnumerable<FrontTemplateDocumentPaper> GetTemplateDocumentPapers(IContext context, FilterTemplateDocumentPaper filter);
         FrontTemplateDocumentPaper GetTemplateDocumentPaper(IContext context, int id);
 
-        IEnumerable<FrontTemplateAttachedFile> GetTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter);
-        FrontTemplateAttachedFile GetTemplateAttachedFile(IContext ctx, int id);
-        FrontTemplateAttachedFile GetTemplateAttachedFilePdf(IContext ctx, int id);
-        FrontTemplateAttachedFile GetTemplateAttachedFilePreview(IContext ctx, int id);
+        IEnumerable<FrontTemplateDocumentFile> GetTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter);
+        FrontTemplateDocumentFile GetTemplateAttachedFile(IContext ctx, int id);
+        FrontTemplateDocumentFile GetTemplateAttachedFilePdf(IContext ctx, int id);
+        FrontTemplateDocumentFile GetTemplateAttachedFilePreview(IContext ctx, int id);
 
     }
 }

@@ -2,6 +2,7 @@
 using BL.CrossCutting.Interfaces;
 using BL.Logic.DocumentCore;
 using BL.Logic.DocumentCore.Interfaces;
+using BL.Logic.SystemServices.TempStorage;
 using BL.Model.Common;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
@@ -43,7 +44,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpGet]
         [Route("{Id:int}/" + Features.Files)]
-        [ResponseType(typeof (List<FrontTemplateAttachedFile>))]
+        [ResponseType(typeof (List<FrontTemplateDocumentFile>))]
         public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterTemplateAttachedFile filter)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
@@ -66,7 +67,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Files + "/{Id:int}")]
-        [ResponseType(typeof (FrontTemplateAttachedFile))]
+        [ResponseType(typeof (FrontTemplateDocumentFile))]
         public async Task<IHttpActionResult> Get(int Id)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
@@ -82,18 +83,13 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Files)]
-        public async Task<IHttpActionResult> Post([FromUri] AddTemplateAttachedFile model)
+        public async Task<IHttpActionResult> Post([FromBody] AddTemplateAttachedFile model)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var file = (HttpPostedFile) param;
-                model.PostedFileData = file;
-                model.FileName = file.FileName;
-                model.FileType = file.ContentType;
-
                 var tmpItem = Action.Execute(context, EnumDocumentActions.AddTemplateAttachedFile, model);
                 return GetById(context, tmpItem);
-            }, HttpContext.Current.Request.Files[0]);
+            });
         }
 
         /// <summary>
@@ -116,7 +112,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
             {
                 var tmpService = DmsResolver.Current.Get<IDocumentService>();
                 var tmpItem =
-                    (FrontTemplateAttachedFile)
+                    (FrontTemplateDocumentFile)
                         tmpService.ExecuteAction(EnumDocumentActions.ModifyTemplateAttachedFile, context, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;

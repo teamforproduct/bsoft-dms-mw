@@ -78,16 +78,15 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override object Execute()
         {
-            var oldName = _document.DocumentFiles.First().Name;
-            var extension = _document.DocumentFiles.First().Extension;
+            var oldName = _document.DocumentFiles.First().File.Name;
+            var extension = _document.DocumentFiles.First().File.Extension;
 
             Model.FileName = Path.GetFileNameWithoutExtension(Model.FileName);
 
             foreach (var file in _document.DocumentFiles)
             {
                 _fStore.RenameFile(_context, file, Model.FileName);
-
-                file.Name = Model.FileName;
+                file.File.Name = Model.FileName;
                 CommonDocumentUtilities.SetLastChange(_context, file);
             }
 

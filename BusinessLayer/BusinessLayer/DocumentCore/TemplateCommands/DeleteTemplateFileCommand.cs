@@ -14,7 +14,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
     {
         private readonly ITemplateDocumentsDbProcess _operationDb;
         private readonly IFileStore _fStore;
-        InternalTemplateAttachedFile _docFile;
+        InternalTemplateDocumentFile _docFile;
 
         public DeleteTemplateFileCommand(ITemplateDocumentsDbProcess operationDb, IFileStore fStore)
         {

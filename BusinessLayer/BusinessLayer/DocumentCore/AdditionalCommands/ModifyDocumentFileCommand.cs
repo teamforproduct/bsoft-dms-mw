@@ -17,7 +17,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         private readonly IDocumentFileDbProcess _operationDb;
         private readonly IFileStore _fStore;
 
-        private InternalDocumentAttachedFile _file;
+        private InternalDocumentFile _file;
 
         public ModifyDocumentFileCommand(IDocumentFileDbProcess operationDb, IFileStore fStore)
         {

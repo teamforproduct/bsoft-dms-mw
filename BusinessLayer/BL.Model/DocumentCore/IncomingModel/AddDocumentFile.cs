@@ -1,4 +1,5 @@
-﻿using BL.Model.Enums;
+﻿using BL.Model.Common;
+using BL.Model.Enums;
 using BL.Model.Users;
 using System.Runtime.Serialization;
 using System.Web;
@@ -29,33 +30,42 @@ namespace BL.Model.DocumentCore.IncomingModel
         [IgnoreDataMember]
         public bool IsUseMainNameFile { get; set; }
         
-        /// <summary>
-        /// Имя файла.
-        /// </summary>
-        [IgnoreDataMember]
-        public string FileName { get; set; }
+        ///// <summary>
+        ///// Имя файла.
+        ///// </summary>
+        //[IgnoreDataMember]
+        //public string FileName { get; set; }
         
-        /// <summary>
-        /// Тип файла.
-        /// </summary>
-        [IgnoreDataMember]
-        public string FileType { get; set; }
+        ///// <summary>
+        ///// Тип файла.
+        ///// </summary>
+        //[IgnoreDataMember]
+        //public string FileType { get; set; }
         
         /// <summary>
         /// Описание файла
         /// </summary>
         public string Description { get; set; }
         
-        /// <summary>
-        /// Размер файла
-        /// </summary>
-        [IgnoreDataMember]
-        public long FileSize { get; set; }
+        ///// <summary>
+        ///// Размер файла
+        ///// </summary>
+        //[IgnoreDataMember]
+        //public long FileSize { get; set; }
 
+        ///// <summary>
+        ///// Данные файла
+        ///// </summary>
+        //[IgnoreDataMember]
+        //public HttpPostedFile PostedFileData { get; set; }
         /// <summary>
-        /// Данные файла
+        /// Файл
         /// </summary>
-        [IgnoreDataMember]
-        public HttpPostedFile PostedFileData { get; set; }
+        //[IgnoreDataMember]
+        //public BaseFile File { get; set; }
+        /// <summary>
+        /// ИД файла, сохраненного во временном хранилище
+        /// </summary>
+        public int TmpFileId { get; set; }
     }
 }

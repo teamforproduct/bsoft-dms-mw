@@ -5,7 +5,7 @@ namespace BL.Logic.SystemServices.TempStorage
 {
     public interface ITempStorageService
     {
-        int AddToStore(EnumObjects ownerType, int ownerId, int objectId, object storeobject);
+        int AddToStore(object storeobject, EnumObjects? ownerType = null, int? ownerId = null, int? objectId = null);
         object GetStoreObject(EnumObjects ownerType, int ownerId, int objectId);
         object GetStoreObject(int objectId);
         object ExtractStoreObject(EnumObjects ownerType, int ownerId, int objectId);

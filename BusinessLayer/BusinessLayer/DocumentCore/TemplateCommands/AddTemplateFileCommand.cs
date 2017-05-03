@@ -9,6 +9,9 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.Enums;
+using BL.Logic.SystemServices.TempStorage;
+using BL.CrossCutting.DependencyInjection;
+using BL.Model.Common;
 
 namespace BL.Logic.DocumentCore.TemplateCommands
 {
@@ -17,6 +20,8 @@ namespace BL.Logic.DocumentCore.TemplateCommands
         private readonly ITemplateDocumentsDbProcess _operationDb;
         private readonly IFileStore _fStore;
         private readonly IQueueWorkerService _queueWorkerService;
+        private BaseFile _file;
+        
 
         public AddTemplateFileCommand(ITemplateDocumentsDbProcess operationDb, IFileStore fStore, IQueueWorkerService queueWorkerService)
         {
@@ -44,14 +49,17 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override bool CanExecute()
         {
+            _file = DmsResolver.Current.Get<ITempStorageService>().GetStoreObject(Model.TmpFileId) as BaseFile;
+            if (_file == null)
+                throw new CannotAccessToFile();
             _admin.VerifyAccess(_context, CommandType, false);
 
-            if (!_operationDb.CanAddTemplateAttachedFile(_context, Model))
+            if (!_operationDb.CanAddTemplateAttachedFile(_context, Model, _file))
             {
                 throw new CouldNotModifyTemplateDocument();
             }
             if (_operationDb.ExistsTemplateAttachedFiles(_context, new FilterTemplateAttachedFile
-                { TemplateId = Model.DocumentId, NameExactly = Path.GetFileNameWithoutExtension(Model.FileName), ExtentionExactly = Path.GetExtension(Model.FileName ?? "").Replace(".", "") }))
+                { TemplateId = Model.DocumentId, NameExactly = _file.Name, ExtentionExactly = _file.Extension }))
             {
                 throw new RecordNotUnique();
             }
@@ -62,25 +70,10 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override object Execute()
         {
-            var att = new InternalTemplateAttachedFile
-            {
-                ClientId = _context.Client.Id,
-                EntityTypeId = (int)EnumEntytiTypes.Document,
-                DocumentId = Model.DocumentId,
-                OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, Model.DocumentId),
-                //FileContent = Convert.FromBase64String(Model.FileData),
-                Type = Model.Type,
-                FileType = Model.FileType,
-                //FileSize = Model.FileSize,
-                Name = Path.GetFileNameWithoutExtension(Model.FileName),
-                Extension = Path.GetExtension(Model.FileName ?? "").Replace(".", ""),
-                PostedFileData = Model.PostedFileData,
-                Description = Model.Description
-            };
+            var att = CommonDocumentUtilities.GetNewTemplateDocumentFile(_context, (int)EnumEntytiTypes.Document, Model, _file);
+            att.OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, Model.DocumentId);
             _fStore.SaveFile(_context, att);
-            CommonDocumentUtilities.SetLastChange(_context, att);
             _operationDb.AddNewFile(_context, att);
-
             var admContext = new AdminContext(_context);
             _queueWorkerService.AddNewTask(admContext, () =>
             {

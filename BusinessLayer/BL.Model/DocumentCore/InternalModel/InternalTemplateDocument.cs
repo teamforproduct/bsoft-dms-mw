@@ -31,7 +31,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public IEnumerable<InternalTemplateDocumentTask> Tasks { get; set; }
         public IEnumerable<InternalTemplateDocumentPaper> Papers { get; set; }
         public IEnumerable<InternalPropertyValue> Properties { get; set; }
-        public IEnumerable<InternalTemplateAttachedFile> Files { get; set; }
+        public IEnumerable<InternalTemplateDocumentFile> Files { get; set; }
 
         public InternalTemplateDocument()
         {

@@ -8,9 +8,9 @@ namespace BL.Logic.DocumentCore.Interfaces
 {
     public interface IDocumentFileService
     {
-        IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterBase filter, UIPaging paging = null);
-        FrontDocumentAttachedFile GetUserFile(IContext ctx, int id);
-        FrontDocumentAttachedFile GetUserFilePdf(IContext ctx, int id);
-        FrontDocumentAttachedFile GetUserFilePreview(IContext ctx, int id);
+        IEnumerable<FrontDocumentFile> GetDocumentFiles(IContext ctx, FilterBase filter, UIPaging paging = null);
+        FrontDocumentFile GetUserFile(IContext ctx, int id);
+        FrontDocumentFile GetUserFilePdf(IContext ctx, int id);
+        FrontDocumentFile GetUserFilePreview(IContext ctx, int id);
     }
 }

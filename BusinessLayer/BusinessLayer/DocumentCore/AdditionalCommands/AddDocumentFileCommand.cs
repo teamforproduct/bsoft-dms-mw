@@ -11,6 +11,9 @@ using BL.Model.Exception;
 using System.Linq;
 using BL.CrossCutting.Context;
 using BL.Logic.SystemServices.QueueWorker;
+using BL.Model.Common;
+using BL.CrossCutting.DependencyInjection;
+using BL.Logic.SystemServices.TempStorage;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
@@ -19,6 +22,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         private readonly IDocumentFileDbProcess _operationDb;
         private readonly IFileStore _fStore;
         private readonly IQueueWorkerService _queueWorkerService;
+        private BaseFile _file;
 
         public AddDocumentFileCommand(IDocumentFileDbProcess operationDb, IFileStore fStore, IQueueWorkerService queueWorkerService)
         {
@@ -64,6 +68,9 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
+            _file = DmsResolver.Current.Get<ITempStorageService>().GetStoreObject(Model.TmpFileId) as BaseFile;
+            if (_file == null)
+                throw new CannotAccessToFile();
             _admin.VerifyAccess(_context, CommandType);
             _document = _operationDb.AddDocumentFilePrepare(_context, Model.DocumentId);
             if (_document == null)
@@ -75,15 +82,12 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
                 var mainFile = _document.DocumentFiles.FirstOrDefault(x => x.OrderInDocument == Model.OrderInDocument);
                 if (mainFile == null)
-                {
                     throw new CannotAccessToFile();
-                }
-
-                Model.FileName = mainFile.Name + "." + mainFile.Extension;
-                Model.FileType = mainFile.FileType;
+                _file.Name = mainFile.File.Name + "." + mainFile.File.Extension;
+                _file.FileType = mainFile.File.FileType;
             }
 
-            var file = _document.DocumentFiles.FirstOrDefault(x => (x.Name + "." + x.Extension).Equals(Model.FileName));
+            var file = _document.DocumentFiles.FirstOrDefault(x => (x.File.Name + "." + x.File.Extension).Equals(_file.FileName));
 
             if (file != null)
             {
@@ -119,33 +123,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             try
             {
 
-                var att = new InternalDocumentAttachedFile
-                {
-                    ClientId = _document.ClientId,
-                    EntityTypeId = _document.EntityTypeId,
-                    DocumentId = Model.DocumentId,
-                    Date = DateTime.UtcNow,
-                    PostedFileData = Model.PostedFileData,
-                    Type = Model.Type,
-                    IsMainVersion =
-                        Model.Type == EnumFileTypes.Additional ||
-                        (Model.Type == EnumFileTypes.Main && _document.ExecutorPositionId == _context.CurrentPositionId) ||
-                        _context.IsAdmin,
-                    FileType = Model.FileType,
-                    Name = Path.GetFileNameWithoutExtension(Model.FileName),
-                    Extension = Path.GetExtension(Model.FileName).Replace(".", ""),
-                    Description = Model.Description,
-                    IsWorkedOut =
-                        (Model.Type == EnumFileTypes.Main && _document.ExecutorPositionId != _context.CurrentPositionId)
-                            ? false
-                            : (bool?) null,
-
-                    WasChangedExternal = false,
-                    ExecutorPositionId = _context.CurrentPositionId,
-                    ExecutorPositionExecutorAgentId = executorPositionExecutor.ExecutorAgentId.Value,
-                    ExecutorPositionExecutorTypeId = executorPositionExecutor.ExecutorTypeId,
-                };
-                var ordInDoc = _operationDb.CheckFileForDocument(_context, Model.DocumentId, att.Name, att.Extension);
+                var att = CommonDocumentUtilities.GetNewDocumentFile(_context, (int)EnumEntytiTypes.Document, _document.ExecutorPositionId.Value, Model, _file, executorPositionExecutor);
+                var ordInDoc = _operationDb.CheckFileForDocument(_context, Model.DocumentId, att.File.Name, att.File.Extension);
                 if (ordInDoc == -1)
                 {
                     att.Version = 1;
@@ -156,14 +135,11 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                     att.Version = _operationDb.GetFileNextVersion(_context, att.DocumentId, ordInDoc);
                     att.OrderInDocument = ordInDoc;
                 }
-
-
                 _fStore.SaveFile(_context, att);
-                CommonDocumentUtilities.SetLastChange(_context, att);
                 if (_document.IsRegistered.HasValue)
                 {
-                    att.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, att.DocumentId,
-                        EnumEventTypes.AddDocumentFile, null, null, att.Name + "." + att.Extension, null, null,
+                    att.Event = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, att.DocumentId,
+                        EnumEventTypes.AddDocumentFile, null, null, att.File.FileName, null, null,
                         att.Type != EnumFileTypes.Additional ? (int?) null : _document.ExecutorPositionId);
                 }
                 res.Add(_operationDb.AddNewFileOrVersion(_context, att));

@@ -26,12 +26,12 @@ namespace BL.Logic.DocumentCore
             _dbProcess = dbProcess;
         }
 
-        public IEnumerable<FrontDocumentAttachedFile> GetDocumentFiles(IContext ctx, FilterBase filter, UIPaging paging = null)
+        public IEnumerable<FrontDocumentFile> GetDocumentFiles(IContext ctx, FilterBase filter, UIPaging paging = null)
         {
             return _dbProcess.GetDocumentFiles(ctx, filter, paging);
         }
 
-        private FrontDocumentAttachedFile GetUserFile(IContext ctx, int id, EnumDocumentFileType fileType)
+        private FrontDocumentFile GetUserFile(IContext ctx, int id, EnumDocumentFileType fileType)
         {
             var fl = _dbProcess.GetDocumentFileVersion(ctx, id);
             if (fl == null)
@@ -45,24 +45,24 @@ namespace BL.Logic.DocumentCore
             else
             {
                 _fStore.GetFile(ctx, fl, fileType);
-                var internalFile = new InternalDocumentAttachedFile { Id = fl.Id, LastPdfAccess = DateTime.Now, PdfCreated = true };
+                var internalFile = new InternalDocumentFile { Id = fl.Id, LastPdfAccess = DateTime.Now, PdfCreated = true };
                 _dbProcess.UpdateFilePdfView(ctx, internalFile);
             }
 
             return fl;
         }
 
-        public FrontDocumentAttachedFile GetUserFile(IContext ctx, int id)
+        public FrontDocumentFile GetUserFile(IContext ctx, int id)
         {
             return GetUserFile(ctx, id, EnumDocumentFileType.UserFile);
         }
 
-        public FrontDocumentAttachedFile GetUserFilePdf(IContext ctx, int id)
+        public FrontDocumentFile GetUserFilePdf(IContext ctx, int id)
         {
             return GetUserFile(ctx, id, EnumDocumentFileType.PdfFile);
         }
 
-        public FrontDocumentAttachedFile GetUserFilePreview(IContext ctx, int id)
+        public FrontDocumentFile GetUserFilePreview(IContext ctx, int id)
         {
             return GetUserFile(ctx, id, EnumDocumentFileType.PdfPreview);
         }

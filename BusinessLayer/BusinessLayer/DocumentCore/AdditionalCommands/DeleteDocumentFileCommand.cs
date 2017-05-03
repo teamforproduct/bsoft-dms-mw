@@ -14,7 +14,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         private readonly IDocumentFileDbProcess _operationDb;
         private readonly IFileStore _fStore;
 
-        private InternalDocumentAttachedFile _file;
+        private InternalDocumentFile _file;
 
         public DeleteDocumentFileCommand(IDocumentFileDbProcess operationDb, IFileStore fStore)
         {
@@ -87,7 +87,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override object Execute()
         {
-            var docFile = new InternalDocumentAttachedFile
+            var docFile = new InternalDocumentFile
             {
                 ClientId = _document.ClientId,
                 EntityTypeId = _document.EntityTypeId,
@@ -105,7 +105,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             }
             if (_document.IsRegistered.HasValue)
             {
-                docFile.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, docFile.DocumentId, EnumEventTypes.DeleteDocumentFile, null, null, _file.Name + "." + _file.Extension);
+                docFile.Event = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, docFile.DocumentId, EnumEventTypes.DeleteDocumentFile, null, null, _file.File.Name + "." + _file.File.Extension);
             }
             _operationDb.DeleteAttachedFile(_context, docFile);
             return null;

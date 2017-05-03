@@ -152,12 +152,12 @@ namespace BL.Logic.DocumentCore
 
         #region TemplateAttachedFiles
 
-        public IEnumerable<FrontTemplateAttachedFile> GetTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter)
+        public IEnumerable<FrontTemplateDocumentFile> GetTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter)
         {
             return _templateDb.GetTemplateAttachedFiles(ctx, filter);
         }
 
-        private FrontTemplateAttachedFile GetTemplateAttachedFile(IContext ctx, int id, EnumDocumentFileType fileType)
+        private FrontTemplateDocumentFile GetTemplateAttachedFile(IContext ctx, int id, EnumDocumentFileType fileType)
         {
             var fl = _templateDb.GetTemplateAttachedFile(ctx, id);
             if (fl == null)
@@ -178,17 +178,17 @@ namespace BL.Logic.DocumentCore
             return fl;
         }
 
-        public FrontTemplateAttachedFile GetTemplateAttachedFile(IContext ctx, int id)
+        public FrontTemplateDocumentFile GetTemplateAttachedFile(IContext ctx, int id)
         {
             return GetTemplateAttachedFile(ctx, id, EnumDocumentFileType.UserFile);
         }
 
-        public FrontTemplateAttachedFile GetTemplateAttachedFilePdf(IContext ctx, int id)
+        public FrontTemplateDocumentFile GetTemplateAttachedFilePdf(IContext ctx, int id)
         {
             return GetTemplateAttachedFile(ctx, id, EnumDocumentFileType.PdfFile);
         }
 
-        public FrontTemplateAttachedFile GetTemplateAttachedFilePreview(IContext ctx, int id)
+        public FrontTemplateDocumentFile GetTemplateAttachedFilePreview(IContext ctx, int id)
         {
             return GetTemplateAttachedFile(ctx, id, EnumDocumentFileType.PdfPreview);
         }

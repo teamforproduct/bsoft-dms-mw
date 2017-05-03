@@ -124,7 +124,7 @@ namespace BL.Logic.DocumentCore.Commands
             if (_document.DocumentFiles?.Any() ?? false)
             {
                 //CommonDocumentUtilities.SetLastChange(_context, _document.DocumentFiles);
-                ((List<InternalDocumentAttachedFile>)_document.DocumentFiles).ForEach(x=>
+                ((List<InternalDocumentFile>)_document.DocumentFiles).ForEach(x=>
                 {
                     x.ExecutorPositionId = _document.ExecutorPositionId;
                     x.ExecutorPositionExecutorAgentId = _document.ExecutorPositionExecutorAgentId;
