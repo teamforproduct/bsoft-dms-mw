@@ -77,7 +77,7 @@ namespace BL.Logic.SystemServices.FileService
                     else
                     {
                         resFile = _fileStore.GetFile(ctx, fl, fileType);
-                        var internalFile = new InternalDocumentAttachedFile { Id = fl.Id, LastPdfAccess = DateTime.Now, PdfCreated = true };
+                        var internalFile = new InternalDocumentFile { Id = fl.Id, LastPdfAccess = DateTime.Now, PdfCreated = true };
                         _dbProcess.UpdateFilePdfView(ctx, internalFile);
                     }
                     break;

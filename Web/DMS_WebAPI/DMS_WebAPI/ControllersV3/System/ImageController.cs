@@ -21,7 +21,7 @@ namespace DMS_WebAPI.ControllersV3.System
             var docProc = DmsResolver.Current.Get<IDocumentFileService>();
             var fileSrv = DmsResolver.Current.Get<IFileService>();
             var fType = (EnumDocumentFileType)fileType;
-            FrontDocumentAttachedFile item;
+            FrontDocumentFile item;
             
             switch (fType)
             {
@@ -38,9 +38,8 @@ namespace DMS_WebAPI.ControllersV3.System
                     throw new ArgumentOutOfRangeException();
             }
             
-            string filename = item.Name+"."+item.Extension;
-            string contentType = fileSrv.GetMimetype(item.Extension);
-            byte[] filedata = Convert.FromBase64String(item.FileContent);
+            string filename = item.File.FileName;
+            string contentType = fileSrv.GetMimetype(item.File.Extension);
 
             var cd = new global::System.Net.Mime.ContentDisposition
             {
@@ -50,7 +49,7 @@ namespace DMS_WebAPI.ControllersV3.System
 
             Response.AppendHeader("Content-Disposition", cd.ToString());
 
-            return File(filedata, contentType);
+            return File(item.File.FileContent, contentType);
 
         }
     }
