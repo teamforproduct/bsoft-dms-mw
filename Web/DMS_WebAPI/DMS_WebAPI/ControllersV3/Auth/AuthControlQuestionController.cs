@@ -29,12 +29,12 @@ namespace DMS_WebAPI.ControllersV3.Auth
         [AllowAnonymous]
         [HttpGet]
         [Route("ControlQuestions")]
-        public IHttpActionResult Get()
+        public IHttpActionResult Get(string language)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
 
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            var tmpItems = webService.GetControlQuestions();
+            var tmpItems = webService.GetControlQuestions(language);
 
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;

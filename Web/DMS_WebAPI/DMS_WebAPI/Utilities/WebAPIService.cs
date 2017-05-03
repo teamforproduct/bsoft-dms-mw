@@ -1264,9 +1264,9 @@ namespace DMS_WebAPI.Utilities
         }
 
 
-        public IEnumerable<ListItem> GetControlQuestions()
+        public IEnumerable<ListItem> GetControlQuestions(string language)
         {
-            return _webDb.GetControlQuestions();
+            return _webDb.GetControlQuestions(language);
         }
 
         public async Task SwitchOffFingerprint(IContext context, Item model)
