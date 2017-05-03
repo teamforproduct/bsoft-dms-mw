@@ -352,21 +352,24 @@ namespace BL.Database.Documents
                         AccessLevel = (EnumAccessLevels)y.AccessLevelId,
                     }).ToList();
                 doc.Files = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.Client.Id).Where(x => x.DocumentId == id)
-                    .Select(x => new InternalTemplateAttachedFile
+                    .Select(x => new InternalTemplateDocumentFile
                     {
                         ClientId = x.Document.ClientId,
                         EntityTypeId = x.Document.EntityTypeId,
                         DocumentId = x.DocumentId,
-                        Extension = x.Extention,
-                        Name = x.Name,
-                        FileType = x.FileType,
-                        FileSize = x.FileSize,
                         OrderInDocument = x.OrderNumber,
                         Type = (EnumFileTypes)x.TypeId,
                         Hash = x.Hash,
                         Description = x.Description,
                         PdfCreated = x.IsPdfCreated ?? false,
-                        LastPdfAccess = x.LastPdfAccessDate//??DateTime.MinValue,
+                        LastPdfAccess = x.LastPdfAccessDate,
+                        File = new BaseFile
+                        {
+                            Extension = x.Extention,
+                            Name = x.Name,
+                            FileType = x.FileType,
+                            FileSize = x.FileSize,
+                        }
                     }).ToList();
                 doc.Papers = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.Client.Id).Where(x => x.DocumentId == id)
                     .Select(x => new InternalTemplateDocumentPaper
@@ -1293,7 +1296,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public IEnumerable<FrontTemplateAttachedFile> GetTemplateAttachedFiles(IContext context, FilterTemplateAttachedFile filter)
+        public IEnumerable<FrontTemplateDocumentFile> GetTemplateAttachedFiles(IContext context, FilterTemplateAttachedFile filter)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
@@ -1301,24 +1304,26 @@ namespace BL.Database.Documents
                 var qry = GetTemplateAttachedFilesQuery(context, filter);
                 var res = qry.Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
                         (d, a) => new { fl = d, agName = a.Name })
-                        .Select(x => new FrontTemplateAttachedFile
+                        .Select(x => new FrontTemplateDocumentFile
                         {
                             Id = x.fl.Id,
                             DocumentId = x.fl.DocumentId,
-                            Extension = x.fl.Extention,
-                            //FileContent = x.fl.Content,
                             Type = (EnumFileTypes)x.fl.TypeId,
                             TypeName = x.fl.Type.Code,
                             Hash = x.fl.Hash,
-                            FileType = x.fl.FileType,
-                            FileSize = x.fl.FileSize,
                             LastChangeDate = x.fl.LastChangeDate,
                             LastChangeUserId = x.fl.LastChangeUserId,
                             LastChangeUserName = x.agName,
-                            Name = x.fl.Name,
+
                             OrderInDocument = x.fl.OrderNumber,
                             Description = x.fl.Description,
-
+                            File = new BaseFile
+                            {
+                                FileType = x.fl.FileType,
+                                FileSize = x.fl.FileSize,
+                                Name = x.fl.Name,
+                                Extension = x.fl.Extention,
+                            }
                         }).ToList();
                 transaction.Complete();
                 return res;
@@ -1326,7 +1331,7 @@ namespace BL.Database.Documents
         }
 
 
-        public FrontTemplateAttachedFile GetTemplateAttachedFile(IContext context, int id)
+        public FrontTemplateDocumentFile GetTemplateAttachedFile(IContext context, int id)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
@@ -1335,25 +1340,27 @@ namespace BL.Database.Documents
                         .Where(x => x.Document.ClientId == context.Client.Id)
                         .Where(x => x.Id == id)
                         .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id, (d, a) => new { fl = d, agName = a.Name })
-                        .Select(x => new FrontTemplateAttachedFile
+                        .Select(x => new FrontTemplateDocumentFile
                         {
                             Id = x.fl.Id,
                             DocumentId = x.fl.DocumentId,
-                            Extension = x.fl.Extention,
-                            //FileContent = x.fl.Content,
                             Type = (EnumFileTypes)x.fl.TypeId,
                             TypeName = x.fl.Type.Code,
                             Hash = x.fl.Hash,
-                            FileType = x.fl.FileType,
-                            FileSize = x.fl.FileSize,
                             LastChangeDate = x.fl.LastChangeDate,
                             LastChangeUserId = x.fl.LastChangeUserId,
                             LastChangeUserName = x.agName,
-                            Name = x.fl.Name,
                             OrderInDocument = x.fl.OrderNumber,
                             Description = x.fl.Description,
                             PdfCreated = x.fl.IsPdfCreated ?? false,
-                            LastPdfAccess = x.fl.LastPdfAccessDate //?? DateTime.MinValue
+                            LastPdfAccess = x.fl.LastPdfAccessDate,
+                            File = new BaseFile
+                            {
+                                FileType = x.fl.FileType,
+                                FileSize = x.fl.FileSize,
+                                Name = x.fl.Name,
+                                Extension = x.fl.Extention,
+                            }
                         }).FirstOrDefault();
                 transaction.Complete();
                 return res;
@@ -1378,7 +1385,7 @@ namespace BL.Database.Documents
             return res;
         }
 
-        public int AddNewFile(IContext context, InternalTemplateAttachedFile docFile)
+        public int AddNewFile(IContext context, InternalTemplateDocumentFile docFile)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
@@ -1393,14 +1400,14 @@ namespace BL.Database.Documents
                 return fl.Id;
             }
         }
-        public InternalTemplateAttachedFile UpdateFilePrepare(IContext context, int id)
+        public InternalTemplateDocumentFile UpdateFilePrepare(IContext context, int id)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var file = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.Client.Id)
                         .Where(x => x.Id == id)
-                        .Select(x => new InternalTemplateAttachedFile
+                        .Select(x => new InternalTemplateDocumentFile
                         {
                             Id = x.Id,
                             ClientId = x.Document.ClientId,
@@ -1422,7 +1429,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public void UpdateFile(IContext context, InternalTemplateAttachedFile docFile)
+        public void UpdateFile(IContext context, InternalTemplateDocumentFile docFile)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
@@ -1442,7 +1449,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public void UpdateFilePdfView(IContext context, InternalTemplateAttachedFile docFile)
+        public void UpdateFilePdfView(IContext context, InternalTemplateDocumentFile docFile)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
@@ -1459,14 +1466,14 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalTemplateAttachedFile DeleteTemplateAttachedFilePrepare(IContext context, int id)
+        public InternalTemplateDocumentFile DeleteTemplateAttachedFilePrepare(IContext context, int id)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var file = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.Client.Id)
                         .Where(x => x.Id == id)
-                        .Select(x => new InternalTemplateAttachedFile
+                        .Select(x => new InternalTemplateDocumentFile
                         {
                             Id = x.Id,
                             ClientId = x.Document.ClientId,
@@ -1492,15 +1499,14 @@ namespace BL.Database.Documents
             }
         }
 
-        public bool CanAddTemplateAttachedFile(IContext context, AddTemplateAttachedFile file)
+        public bool CanAddTemplateAttachedFile(IContext context, AddTemplateAttachedFile model, BaseFile file)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var fileName = Path.GetFileNameWithoutExtension(file.FileName);
-                var fileExtention = Path.GetExtension(file.FileName).Replace(".", "");
-
-                var res = dbContext.TemplateDocumentFilesSet.Any(x => x.Document.ClientId == context.Client.Id && x.DocumentId == file.DocumentId && x.Extention == fileExtention && x.Name == fileName);
+                var fileName = file.Name;
+                var fileExtention = file.Extension;
+                var res = dbContext.TemplateDocumentFilesSet.Any(x => x.Document.ClientId == context.Client.Id && x.DocumentId == model.DocumentId && x.Extention == fileExtention && x.Name == fileName);
                 transaction.Complete();
                 return !res;
             }

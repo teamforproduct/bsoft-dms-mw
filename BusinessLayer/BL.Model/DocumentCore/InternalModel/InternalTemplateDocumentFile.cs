@@ -9,23 +9,19 @@ namespace BL.Model.DocumentCore.InternalModel
     /// <summary>
     /// Внутренний класс для работы с файлами, прикрепленными к шаблону документа
     /// </summary>
-    public class InternalTemplateAttachedFile : LastChangeInfo
+    public class InternalTemplateDocumentFile : LastChangeInfo
     {
-        public InternalTemplateAttachedFile()
+        public InternalTemplateDocumentFile()
         {
         }
 
-        public InternalTemplateAttachedFile(FrontTemplateAttachedFile doc)
+        public InternalTemplateDocumentFile(FrontTemplateDocumentFile doc)
         {
-            Name = doc.Name;
-            Extension = doc.Extension;
             Description = doc.Description;
             DocumentId = doc.DocumentId;
             Id = doc.Id;
-            FileType = doc.FileType;
             OrderInDocument = doc.OrderInDocument;
-            FileContent = doc.FileContent;
-            
+            File = doc.File;            
         }
         /// <summary>
         /// ИД.
@@ -56,34 +52,37 @@ namespace BL.Model.DocumentCore.InternalModel
         /// </summary>
         public string Description { get; set; }
         /// <summary>
-        /// содержимое файла
+        /// Файл
         /// </summary>
-        public string FileContent { get; set; }
-        /// <summary>
-        /// содержимое файла
-        /// </summary>
-        public HttpPostedFile PostedFileData { get; set; }
-        /// <summary>
-        /// содержимое файла
-        /// </summary>
-        public byte[] FileData { get; set; }
+        public BaseFile File { get; set; }
+        ///// <summary>
+        ///// содержимое файла
+        ///// </summary>
+        //public string FileContent { get; set; }
+        ///// <summary>
+        ///// содержимое файла
+        ///// </summary>
+        //public HttpPostedFile PostedFileData { get; set; }
+        ///// <summary>
+        ///// содержимое файла
+        ///// </summary>
+        //public byte[] FileData { get; set; }
         /// <summary>
         /// Название файла без расширения
         /// </summary>
-        public string Name { get; set; }
-        /// <summary>
-        /// Расширение файла
-        /// </summary>
-        public string Extension { get; set; }
+        //public string Name { get; set; }
+        ///// <summary>
+        ///// Расширение файла
+        ///// </summary>
+        //public string Extension { get; set; }
         /// <summary>
         /// Тип файла
         /// </summary>
-        public string FileType { get; set; }
-
-        /// <summary>
-        /// Размер файла
-        /// </summary>
-        public long FileSize { get; set; }
+        //public string FileType { get; set; }
+        ///// <summary>
+        ///// Размер файла
+        ///// </summary>
+        //public long FileSize { get; set; }
 
         /// <summary>
         /// Хэш файла. для проверки целостности файла в хранилище

@@ -21,7 +21,7 @@ namespace BL.Logic.SystemServices.TempStorage
             _cleanTimer = new Timer(OnSinchronize, null, timerRefresh, timerRefresh);
         }
 
-        public int AddToStore(EnumObjects ownerType, int ownerId, int objectId, object storeobject)
+        public int AddToStore(object storeobject, EnumObjects? ownerType, int? ownerId, int? objectId)
         {
             //storeObjects.RemoveAll(x => x.ObjectId == objectId && x.OwnerId == ownerId && x.OwnerType == ownerType);
             var newObj = new TempStoreObject

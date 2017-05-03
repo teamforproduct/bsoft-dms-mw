@@ -7,26 +7,23 @@ namespace BL.Model.DocumentCore.InternalModel
     /// <summary>
     /// Класс приатаченного к документу файла для внутреннего использования
     /// </summary>
-    public class InternalDocumentAttachedFile : InternalTemplateAttachedFile
+    public class InternalDocumentFile : InternalTemplateDocumentFile
     {
-        public InternalDocumentAttachedFile()
+        public InternalDocumentFile()
         {
         }
 
-        public InternalDocumentAttachedFile(FrontDocumentAttachedFile doc)
+        public InternalDocumentFile(FrontDocumentFile doc)
         {
             Date = doc.Date;
             IsDeleted = doc.IsDeleted;
             IsMainVersion = doc.IsMainVersion;
             Version = doc.Version;
-            Name = doc.Name;
-            Extension = doc.Extension;
             Description = doc.Description;
             DocumentId = doc.DocumentId ?? -1;
             Id = doc.Id;
-            FileType = doc.FileType;
             OrderInDocument = doc.OrderInDocument;
-            FileContent = doc.FileContent;
+            File = doc.File;
         }
 
         /// <summary>

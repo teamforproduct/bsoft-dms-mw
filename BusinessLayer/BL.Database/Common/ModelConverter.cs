@@ -355,7 +355,7 @@ namespace BL.Database.Common
 
         public static IEnumerable<DocumentSendLists> GetDbDocumentSendLists(IEnumerable<InternalDocumentSendList> sendLists, bool isIncludeAccessGroups)
         {
-            return sendLists?.Any() ?? false ? sendLists.Select(x=>GetDbDocumentSendList(x,isIncludeAccessGroups)) : null;
+            return sendLists?.Any() ?? false ? sendLists.Select(x => GetDbDocumentSendList(x, isIncludeAccessGroups)) : null;
         }
 
         public static DocumentRestrictedSendLists GetDbDocumentRestrictedSendList(InternalDocumentRestrictedSendList sendList)
@@ -379,7 +379,7 @@ namespace BL.Database.Common
             return sendLists?.Any() ?? false ? sendLists.Select(GetDbDocumentRestrictedSendList) : null;
         }
 
-        public static DocumentFiles GetDbDocumentFile(InternalDocumentAttachedFile docFile)
+        public static DocumentFiles GetDbDocumentFile(InternalDocumentFile docFile)
         {
 
             var res = new DocumentFiles
@@ -390,10 +390,13 @@ namespace BL.Database.Common
                 DocumentId = docFile.DocumentId,
                 OrderNumber = docFile.OrderInDocument,
                 Version = docFile.Version,
-                Extension = docFile.Extension,
                 Hash = docFile.Hash,
-                FileType = docFile.FileType,
-                FileSize = docFile.FileSize,
+
+                FileType = docFile.File.FileType,
+                FileSize = docFile.File.FileSize,
+                Name = docFile.File.Name,
+                Extension = docFile.File.Extension,
+
                 TypeId = (int)docFile.Type,
                 IsDeleted = docFile.IsDeleted,
                 IsMainVersion = docFile.IsMainVersion,
@@ -401,7 +404,7 @@ namespace BL.Database.Common
                 Description = docFile.Description,
                 LastChangeDate = docFile.LastChangeDate,
                 LastChangeUserId = docFile.LastChangeUserId,
-                Name = docFile.Name,
+
                 Date = docFile.Date,
                 ExecutorPositionId = docFile.ExecutorPositionId,
                 ExecutorPositionExecutorAgentId = docFile.ExecutorPositionExecutorAgentId,
@@ -413,7 +416,7 @@ namespace BL.Database.Common
             return res;
         }
 
-        public static IEnumerable<DocumentFiles> GetDbDocumentFiles(IEnumerable<InternalDocumentAttachedFile> docFile)
+        public static IEnumerable<DocumentFiles> GetDbDocumentFiles(IEnumerable<InternalDocumentFile> docFile)
         {
             return docFile.Select(GetDbDocumentFile);
         }
@@ -484,24 +487,24 @@ namespace BL.Database.Common
                 };
         }
 
-        public static TemplateDocumentFiles GetDbTemplateFile(InternalTemplateAttachedFile docFile)
+        public static TemplateDocumentFiles GetDbTemplateFile(InternalTemplateDocumentFile docFile)
         {
             return new TemplateDocumentFiles
             {
                 Id = docFile.Id,
                 DocumentId = docFile.DocumentId,
                 OrderNumber = docFile.OrderInDocument,
-                Extention = docFile.Extension,
                 Hash = docFile.Hash,
-                FileType = docFile.FileType,
-                FileSize = docFile.FileSize,
                 TypeId = (int)docFile.Type,
                 LastChangeDate = docFile.LastChangeDate,
                 LastChangeUserId = docFile.LastChangeUserId,
-                Name = docFile.Name,
                 Description = docFile.Description,
                 IsPdfCreated = docFile.PdfCreated,
-                LastPdfAccessDate = docFile.LastPdfAccess
+                LastPdfAccessDate = docFile.LastPdfAccess,
+                Name = docFile.File.Name,
+                Extention = docFile.File.Extension,
+                FileType = docFile.File.FileType,
+                FileSize = docFile.File.FileSize,
             };
         }
 

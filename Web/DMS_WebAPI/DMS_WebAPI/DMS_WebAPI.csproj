@@ -445,6 +445,7 @@
     <Compile Include="Results\JsonResult.cs" />
     <Compile Include="Results\ChallengeResult.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Utilities\CommonUtilities.cs" />
     <Compile Include="Utilities\GeneralSettings.cs" />
     <Compile Include="Utilities\WebApiHelper.cs" />
     <Compile Include="Utilities\DimanicAuthorizeAttribute.cs" />

@@ -73,18 +73,18 @@ namespace BL.Database.Documents.Interfaces
         #endregion TemplateDocumentTasks
 
         #region TemplateAttachedFiles
-        IEnumerable<FrontTemplateAttachedFile> GetTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter);
+        IEnumerable<FrontTemplateDocumentFile> GetTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter);
         bool ExistsTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter);
 
-        FrontTemplateAttachedFile GetTemplateAttachedFile(IContext ctx, int id);
+        FrontTemplateDocumentFile GetTemplateAttachedFile(IContext ctx, int id);
         int GetNextFileOrderNumber(IContext ctx, int templateId);
-        int AddNewFile(IContext ctx, InternalTemplateAttachedFile docFile);
-        void UpdateFile(IContext ctx, InternalTemplateAttachedFile docFile);
-        void UpdateFilePdfView(IContext ctx, InternalTemplateAttachedFile docFile);
-        InternalTemplateAttachedFile UpdateFilePrepare(IContext ctx, int id);
+        int AddNewFile(IContext ctx, InternalTemplateDocumentFile docFile);
+        void UpdateFile(IContext ctx, InternalTemplateDocumentFile docFile);
+        void UpdateFilePdfView(IContext ctx, InternalTemplateDocumentFile docFile);
+        InternalTemplateDocumentFile UpdateFilePrepare(IContext ctx, int id);
         void DeleteTemplateAttachedFile(IContext ctx, int id);
-        InternalTemplateAttachedFile DeleteTemplateAttachedFilePrepare(IContext ctx, int id);
-        bool CanAddTemplateAttachedFile(IContext ctx, AddTemplateAttachedFile file);
+        InternalTemplateDocumentFile DeleteTemplateAttachedFilePrepare(IContext ctx, int id);
+        bool CanAddTemplateAttachedFile(IContext ctx, AddTemplateAttachedFile model, BaseFile file);
 
         #endregion TemplateAttachedFiles
 

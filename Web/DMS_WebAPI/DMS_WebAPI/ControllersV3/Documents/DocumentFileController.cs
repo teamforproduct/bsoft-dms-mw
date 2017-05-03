@@ -1,5 +1,7 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.DocumentCore.Interfaces;
+using BL.Logic.SystemServices.TempStorage;
+using BL.Model.Common;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
@@ -33,7 +35,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPost]
         [DimanicAuthorize("R")]
         [Route(Features.Files + "/Main")]
-        [ResponseType(typeof(List<FrontDocumentAttachedFile>))]
+        [ResponseType(typeof(List<FrontDocumentFile>))]
         public async Task<IHttpActionResult> PostGetList([FromBody]IncomingBase model)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
@@ -57,7 +59,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns>Событие</returns>
         [HttpGet]
         [Route(Features.Files + "/{Id:int}")]
-        [ResponseType(typeof(FrontDocumentAttachedFile))]
+        [ResponseType(typeof(FrontDocumentFile))]
         public async Task<IHttpActionResult> Get(int Id)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
@@ -76,7 +78,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns>Событие</returns>
         [HttpGet]
         [Route(Features.Files + "/{Id:int}/Pdf")]
-        [ResponseType(typeof(FrontDocumentAttachedFile))]
+        [ResponseType(typeof(FrontDocumentFile))]
         public async Task<IHttpActionResult> GetPdf(int Id)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
@@ -95,7 +97,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns>Событие</returns>
         [HttpGet]
         [Route(Features.Files + "/{Id:int}/Preview")]
-        [ResponseType(typeof(FrontDocumentAttachedFile))]
+        [ResponseType(typeof(FrontDocumentFile))]
         public async Task<IHttpActionResult> GetPreview(int Id)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
@@ -118,10 +120,13 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var file = (HttpPostedFile)param;
-                model.PostedFileData = file;
-                model.FileName = file.FileName;
-                model.FileType = file.ContentType;
+                //var file = (HttpPostedFile)param;
+                ////model.PostedFileData = file;
+                ////model.FileName = file.FileName;
+                ////model.FileType = file.ContentType;
+                //var tmpService = DmsResolver.Current.Get<ITempStorageService>();
+                //model.File = (tmpService.GetStoreObject(model.TmpFileId) as BaseFile);
+
                 model.IsUseMainNameFile = false;
 
                 var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentFile, model, model.CurrentPositionId);
@@ -141,12 +146,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var file = (HttpPostedFile)param;
-                model.PostedFileData = file;
-                model.FileName = file.FileName;
-                model.FileType = file.ContentType;
                 model.IsUseMainNameFile = true;
-
                 var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentFileUseMainNameFile, model, model.CurrentPositionId);
                 var res = new JsonResult(tmpItem, this);
                 return res;

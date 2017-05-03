@@ -14,7 +14,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         private readonly IDocumentFileDbProcess _operationDb;
         private readonly IFileStore _fStore;
 
-        private InternalDocumentAttachedFile _file;
+        private InternalDocumentFile _file;
 
         public RejectDocumentFileCommand(IDocumentFileDbProcess operationDb, IFileStore fStore)
         {
@@ -81,7 +81,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         {
             _file.IsWorkedOut = true;
             CommonDocumentUtilities.SetLastChange(_context, _file);
-            _file.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, _file.DocumentId, EnumEventTypes.RejectDocumentFile, null, _file.Name + "." + _file.Extension, null, null, null, _file.ExecutorPositionId);
+            _file.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, _file.DocumentId, EnumEventTypes.RejectDocumentFile, null, _file.File.Name + "." + _file.File.Extension, null, null, null, _file.ExecutorPositionId);
             _operationDb.UpdateFileOrVersion(_context, _file);
             return _file.Id;
         }

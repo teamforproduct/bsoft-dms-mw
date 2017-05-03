@@ -290,7 +290,7 @@ namespace BL.Database.Documents
                     {
                         qryFiles = qryFiles.Where(x => x.DocumentId == documentId);
                     }
-                    res.Document.DocumentFiles = qryFiles.Select(x => new InternalDocumentAttachedFile
+                    res.Document.DocumentFiles = qryFiles.Select(x => new InternalDocumentFile
                     {
                         Id = x.Id,
                         ClientId = x.ClientId,
