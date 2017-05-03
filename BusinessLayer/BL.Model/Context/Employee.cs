@@ -5,18 +5,11 @@
     /// </summary>
     public class Employee
     {
-        /// <summary>
-        /// Токен из авторизации
-        /// </summary>
-        public string Token { get; set; }
-        /// <summary>
-        /// ИД веб пользователя
-        /// </summary>
-        public string UserId { get; set; }
+        
         /// <summary>
         /// ИД сотрудника
         /// </summary>
-        public int? AgentId { get; set; }
+        public int? Id { get; set; }
         /// <summary>
         /// ФИО
         /// </summary>

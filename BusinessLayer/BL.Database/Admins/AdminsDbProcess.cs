@@ -343,7 +343,7 @@ namespace BL.Database.Admins
                 var res = dbContext.DictionaryAgentUsersSet.Where(x => x.Agent.ClientId == ctx.Client.Id).Where(x => x.UserId.Equals(userId))
                     .Select(x => new Employee
                     {
-                        AgentId = x.Id,
+                        Id = x.Id,
                         Name = x.Agent.Name,
                         LanguageId = x.Agent.AgentUser.LanguageId,
                         IsActive = x.Agent.AgentEmployee.IsActive,

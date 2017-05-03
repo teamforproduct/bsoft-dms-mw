@@ -96,7 +96,7 @@ namespace DMS_WebAPI.ControllersV3.User
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 tmpService.VerifyAccess(context, new VerifyAccess() { PositionsIdList = positionsIdList });
 
-                userContexts.SetUserPositions(context.Employee.Token, positionsIdList);
+                userContexts.SetUserPositions(context.Token, positionsIdList);
                 //context.CurrentPositionsIdList = positionsIdList;
                 //ctx.CurrentPositions = new List<CurrentPosition>() { new CurrentPosition { CurrentPositionId = positionId } };
 

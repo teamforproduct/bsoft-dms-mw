@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Model.WebAPI.IncomingModel;
@@ -29,12 +30,12 @@ namespace DMS_WebAPI.ControllersV3.Auth
         [AllowAnonymous]
         [HttpGet]
         [Route("ControlQuestions")]
-        public IHttpActionResult Get()
+        public IHttpActionResult Get(string language)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
 
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            var tmpItems = webService.GetControlQuestions();
+            var tmpItems = webService.GetControlQuestions(language);
 
             var res = new JsonResult(tmpItems, this);
             res.SpentTime = stopWatch;
@@ -59,7 +60,10 @@ namespace DMS_WebAPI.ControllersV3.Auth
 
             if (user == null) throw new UserNameOrPasswordIsIncorrect();
 
-            var res = new JsonResult(new { ControlQuestion = user.ControlQuestion.Name }, this);
+            var tmpService = DmsResolver.Current.Get<ILanguages>();
+            var qst = tmpService.GetTranslation(model.Language, user.ControlQuestion.Name);
+
+            var res = new JsonResult(new { ControlQuestion = qst }, this);
             res.SpentTime = stopWatch;
             return res;
         }

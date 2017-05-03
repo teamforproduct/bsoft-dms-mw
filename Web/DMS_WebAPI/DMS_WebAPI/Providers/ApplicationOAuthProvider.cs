@@ -18,6 +18,7 @@ using Microsoft.Owin.Security.OAuth;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -202,18 +203,8 @@ namespace DMS_WebAPI.Providers
 
                 var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
 
-                //var clientCode = GetClientCodeFromBody(context.Request.Body);
-
-                var userContexts = DmsResolver.Current.Get<UserContexts>();
-
-                // Создаю пользовательский контекст
-                var ctx = userContexts.Set(token, userId, user.UserName, user.IsChangePasswordRequired, clientCode);
-
-                // Добавляю в пользовательский контекст сервер
-                userContexts.Set(token, server);
-
                 // Получаю информацию о браузере
-                var message = HttpContext.Current.Request.Browser.Info();
+                var brInfo = HttpContext.Current.Request.Browser.Info();
 
                 var fingerPrint = context.Request.Body.GetFingerprint();
 
@@ -222,12 +213,19 @@ namespace DMS_WebAPI.Providers
                 {
                     var scope = context.Request.Body.GetScope();
 
-                    if (scope == "fingerprint") fingerPrint = "SoapUI";
+                    if (scope == "fingerprint") fingerPrint = "SoapUI finger";
+
                 }
                 #endregion
 
-                // Добавляю в пользовательский контекст сведения о браузере
-                userContexts.Set(token, message, fingerPrint);
+                var userContexts = DmsResolver.Current.Get<UserContexts>();
+
+                // Создаю пользовательский контекст
+                var ctx = userContexts.Set(token, userId, user.UserName, user.IsChangePasswordRequired, clientCode, server, brInfo, fingerPrint);
+
+
+                // --------------------------------------------------------------------------------
+
 
                 context.AdditionalResponseParameters.Add("ChangePasswordRequired", user.IsChangePasswordRequired);
 
@@ -287,7 +285,7 @@ namespace DMS_WebAPI.Providers
             if (user != null)
             {
                 var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(ctx, user.Id);
-                agentId = agentUser?.AgentId;
+                agentId = agentUser?.Id;
             }
 
             var exceptionText = (ex is DmsExceptions) ? "DmsExceptions:" + ex.GetType().Name : ex.Message;

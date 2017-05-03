@@ -67,5 +67,14 @@ namespace BL.Model.AdminCore.Clients
         /// </summary>
         public string PhoneNumber { get; set; }
 
+        [IgnoreDataMember]
+        public string OrgName { get; set; }
+
+        [IgnoreDataMember]
+        public string DepartmentName { get; set; }
+
+        [IgnoreDataMember]
+        public string PositionName { get; set; }
+
     }
 }

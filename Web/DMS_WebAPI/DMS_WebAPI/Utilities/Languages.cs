@@ -277,6 +277,8 @@ namespace DMS_WebAPI.Utilities
             return defContext == null ? GetTranslation(currLang, text) : GetTranslation(defContext, text);
         }
 
+        public string GetLabel(string module, string item) => "##l@" + module.Trim() + ":" + item.Trim() + "@l##";
+
         #endregion
 
         #region [+] DbProcess
