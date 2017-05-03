@@ -12,5 +12,16 @@ namespace BL.Model.AdminCore.Clients
 
         public string Password { get; set; }
 
+        [Required]
+        public string OrgName { get; set; }
+
+        [Required]
+        public string DepartmentName { get; set; }
+
+        [Required]
+        public string PositionName { get; set; }
+
+
+
     }
 }

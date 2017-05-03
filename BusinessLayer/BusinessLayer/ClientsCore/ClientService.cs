@@ -109,6 +109,15 @@ namespace BL.Logic.ClientCore
 
             #endregion
 
+
+            #region [+] Tags ...
+            foreach (var item in GetTags(context))
+            {
+                tmpService.ExecuteAction(EnumDictionaryActions.AddTag, context, item);
+            };
+            #endregion
+
+
             // Включить соответствующие воркеры
         }
 
@@ -262,6 +271,22 @@ namespace BL.Logic.ClientCore
             items.Add(GetDocumentTypes(EnumDocumentTypes.Order));
             items.Add(GetDocumentTypes(EnumDocumentTypes.Protocol));
 
+
+            return items;
+        }
+
+        private static List<AddTag> GetTags(IContext context)
+        {
+            var languageService = DmsResolver.Current.Get<ILanguages>();
+            var items = new List<AddTag>();
+
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("Tags", "Trade")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("Tags", "Development")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("Tags", "Production")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("Tags", "Design")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("Tags", "Finance")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("Tags", "Accounting")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("Tags", "Staff")) });
 
             return items;
         }

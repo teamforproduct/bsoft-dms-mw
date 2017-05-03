@@ -32,10 +32,18 @@ namespace BL.CrossCutting.Context
                 DefaultSchema = dbModel.DefaultSchema,
                 ConnectionString = dbModel.ConnectionString,
             };
+            User = new User
+            {
+                Id = string.Empty,
+                Name = string.Empty,
+                Fingerprint = string.Empty,
+                IsChangePasswordRequired = false,// for admin context that is not required
+                LanguageId = -1,
+            };
             Employee = new Employee
             {
                 Name = "System user",
-                AgentId = (int)EnumSystemUsers.AdminUser,
+                Id = (int)EnumSystemUsers.AdminUser,
             };
             Client = new Client
             {
@@ -60,21 +68,32 @@ namespace BL.CrossCutting.Context
                 DefaultSchema = ctx.CurrentDB.DefaultSchema,
                 ConnectionString = ctx.CurrentDB.ConnectionString,
             };
+            User = new User
+            {
+                Id = string.Empty,
+                Name = string.Empty,
+                Fingerprint = string.Empty,
+                IsChangePasswordRequired = false,// for admin context that is not required
+                LanguageId = -1,
+            };
             Employee = new Employee
             {
+                Id = (int)EnumSystemUsers.AdminUser,
                 Name = "System user",
-                AgentId = (int)EnumSystemUsers.AdminUser,
             };
             Client = new Client
             {
                 Id = ctx.Client.Id,
                 Code = ctx.Client.Code
             };
-
-            IsChangePasswordRequired = false;// for admin context that is not required
             DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
             IsFormed = true;
         }
+
+        /// <summary>
+        /// Токен из авторизации
+        /// </summary>
+        public string Token { get; set; }
 
         /// <summary>
         ///  Флаг TRUE если контекст сформирован и готов к работе
@@ -84,6 +103,8 @@ namespace BL.CrossCutting.Context
         public Employee Employee { get; set; }
 
         public Client Client { get; set; }
+
+        public User User { get; set; }
 
         public DatabaseModel CurrentDB { get; set; }
 
@@ -126,13 +147,10 @@ namespace BL.CrossCutting.Context
         public DateTime CreateDate { get; } = DateTime.UtcNow;
         public DateTime LastChangeDate { get; set; } = DateTime.UtcNow;
 
-        public bool IsChangePasswordRequired { get; set; }
-
         public int? LoginLogId { get; set; }
 
         public string LoginLogInfo { get; set; }
         public IDmsDatabaseContext DbContext { get; set; }
 
-        public string UserName { get; set; }
     }
 }

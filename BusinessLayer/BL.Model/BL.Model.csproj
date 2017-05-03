@@ -158,6 +158,7 @@
     <Compile Include="Common\AutocompleteItem.cs" />
     <Compile Include="Context\Client.cs" />
     <Compile Include="Context\DatabaseModelForAdminContext.cs" />
+    <Compile Include="Context\User.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgentPeoples.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgentUsers.cs" />
     <Compile Include="DictionaryCore\FrontModel\FrontRoles.cs" />

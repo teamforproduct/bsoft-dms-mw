@@ -1179,6 +1179,15 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetStandartSendLists(context, filter, null);
         }
 
+        public IEnumerable<AutocompleteItem> GetStandartSendListsShortList(IContext ctx, FilterDictionaryStandartSendList filter, UIPaging paging)
+        {
+            if (filter == null) filter = new FilterDictionaryStandartSendList();
+
+            filter.IsActive = true;
+
+            return _dictDb.GetStandartSendListsShortList(ctx, filter, paging);
+        }
+
         public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, bool SearchInPositionsOnly = false)
         {
 

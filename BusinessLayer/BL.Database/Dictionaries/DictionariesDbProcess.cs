@@ -6478,6 +6478,28 @@ namespace BL.Database.Dictionaries
 
         }
 
+        public IEnumerable<AutocompleteItem> GetStandartSendListsShortList(IContext ctx, FilterDictionaryStandartSendList filter, UIPaging paging)
+        {
+            using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetStandartSendListQuery(ctx, filter);
+
+                qry = qry.OrderBy(x => x.Name);
+
+                if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<AutocompleteItem>();
+
+                var res = qry.Select(x => new AutocompleteItem
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    //Details = new List<string> { string.Empty }
+                }).ToList();
+
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public IEnumerable<FrontDictionaryStandartSendList> GetStandartSendLists(IContext ctx, FilterDictionaryStandartSendList filter, UIPaging paging)
         {
             using (var transaction = Transactions.GetTransaction())

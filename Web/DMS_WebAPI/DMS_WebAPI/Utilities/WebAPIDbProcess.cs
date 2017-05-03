@@ -1263,7 +1263,7 @@ namespace DMS_WebAPI.Utilities
                 var items = qry.Select(x => new FrontAspNetUserFingerprint
                 {
                     Id = x.Id,
-                    Fingerprint = x.Fingerprint.Substring(1, 8) + "...",
+                    Fingerprint = x.Fingerprint.Substring(0, 7) + "...",
                     Name = x.Name,
                     Browser = x.Browser,
                     Platform = x.Platform,
@@ -1492,7 +1492,7 @@ namespace DMS_WebAPI.Utilities
 
         #endregion
 
-        public IEnumerable<ListItem> GetControlQuestions()
+        public IEnumerable<ListItem> GetControlQuestions(string language)
         {
             using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
@@ -1509,7 +1509,7 @@ namespace DMS_WebAPI.Utilities
                 transaction.Complete();
 
                 var tmpService = DmsResolver.Current.Get<ILanguages>();
-                items.ForEach(x => x.Name = tmpService.GetTranslation(x.Name));
+                items.ForEach(x => x.Name = tmpService.GetTranslation(language, x.Name));
 
                 return items;
             }
