@@ -12,5 +12,7 @@ namespace BL.CrossCutting.Interfaces
         void TotalClear();
         object GetTypedValue(string Value, EnumValueTypes ValueType);
 
+        void ReadAll();
+
     }
 }

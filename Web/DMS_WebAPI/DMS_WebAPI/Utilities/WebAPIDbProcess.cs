@@ -85,6 +85,32 @@ namespace DMS_WebAPI.Utilities
                 return res;
             }
         }
+
+        public IEnumerable<InternalGeneralSetting> GetSystemSettingsInternal()
+        {
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = dbContext.SystemSettingsSet.AsQueryable();
+
+                qry = qry.OrderBy(x => x.Order);
+
+                var res = qry.Select(x => new InternalGeneralSetting
+                {
+                    Key = x.Key,
+                    Name = x.Name,
+                    Value = x.Value,
+                    ValueType = (EnumValueTypes)x.ValueTypeId,
+                    Description = x.Description,
+                    Order = x.Order
+                }).ToList();
+
+                transaction.Complete();
+
+                return res;
+            }
+        }
+
+
         #endregion
 
         #region Servers

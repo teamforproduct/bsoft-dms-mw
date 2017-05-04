@@ -77,6 +77,18 @@ namespace DMS_WebAPI.Utilities
             _cacheSettings.Clear();
         }
 
+        public void ReadAll()
+        {
+            ClearCache();
+            var db = DmsResolver.Current.Get<WebAPIDbProcess>();
+            var list = db.GetSystemSettingsInternal();
+
+            foreach (var item in list)
+            {
+                MergeCasheSettings(item);
+            }
+        }
+
         private string MakeKey(string key) => key;
 
     }

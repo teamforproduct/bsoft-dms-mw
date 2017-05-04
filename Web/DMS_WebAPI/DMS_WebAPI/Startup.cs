@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Helpers;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.SystemServices.AutoPlan;
 using BL.Logic.SystemServices.ClearTrashDocuments;
 using BL.Logic.SystemServices.FullTextSearch;
@@ -38,6 +39,10 @@ namespace DMS_WebAPI
             // Проверка на целостность переводов
             ApplicationDbImportData.CheckLanguages();
 
+
+            // Столкнулись с проблемой вычитки настроек из центральной базы в транзакции (Нельзя использовть два дб. контекста под одной транзакцией). 
+            var genSett = DmsResolver.Current.Get<IGeneralSettings>();
+            genSett.ReadAll();
 
             //Database.SetInitializer(new CreateDatabaseIfNotExists<ApplicationDbContext>());
             //var tt = Database.Exists("DefaultConnection");
