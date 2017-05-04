@@ -9,6 +9,7 @@ using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Logic.AdminCore.Interfaces;
+using BL.Logic.SystemServices.FileService;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 
@@ -18,13 +19,11 @@ namespace BL.Logic.DocumentCore
     {
         private readonly IFileStore _fStore;
         private readonly IDocumentFileDbProcess _dbProcess;
-        private readonly IAdminService _adminService;
 
-        public DocumentFileService(IFileStore fStore, IDocumentFileDbProcess dbProcess, IAdminService adminService)
+        public DocumentFileService(IFileStore fStore, IDocumentFileDbProcess dbProcess)
         {
             _fStore = fStore;
             _dbProcess = dbProcess;
-            _adminService = adminService;
         }
 
         public IEnumerable<FrontDocumentFile> GetDocumentFiles(IContext ctx, FilterBase filter, UIPaging paging = null)

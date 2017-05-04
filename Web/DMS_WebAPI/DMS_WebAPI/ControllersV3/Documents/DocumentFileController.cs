@@ -15,6 +15,8 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
+using BL.Logic.SystemServices.FileService;
+using Microsoft.Ajax.Utilities;
 
 namespace DMS_WebAPI.ControllersV3.Documents
 {
@@ -38,18 +40,34 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentFile>))]
         public async Task<IHttpActionResult> PostGetList([FromBody]IncomingBase model)
         {
+            var request = HttpContext.Current.Request;
+            var appUrl = HttpRuntime.AppDomainAppVirtualPath;
+
+            if (appUrl != "/")
+                appUrl = "/" + appUrl;
+
+            var baseUrl = string.Format("{0}://{1}{2}", request.Url.Scheme, request.Url.Authority, appUrl);
+            baseUrl += ApiPrefix.V3;
+
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 if (model == null) model = new IncomingBase();
                 if (model.Filter == null) model.Filter = new FilterBase();
                 if (model.Paging == null) model.Paging = new UIPaging();
-
+                var baseurl = param.ToString();
                 var docProc = DmsResolver.Current.Get<IDocumentFileService>();
                 var items = docProc.GetDocumentFiles(context, model.Filter, model.Paging);
+                var fileService = DmsResolver.Current.Get<IFileService>();
+                items.ForEach(x =>
+                {
+                    x.FileLink = fileService.GetFileUri(baseurl, context, EnumDocumentFileType.UserFile, x.Id);
+                    x.PdfFileLink = fileService.GetFileUri(baseurl, context, EnumDocumentFileType.PdfFile, x.Id);
+                    x.PreviewFileLink = fileService.GetFileUri(baseurl, context, EnumDocumentFileType.PdfPreview, x.Id);
+                });
                 var res = new JsonResult(items, this);
                 res.Paging = model.Paging;
                 return res;
-            });
+            }, baseUrl);
         }
 
         /// <summary>

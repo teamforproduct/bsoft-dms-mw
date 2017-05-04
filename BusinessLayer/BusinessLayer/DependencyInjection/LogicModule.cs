@@ -27,6 +27,7 @@ using BL.Logic.SystemCore;
 using BL.Logic.SystemCore.Interfaces;
 using BL.Logic.SystemServices.AutoPlan;
 using BL.Logic.SystemServices.ClearTrashDocuments;
+using BL.Logic.SystemServices.FileService;
 using BL.Logic.SystemServices.FullTextSearch;
 using BL.Logic.SystemServices.MailWorker;
 using BL.Logic.SystemServices.QueueWorker;
@@ -68,6 +69,7 @@ namespace BL.Logic.DependencyInjection
             Bind<IClearTrashDocumentsService>().To<ClearTrashDocumentsService>().InSingletonScope();
             Bind<ITempStorageService>().To<TempStorageService>().InSingletonScope();
             Bind<ISystemService>().To<SystemService>().InSingletonScope();
+            Bind<IFileService>().To<FileService>().InSingletonScope();
         }
 
         private void LoadDocumentModule()

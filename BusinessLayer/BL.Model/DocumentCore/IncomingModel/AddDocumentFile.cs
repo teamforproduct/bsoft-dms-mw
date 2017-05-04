@@ -1,8 +1,6 @@
-﻿using BL.Model.Common;
-using BL.Model.Enums;
+﻿using BL.Model.Enums;
 using BL.Model.Users;
 using System.Runtime.Serialization;
-using System.Web;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {

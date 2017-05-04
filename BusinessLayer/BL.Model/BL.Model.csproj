@@ -181,6 +181,7 @@
     <Compile Include="Enums\EnumGeneralSettings.cs" />
     <Compile Include="Enums\EnumUIElements.cs" />
     <Compile Include="Enums\MailServers.cs" />
+    <Compile Include="Enums\MimeTypes.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="FullTextSearch\FilterFullTextIndexCash.cs" />
     <Compile Include="Enums\EnumSortPositionExecutors.cs" />
