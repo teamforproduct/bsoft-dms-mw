@@ -138,7 +138,7 @@ namespace DMS_WebAPI.Utilities
             // запись в лог создает новый дб контекст, поэтому передаю internal
             WriteLog(intContext);
 
-            Save(token, intContext);
+            AddWithLock(token, intContext);
 
             return intContext;
 
@@ -165,7 +165,7 @@ namespace DMS_WebAPI.Utilities
                 }
                 else
                 {
-                    logInfo = $"{logInfo};{fingerPrint.Truncate(8)}...;Not Saved";
+                    logInfo = $"{logInfo};{fingerPrint.TruncateHard(8)}...;Not Saved";
                 }
             }
             #endregion
@@ -295,7 +295,7 @@ namespace DMS_WebAPI.Utilities
 
         }
 
-        private void Save(string token, IContext context)
+        private void AddWithLock(string token, IContext context)
         {
             locker.EnterWriteLock();
             try
