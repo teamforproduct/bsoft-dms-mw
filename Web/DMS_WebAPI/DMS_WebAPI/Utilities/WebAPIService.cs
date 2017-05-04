@@ -693,14 +693,26 @@ namespace DMS_WebAPI.Utilities
                 var content = new FormUrlEncodedContent(values);
 
                 var httpContext = HttpContext.Current;
+                var httpClient = DmsResolver.Current.Get<HttpClient>();
 
+                httpClient.DefaultRequestHeaders.Clear();
                 // Начиняю Headers запроса параметрами из текущего запроса
                 foreach (var key in httpContext.Request.Headers.AllKeys)
                 {
-                    content.Headers.Add(key, httpContext.Request.Headers.Get(key));
+
+                    if (key == "Content-Type") continue;
+                    if (key == "Content-Length") continue;
+
+                    try
+                    {
+                        var value = httpContext.Request.Headers.Get(key);
+                        //content.Headers.Add(key, value);
+                        httpClient.DefaultRequestHeaders.Add(key, value);
+                    }
+                    catch {  }
+                    
                 }
 
-                var httpClient = DmsResolver.Current.Get<HttpClient>();
                 var response = await httpClient.PostAsync(uri, content);
 
                 responseString = await response.Content.ReadAsStringAsync();
@@ -782,7 +794,6 @@ namespace DMS_WebAPI.Utilities
 
 
                 // Линкую клиента на сервер
-
                 _webDb.AddClientServer(new SetClientServer
                 {
                     ClientId = model.ClientId,

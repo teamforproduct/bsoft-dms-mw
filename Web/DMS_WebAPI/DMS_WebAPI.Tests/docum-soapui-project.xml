@@ -258,15 +258,15 @@
               <con:mediaType>application/json</con:mediaType>
               <con:params/>
             </con:representation>
-            <con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>401</con:status><con:params/><con:element xmlns:ass="http://10.88.12.22/api/v3/User/Assignments">ass:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Add User/Assignments" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
+            <con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>401</con:status><con:params/><con:element xmlns:ass="http://10.88.12.22/api/v3/User/Assignments">ass:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Add User/Assignments" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
-              <con:endpoint>http://localhost:21182/</con:endpoint>
+              <con:endpoint>http://10.88.12.22:80/</con:endpoint>
               <con:request>[1037,1041,1044]</con:request>
               <con:originalUri>http://10.88.12.22/api/v3/User/Assignments</con:originalUri>
               <con:credentials>
-                <con:selectedAuthProfile>lh docum t@t.t</con:selectedAuthProfile>
+                <con:selectedAuthProfile>pr docum t@t.t</con:selectedAuthProfile>
                 <con:authType>OAuth 2.0</con:authType>
               </con:credentials>
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
@@ -3946,9 +3946,12 @@
                 <con:params/>
                 <con:element xmlns:main="http://10.88.12.22/api/v3/Auditlog/Info/Main">main:Response</con:element>
               </con:representation>
-              <con:request name="Get Auditlog/Info/Main" id="a8cdf6ab-d0e4-4217-98bb-befc5fea1587" mediaType="application/json">
+              <con:representation type="FAULT"><con:mediaType>text/html</con:mediaType><con:status>401</con:status><con:params/><con:element xmlns:xht="http://www.w3.org/1999/xhtml">xht:html</con:element></con:representation><con:request name="Get Auditlog/Info/Main" id="a8cdf6ab-d0e4-4217-98bb-befc5fea1587" mediaType="application/json">
                 <con:settings>
-                  <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+                  <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="Accept-Language" value="ru,en-US;q=0.8,en;q=0.6"/>
+  &lt;con:entry key="Accept" value="application/json, text/plain, */*"/>
+&lt;/xml-fragment></con:setting>
                 </con:settings>
                 <con:endpoint>http://10.88.12.22:80/</con:endpoint>
                 <con:request/>
@@ -4379,19 +4382,25 @@
             <con:method name="Clients/Create/ByHash" id="9e8ec008-7571-4493-bb2a-03d3f9cebaf7" method="POST">
               <con:settings/>
               <con:parameters/>
-              <con:request name="Add Clients/Create/ByHash" id="7cb7bb80-d34b-420c-92b7-e9f00eaf2b7f" mediaType="application/json" postQueryString="false">
+              <con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xmlns:byh="http://localhost/api/v3/Clients/Create/ByHash">byh:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Add Clients/Create/ByHash" id="7cb7bb80-d34b-420c-92b7-e9f00eaf2b7f" mediaType="application/json" postQueryString="false">
                 <con:settings>
-                  <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+                  <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers"><![CDATA[<xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  <con:entry key="Accept-Language" value="de_DE,en-US;q=0.8,en;q=0.6"/>
+  <con:entry key="Accept-Encoding" value="gzip, deflate, br"/>
+  <con:entry key="User-Agent" value="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36"/>
+  <con:entry key="Accept" value="application/json, text/plain, */*"/>
+</xml-fragment>]]></con:setting>
                 </con:settings>
-                <con:endpoint>http://10.88.12.22:80/</con:endpoint>
-                <con:request>
-                  {
-                  "Hash": "sample string 1",
-                  "Password": "P@ssw0rd"
-                  }
-                </con:request>
-                <con:credentials>
-                  <con:selectedAuthProfile>pr docum t@t.t</con:selectedAuthProfile>
+                <con:endpoint>http://localhost:21182/</con:endpoint>
+                <con:request>{
+  "Hash": "969489343034edb49644b97970b1ecf0",
+  "Password": "P@ssw0rd",
+  "OrgName": "Моя организация",
+  "DepartmentName": "Отдел",
+  "PositionName": "Амик"
+}                </con:request>
+                <con:originalUri>http://localhost/api/v3/Clients/Create/ByHash</con:originalUri><con:credentials>
+                  <con:selectedAuthProfile>lh docum t@t.t</con:selectedAuthProfile>
                   <con:authType>OAuth 2.0</con:authType>
                 </con:credentials>
                 <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
@@ -11865,15 +11874,15 @@
       <con:clientID>docum</con:clientID>
       <con:clientSecret>-</con:clientSecret>
       <con:accessTokenURI>http://10.88.12.22/api/v3/token</con:accessTokenURI>
-      <con:accessToken>ur8bM6fKfYo1k6K6mg_bsrd_wd6UTBowLFHwsxoZJQVYZlGvRAucnwX9mntRZIdP0be_hVVqV_wbNPVLBs4p1ZCtwH6Gc8dzObsNoymm4Juosk8na3AC4uUat-PCOVFWiHoeNr3DNqrKNSsUkf0aU2VEZbIsNSVF9Fl6DbkOsY_9Swzu09PrORxV_EUfQ67SnKIjvsIKEMu1IGo-1KSmWJRb9JQpUS7gP1RZnCzC_XGlYWrtv722wZXHQDtws0ov1EMCOkLVQ28HhDguT_hY4pg3v5OOWCJFlx99tzCBy_HQopTsQ0ZWbSTDDWwVNYXEUrE1YbFT9E1FWDIrCgBUWzvDW0eV92m5n3e7mltZfhk-EdvGrD5h6h2Xeo7u0o3CcOcVzE0srGCfOjREydZdHQ82xmPc94hoO6cAZhJlhNuuSLrcFrgHcL8RKPdp7TkdhCKDuCzP9hFZqHYTkbngSUIX813wp2lKBkD1DOkdeNM</con:accessToken>
+      <con:accessToken>WpOmPD7WJFzeoLZqh5YDqyIjZm99_OEIg9bwZ2_EtSrOjhfa8xX9tSM9ufrURiDFbvCcfk76rgqSyfZCQqso_3KmKUNK7wTS74DCDJyzcZu-JgCceo5FmyQPmHKS62OqYpJ0q4eD1BaFCSJxPrSb1XkP91_Sxkim3drsasbDJi5s06psfb9GPtxAJDscarCPx4P56MJJF7vs20odtV0pbRI-JccI1SD7sq1Ttoq--0KEClLHZ6NKatI6HUJTUps2D_oV6Z0VfNT0GXFq1sYYIAkIHBrwBEpmkaAUY9aQlKk05_ZyXgTz1k1ZxNmJei94AXcaZ9YVseTDc2Q9vIxlCdAgbdnFl4R-Cy3Y4sxDcilO82GHbv9-K5LmZT9BsiS8Wso__x5mX1ICvsglcX6PCQeXDWD8N_TtKHIk8k6vjNCA_EpPfeqqgpKsrcRbO_bjyfsdWUwmW6K7EYzezzBHoEqThGXutxLABlUCkwj5Hz8</con:accessToken>
       <con:accessTokenPosition>HEADER</con:accessTokenPosition>
       <con:oAuth2Flow>RESOURCE_OWNER_PASSWORD_CREDENTIALS</con:oAuth2Flow>
       <con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod>
       <con:scope>fingerprint</con:scope>
-      <con:accessTokenStatus>ENTERED_MANUALLY</con:accessTokenStatus>
-      <con:accessTokenStartingStatus>ENTERED_MANUALLY</con:accessTokenStartingStatus>
+      <con:accessTokenStatus>RETRIEVED_FROM_SERVER</con:accessTokenStatus>
+      <con:accessTokenStartingStatus>RETRIEVED_FROM_SERVER</con:accessTokenStartingStatus>
       <con:accessTokenExpirationTime>1209599</con:accessTokenExpirationTime>
-      <con:accessTokenIssuedTime>1493402841</con:accessTokenIssuedTime>
+      <con:accessTokenIssuedTime>1493810241</con:accessTokenIssuedTime>
       <con:resourceOwnerName>t@t.t</con:resourceOwnerName>
       <con:resourceOwnerPassword>P@ssw0rd</con:resourceOwnerPassword>
     </con:oAuth2Profile>
