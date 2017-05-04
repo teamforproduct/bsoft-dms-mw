@@ -1,23 +1,20 @@
 ﻿using System;
 using BL.CrossCutting.Interfaces;
-using BL.Database.Documents.Interfaces;
-using BL.Database.FileWorker;
-using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
-using BL.Model.Exception;
 using System.ComponentModel;
+using System.Threading.Tasks;
+using BL.Logic.DocumentCore.Interfaces;
+using BL.Model.DocumentCore.FrontModel;
 
 namespace BL.Logic.SystemServices.FileService
 {
     public class FileService : IFileService
     {
-        private readonly IFileStore _fileStore;
-        private readonly IDocumentFileDbProcess _dbProcess;
+        private readonly IDocumentFileService _fileService;
 
-        public FileService(IFileStore fileStore, IDocumentFileDbProcess dbProcess)
+        public FileService(IDocumentFileService fileService)
         {
-            _fileStore = fileStore;
-            _dbProcess = dbProcess;
+            _fileService = fileService;
         }
 
         private string GetDescription(MimeTypes Band)
@@ -56,38 +53,28 @@ namespace BL.Logic.SystemServices.FileService
             return $"{serverUrl}files/{ctx.Client.Id}/{(int) fileType}/{id}";
         }
 
-        public byte[] GetFile(IContext ctx, EnumDocumentFileType fileType, int id)
+        public Task<FrontDocumentFile> GetFile(IContext ctx, EnumDocumentFileType fileType, int id)
         {
-            byte[] resFile =null;
-            switch (fileType)
+            return Task.Factory.StartNew(() =>
             {
-                case EnumDocumentFileType.UserFile:
-                case EnumDocumentFileType.PdfFile:
-                case EnumDocumentFileType.PdfPreview:
-                    
-                    var fl = _dbProcess.GetDocumentFileVersion(ctx, id);
-                    if (fl == null)
-                    {
-                        throw new UnknownDocumentFile();
-                    }
-                    if (fileType == EnumDocumentFileType.UserFile)
-                    {
-                        resFile = _fileStore.GetFile(ctx, fl, fileType);
-                    }
-                    else
-                    {
-                        resFile = _fileStore.GetFile(ctx, fl, fileType);
-                        var internalFile = new InternalDocumentFile { Id = fl.Id, LastPdfAccess = DateTime.Now, PdfCreated = true };
-                        _dbProcess.UpdateFilePdfView(ctx, internalFile);
-                    }
-                    break;
-                case EnumDocumentFileType.Avatar:
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(fileType), fileType, null);
-            }
+                FrontDocumentFile item;
 
-            return resFile;
+                switch (fileType)
+                {
+                    case EnumDocumentFileType.UserFile:
+                        item = _fileService.GetUserFile(ctx, id);
+                        break;
+                    case EnumDocumentFileType.PdfFile:
+                        item = _fileService.GetUserFilePdf(ctx, id);
+                        break;
+                    case EnumDocumentFileType.PdfPreview:
+                        item = _fileService.GetUserFilePreview(ctx, id);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+                return item;
+            });
         }
     }
 }

@@ -314,9 +314,9 @@ namespace BL.Database.FileWorker
 
                 var fileContent = File.ReadAllBytes(localFilePath);
 
-                if (fileType != EnumDocumentFileType.UserFile) return fileContent;
-
                 attFile.File.FileContent = fileContent;
+
+                if (fileType != EnumDocumentFileType.UserFile) return fileContent;
 
                 attFile.WasChangedExternal = attFile.Hash != FileToSha512(localFilePath);
 

@@ -1,7 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.DocumentCore.Interfaces;
-using BL.Logic.SystemServices.TempStorage;
-using BL.Model.Common;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
@@ -139,35 +137,11 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                //var file = (HttpPostedFile)param;
-                ////model.PostedFileData = file;
-                ////model.FileName = file.FileName;
-                ////model.FileType = file.ContentType;
-                //var tmpService = DmsResolver.Current.Get<ITempStorageService>();
-                //model.File = (tmpService.GetStoreObject(model.TmpFileId) as BaseFile);
                 var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentFile, model, model.Select(x=>x.CurrentPositionId).FirstOrDefault());
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
         }
-
-        ///// <summary>
-        ///// Добавляет версию существующего файла
-        ///// </summary>
-        ///// <param name="model"></param>
-        ///// <returns></returns>
-        //[HttpPost]
-        //[Route(Features.Files + "/AddUseMainNameFile")]
-        //public async Task<IHttpActionResult> PostAddUseMainNameFile([FromBody]AddDocumentFile model)
-        //{
-        //    return await SafeExecuteAsync(ModelState, (context, param) =>
-        //    {
-        //        model.IsUseMainNameFile = true;
-        //        var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentFileUseMainNameFile, model, model.CurrentPositionId);
-        //        var res = new JsonResult(tmpItem, this);
-        //        return res;
-        //    });
-        //}
 
         /// <summary>
         /// Измененяет описание файла
@@ -345,7 +319,5 @@ namespace DMS_WebAPI.ControllersV3.Documents
                 return res;
             });
         }
-
-
     }
 }
