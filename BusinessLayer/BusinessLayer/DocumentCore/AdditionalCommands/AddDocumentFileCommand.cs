@@ -92,6 +92,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 _file.Extension = mainFile.File.Extension;
                 _file.FileType = mainFile.File.FileType;
             }
+            else
             {
                 Model.IsMainVersion = true;
                 if (Model.Type == EnumFileTypes.Main && _document.ExecutorPositionId != _context.CurrentPositionId)
@@ -131,13 +132,14 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             }
             else
             {
+                _file.Name = CommonDocumentUtilities.GetNextDocumentFileName(_context, att.DocumentId, _file.Name, _file.Extension);
                 att.OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, Model.DocumentId);
             }
             _fStore.SaveFile(_context, att);
             if (_document.IsRegistered.HasValue && !att.EventId.HasValue)
             {
                 att.Event = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, att.DocumentId,
-                    EnumEventTypes.AddDocumentFile, null, null, att.File.FileName, null, null,
+                    EnumEventTypes.AddDocumentFile, null, null, $"{att.File.FileName} v.{att.Version}", null, null,
                     att.Type != EnumFileTypes.Additional ? (int?)null : _document.ExecutorPositionId);
             }
             res.Add(_operationDb.AddNewFileOrVersion(_context, att));
