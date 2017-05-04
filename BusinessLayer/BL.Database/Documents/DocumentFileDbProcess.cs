@@ -577,20 +577,17 @@ namespace BL.Database.Documents
 
         public int CheckFileForDocument(IContext ctx, int documentId, string fileName, string fileExt)
         {
+            var res = 0;
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var res = -1;
-                if (dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.Client.Id).Where(x => !x.IsDeleted).Any(x => x.DocumentId == documentId && x.Name == fileName && x.Extension == fileExt))
-                {
-                    res = dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.Client.Id).Where(x => x.DocumentId == documentId && x.Name == fileName && x.Extension == fileExt)
+                res = dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.Client.Id).Where(x => x.DocumentId == documentId && x.Name == fileName && x.Extension == fileExt)
                             .Where(x => !x.IsDeleted)
                             .Select(x => x.OrderNumber)
-                            .First();
-                }
+                            .FirstOrDefault();
                 transaction.Complete();
-                return res;
             }
+            return res;
         }
 
         public int GetNextFileOrderNumber(IContext ctx, int documentId)

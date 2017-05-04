@@ -2845,7 +2845,7 @@ namespace BL.Database.Common
 
             FileLogger.AppendTextToFile(DateTime.Now + " GetDocumentCertificateSignPdf CheckFileForDocument " + ordInDoc.ToString(), @"C:\TEMPLOGS\sign.log");
 
-            if (ordInDoc == -1)
+            if (ordInDoc == 0)
             {
                 att.Version = 1;
                 att.OrderInDocument = operationDb.GetNextFileOrderNumber(context, att.DocumentId);
