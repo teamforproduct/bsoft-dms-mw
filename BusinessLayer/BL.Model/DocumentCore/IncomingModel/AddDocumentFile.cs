@@ -1,4 +1,5 @@
-﻿using BL.Model.Enums;
+﻿using BL.Model.Common;
+using BL.Model.Enums;
 using BL.Model.Users;
 using System.Runtime.Serialization;
 
@@ -38,5 +39,11 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// </summary>
         [IgnoreDataMember]
         public int? EventId { get; set; }
+        /// <summary>
+        /// Файл, который будт загружен из временного хранилища
+        /// </summary>
+        [IgnoreDataMember]
+        public BaseFile File { get; set; }
+
     }
 }

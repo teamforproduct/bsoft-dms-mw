@@ -17,6 +17,7 @@ using System.Web.Http;
 using System.Web.Http.Description;
 using BL.Logic.SystemServices.FileService;
 using Microsoft.Ajax.Utilities;
+using System.Linq;
 
 namespace DMS_WebAPI.ControllersV3.Documents
 {
@@ -134,7 +135,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Files)]
-        public async Task<IHttpActionResult> Post([FromBody]AddDocumentFile model)
+        public async Task<IHttpActionResult> Post([FromBody]List<AddDocumentFile> model)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
@@ -144,7 +145,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
                 ////model.FileType = file.ContentType;
                 //var tmpService = DmsResolver.Current.Get<ITempStorageService>();
                 //model.File = (tmpService.GetStoreObject(model.TmpFileId) as BaseFile);
-                var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentFile, model, model.CurrentPositionId);
+                var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentFile, model, model.Select(x=>x.CurrentPositionId).FirstOrDefault());
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });

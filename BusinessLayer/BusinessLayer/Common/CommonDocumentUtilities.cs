@@ -653,7 +653,7 @@ namespace BL.Logic.Common
             SetLastChange(context, res);
             return res;
         }
-        public static InternalDocumentFile GetNewDocumentFile(IContext context, int entityTypeId, int documentExecutorPositionId, AddDocumentFile model, BaseFile file, InternalDictionaryPositionExecutorForDocument executorPositionExecutor)
+        public static InternalDocumentFile GetNewDocumentFile(IContext context, int entityTypeId, int documentExecutorPositionId, AddDocumentFile model, InternalDictionaryPositionExecutorForDocument executorPositionExecutor)
         {
             var res = new InternalDocumentFile
             {
@@ -666,7 +666,7 @@ namespace BL.Logic.Common
                 IsMainVersion = model.IsMainVersion ?? false,
                 OrderInDocument = model.OrderInDocument ?? 0,
                 Version = 1,
-                File = file,
+                File = model.File,
                 Description = model.Description,
                 IsWorkedOut = (model.IsMainVersion ?? false),
                 WasChangedExternal = false,
