@@ -8,8 +8,6 @@ using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
-using BL.Logic.AdminCore.Interfaces;
-using BL.Logic.SystemServices.FileService;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 
@@ -45,7 +43,7 @@ namespace BL.Logic.DocumentCore
             else
             {
                 _fStore.GetFile(ctx, fl, fileType);
-                var internalFile = new InternalDocumentFile { Id = fl.Id, LastPdfAccess = DateTime.Now, PdfCreated = true };
+                var internalFile = new InternalDocumentFile { Id = fl.Id, LastPdfAccess = DateTime.Now, PdfCreated = true, File = fl.File};
                 _dbProcess.UpdateFilePdfView(ctx, internalFile);
             }
 

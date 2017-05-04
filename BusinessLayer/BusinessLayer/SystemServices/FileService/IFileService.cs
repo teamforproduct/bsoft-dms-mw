@@ -1,4 +1,6 @@
-﻿using BL.CrossCutting.Interfaces;
+﻿using System.Threading.Tasks;
+using BL.CrossCutting.Interfaces;
+using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Enums;
 
 namespace BL.Logic.SystemServices.FileService
@@ -6,7 +8,7 @@ namespace BL.Logic.SystemServices.FileService
     public interface IFileService
     {
         string GetFileUri(string serverUrl, IContext ctx, EnumDocumentFileType fileType, int id);
-        byte[] GetFile(IContext ctx, EnumDocumentFileType fileType, int id);
+        Task<FrontDocumentFile> GetFile(IContext ctx, EnumDocumentFileType fileType, int id);
         string GetMimetype(string fileExt);
     }
 }

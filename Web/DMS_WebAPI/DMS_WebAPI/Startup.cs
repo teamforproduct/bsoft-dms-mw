@@ -48,11 +48,11 @@ namespace DMS_WebAPI
 
 
             FileLogger.AppendTextToFile("StartWorkers " + DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC", filePath);
-#if !DEBUG
+
             // Сервис бекграундной обработки задач/экшенов/команд. 
             var queueWorker = DmsResolver.Current.Get<IQueueWorkerService>();
             queueWorker.Initialize(dbs);
-#endif
+
 
             //foreach (var srv in DmsResolver.Current.GetAll<ISystemWorkerService>())
             //{
