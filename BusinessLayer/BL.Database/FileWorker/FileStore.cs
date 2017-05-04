@@ -92,7 +92,7 @@ namespace BL.Database.FileWorker
                 {
                     Directory.CreateDirectory(path);
                 }
-                var localFilePath = path + "\\" + attFile.File.Name + "." + attFile.File.Extension;
+                var localFilePath = path + "\\" + attFile.File.FileName;
 
                 if (File.Exists(localFilePath) && isOverride)
                 {
@@ -131,7 +131,7 @@ namespace BL.Database.FileWorker
                 {
                     return false;
                 }
-                var localFilePath = path + "\\" + attFile.File.Name + "." + attFile.File.Extension;
+                var localFilePath = path + "\\" + attFile.File.FileName;
                 var pdfFileName = path + "\\" + attFile.File.Name + ".pdf";
                 var previewFile = path + "\\" + attFile.File.Name + ".jpg";
 
@@ -176,7 +176,7 @@ namespace BL.Database.FileWorker
                 {
                     Directory.CreateDirectory(path);
                 }
-                var localFilePath = path + "\\" + attFile.File.Name + "." + attFile.File.Extension;
+                var localFilePath = path + "\\" + attFile.File.FileName;
                 var localFilePathNew = path + "\\" + newName + "." + attFile.File.Extension;
 
                 if (File.Exists(localFilePath))
@@ -243,7 +243,7 @@ namespace BL.Database.FileWorker
             {
                 var path = GetFullDocumentFilePath(docFile);
 
-                var localFilePath = path + "\\" + docFile.File.Name + "." + docFile.File.Extension;
+                var localFilePath = path + "\\" + docFile.File.FileName;
 
                 if (!File.Exists(localFilePath))
                     return false;
@@ -509,8 +509,8 @@ namespace BL.Database.FileWorker
                 var fromPath = (fromDoc == null) ? GetFullDocumentFilePath(fromTempl) : GetFullDocumentFilePath(fromDoc);
                 var toPath = (toDoc == null) ? GetFullDocumentFilePath(toTempl) : GetFullDocumentFilePath(toDoc);
 
-                var localFromPath = fromPath + "\\" + fromTempl.File.Name + "." + fromTempl.File.Extension;
-                var localToPath = toPath + "\\" + toTempl.File.Name + "." + toTempl.File.Extension;
+                var localFromPath = fromPath + "\\" + fromTempl.File.FileName;
+                var localToPath = toPath + "\\" + toTempl.File.FileName;
 
                 if (!File.Exists(localFromPath))
                 {

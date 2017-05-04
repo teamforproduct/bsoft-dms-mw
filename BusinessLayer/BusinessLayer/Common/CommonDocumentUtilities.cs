@@ -190,7 +190,7 @@ namespace BL.Logic.Common
                 if (!accessGroups.Any(x => x.AccessType == EnumEventAccessTypes.Source))
                     accessGroups.Add(new AccessGroup { AccessType = EnumEventAccessTypes.Source, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = context.CurrentPositionId });
                 accessGroups = accessGroups.GroupBy(x => new { x.AccessGroupType, x.RecordId })
-                    .Select(x=> new AccessGroup { AccessType = x.Min(y=>y.AccessType), AccessGroupType = x.Key.AccessGroupType, RecordId = x.Key.RecordId }).ToList();
+                    .Select(x => new AccessGroup { AccessType = x.Min(y => y.AccessType), AccessGroupType = x.Key.AccessGroupType, RecordId = x.Key.RecordId }).ToList();
                 ev.AccessGroups = accessGroups.Select(x => new InternalDocumentEventAccessGroup
                 {
                     ClientId = ev.ClientId,
@@ -508,7 +508,7 @@ namespace BL.Logic.Common
                                         (!sendListModel.SelfAttentionDay.HasValue || sendListModel.SelfAttentionDay.Value < 0) ? null : (DateTime?)DateTime.UtcNow.AddDays(sendListModel.SelfAttentionDay.Value)
                                     }.Max()
                             : null,
-                OnEvent =  GetNewDocumentEvent
+                OnEvent = GetNewDocumentEvent
                             (
                                 context, sendListModel.EntityTypeId, sendListModel.DocumentId, eventType, null,
                                 ((eventType == EnumEventTypes.ControlOn && !string.IsNullOrEmpty(sendListModel.SelfDescription)) ? sendListModel.SelfDescription : sendListModel.Description),
@@ -550,7 +550,7 @@ namespace BL.Logic.Common
                 SendEvent = eventType == null ? null :
                             GetNewDocumentEvent
                             (
-                                context, sendListModel.EntityTypeId, sendListModel.DocumentId, eventType.Value, null, sendListModel.Description, null,null, sendListModel.TaskId,
+                                context, sendListModel.EntityTypeId, sendListModel.DocumentId, eventType.Value, null, sendListModel.Description, null, null, sendListModel.TaskId,
                                 sendListModel.TargetPositionId,
                                 null,
                                 sendListModel.SourcePositionId,
@@ -660,18 +660,15 @@ namespace BL.Logic.Common
                 ClientId = context.Client.Id,
                 EntityTypeId = (int)EnumEntytiTypes.Document,
                 DocumentId = model.DocumentId,
+                EventId = model.EventId,
                 Date = DateTime.UtcNow,
                 Type = model.Type,
-                IsMainVersion =
-                        model.Type == EnumFileTypes.Additional ||
-                        (model.Type == EnumFileTypes.Main && documentExecutorPositionId == context.CurrentPositionId) ||
-                        context.IsAdmin,
+                IsMainVersion = model.IsMainVersion ?? false,
+                OrderInDocument = model.OrderInDocument ?? 0,
+                Version = 1,
                 File = file,
                 Description = model.Description,
-                IsWorkedOut =
-                        (model.Type == EnumFileTypes.Main && documentExecutorPositionId != context.CurrentPositionId)
-                            ? false
-                            : (bool?)null,
+                IsWorkedOut = (model.IsMainVersion ?? false),
                 WasChangedExternal = false,
                 ExecutorPositionId = context.CurrentPositionId,
                 ExecutorPositionExecutorAgentId = executorPositionExecutor.ExecutorAgentId.Value,

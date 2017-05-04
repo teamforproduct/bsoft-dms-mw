@@ -15,7 +15,6 @@ namespace DMS_WebAPI.Utilities
             byte[] buffer = new byte[file.ContentLength];
             file.InputStream.Read(buffer, 0, file.ContentLength);
             res.FileContent = buffer;// System.Convert.ToBase64String(buffer);
-            res.FileName = file.FileName;
             res.Name = Path.GetFileNameWithoutExtension(file.FileName);
             res.Extension = Path.GetExtension(file.FileName).Replace(".", "");
             res.FileType = file.ContentType;

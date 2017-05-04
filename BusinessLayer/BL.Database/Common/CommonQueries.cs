@@ -2782,7 +2782,7 @@ namespace BL.Database.Common
 
                         });
 
-                        PdfFileSpecification pfs = PdfFileSpecification.FileEmbedded(stamper.Writer, null, $"{file.File.Name}.{file.File.Extension}", fileBytes);
+                        PdfFileSpecification pfs = PdfFileSpecification.FileEmbedded(stamper.Writer, null, file.File.FileName, fileBytes);
 
                         stamper.AddFileAttachment(file.Description, pfs);
                     }

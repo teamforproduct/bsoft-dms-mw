@@ -391,6 +391,7 @@ namespace BL.Database.Common
                 OrderNumber = docFile.OrderInDocument,
                 Version = docFile.Version,
                 Hash = docFile.Hash,
+                EventId = docFile.EventId,
                 Event = GetDbDocumentEvent(docFile.Event),
                 FileType = docFile.File.FileType,
                 FileSize = docFile.File.FileSize,

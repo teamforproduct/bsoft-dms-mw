@@ -15,7 +15,7 @@ namespace BL.Model.Common
         /// <summary>
         /// Название файла
         /// </summary>
-        public string FileName { get; set; }
+        public string FileName { get { return Name + "." + Extension; } }
         /// <summary>
         /// Название файла без расширения
         /// </summary>

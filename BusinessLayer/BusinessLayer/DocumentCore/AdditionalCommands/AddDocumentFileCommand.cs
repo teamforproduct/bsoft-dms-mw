@@ -78,16 +78,29 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 throw new UserHasNoAccessToDocument();
             }
 
-            if (Model.IsUseMainNameFile)
+            if (Model.OrderInDocument.HasValue)
             {
                 var mainFile = _document.DocumentFiles.FirstOrDefault(x => x.OrderInDocument == Model.OrderInDocument);
-                if (mainFile == null)
-                    throw new CannotAccessToFile();
-                _file.Name = mainFile.File.Name + "." + mainFile.File.Extension;
+                if (mainFile == null || Model.Type != mainFile.Type
+                    || (Model.Type == EnumFileTypes.Main && (Model.IsMainVersion ?? false) && _document.ExecutorPositionId != _context.CurrentPositionId)
+                    || (Model.Type == EnumFileTypes.Additional && (Model.IsMainVersion ?? false) && mainFile.ExecutorPositionId != _context.CurrentPositionId)
+                    )
+                {
+                    throw new CouldNotPerformOperation();
+                }
+                _file.Name = mainFile.File.Name;
+                _file.Extension = mainFile.File.Extension;
                 _file.FileType = mainFile.File.FileType;
             }
+            {
+                Model.IsMainVersion = true;
+                if (Model.Type == EnumFileTypes.Main && _document.ExecutorPositionId != _context.CurrentPositionId)
+                {
+                    throw new CouldNotPerformOperation();
+                }
+            }
 
-            var file = _document.DocumentFiles.FirstOrDefault(x => (x.File.Name + "." + x.File.Extension).Equals(_file.FileName));
+            var file = _document.DocumentFiles.FirstOrDefault(x => (x.File.FileName).Equals(_file.FileName));
 
             if (file != null)
             {
@@ -99,15 +112,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                     throw new CannotAccessToFile();
                 }
             }
-            //else
-            //{
-            //    if (!Model.IsAdditional && _document.ExecutorPositionId != _context.CurrentPositionId)
-            //    {
-            //        //TODO Саше проверить.
-            //        Model.IsAdditional = true;
-            //        //throw new CouldNotPerformOperation();
-            //    }
-            //}
 
             return true;
         }
@@ -120,47 +124,32 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 throw new ExecutorAgentForPositionIsNotDefined();
             }
             var res = new List<int>();
-            try
+            var att = CommonDocumentUtilities.GetNewDocumentFile(_context, (int)EnumEntytiTypes.Document, _document.ExecutorPositionId.Value, Model, _file, executorPositionExecutor);
+            if (Model.OrderInDocument.HasValue)
             {
+                att.Version = _operationDb.GetFileNextVersion(_context, att.DocumentId, Model.OrderInDocument.Value);
+            }
+            else
+            {
+                att.OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, Model.DocumentId);
+            }
+            _fStore.SaveFile(_context, att);
+            if (_document.IsRegistered.HasValue && !att.EventId.HasValue)
+            {
+                att.Event = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, att.DocumentId,
+                    EnumEventTypes.AddDocumentFile, null, null, att.File.FileName, null, null,
+                    att.Type != EnumFileTypes.Additional ? (int?)null : _document.ExecutorPositionId);
+            }
+            res.Add(_operationDb.AddNewFileOrVersion(_context, att));
+            var admContext = new AdminContext(_context);
+            _queueWorkerService.AddNewTask(admContext, () =>
+            {
+                if (_fStore.CreatePdfFile(admContext, att))
+                {
+                    _operationDb.UpdateFilePdfView(admContext, att);
+                }
+            });
 
-                var att = CommonDocumentUtilities.GetNewDocumentFile(_context, (int)EnumEntytiTypes.Document, _document.ExecutorPositionId.Value, Model, _file, executorPositionExecutor);
-                var ordInDoc = _operationDb.CheckFileForDocument(_context, Model.DocumentId, att.File.Name, att.File.Extension);
-                if (ordInDoc == -1)
-                {
-                    att.Version = 1;
-                    att.OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, Model.DocumentId);
-                }
-                else
-                {
-                    att.Version = _operationDb.GetFileNextVersion(_context, att.DocumentId, ordInDoc);
-                    att.OrderInDocument = ordInDoc;
-                }
-                _fStore.SaveFile(_context, att);
-                if (_document.IsRegistered.HasValue)
-                {
-                    att.Event = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, att.DocumentId,
-                        EnumEventTypes.AddDocumentFile, null, null, att.File.FileName, null, null,
-                        att.Type != EnumFileTypes.Additional ? (int?) null : _document.ExecutorPositionId);
-                }
-                res.Add(_operationDb.AddNewFileOrVersion(_context, att));
-                // Модель фронта содержит дополнительно только одно поле - пользователя, который последний модифицировал файл. 
-                // это поле не заполняется, иначе придется после каждого добавления файла делать запрос на выборку этого файла из таблицы
-                // как вариант можно потому будет добавить получение имени текущего пользователя вначале и дописывать его к модели
-                //res.Add(new FrontDocumentAttachedFile(att));
-                var admContext = new AdminContext(_context);
-                _queueWorkerService.AddNewTask(admContext, () =>
-                {
-                    if (_fStore.CreatePdfFile(admContext, att))
-                    {
-                        _operationDb.UpdateFilePdfView(admContext, att);
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_context, ex, "Error on adding document file");
-                throw ex;
-            }
             return res;
         }
     }

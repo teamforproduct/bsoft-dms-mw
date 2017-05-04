@@ -110,7 +110,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         }
 
         /// <summary>
-        /// Добавляет файл, если файл с таким именем есть создается новая версия файла
+        /// Добавляет файл, в зависимости от параметров новый или версию существующего
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -126,32 +126,29 @@ namespace DMS_WebAPI.ControllersV3.Documents
                 ////model.FileType = file.ContentType;
                 //var tmpService = DmsResolver.Current.Get<ITempStorageService>();
                 //model.File = (tmpService.GetStoreObject(model.TmpFileId) as BaseFile);
-
-                model.IsUseMainNameFile = false;
-
                 var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentFile, model, model.CurrentPositionId);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
         }
 
-        /// <summary>
-        /// Добавляет версию существующего файла
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpPost]
-        [Route(Features.Files + "/AddUseMainNameFile")]
-        public async Task<IHttpActionResult> PostAddUseMainNameFile([FromBody]AddDocumentFile model)
-        {
-            return await SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                model.IsUseMainNameFile = true;
-                var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentFileUseMainNameFile, model, model.CurrentPositionId);
-                var res = new JsonResult(tmpItem, this);
-                return res;
-            });
-        }
+        ///// <summary>
+        ///// Добавляет версию существующего файла
+        ///// </summary>
+        ///// <param name="model"></param>
+        ///// <returns></returns>
+        //[HttpPost]
+        //[Route(Features.Files + "/AddUseMainNameFile")]
+        //public async Task<IHttpActionResult> PostAddUseMainNameFile([FromBody]AddDocumentFile model)
+        //{
+        //    return await SafeExecuteAsync(ModelState, (context, param) =>
+        //    {
+        //        model.IsUseMainNameFile = true;
+        //        var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentFileUseMainNameFile, model, model.CurrentPositionId);
+        //        var res = new JsonResult(tmpItem, this);
+        //        return res;
+        //    });
+        //}
 
         /// <summary>
         /// Измененяет описание файла
