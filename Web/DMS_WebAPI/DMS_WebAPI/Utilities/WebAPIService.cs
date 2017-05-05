@@ -845,7 +845,7 @@ namespace DMS_WebAPI.Utilities
             }
             catch (Exception)
             {
-                if (model.ClientId > 0) DeleteClient(model.ClientId);
+                if (model.ClientId > 0) await DeleteClient(model.ClientId);
 
                 throw;
             }
