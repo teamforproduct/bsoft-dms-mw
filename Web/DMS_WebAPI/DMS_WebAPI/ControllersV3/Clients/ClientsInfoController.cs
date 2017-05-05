@@ -83,10 +83,10 @@ namespace DMS_WebAPI.ControllersV3.Clients
         /// <returns></returns>
         [HttpDelete]
         [Route("{Id:int}")]
-        public IHttpActionResult Delete([FromUri] int Id)
+        public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {
             var tmpService = DmsResolver.Current.Get<WebAPIService>();
-            tmpService.DeleteClient(Id);
+            await tmpService.DeleteClient(Id);
             return new JsonResult(null, this);
         }
 

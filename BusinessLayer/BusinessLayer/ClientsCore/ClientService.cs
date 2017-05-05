@@ -126,7 +126,7 @@ namespace BL.Logic.ClientCore
             // Остановить соответствующие воркеры
             using (var transaction = Transactions.GetTransaction())
             {
-                _DictDb.DeleteRegistrationJournals(context, null);
+                
 
                 _DictDb.DeleteDocumentType(context, null);
 
@@ -147,7 +147,7 @@ namespace BL.Logic.ClientCore
 
                 _EncrDb.DeleteCertificate(context, null);
 
-
+                _DictDb.DeleteRegistrationJournals(context, null);
 
                 _DictDb.DeleteTags(context, null);
 
