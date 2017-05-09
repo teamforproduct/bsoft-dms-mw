@@ -136,7 +136,7 @@ namespace DMS_WebAPI.Utilities
 
             var employee = dicProc.GetDictionaryAgentEmployee(context, context.CurrentAgentId);
 
-            var user = GetUser(context, context.CurrentAgentId);
+            var user = GetUserById(context.User.Id);
 
             var logger = DmsResolver.Current.Get<ILogger>();
             var lastUserLoginInfo = logger.GetLastUserLoginInfo(context);
@@ -1028,11 +1028,11 @@ namespace DMS_WebAPI.Utilities
 
         }
 
-        public async void ChangeFingerprintEnabled(bool parm)
+        public async Task ChangeFingerprintEnabled(bool parm)
         {
             var userContexts = DmsResolver.Current.Get<UserContexts>();
             var userContext = userContexts.Get();
-            var user = GetUser(userContext, userContext.CurrentAgentId);
+            var user = GetUserById(userContext.User.Id);
 
             user.IsFingerprintEnabled = parm;
             user.LastChangeDate = DateTime.UtcNow;
@@ -1047,7 +1047,7 @@ namespace DMS_WebAPI.Utilities
         {
             var userContexts = DmsResolver.Current.Get<UserContexts>();
             var userContext = userContexts.Get();
-            var user = GetUser(userContext, userContext.CurrentAgentId);
+            var user = GetUserById(userContext.User.Id);
 
             user.ControlQuestionId = model.QuestionId;
             user.ControlAnswer = model.Answer;
