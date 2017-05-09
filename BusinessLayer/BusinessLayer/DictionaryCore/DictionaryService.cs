@@ -1347,9 +1347,11 @@ namespace BL.Logic.DictionaryCore
             // Если не локальный значит, надеюсь, что глобальный и отображаю все
             var adminService = DmsResolver.Current.Get<IAdminService>();
             var employeeDepartments = adminService.GetInternalEmployeeDepartments(context, context.Employee.Id);
-            List<int> safeList = null;
+            
             if (employeeDepartments != null)
             {
+                List<int> safeList = new List<int>();
+
                 var deps = _dictDb.GetInternalDepartments(context, new FilterDictionaryDepartment { IDs = employeeDepartments });
 
                 safeList.AddRange(employeeDepartments);
@@ -1357,7 +1359,7 @@ namespace BL.Logic.DictionaryCore
                 // собираю список Id включая родительские отделы
                 foreach (var dep in deps)
                 {
-                    safeList.AddRange(dep.Path.Split('/').Select(x => int.Parse(x)));
+                    if (dep.Path != null) safeList.AddRange(dep.Path?.Split('/').Select(x => int.Parse(x)));
                 }
 
                 safeList = safeList.Distinct().ToList();
@@ -1383,7 +1385,7 @@ namespace BL.Logic.DictionaryCore
                 {
                     StartDate = DateTime.UtcNow,
                     EndDate = DateTime.UtcNow,
-                    IsActive = filter?.IsActive
+                    IsActive = filter?.IsActive,
                 });
             }
 
