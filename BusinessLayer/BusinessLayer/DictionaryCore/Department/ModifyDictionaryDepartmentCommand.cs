@@ -28,7 +28,7 @@ namespace BL.Logic.DictionaryCore
 
                 _dictDb.UpdateDepartment(_context, model);
 
-                UpdateCodeForChildDepartment(model.Id, model.Code, model.Path);
+                UpdateCodeForChildDepartment(model.Id, model.Code, model.Path + (string.IsNullOrEmpty(model.Path) ? string.Empty : "/") + model.Id.ToString());
 
                 var frontObj = _dictDb.GetDepartments(_context, new FilterDictionaryDepartment { IDs = new List<int> { model.Id } }).FirstOrDefault();
                 _logger.Information(_context, null, (int)EnumObjects.DictionaryDepartments, (int)CommandType, frontObj.Id, frontObj);

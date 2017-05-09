@@ -856,6 +856,7 @@ namespace DMS_WebAPI.Utilities
                 LastName = model.LastName,
                 MiddleName = model.MiddleName,
                 OrgName = model.OrgName, // languages.GetTranslation(ctx.Employee.LanguageId, "##l@Clients:" + "MyCompany" + "@l##"),
+                DepartmentIndex = "01",
                 DepartmentName = model.DepartmentName, // languages.GetTranslation(ctx.Employee.LanguageId, "##l@Clients:" + "MyDepartment" + "@l##"),
                 PositionName = model.PositionName, // languages.GetTranslation(ctx.Employee.LanguageId, "##l@Clients:" + "MyPosition" + "@l##"),
                 ExecutorType = EnumPositionExecutionTypes.Personal,

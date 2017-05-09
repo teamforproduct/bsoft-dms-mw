@@ -9000,7 +9000,7 @@
               </con:request>
             </con:method>
           </con:resource>
-          <con:method name="Org/Info" id="d4747582-c1a4-42fa-97da-9199de4d3627" method="POST">
+          <con:method name="Departments/Info" id="d4747582-c1a4-42fa-97da-9199de4d3627" method="POST">
             <con:settings/>
             <con:parameters/>
             <con:representation type="RESPONSE">
@@ -9048,7 +9048,7 @@
               <con:parameters/>
             </con:request>
           </con:method>
-          <con:method name="Org/Info" id="d4747582-c1a4-42fa-97da-9199de4d3627" method="PUT">
+          <con:method name="Departments/Info" id="d4747582-c1a4-42fa-97da-9199de4d3627" method="PUT">
             <con:settings/>
             <con:parameters/>
             <con:representation type="REQUEST">
@@ -9072,17 +9072,14 @@
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
               <con:endpoint>http://10.88.12.22:80/</con:endpoint>
-              <con:request>
-                {
-                "Id": ${#Project#OrgId},
-                "Name": "Хороший банк",
-                "FullName": "Хороший банк",
-                "MFOCode": "123465",
-                "Swift": "78963",
-                "Description": "SoapUI",
-                "IsActive": true
-                }
-              </con:request>
+              <con:request>{
+  "Id": 1486,
+  "IsActive": true,
+  "Name": "Центральный офис",
+  "FullName": "53321",
+  "Index": "CO",
+  "CompanyId": 1
+}</con:request>
               <con:originalUri>http://10.88.12.22/api/v3/Org/Info</con:originalUri>
               <con:credentials>
                 <con:selectedAuthProfile>pr docum t@t.t</con:selectedAuthProfile>
