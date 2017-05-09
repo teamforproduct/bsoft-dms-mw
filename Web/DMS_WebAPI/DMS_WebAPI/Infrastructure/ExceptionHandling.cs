@@ -131,6 +131,7 @@ namespace DMS_WebAPI.Infrastructure
         public static void ReturnExceptionResponse(Exception exception, HttpActionExecutedContext context = null)
         {
             var user = string.Empty;
+            var client = string.Empty;
             var browser = string.Empty;
             var method = string.Empty;
             var body = string.Empty;
@@ -188,15 +189,25 @@ namespace DMS_WebAPI.Infrastructure
             catch { }
             #endregion
 
+            #region [+] Получение параметров текущего UserContext ...
+            try
+            {
+                var uCont = DmsResolver.Current.Get<Utilities.UserContexts>().Get(keepAlive: false, restoreToken: false);
+                user = uCont.User.Name;
+                client = uCont.Client.Code;
+            }
+            catch { }
+            #endregion
+
             #region [+] Запись расширенных параметров ошибки в файл ...
             try
             {
                 // stores the error message
                 string errorMessage = string.Empty;
-                errorMessage += "ERROR!!! - " + DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC\r\n";
+                errorMessage += "ERROR!!! - " + DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm:ss") + " UTC\r\n";
 
-                // TODO - USER + BROWSER + BR.LANG-S 
-                errorMessage += $"User: {user}\r\nMethod: {method}\r\nRequest Body: {body}\r\n{logExpression}Browser: {browser}\r\n";
+                // TODO - USER 
+                errorMessage += $"User: {user}\r\nClient: {client}\r\nMethod: {method}\r\nRequest Body: {body}\r\n{logExpression}Browser: {browser}\r\n";
 
                 FileLogger.AppendTextToFile(errorMessage, Properties.Settings.Default.ServerPath + "SiteErrors.txt");
             }
