@@ -172,17 +172,15 @@ namespace BL.CrossCutting.Context
             }
         }
 
-        public bool CurrentAgentDefined => Employee?.Id != null;
-
         public int CurrentAgentId
         {
             get
             {
-                if (Employee?.Id == null)
+                if (Employee?.Id == 0)
                 {
                     throw new UserContextIsNotDefined();
                 }
-                return Employee.Id.GetValueOrDefault();
+                return Employee.Id;
             }
         }
 

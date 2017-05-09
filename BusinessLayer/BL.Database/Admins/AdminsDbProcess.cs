@@ -51,11 +51,11 @@ namespace BL.Database.Admins
                 VerifyAdminSecurityCash(admCtx);
                 _cacheService.AddOrUpdateCasheData(admCtx, SettingConstants.ADMINACCESSINFO_CASHE_KEY, () =>
                 {
-                    var adminPermiss =_cacheService.GetDataWithoutLock(admCtx, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY) as List<InternalAdminRolePermission>;
-                    var sysAction =_cacheService.GetDataWithoutLock(admCtx, SettingConstants.ACTION_CASHE_KEY) as List<InternalSystemAction>;
-                    var adminRole =_cacheService.GetDataWithoutLock(admCtx, SettingConstants.ADMIN_ROLE_CASHE_KEY) as List<InternalAdminRole>;
-                    var userRole =_cacheService.GetDataWithoutLock(admCtx, SettingConstants.USER_ROLE_CASHE_KEY) as List<InternalAdminUserRole>;
-                    var adminPos =_cacheService.GetDataWithoutLock(admCtx, SettingConstants.ADMIN_POSITION_ROLE_KEY) as List<InternalAdminPositionRole>;
+                    var adminPermiss = _cacheService.GetDataWithoutLock(admCtx, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY) as List<InternalAdminRolePermission>;
+                    var sysAction = _cacheService.GetDataWithoutLock(admCtx, SettingConstants.ACTION_CASHE_KEY) as List<InternalSystemAction>;
+                    var adminRole = _cacheService.GetDataWithoutLock(admCtx, SettingConstants.ADMIN_ROLE_CASHE_KEY) as List<InternalAdminRole>;
+                    var userRole = _cacheService.GetDataWithoutLock(admCtx, SettingConstants.USER_ROLE_CASHE_KEY) as List<InternalAdminUserRole>;
+                    var adminPos = _cacheService.GetDataWithoutLock(admCtx, SettingConstants.ADMIN_POSITION_ROLE_KEY) as List<InternalAdminPositionRole>;
 
                     if (sysAction == null || adminPermiss == null || adminRole == null || userRole == null || adminPos == null) throw new KeyNotFoundException();
 
@@ -404,7 +404,7 @@ namespace BL.Database.Admins
                 _cacheService.RefreshKey(ctx, SettingConstants.ADMIN_ROLE_CASHE_KEY);
                 transaction.Complete();
             }
-            
+
         }
 
         public void DeleteRoles(IContext ctx, FilterAdminRole filter)
@@ -418,7 +418,7 @@ namespace BL.Database.Admins
                 _cacheService.RefreshKey(ctx, SettingConstants.ADMIN_ROLE_CASHE_KEY);
                 transaction.Complete();
             }
-            
+
         }
 
         public InternalAdminRole GetInternalRole(IContext ctx, FilterAdminRole filter)
@@ -675,7 +675,7 @@ namespace BL.Database.Admins
                 CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.AdminPositionRoles, EnumOperationType.AddNew);
                 _cacheService.RefreshKey(ctx, SettingConstants.ADMIN_POSITION_ROLE_KEY);
                 transaction.Complete();
-               
+
                 return dbModel.Id;
             }
         }
@@ -691,7 +691,7 @@ namespace BL.Database.Admins
                 _cacheService.RefreshKey(ctx, SettingConstants.ADMIN_POSITION_ROLE_KEY);
                 transaction.Complete();
             }
-            
+
         }
 
         public InternalAdminPositionRole GetInternalPositionRole(IContext ctx, FilterAdminPositionRole filter)
@@ -874,7 +874,7 @@ namespace BL.Database.Admins
                 _cacheService.RefreshKey(ctx, SettingConstants.USER_ROLE_CASHE_KEY);
                 transaction.Complete();
             }
-            
+
         }
 
         public void DeleteUserRoles(IContext ctx, FilterAdminUserRole filter)
@@ -888,7 +888,7 @@ namespace BL.Database.Admins
                 _cacheService.RefreshKey(ctx, SettingConstants.USER_ROLE_CASHE_KEY);
                 transaction.Complete();
             }
-            
+
         }
 
         public IEnumerable<InternalAdminUserRole> GetInternalUserRoles(IContext ctx, FilterAdminUserRole filter)
@@ -1110,6 +1110,25 @@ namespace BL.Database.Admins
 
         }
 
+        public IEnumerable<InternalAdminEmployeeDepartment> GetInternalDepartmentAdmins(IContext ctx, FilterAdminEmployeeDepartments filter)
+        {
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = GetEmployeeDepartmentsQuery(ctx, dbContext, filter);
+
+                var res = qry.Select(x => new InternalAdminEmployeeDepartment
+                {
+                    Id = x.Id,
+                    EmployeeId = x.EmployeeId,
+                    DepartmentId = x.DepartmentId,
+                }).ToList();
+                transaction.Complete();
+                return res;
+            }
+
+        }
+
         private IQueryable<AdminEmployeeDepartments> GetEmployeeDepartmentsQuery(IContext ctx, DmsContext dbContext, FilterAdminEmployeeDepartments filter)
         {
             var qry = dbContext.AdminEmployeeDepartmentsSet.Where(x => x.Employee.ClientId == ctx.Client.Id).AsQueryable();
@@ -1146,6 +1165,16 @@ namespace BL.Database.Admins
 
                     filterContains = filter.DepartmentIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.DepartmentId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (filter.EmployeeIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.New<AdminEmployeeDepartments>(false);
+
+                    filterContains = filter.EmployeeIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.EmployeeId == value).Expand());
 
                     qry = qry.Where(filterContains);
                 }
@@ -1582,7 +1611,7 @@ namespace BL.Database.Admins
                 _cacheService.RefreshKey(ctx, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
                 transaction.Complete();
             }
-           
+
         }
 
 
@@ -1596,12 +1625,12 @@ namespace BL.Database.Admins
                 _cacheService.RefreshKey(ctx, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
                 transaction.Complete();
             }
-            
+
         }
 
 
         private IQueryable<AdminRolePermissions> GetRolePermissionsQuery(IContext ctx, DmsContext dbContext, FilterAdminRolePermissions filter)
-        { 
+        {
             var qry = dbContext.AdminRolePermissionsSet.Where(x => x.Role.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
@@ -1674,7 +1703,7 @@ namespace BL.Database.Admins
         private void VerifyAdminSecurityCash(IContext ctx)
         {
             var admCtx = new AdminContext(ctx);
-            
+
             if (!_cacheService.Exists(ctx, SettingConstants.PERMISSION_CASHE_KEY))
             {
                 _cacheService.AddOrUpdateCasheData(ctx, SettingConstants.PERMISSION_CASHE_KEY, () =>

@@ -54,7 +54,7 @@ namespace BL.Logic.AdminCore
 
         #region [+] General ...
 
-        
+
         public Employee GetEmployeeForContext(IContext context, string userId)
         {
             return _adminDb.GetEmployeeForContext(context, userId);
@@ -303,6 +303,25 @@ namespace BL.Logic.AdminCore
         public IEnumerable<FrontAdminEmployeeDepartments> GetDepartmentAdmins(IContext context, int departmentId)
         {
             return _adminDb.GetDepartmentAdmins(context, departmentId);
+        }
+
+        public List<int> GetInternalEmployeeDepartments(IContext context, int employeeId, List<int> depertmentsIDs = null)
+        {
+            // проверяю есть ли для сотрудника отделы для администрирования
+            var deps = _adminDb.GetInternalDepartmentAdmins(context, new FilterAdminEmployeeDepartments { EmployeeIDs = new List<int> { employeeId } });
+
+            if (deps?.Count() > 0)
+            {
+                if (depertmentsIDs?.Count() > 0)
+                {
+                    deps = deps.Where(x => depertmentsIDs.Contains(x.DepartmentId));
+                }
+
+                return deps.Select(x => x.DepartmentId).ToList();
+            }
+            // Если нет отделов возвращаю null - в администраторах не числится
+            else return null;
+
         }
         #endregion
 
@@ -845,10 +864,10 @@ namespace BL.Logic.AdminCore
 
         public FilterPermissionsAccess GetFilterPermissionsAccessByContext(IContext context, bool isPositionFromContext, List<int> permissionIDs = null, int? actionId = null, int? moduleId = null)
         {
-            var res = new FilterPermissionsAccess {UserId = context.CurrentAgentId};
+            var res = new FilterPermissionsAccess { UserId = context.CurrentAgentId };
 
-            res.PositionsIdList = isPositionFromContext 
-                ? new List<int> { context.CurrentPositionId }.Intersect(context.CurrentPositionsIdList).ToList() 
+            res.PositionsIdList = isPositionFromContext
+                ? new List<int> { context.CurrentPositionId }.Intersect(context.CurrentPositionsIdList).ToList()
                 : context.CurrentPositionsIdList;
             res.ActionId = actionId;
             res.PermissionIDs = permissionIDs;
@@ -873,7 +892,7 @@ namespace BL.Logic.AdminCore
         {
             if (context is AdminContext) return true;//Full access to admin. ADMIN IS COOL!!! 
 
-            var data = _adminDb.GetAdminAccesses(context); 
+            var data = _adminDb.GetAdminAccesses(context);
             var res = false;
             if (model.UserId == 0)
             {
@@ -912,7 +931,7 @@ namespace BL.Logic.AdminCore
             {
                 if (model.DocumentActionId == null)
                 {
-                    throw new AccessIsDenied(); 
+                    throw new AccessIsDenied();
                 }
 
                 var actionName = string.Empty;

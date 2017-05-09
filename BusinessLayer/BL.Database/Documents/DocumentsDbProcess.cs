@@ -1693,11 +1693,11 @@ namespace BL.Database.Documents
                         DocumentId = x.Id,
                         LinkId = x.LinkId,
                         SenderAgentId = x.SenderAgentId,
-                        ExecutorPositionDepartmentCode = x.ExecutorPosition.Department.Code,
+                        ExecutorPositionDepartmentCode = x.ExecutorPosition.Department.Index,
                         SubscriptionsPositionDepartmentCode = x.Subscriptions
                             .Where(y => y.SubscriptionStateId == (int)EnumSubscriptionStates.Sign)
                             .OrderBy(y => y.LastChangeDate).Take(1)
-                            .Select(y => y.DoneEvent.Accesses.FirstOrDefault(z => z.AccessTypeId == (int)EnumEventAccessTypes.Source).Position.Department.Code).FirstOrDefault(),
+                            .Select(y => y.DoneEvent.Accesses.FirstOrDefault(z => z.AccessTypeId == (int)EnumEventAccessTypes.Source).Position.Department.Index).FirstOrDefault(),
                         DocumentSendListLastAgentExternalFirstSymbolName = x.SendLists
                             .Where(y => y.SendTypeId == (int)EnumSendTypes.SendForInformationExternal)
                             .OrderByDescending(y => y.LastChangeDate).Take(1)
@@ -1740,7 +1740,7 @@ namespace BL.Database.Documents
                                     x.PrefixFormula,
                                     x.SuffixFormula,
                                     x.Index,
-                                    RegistrationJournalDepartmentCode = x.Department.Code
+                                    RegistrationJournalDepartmentCode = x.Department.Index
                                 }).FirstOrDefault();
 
                 if (regJournal != null)
@@ -1783,7 +1783,7 @@ namespace BL.Database.Documents
                 res.CurrentPositionDepartmentCode =
                     dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.Client.Id)
                         .Where(x => x.Id == model.CurrentPositionId)
-                        .Select(x => x.Department.Code).FirstOrDefault();
+                        .Select(x => x.Department.Index).FirstOrDefault();
                 transaction.Complete();
                 return res;
             }

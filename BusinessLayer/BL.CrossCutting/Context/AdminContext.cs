@@ -127,8 +127,6 @@ namespace BL.CrossCutting.Context
 
         public bool CurrentPositionDefined => true;
         public int CurrentPositionId => _currentPositionId ?? (int)EnumSystemPositions.AdminPosition;
-        public bool CurrentAgentDefined => true;
-
         public int CurrentAgentId => (int)EnumSystemUsers.AdminUser;
 
         public void SetCurrentPosition(int? position)

@@ -984,7 +984,7 @@ namespace BL.Database.Dictionaries
                     {
                         Id = y.Id,
                         PositionName = y.Position.Name,
-                        DepartmentIndex = y.Position.Department.Code,
+                        DepartmentIndex = y.Position.Department.Index,
                         DepartmentName = y.Position.Department.Name,
                         PositionExecutorTypeSuffix = y.PositionExecutorType.Suffix
                     }).ToList(),
@@ -3440,7 +3440,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetDepartmentsQuery(ctx, filter);
 
-                qry.Update(x => new DictionaryDepartments { FullPath = codePreffix + "/" + x.Code });
+                qry.Update(x => new DictionaryDepartments { Code = codePreffix + "/" + x.Index });
 
                 CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryDepartments, EnumOperationType.UpdateFull);
                 transaction.Complete();
@@ -3474,8 +3474,8 @@ namespace BL.Database.Dictionaries
                     LastChangeUserId = x.LastChangeUserId,
                     IsActive = x.IsActive,
                     ParentId = x.ParentId,
-                    Code = x.FullPath,
-                    Index = x.Code,
+                    Code = x.Code,
+                    Index = x.Index,
                     Name = x.Name,
                     FullName = x.FullName,
                     CompanyId = x.CompanyId,
@@ -3503,8 +3503,8 @@ namespace BL.Database.Dictionaries
                     LastChangeUserId = x.LastChangeUserId,
                     IsActive = x.IsActive,
                     ParentId = x.ParentId,
-                    Code = x.FullPath,
-                    Index = x.Code,
+                    Code = x.Code,
+                    Index = x.Index,
                     Name = x.Name,
                     FullName = x.FullName,
                     CompanyId = x.CompanyId,
@@ -3523,15 +3523,15 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetDepartmentsQuery(ctx, filter);
 
-                qry = qry.OrderBy(x => x.Code).ThenBy(x => x.Name);
+                qry = qry.OrderBy(x => x.Index).ThenBy(x => x.Name);
 
                 var res = qry.Select(x => new FrontDictionaryDepartment
                 {
                     Id = x.Id,
                     IsActive = x.IsActive,
                     ParentId = x.ParentId,
-                    Code = x.FullPath,
-                    Index = x.Code,
+                    Code = x.Code,
+                    Index = x.Index,
                     Name = x.Name,
                     FullName = x.FullName,
                     CompanyId = x.CompanyId,
@@ -3573,7 +3573,7 @@ namespace BL.Database.Dictionaries
                 {
 
                     var qry = GetDepartmentsQuery(ctx, new FilterDictionaryDepartment() { IDs = new List<int> { id ?? 0 } });
-                    var item = qry.Select(x => new FrontDictionaryDepartment() { Id = x.Id, ParentId = x.ParentId, Code = x.FullPath }).FirstOrDefault();
+                    var item = qry.Select(x => new FrontDictionaryDepartment() { Id = x.Id, ParentId = x.ParentId, Code = x.Code }).FirstOrDefault();
 
                     if (item == null) break;
 
@@ -3595,7 +3595,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetDepartmentsQuery(ctx, filter);
 
-                qry = qry.OrderBy(x => x.Code).ThenBy(x => x.Name);
+                qry = qry.OrderBy(x => x.Index).ThenBy(x => x.Name);
 
                 var objId = ((int)EnumObjects.DictionaryDepartments).ToString();
                 var companyObjId = ((int)EnumObjects.DictionaryAgentClientCompanies).ToString();
@@ -3603,7 +3603,7 @@ namespace BL.Database.Dictionaries
                 var res = qry.Select(x => new FrontDictionaryDepartmentTreeItem
                 {
                     Id = x.Id,
-                    Code = x.FullPath,
+                    Code = x.Code,
                     Name = x.Name,
                     SearchText = x.Name,
                     CompanyId = x.CompanyId,
@@ -3628,7 +3628,7 @@ namespace BL.Database.Dictionaries
 
 
 
-                qry = qry.OrderBy(x => x.Code).ThenBy(x => x.Name);
+                qry = qry.OrderBy(x => x.Index).ThenBy(x => x.Name);
 
                 var objId = ((int)EnumObjects.DictionaryDepartments).ToString();
                 var companyObjId = ((int)EnumObjects.DictionaryAgentClientCompanies).ToString();
@@ -3636,7 +3636,7 @@ namespace BL.Database.Dictionaries
                 var res = qry.Select(x => new FrontDictionaryDepartmentTreeItem
                 {
                     Id = x.Id,
-                    Code = x.FullPath,
+                    Code = x.Code,
                     Name = x.Name,
                     SearchText = x.Name,
                     CompanyId = x.CompanyId,
@@ -3659,15 +3659,15 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetDepartmentsQuery(ctx, filter);
 
-                qry = qry.OrderBy(x => x.Code).ThenBy(x => x.Name);
+                qry = qry.OrderBy(x => x.Index).ThenBy(x => x.Name);
 
                 var res = qry.Select(x => new AutocompleteItem
                 {
                     Id = x.Id,
-                    Name = x.FullPath + " " + x.Name,
+                    Name = x.Code + " " + x.Name,
                     Details = new List<string>
                     {
-                        x.ParentDepartment.FullPath +" " + x.ParentDepartment.Name,
+                        x.ParentDepartment.Code +" " + x.ParentDepartment.Name,
                         x.Company.Agent.Name,
                         x.ChiefPosition.Name ?? string.Empty
                     },
@@ -3686,7 +3686,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetDepartmentsQuery(ctx, filter);
 
-                qry = qry.OrderBy(x => x.Code).ThenBy(x => x.Name);
+                qry = qry.OrderBy(x => x.Index).ThenBy(x => x.Name);
 
                 var objId = ((int)EnumObjects.DictionaryDepartments).ToString();
                 var companyObjId = ((int)EnumObjects.DictionaryAgentClientCompanies).ToString();
@@ -3694,8 +3694,8 @@ namespace BL.Database.Dictionaries
                 var res = qry.Select(x => new TreeItem
                 {
                     Id = x.Id,
-                    Name = x.FullPath + " " + x.Name,
-                    SearchText = x.FullPath + " " + x.Name,
+                    Name = x.Code + " " + x.Name,
+                    SearchText = x.Code + " " + x.Name,
                     ObjectId = (int)EnumObjects.DictionaryDepartments,
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId, "_", companyObjId) : string.Concat(x.ParentId, "_", objId),
@@ -3713,7 +3713,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetDepartmentsQuery(ctx, filter);
 
-                qry = qry.OrderBy(x => x.Code).ThenBy(x => x.Name);
+                qry = qry.OrderBy(x => x.Index).ThenBy(x => x.Name);
 
                 var objId = ((int)EnumObjects.DictionaryDepartments).ToString();
                 var companyObjId = ((int)EnumObjects.DictionaryAgentClientCompanies).ToString();
@@ -3721,9 +3721,9 @@ namespace BL.Database.Dictionaries
                 var res = qry.Select(x => new FrontDIPSubordinationsDepartment
                 {
                     Id = x.Id,
-                    Code = x.FullPath,
+                    Code = x.Code,
                     Name = x.Name,
-                    SearchText = x.FullPath + " " + x.Name,
+                    SearchText = x.Code + " " + x.Name,
                     ObjectId = (int)EnumObjects.DictionaryDepartments,
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId, "_", companyObjId) : string.Concat(x.ParentId, "_", objId),
@@ -3747,7 +3747,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetDepartmentsQuery(ctx, filter);
 
-                qry = qry.OrderBy(x => x.Code).ThenBy(x => x.Name);
+                qry = qry.OrderBy(x => x.Index).ThenBy(x => x.Name);
 
                 var objId = ((int)EnumObjects.DictionaryDepartments).ToString();
                 var companyObjId = ((int)EnumObjects.DictionaryAgentClientCompanies).ToString();
@@ -3755,9 +3755,9 @@ namespace BL.Database.Dictionaries
                 var res = qry.Select(x => new FrontDIPJournalAccessDepartment
                 {
                     Id = x.Id,
-                    Code = x.FullPath,
+                    Code = x.Code,
                     Name = x.Name,
-                    SearchText = x.FullPath + " " + x.Name,
+                    SearchText = x.Code + " " + x.Name,
                     ObjectId = (int)EnumObjects.DictionaryDepartments,
                     TreeId = string.Concat(x.Id.ToString(), "_", objId),
                     TreeParentId = (x.ParentId == null) ? string.Concat(x.CompanyId, "_", companyObjId) : string.Concat(x.ParentId, "_", objId),
@@ -3779,7 +3779,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetDepartmentsQuery(ctx, filter);
 
-                qry = qry.OrderBy(x => x.Code).ThenBy(x => x.Name);
+                qry = qry.OrderBy(x => x.Index).ThenBy(x => x.Name);
 
                 var objId = ((int)EnumObjects.DictionaryDepartments).ToString();
                 var companyObjId = ((int)EnumObjects.DictionaryAgentClientCompanies).ToString();
@@ -3787,7 +3787,7 @@ namespace BL.Database.Dictionaries
                 var res = qry.Select(x => new FrontDIPRegistrationJournalPositionsDepartment
                 {
                     Id = x.Id,
-                    Code = x.FullPath,
+                    Code = x.Code,
                     Name = x.Name,
                     SearchText = x.Name,
                     ObjectId = (int)EnumObjects.DictionaryDepartments,
@@ -3895,7 +3895,7 @@ namespace BL.Database.Dictionaries
                 {
                     var filterContains = PredicateBuilder.New<DictionaryDepartments>(false);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Code.Contains(value)).Expand());
+                        (current, value) => current.Or(e => e.Index.Contains(value)).Expand());
 
                     qry = qry.Where(filterContains);
                 }
@@ -4598,8 +4598,8 @@ namespace BL.Database.Dictionaries
                         MainExecutorAgentName = x.MainExecutorAgent.Name,
                         //ParentPositionName = x.ParentPosition.Name,
                         DepartmentId = x.DepartmentId,
-                        DepartmentCode = x.Department.Code,
-                        DepartmentCodePath = x.Department.FullPath,
+                        DepartmentCode = x.Department.Index,
+                        DepartmentCodePath = x.Department.Code,
                         DepartmentName = x.Department.Name,
                         Order = x.Order,
                         PositionExecutors = x.PositionExecutors.
@@ -4673,8 +4673,8 @@ namespace BL.Database.Dictionaries
                     Order = x.Order,
                     //ParentPositionName = x.ParentPosition.Name,
                     DepartmentId = x.DepartmentId,
-                    DepartmentCode = x.Department.Code,
-                    DepartmentCodePath = x.Department.FullPath,
+                    DepartmentCode = x.Department.Index,
+                    DepartmentCodePath = x.Department.Code,
                     DepartmentName = x.Department.Name,
                     CompanyName = x.Department.Company.Agent.Name,
                     ExecutorAgentId = x.ExecutorAgentId,
@@ -4753,7 +4753,7 @@ namespace BL.Database.Dictionaries
                     Name = x.Name,
                     CompanyName = x.Department.Company.Agent.Name,
                     DepartmentName = x.Department.Name,
-                    DepartmentCodePath = x.Department.FullPath,
+                    DepartmentCodePath = x.Department.Code,
                     ExecutorName = x.ExecutorAgent.Name,
                     ExecutorTypeSuffix = x.ExecutorType.Suffix
                 }).ToList();
@@ -4803,7 +4803,7 @@ namespace BL.Database.Dictionaries
                     Details = new List<string>
                     {
                         x.Name,
-                        x.Department.FullPath + " " + x.Department.Name,
+                        x.Department.Code + " " + x.Department.Name,
                     },
                 }).ToList();
 
@@ -4826,7 +4826,7 @@ namespace BL.Database.Dictionaries
                     Name = x.Name,
                     Details = new List<string>
                     {
-                        x.Department.FullPath + " " + x.Department.Name,
+                        x.Department.Code + " " + x.Department.Name,
                         x.ExecutorAgentId.HasValue ? x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : null) : "##l@Message:PositionIsVacant@l##"
                     },
                 }).ToList();
@@ -5074,7 +5074,7 @@ namespace BL.Database.Dictionaries
                 {
                     var filterContains = PredicateBuilder.New<DictionaryPositions>(true);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.NameDepartmentExecutor).Aggregate(filterContains,
-                        (current, value) => current.And(e => (e.Name + " " + e.Department.FullPath + " " + e.Department.Name + " " + e.ExecutorAgent.Name).Contains(value)).Expand());
+                        (current, value) => current.And(e => (e.Name + " " + e.Department.Code + " " + e.Department.Name + " " + e.ExecutorAgent.Name).Contains(value)).Expand());
 
                     qry = qry.Where(filterContains);
                 }
@@ -5209,7 +5209,7 @@ namespace BL.Database.Dictionaries
                     AgentName = x.Agent.Name,
                     PositionName = x.Position.Name,
                     PositionFullName = x.Position.FullName,
-                    DepartmentIndex = x.Position.Department.Code,
+                    DepartmentIndex = x.Position.Department.Index,
                     DepartmentName = x.Position.Department.Name,
                     AccessLevelName = x.AccessLevel.Name,
                     PositionExecutorTypeName = x.PositionExecutorType.Name,
@@ -5275,7 +5275,7 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.PositionId,
                     Name = x.Agent.Name + (x.PositionExecutorType.Suffix != null ? " (" + x.PositionExecutorType.Suffix + ")" : null),
-                    Details = new List<string> { x.Position.Name ?? string.Empty, x.Position.Department.FullPath + " " + x.Position.Department.Name },
+                    Details = new List<string> { x.Position.Name ?? string.Empty, x.Position.Department.Code + " " + x.Position.Department.Name },
                 }).ToList();
 
                 transaction.Complete();
@@ -5332,7 +5332,7 @@ namespace BL.Database.Dictionaries
                     PositionName = x.Position.Name,
                     PositionExecutorSuffix = x.Position.ExecutorType.Suffix,
                     ExecutorName = x.Position.ExecutorAgent.Name,
-                    DepartmentCodeName = x.Position.Department.FullPath + " " + x.Position.Department.Name,
+                    DepartmentCodeName = x.Position.Department.Code + " " + x.Position.Department.Name,
                     PositionRoles = x.Position.PositionRoles
                         .Where(y => y.PositionId == x.PositionId)
                         .OrderBy(y => y.Role.Name)
@@ -5782,7 +5782,7 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     Name = x.Index + " " + x.Name,
-                    Details = new List<string> { x.Department.Code + " " + x.Department.Name }
+                    Details = new List<string> { x.Department.Index + " " + x.Department.Name }
                 }).ToList();
 
                 transaction.Complete();
@@ -6290,7 +6290,7 @@ namespace BL.Database.Dictionaries
                     ImageByteArray = x.TargetPosition.ExecutorAgent.Image,
                     TargetExecutorTypeSuffix = x.TargetPosition.ExecutorType.Suffix,
 
-                    TargetDepartmentIndex = x.TargetPosition.Department.Code,
+                    TargetDepartmentIndex = x.TargetPosition.Department.Index,
                     TargetDepartmentName = x.TargetPosition.Department.Name,
 
 
@@ -6518,7 +6518,7 @@ namespace BL.Database.Dictionaries
                     PositionName = x.Position.Name,
                     PositionExecutorName = x.Position.ExecutorAgent.Name,
                     PositionExecutorTypeSuffix = x.Position.ExecutorType.Suffix,
-                    DepartmentIndex = x.Position.Department.Code,
+                    DepartmentIndex = x.Position.Department.Index,
                     DepartmentName = x.Position.Department.Name,
                 }).ToList();
 

@@ -22,8 +22,8 @@ namespace BL.Database.Common
                 Name = item.Name,
                 FullName = item.FullName,
                 CompanyId = item.CompanyId,
-                Code = item.Index,
-                FullPath = item.Code,
+                Index = item.Index,
+                Code = item.Code,
                 ChiefPositionId = item.ChiefPositionId
             };
         }

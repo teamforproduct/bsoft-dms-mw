@@ -608,7 +608,7 @@ namespace BL.Database.SystemDb
                     ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryDepartments,
                     ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.DictionaryDepartments,
-                    ObjectText = x.Main.Name + " " + x.Main.FullName+ " " + x.Main.FullPath
+                    ObjectText = x.Main.Name + " " + x.Main.FullName+ " " + x.Main.Code
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
                 return res;
@@ -1050,7 +1050,7 @@ namespace BL.Database.SystemDb
                     ClientId = ctx.Client.Id, FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DictionaryStandartSendLists,
                     ParentObjectId = x.Main.StandartSendListId, ParentObjectType = EnumObjects.DictionaryStandartSendLists,
-                    ObjectText = x.Main.Description + " " + x.Main.Task + " " + x.Main.TargetPosition.Name + " " + x.Main.TargetPosition.ExecutorAgent.Name + " " + x.Main.TargetPosition.Department.FullPath + " " + x.Main.TargetPosition.Department.Name + " " + x.Main.TargetAgent.Name
+                    ObjectText = x.Main.Description + " " + x.Main.Task + " " + x.Main.TargetPosition.Name + " " + x.Main.TargetPosition.ExecutorAgent.Name + " " + x.Main.TargetPosition.Department.Code + " " + x.Main.TargetPosition.Department.Name + " " + x.Main.TargetAgent.Name
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
                 return res;

@@ -9,7 +9,7 @@
         /// <summary>
         /// ИД сотрудника
         /// </summary>
-        public int? Id { get; set; }
+        public int Id { get; set; }
         /// <summary>
         /// ФИО
         /// </summary>

@@ -121,6 +121,7 @@
     <Compile Include="AdminCore\IncomingModel\ModifyAdminDefaultSubordination.cs" />
     <Compile Include="AdminCore\IncomingModel\SetSubordinationByCompany.cs" />
     <Compile Include="AdminCore\IncomingModel\SetSubordinationByDepartment.cs" />
+    <Compile Include="AdminCore\InternalModel\InternalAdminEmployeeDepartment.cs" />
     <Compile Include="AdminCore\InternalModel\InternalDepartmentAdmin.cs" />
     <Compile Include="AdminCore\InternalModel\InternalAdminRolePermission.cs" />
     <Compile Include="AdminCore\InternalModel\InternalRoleType.cs" />

@@ -1391,6 +1391,16 @@ namespace BL.Logic.DictionaryCore
             if (departments != null) flatList.AddRange(departments);
             if (executors != null) flatList.AddRange(executors);
 
+            // Тонкий момент, проверяю не является ли сотрудник локальным администратором.
+            // Если не локальный значит, надеюсь, что глобальный и отображаю все
+            var adminService = DmsResolver.Current.Get<IAdminService>();
+            var employeeDepartments = adminService.GetInternalEmployeeDepartments(context, context.Employee.Id);
+
+            if (employeeDepartments != null)
+            {
+
+            }
+
             // Полнотекстовый поиск
             if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString))
             {

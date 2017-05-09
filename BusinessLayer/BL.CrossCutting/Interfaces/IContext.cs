@@ -21,7 +21,6 @@ namespace BL.CrossCutting.Interfaces
         DatabaseModel CurrentDB { get; set; }
         bool CurrentPositionDefined { get; }
         int CurrentPositionId { get; }
-        bool CurrentAgentDefined { get; }
         int CurrentAgentId { get; }
         void SetCurrentPosition(int? position);
         bool IsAdmin { get; }

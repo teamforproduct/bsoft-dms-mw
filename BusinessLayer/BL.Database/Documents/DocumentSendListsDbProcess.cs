@@ -91,7 +91,7 @@ namespace BL.Database.Documents
                     Details = new List<string>
                     {
                         x.Position.Name,
-                        x.Position.Department.FullPath + " " + x.Position.Department.Name,
+                        x.Position.Department.Code + " " + x.Position.Department.Name,
                     },
                 }).ToList();
                 transaction.Complete();

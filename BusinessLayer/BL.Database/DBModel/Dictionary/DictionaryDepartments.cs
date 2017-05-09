@@ -21,14 +21,18 @@ namespace BL.Database.DBModel.Dictionary
         [Index("IX_CompanyParentName", 1, IsUnique = false)]
         public int CompanyId { get; set; }
         [MaxLength(2000)]
-        public string Code { get; set; }
+        public string Index { get; set; }
+
+        [MaxLength(2000)]
+        public string Path { get; set; }
+
         [MaxLength(400)]
         [Index("IX_CompanyParentName", 3, IsUnique = false)]
         public string Name { get; set; }
         [MaxLength(2000)]
         public string FullName { get; set; }
         [MaxLength(2000)]
-        public string FullPath { get; set; }
+        public string Code { get; set; }
         public int? ChiefPositionId { get; set; }
         public bool IsActive { get; set; }
         public int LastChangeUserId { get; set; }

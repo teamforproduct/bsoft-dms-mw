@@ -64,6 +64,7 @@ namespace BL.Logic.AdminCore.Interfaces
 
         #region [+] DepartmentAdmins ...
         IEnumerable<FrontAdminEmployeeDepartments> GetDepartmentAdmins(IContext context, int departmentId);
+        List<int> GetInternalEmployeeDepartments(IContext context, int employeeId, List<int> depertmentsIDs = null);
         #endregion
 
         #region [+] Subordinations ...
