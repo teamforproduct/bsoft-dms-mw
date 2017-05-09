@@ -80,5 +80,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public IEnumerable<FrontDocumentEventAccess> Accesses { get; set; }
         public IEnumerable<FrontDocumentEventAccessGroup> AccessGroups { get; set; }
 
+        public IEnumerable<FrontDocumentFile> Files { get; set; }
+
     }
 }

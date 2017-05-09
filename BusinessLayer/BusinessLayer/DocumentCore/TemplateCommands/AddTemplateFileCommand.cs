@@ -52,7 +52,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
             _file = DmsResolver.Current.Get<ITempStorageService>().GetStoreObject(Model.TmpFileId) as BaseFile;
             if (_file == null)
                 throw new CannotAccessToFile();
-            _admin.VerifyAccess(_context, CommandType, false);
+            _adminProc.VerifyAccess(_context, CommandType, false);
 
             if (!_operationDb.CanAddTemplateAttachedFile(_context, Model, _file))
             {

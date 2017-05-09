@@ -637,6 +637,7 @@ namespace BL.Database.Documents
 
                 res.ForEach(x => CommonQueries.SetRegistrationFullNumber(x));
                 CommonQueries.SetAccessGroups(context, res);
+                CommonQueries.SetFiles(context, res);
                 CommonQueries.SetWaitInfo(context, res);
                 CommonQueries.SetReadInfo(context, res);
                 
@@ -1019,6 +1020,9 @@ namespace BL.Database.Documents
                     var waitDb = ModelConverter.GetDbDocumentWaits(document.Waits).ToList();
                     dbContext.DocumentWaitsSet.AddRange(waitDb);
                     dbContext.SaveChanges();
+                    var waits = document.Waits.ToList();
+                    for (var i = 0; i < waitDb.Count(); i++) waits[i].OnEventId = waitDb[i].OnEventId;
+
                     var positions = document.Waits.SelectMany(x => x.OnEvent.Accesses).Where(x=>x.PositionId.HasValue).Select(x => x.PositionId.Value).ToList();
                     CommonQueries.ModifyDocumentAccessesStatistics(context, document.Id, positions);
                 }
@@ -1582,6 +1586,7 @@ namespace BL.Database.Documents
 
         public void AddDocumentEvents(IContext context, InternalDocument document)
         {
+            List<int> res = null;
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
@@ -1595,9 +1600,11 @@ namespace BL.Database.Documents
 
                 if (document.Events?.Any() ?? false)
                 {
-                    var eventsDb = ModelConverter.GetDbDocumentEvents(document.Events);
+                    var eventsDb = ModelConverter.GetDbDocumentEvents(document.Events).ToList();
                     dbContext.DocumentEventsSet.AddRange(eventsDb);
                     dbContext.SaveChanges();
+                    var events = document.Events.ToList();
+                    for (var i = 0; i < eventsDb.Count(); i++) events[i].Id = eventsDb[i].Id;
                     var positions = document.Events.SelectMany(x => x.Accesses).Where(x => x.PositionId.HasValue).Select(x => x.PositionId.Value).ToList();
                     CommonQueries.ModifyDocumentAccessesStatistics(context, document.Id, positions);
                 }
@@ -1605,7 +1612,6 @@ namespace BL.Database.Documents
                 dbContext.SaveChanges();
                 CommonQueries.AddFullTextCacheInfo(context, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
-
             }
         }
 
@@ -1797,6 +1803,7 @@ namespace BL.Database.Documents
         public void SendBySendList(IContext context, InternalDocument document)
         {
             var dbContext = context.DbContext as DmsContext;
+            List<int> recalcPositions = new List<int>();
             using (var transaction = Transactions.GetTransaction())
             {
                 var sendList = document.SendLists.First();
@@ -1807,7 +1814,7 @@ namespace BL.Database.Documents
                     LastChangeUserId = sendList.LastChangeUserId
                 };
                 var startEventDb = ModelConverter.GetDbDocumentEvent(sendList.StartEvent);
-
+                recalcPositions = recalcPositions.Concat(sendList.StartEvent.Accesses.Where(x => x.PositionId.HasValue).Select(x => x.PositionId.Value)).ToList();
                 if (sendList.Stage.HasValue)
                 {
                     dbContext.SafeAttach(sendListDb);
@@ -1856,6 +1863,7 @@ namespace BL.Database.Documents
                         }
                         dbContext.DocumentWaitsSet.Add(waitDb);
                         dbContext.SaveChanges();
+                        recalcPositions = recalcPositions.Concat(document.Waits.SelectMany(x => x.OnEvent.Accesses).Where(x => x.PositionId.HasValue).Select(x => x.PositionId.Value)).ToList();
                     }
                 }
 
@@ -1879,6 +1887,7 @@ namespace BL.Database.Documents
 
                     dbContext.DocumentEventsSet.Add(eventDb);
                     dbContext.SaveChanges();
+                    recalcPositions = recalcPositions.Concat(document.Events.SelectMany(x => x.Accesses).Where(x => x.PositionId.HasValue).Select(x => x.PositionId.Value)).ToList();
                 }
 
                 if (document.Papers?.Any() ?? false)
@@ -1914,10 +1923,10 @@ namespace BL.Database.Documents
 
                 }
 
-                var positions = document.Events.SelectMany(x => x.Accesses).Where(x => x.PositionId.HasValue).Select(x => x.PositionId.Value).ToList();
-                positions = positions.Concat(document.Waits.SelectMany(x => x.OnEvent.Accesses).Where(x => x.PositionId.HasValue).Select(x => x.PositionId.Value)).ToList();
+                //var positions = document.Events.SelectMany(x => x.Accesses).Where(x => x.PositionId.HasValue).Select(x => x.PositionId.Value).ToList();
+                //positions = positions.Concat(document.Waits.SelectMany(x => x.OnEvent.Accesses).Where(x => x.PositionId.HasValue).Select(x => x.PositionId.Value)).ToList();
 
-                CommonQueries.ModifyDocumentAccessesStatistics(context, document.Id, positions);
+                CommonQueries.ModifyDocumentAccessesStatistics(context, document.Id, recalcPositions);
                 CommonQueries.AddFullTextCacheInfo(context, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
 

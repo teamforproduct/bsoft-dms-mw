@@ -58,7 +58,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
             _paper = _document.Papers.First();
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
                 throw new CouldNotPerformOperationWithPaper();

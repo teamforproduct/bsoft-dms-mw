@@ -81,7 +81,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _file = _document.DocumentFiles.First(x => x.Id == Model);
 
             _context.SetCurrentPosition(_file.ExecutorPositionId);
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
 
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {

@@ -45,7 +45,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
 
-            _admin.VerifyAccess(_context, CommandType,false);
+            _adminProc.VerifyAccess(_context, CommandType,false);
 
             return true;
         }

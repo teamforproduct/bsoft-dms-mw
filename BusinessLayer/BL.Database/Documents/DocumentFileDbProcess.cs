@@ -98,7 +98,6 @@ namespace BL.Database.Documents
                                     IsDeleted = file.IsDeleted,
                                     IsWorkedOut = file.IsWorkedOut ?? true,
                                     Description = file.Description,
-                                    Hash = file.Hash,
                                     LastChangeDate = file.LastChangeDate,
                                     LastChangeUserId = file.LastChangeUserId,
                                     LastChangeUserName = agent.Name,
@@ -106,7 +105,8 @@ namespace BL.Database.Documents
                                     Version = file.Version,
                                     WasChangedExternal = false,
                                     ExecutorPositionName = file.ExecutorPosition.Name,
-                                    ExecutorPositionExecutorAgentName = file.ExecutorPositionExecutorAgent.Name + (file.ExecutorPositionExecutorType.Suffix != null ? " (" + file.ExecutorPositionExecutorType.Suffix + ")" : null),
+                                    ExecutorPositionExecutorAgentName = file.ExecutorPositionExecutorAgent.Name 
+                                        + (file.ExecutorPositionExecutorType.Suffix != null ? " (" + file.ExecutorPositionExecutorType.Suffix + ")" : null),
                                     DocumentDate = (file.Document.LinkId.HasValue || isNeedRegistrationFullNumber) ? file.Document.RegistrationDate ?? file.Document.CreateDate : (DateTime?)null,
                                     RegistrationNumber = file.Document.RegistrationNumber,
                                     RegistrationNumberPrefix = file.Document.RegistrationNumberPrefix,
@@ -118,7 +118,19 @@ namespace BL.Database.Documents
                                         FileType = file.FileType,
                                         FileSize = file.FileSize,
                                         Name = file.Name,
-                                    }
+                                    },
+                                    //Event = new FrontDocumentEvent
+                                    //{
+                                    //    Id = file.Event.Id,
+                                    //    EventType = file.Event.EventTypeId,
+                                    //    EventTypeName = file.Event.EventType.Name,
+                                    //    Date = file.Event.Date,
+                                    //    CreateDate = file.Event.Date != file.Event.CreateDate ? (DateTime?)file.Event.CreateDate : null,
+                                    //    Task = file.Event.Task.Task,
+                                    //    Description = file.Event.Description,
+                                    //    AddDescription = file.Event.AddDescription,
+                                    //    OnWait = file.Event.OnWait.Select(y => new FrontDocumentWait { DueDate = y.DueDate, OffEventDate = (DateTime?)y.OffEvent.Date }).FirstOrDefault(),
+                                    //}
                                 });
 
                 var res = qryFE.ToList();
@@ -139,11 +151,13 @@ namespace BL.Database.Documents
                                     OrderNumber = x.Key.OrderNumber,
                                     IsNotAllWorkedOut = x.Any(y => y.IsWorkedOut == false)
                                 }).ToList();
-
                     res.ForEach(x => x.IsNotAllWorkedOut = isNotAllWorkedOut.FirstOrDefault(y => y.DocumentId == x.DocumentId && y.OrderNumber == x.OrderInDocument)?.IsNotAllWorkedOut ?? false);
                 }
 
                 res.ForEach(x => CommonQueries.SetRegistrationFullNumber(x));
+                //var events = res.Select(x => x.Event).ToList();
+                //CommonQueries.SetAccessGroups(context, events);
+                //CommonQueries.SetWaitInfo(context, events);
                 transaction.Complete();
                 return res;
             }

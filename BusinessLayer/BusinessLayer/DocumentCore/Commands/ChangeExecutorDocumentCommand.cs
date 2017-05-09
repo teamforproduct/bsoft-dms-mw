@@ -55,7 +55,7 @@ namespace BL.Logic.DocumentCore.Commands
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
             _context.SetCurrentPosition(_document.ExecutorPositionId);
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
             if (Model.PositionId == _context.CurrentPositionId)
             {
                 throw new CouldNotChangeAttributeLaunchPlan();
@@ -69,7 +69,7 @@ namespace BL.Logic.DocumentCore.Commands
 
             if (Model.PaperEvents != null && Model.PaperEvents.Any())
             {
-                _admin.VerifyAccess(_context, EnumDocumentActions.PlanDocumentPaperEvent);
+                _adminProc.VerifyAccess(_context, EnumDocumentActions.PlanDocumentPaperEvent);
                 _document.Papers = _operationDb.PlanDocumentPaperEventPrepare(_context, Model.PaperEvents.Select(x => x.Id).ToList()).Papers;
                 if (_document.Papers.Any(x => x.LastPaperEvent.TargetPositionId == null || x.LastPaperEvent.TargetPositionId.Value != _document.ExecutorPositionId
                                             || !x.IsInWork || x.LastPaperEvent.PaperRecieveDate == null))

@@ -58,7 +58,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
 
             //TODO potential two user could add same new version in same time. Probably need to implement CheckOut flag in future
             _document = _operationDb.ModifyDocumentFilePrepare(_context, Model.DocumentId, Model.OrderInDocument, Model.Version);

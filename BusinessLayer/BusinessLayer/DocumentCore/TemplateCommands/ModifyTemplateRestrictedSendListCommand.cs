@@ -39,7 +39,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType, false);
+            _adminProc.VerifyAccess(_context, CommandType, false);
             if (_operationDb.ExistsTemplateDocumentRestrictedSendLists(_context, new FilterTemplateDocumentRestrictedSendList { TemplateId = Model.DocumentId, PositionId = Model.PositionId, NotContainsIDs = new List<int> { Model.Id} }))
             {
                 throw new RecordNotUnique();

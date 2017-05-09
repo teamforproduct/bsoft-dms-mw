@@ -61,7 +61,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 throw new RecordNotUnique();
             }
             _context.SetCurrentPosition(_task.PositionId);
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
                 throw new CouldNotPerformOperationWithPaper();

@@ -53,7 +53,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             foreach(var sl in DocSendLists)
             {
                 _context.SetCurrentPosition(sl.SourcePositionId);
-                _admin.VerifyAccess(_context, CommandType);
+                _adminProc.VerifyAccess(_context, CommandType);
                 if (!CanBeDisplayed(_context.CurrentPositionId))
                 {
                     throw new CouldNotPerformOperation();

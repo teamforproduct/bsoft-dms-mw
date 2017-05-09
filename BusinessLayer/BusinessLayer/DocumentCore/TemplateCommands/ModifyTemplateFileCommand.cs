@@ -40,7 +40,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType, false);
+            _adminProc.VerifyAccess(_context, CommandType, false);
             _docFile = _operationDb.UpdateFilePrepare(_context, Model.Id);
             if (_docFile == null)
             {

@@ -71,7 +71,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             Model.ForEach(x => x.File = tempStorageService.GetStoreObject(x.TmpFileId) as BaseFile);
             if (Model.Any(x => x.File == null))
                 throw new CannotAccessToFile();
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
             _document = _operationDb.AddDocumentFilePrepare(_context, Model.Select(x => x.DocumentId).FirstOrDefault());
             if (_document == null)
             {
@@ -113,7 +113,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
                 throw new ExecutorAgentForPositionIsNotDefined();
             }
-            //using (var transaction = Transactions.GetTransaction())
+            using (var transaction = Transactions.GetTransaction())
             {
                 Model.ForEach(m =>
                             {
@@ -144,7 +144,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                                     }
                                 });
                             });
-                //transaction.Complete();
+                transaction.Complete();
             }
             return res;
         }

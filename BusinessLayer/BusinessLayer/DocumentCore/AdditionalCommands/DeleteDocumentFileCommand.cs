@@ -75,7 +75,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
                 _context.SetCurrentPosition(_file.ExecutorPositionId);
             }
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
 
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {

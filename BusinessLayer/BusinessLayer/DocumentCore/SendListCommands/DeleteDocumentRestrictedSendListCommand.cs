@@ -41,7 +41,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             _document = _operationDb.ChangeDocumentSendListPrepare(_context, DocRestSendList.DocumentId);
 
             _context.SetCurrentPosition(_document.ExecutorPositionId);
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
 
             var restrictedSendLists = _document.RestrictedSendLists.ToList();
             restrictedSendLists.Remove(_document.RestrictedSendLists.FirstOrDefault(x => x.Id == Model));

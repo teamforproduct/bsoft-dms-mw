@@ -71,7 +71,7 @@ namespace BL.Logic.DocumentCore.Commands
                 throw new CouldNotPerformOperation();
             }
             _context.SetCurrentPosition(_docWait.OnEvent.TargetPositionId);
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
             return true;
         }
 

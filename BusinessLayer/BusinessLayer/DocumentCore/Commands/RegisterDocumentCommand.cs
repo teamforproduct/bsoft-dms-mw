@@ -47,7 +47,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
             _document = _documentDb.RegisterDocumentPrepare(_context, Model);
 
             if (_document == null)

@@ -70,7 +70,7 @@ namespace BL.Logic.DocumentCore.Commands
             if (_docWait.IsHasAskPostponeDueDate)
                 _operationDb.ControlOffAskPostponeDueDateWaitPrepare(_context, _document);
             _context.SetCurrentPosition(_docWait.OnEvent.SourcePositionId);
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
             return true;
         }
 

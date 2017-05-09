@@ -40,7 +40,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType, false);
+            _adminProc.VerifyAccess(_context, CommandType, false);
             _document = _operationDb.ModifyTemplatePaperPrepare(_context, Model.Id, Model);
             _paper = _document?.Papers.First();
             if (_paper == null)

@@ -71,6 +71,48 @@ namespace BL.Database.Common
             }).ToList();
             items.ForEach(x => x.AccessGroups = accGroups.Where(y => y.EventId == x.Id).Select(y => y.AccessGroups).FirstOrDefault());
         }
+        public static void SetFiles(IContext context, List<FrontDocumentEvent> items)
+        {
+            var dbContext = context.DbContext as DmsContext;
+            var ids = items.Where(x => x != null).Select(x => x.Id).ToList();
+            if (!ids.Any()) return;
+            var filterContains = PredicateBuilder.New<DocumentFiles>(false);
+            filterContains = ids.Aggregate(filterContains,
+                (current, value) => current.Or(e => e.EventId == value).Expand());
+            var qry = dbContext.DocumentFilesSet.Where(filterContains);
+            var files = qry.GroupBy(x => x.EventId).Select(x => new
+            {
+                EventId = x.Key,
+                Files = x.OrderByDescending(y => y.LastChangeDate).Join(dbContext.DictionaryAgentsSet, o => o.LastChangeUserId, i => i.Id, (file, agent) => new FrontDocumentFile
+                                {
+                                    Id = file.Id,
+                                    Date = file.Date,
+                                    DocumentId = file.DocumentId,
+                                    Type = (EnumFileTypes)file.TypeId,
+                                    TypeName = file.Type.Code,
+                                    IsMainVersion = file.IsMainVersion,
+                                    IsDeleted = file.IsDeleted,
+                                    IsWorkedOut = file.IsWorkedOut ?? true,
+                                    Description = file.Description,
+                                    LastChangeDate = file.LastChangeDate,
+                                    LastChangeUserId = file.LastChangeUserId,
+                                    LastChangeUserName = agent.Name,
+                                    OrderInDocument = file.OrderNumber,
+                                    Version = file.Version,
+                                    ExecutorPositionName = file.ExecutorPosition.Name,
+                                    ExecutorPositionExecutorAgentName = file.ExecutorPositionExecutorAgent.Name + (file.ExecutorPositionExecutorType.Suffix != null ? " (" + file.ExecutorPositionExecutorType.Suffix + ")" : null),
+                                    File = new BaseFile
+                                    {
+                                        Extension = file.Extension,
+                                        FileType = file.FileType,
+                                        FileSize = file.FileSize,
+                                        Name = file.Name,
+                                    }
+                                }
+                ).ToList(),
+            }).ToList();
+            items.ForEach(x => x.Files = files.Where(y => y.EventId == x.Id).Select(y => y.Files).FirstOrDefault());
+        }
         public static void SetAccessGroups(IContext context, List<FrontDocumentSendList> items)
         {
             var dbContext = context.DbContext as DmsContext;
