@@ -1343,6 +1343,34 @@ namespace BL.Logic.DictionaryCore
         public IEnumerable<ITreeItem> GetStaffList(IContext context, FullTextSearch ftSearch, FilterDictionaryStaffList filter)
         {
 
+            // Тонкий момент, проверяю не является ли сотрудник локальным администратором.
+            // Если не локальный значит, надеюсь, что глобальный и отображаю все
+            var adminService = DmsResolver.Current.Get<IAdminService>();
+            var employeeDepartments = adminService.GetInternalEmployeeDepartments(context, context.Employee.Id);
+            List<int> safeList = null;
+            if (employeeDepartments != null)
+            {
+                var deps = _dictDb.GetInternalDepartments(context, new FilterDictionaryDepartment { IDs = employeeDepartments });
+
+                safeList.AddRange(employeeDepartments);
+
+                // собираю список Id включая родительские отделы
+                foreach (var dep in deps)
+                {
+                    safeList.AddRange(dep.Path.Split('/').Select(x => int.Parse(x)));
+                }
+
+                safeList = safeList.Distinct().ToList();
+
+                // Если передан фильтр, то проверяю чтобы переданный id были из safeList
+                if (filter?.DepartmentIDs?.Count() > 0)
+                {
+                    filter.DepartmentIDs = filter.DepartmentIDs.Where(x => safeList.Contains(x)).ToList();
+                }
+                else filter.DepartmentIDs = safeList;
+
+            }
+
             int levelCount = filter?.LevelCount ?? 0;
             IEnumerable<TreeItem> executors = null;
             IEnumerable<TreeItem> positions = null;
@@ -1363,7 +1391,8 @@ namespace BL.Logic.DictionaryCore
             {
                 positions = _dictDb.GetPositionsForStaffList(context, new FilterDictionaryPosition()
                 {
-                    IsActive = filter?.IsActive
+                    IsActive = filter?.IsActive,
+                    DepartmentIDs = employeeDepartments,
                 });
             }
 
@@ -1390,16 +1419,6 @@ namespace BL.Logic.DictionaryCore
             if (positions != null) flatList.AddRange(positions);
             if (departments != null) flatList.AddRange(departments);
             if (executors != null) flatList.AddRange(executors);
-
-            // Тонкий момент, проверяю не является ли сотрудник локальным администратором.
-            // Если не локальный значит, надеюсь, что глобальный и отображаю все
-            var adminService = DmsResolver.Current.Get<IAdminService>();
-            var employeeDepartments = adminService.GetInternalEmployeeDepartments(context, context.Employee.Id);
-
-            if (employeeDepartments != null)
-            {
-
-            }
 
             // Полнотекстовый поиск
             if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString))
