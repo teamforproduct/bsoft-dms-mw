@@ -1411,7 +1411,8 @@ namespace BL.Logic.DictionaryCore
             {
                 companies = _dictDb.GetAgentOrgsForStaffList(context, new FilterDictionaryAgentOrg()
                 {
-                    IsActive = filter?.IsActive
+                    IsActive = filter?.IsActive,
+                    DepartmentIDs = employeeDepartments,
                 });
             }
 
