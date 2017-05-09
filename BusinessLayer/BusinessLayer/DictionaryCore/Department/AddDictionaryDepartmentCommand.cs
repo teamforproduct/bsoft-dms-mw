@@ -5,6 +5,7 @@ using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BL.Logic.DictionaryCore
 {
@@ -20,11 +21,14 @@ namespace BL.Logic.DictionaryCore
 
             using (var transaction = Transactions.GetTransaction())
             {
-                if (string.IsNullOrEmpty(model.Code)) model.Code = GetCode();
+                var cp = GetCodePath();
+
+                model.Code = cp.Code;
+                model.Path = cp.Path;
 
                 var id = _dictDb.AddDepartment(_context, model);
 
-                var frontObj = _dictDb.GetDepartment(_context, new FilterDictionaryDepartment { IDs = new List<int> { id } });
+                var frontObj = _dictDb.GetInternalDepartments(_context, new FilterDictionaryDepartment { IDs = new List<int> { id } }).FirstOrDefault();
                 _logger.Information(_context, null, (int)EnumObjects.DictionaryDepartments, (int)CommandType, frontObj.Id, frontObj);
 
                 transaction.Complete();

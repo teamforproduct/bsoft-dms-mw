@@ -1203,7 +1203,7 @@ namespace BL.Database.Dictionaries
                 if (filter.RoleIDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.New<AdminUserRoles>(false);
-                    filter.RoleIDs.Aggregate(filterContains,(current, value) => current.Or(e => e.RoleId == value).Expand());
+                    filter.RoleIDs.Aggregate(filterContains, (current, value) => current.Or(e => e.RoleId == value).Expand());
 
                     //qry = qry.Where(x => x.PositionExecutors.UserRoles.Any(y => filter.RoleIDs.Any(RoleId => y.RoleId == RoleId)));
 
@@ -2548,7 +2548,7 @@ namespace BL.Database.Dictionaries
         }
 
 
-        public IEnumerable<FrontAgentBank>GetAgentBanks(IContext ctx, FilterDictionaryAgentBank filter)
+        public IEnumerable<FrontAgentBank> GetAgentBanks(IContext ctx, FilterDictionaryAgentBank filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
@@ -2728,23 +2728,23 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var res = dbContext.DictionaryAgentAccountsSet.Where(x => x.Agent.ClientId == ctx.Client.Id).Where(x => x.Id == id).Select(x => new FrontDictionaryAgentAccount
+                {
+                    Id = x.Id,
+                    AccountNumber = x.AccountNumber,
+                    Name = x.Name,
+                    IsMain = x.IsMain,
+                    AgentId = x.AgentId,
+                    Description = x.Description,
+                    IsActive = x.IsActive,
+                    Bank = new FrontMainAgentBank
                     {
-                        Id = x.Id,
-                        AccountNumber = x.AccountNumber,
-                        Name = x.Name,
-                        IsMain = x.IsMain,
-                        AgentId = x.AgentId,
-                        Description = x.Description,
-                        IsActive = x.IsActive,
-                        Bank = new FrontMainAgentBank
-                        {
-                            Id = x.AgentBank.Id,
-                            MFOCode = x.AgentBank.MFOCode,
-                            Swift = x.AgentBank.Swift,
-                            Name = x.AgentBank.Agent.Name
-                        }
+                        Id = x.AgentBank.Id,
+                        MFOCode = x.AgentBank.MFOCode,
+                        Swift = x.AgentBank.Swift,
+                        Name = x.AgentBank.Agent.Name
+                    }
 
-                    }).FirstOrDefault();
+                }).FirstOrDefault();
 
                 transaction.Complete();
                 return res;
@@ -3431,7 +3431,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public void UpdateDepartmentCode(IContext ctx, string codePreffix, FilterDictionaryDepartment filter)
+        public void UpdateDepartmentCode(IContext ctx, string codePreffix, string pathPrefix, FilterDictionaryDepartment filter)
         {
             if (string.IsNullOrEmpty(codePreffix)) return;
 
@@ -3440,7 +3440,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetDepartmentsQuery(ctx, filter);
 
-                qry.Update(x => new DictionaryDepartments { Code = codePreffix + "/" + x.Index });
+                qry.Update(x => new DictionaryDepartments { Code = codePreffix + "/" + x.Index, Path = pathPrefix});
 
                 CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryDepartments, EnumOperationType.UpdateFull);
                 transaction.Complete();
@@ -3474,6 +3474,7 @@ namespace BL.Database.Dictionaries
                     LastChangeUserId = x.LastChangeUserId,
                     IsActive = x.IsActive,
                     ParentId = x.ParentId,
+                    Path = x.Path,
                     Code = x.Code,
                     Index = x.Index,
                     Name = x.Name,
@@ -3481,35 +3482,6 @@ namespace BL.Database.Dictionaries
                     CompanyId = x.CompanyId,
                     ChiefPositionId = x.ChiefPositionId,
                 }).ToList();
-
-                transaction.Complete();
-                return res;
-            }
-        }
-
-        public InternalDictionaryDepartment GetDepartment(IContext ctx, FilterDictionaryDepartment filter)
-        {
-            var dbContext = ctx.DbContext as DmsContext;
-            using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = GetDepartmentsQuery(ctx, filter);
-
-                qry = qry.OrderBy(x => x.Name);
-
-                var res = qry.Select(x => new InternalDictionaryDepartment
-                {
-                    Id = x.Id,
-                    LastChangeDate = x.LastChangeDate,
-                    LastChangeUserId = x.LastChangeUserId,
-                    IsActive = x.IsActive,
-                    ParentId = x.ParentId,
-                    Code = x.Code,
-                    Index = x.Index,
-                    Name = x.Name,
-                    FullName = x.FullName,
-                    CompanyId = x.CompanyId,
-                    ChiefPositionId = x.ChiefPositionId
-                }).FirstOrDefault();
 
                 transaction.Complete();
                 return res;
@@ -4453,7 +4425,7 @@ namespace BL.Database.Dictionaries
                 var entity = dbContext.Entry(dbModel);
                 //pss нельзя модифицировать поля, которые проставляет вертушка
                 //dbContext.Entry(dd).State = EntityState.Modified;
-                
+
                 entity.Property(x => x.ParentId).IsModified = true;
                 entity.Property(x => x.IsActive).IsModified = true;
                 entity.Property(x => x.Name).IsModified = true;
@@ -4481,7 +4453,7 @@ namespace BL.Database.Dictionaries
                 //dbContext.DictionaryPositionsSet.Where(x => x.Id == positionId).Update(x => new DictionaryPositions { Order = order });
                 dbContext.SafeAttach(dbModel);
                 var entity = dbContext.Entry(dbModel);
-                
+
                 entity.Property(x => x.Order).IsModified = true;
 
                 dbContext.SaveChanges();
@@ -5084,7 +5056,7 @@ namespace BL.Database.Dictionaries
                 {
                     var filterContains = PredicateBuilder.New<DBModel.Document.DocumentEventAccesses>(false);
                     filterContains = filter.DocumentIDs.Aggregate(filterContains, (current, value) => current.Or(e => e.DocumentId == value).Expand());
-                    qry = qry.Where(x => dbContext.DocumentEventAccessesSet.AsQueryable().Where(y => y.ClientId == ctx.Client.Id).Where(filterContains).Any(y => y.PositionId==x.Id));
+                    qry = qry.Where(x => dbContext.DocumentEventAccessesSet.AsQueryable().Where(y => y.ClientId == ctx.Client.Id).Where(filterContains).Any(y => y.PositionId == x.Id));
                 }
 
                 if (filter.RoleIDs?.Count > 0)
@@ -5155,7 +5127,7 @@ namespace BL.Database.Dictionaries
                 _cacheService.RefreshKey(ctx, SettingConstants.DICT_POSITION_EXECUTOR_CASHE_KEY);
                 transaction.Complete();
             }
-           
+
         }
 
 
@@ -5167,12 +5139,12 @@ namespace BL.Database.Dictionaries
                 var list = qry.Select(x => x.Id).ToList();
                 qry.Delete();
 
-                UpdateExecutorsInPositions(ctx,  list);
+                UpdateExecutorsInPositions(ctx, list);
                 CommonQueries.AddFullTextCacheInfo(ctx, list, EnumObjects.DictionaryPositionExecutors, EnumOperationType.Delete);
                 _cacheService.RefreshKey(ctx, SettingConstants.DICT_POSITION_EXECUTOR_CASHE_KEY);
                 transaction.Complete();
             }
-            
+
         }
 
         public IEnumerable<FrontDictionaryPositionExecutor> GetPositionExecutors(IContext ctx, FilterDictionaryPositionExecutor filter, EnumSortPositionExecutors sort = EnumSortPositionExecutors.StartDate_PositionExecutorType)
@@ -6844,7 +6816,7 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetTagsQuery(ctx, filter);
-                CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x =>x.Id).ToList(), EnumObjects.DictionaryTag, EnumOperationType.Delete);
+                CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryTag, EnumOperationType.Delete);
                 qry.Delete();
 
                 transaction.Complete();
