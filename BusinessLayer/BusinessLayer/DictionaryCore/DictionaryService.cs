@@ -771,7 +771,7 @@ namespace BL.Logic.DictionaryCore
 
                 if (item.NewOrder != item.OldOrder)
                 {
-                    _dictDb.UpdatePositionOrder(context, item.Id, item.NewOrder); 
+                    _dictDb.UpdatePositionOrder(context, item.Id, item.NewOrder);
                 }
             }
 
@@ -1347,7 +1347,7 @@ namespace BL.Logic.DictionaryCore
             // Если не локальный значит, надеюсь, что глобальный и отображаю все
             var adminService = DmsResolver.Current.Get<IAdminService>();
             var employeeDepartments = adminService.GetInternalEmployeeDepartments(context, context.Employee.Id);
-            
+
             if (employeeDepartments != null)
             {
                 List<int> safeList = new List<int>();
@@ -1369,7 +1369,11 @@ namespace BL.Logic.DictionaryCore
                 {
                     filter.DepartmentIDs = filter.DepartmentIDs.Where(x => safeList.Contains(x)).ToList();
                 }
-                else filter.DepartmentIDs = safeList;
+                else
+                {
+                    if (filter == null) filter = new FilterDictionaryStaffList();
+                    filter.DepartmentIDs = safeList;
+                }
 
             }
 
