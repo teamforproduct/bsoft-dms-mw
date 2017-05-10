@@ -228,10 +228,10 @@ namespace BL.Database.Documents
                             .GroupBy(x => x)
                             .Select(x => new { Id = x.Key, Count = x.Count() })
                             .ToList();
-                        var positionCounters = dbContext.DictionaryPositionsSet.Select(x => new FrontDictionaryPosition
+                        var positionCounters = dbContext.DictionaryPositionsSet.Select(x => new FrontDocumentAccess
                         {
-                            Id = x.Id,
-                            Name = x.Name,
+                            PositionId = x.Id,
+                            PositionName = x.Name,
                             DepartmentId = x.DepartmentId,
                             ExecutorAgentId = x.ExecutorAgentId,
                             DepartmentName = x.Department.Name,
@@ -342,10 +342,10 @@ namespace BL.Database.Documents
                     else if (groupCountType == EnumGroupCountType.Positions)
                     {
                         var qryPositionCounters = dbContext.DictionaryPositionsSet.Select(
-                            x => new FrontDictionaryPosition
+                            x => new FrontDocumentAccess
                             {
-                                Id = x.Id,
-                                Name = x.Name,
+                                PositionId = x.Id,
+                                PositionName = x.Name,
                                 DepartmentId = x.DepartmentId,
                                 ExecutorAgentId = x.ExecutorAgentId,
                                 DepartmentName = x.Department.Name,
@@ -660,8 +660,8 @@ namespace BL.Database.Documents
                     res.AccessLevelId = accByExecutorPosition.AccessLevelId;
                     res.AccessLevelName = accByExecutorPosition.AccessLevelName;
                 }
-                res.IsFavourite = accs.Any(x => x.IsFavourite);
-                res.IsInWork = accs.Any() ? accs.Any(x => x.IsInWork) : true;
+                res.IsFavourite = accs.Any(x => x.IsFavourite??false);
+                res.IsInWork = accs.Any() ? accs.Any(x => x.IsInWork??false) : true;
                 res.Accesses = accs;
 
                 CommonQueries.SetRegistrationFullNumber(res, false);

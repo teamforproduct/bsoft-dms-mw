@@ -208,7 +208,7 @@ namespace BL.Model.DocumentCore.FrontModel
 //        public IEnumerable<FrontDocumentPaper> DocumentPapers { get; set; }
 //        public IEnumerable<FrontDocumentPaperEvent> DocumentPaperEvents { get; set; }
 
-        public IEnumerable<FrontDictionaryPosition> DocumentWorkGroup { get; set; }
+        public IEnumerable<FrontDocumentAccess> DocumentWorkGroup { get; set; }
 //        public IEnumerable<FrontDocumentSubscription> DocumentSubscriptions { get; set; }
 
         public IEnumerable<FrontPropertyValue> Properties { get; set; }
