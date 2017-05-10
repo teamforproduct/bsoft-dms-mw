@@ -101,6 +101,7 @@ namespace BL.Database.Common
                                     Version = file.Version,
                                     ExecutorPositionName = file.ExecutorPosition.Name,
                                     ExecutorPositionExecutorAgentName = file.ExecutorPositionExecutorAgent.Name + (file.ExecutorPositionExecutorType.Suffix != null ? " (" + file.ExecutorPositionExecutorType.Suffix + ")" : null),
+                                    EventId = file.EventId,
                                     File = new BaseFile
                                     {
                                         Extension = file.Extension,

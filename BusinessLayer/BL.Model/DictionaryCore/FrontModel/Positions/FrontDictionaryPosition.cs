@@ -77,7 +77,10 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// </summary>
         public int? DocCount { get; set; }
 
-
+        /// <summary>
+        /// Признак выбрана ли должность для работы
+        /// </summary>
+        public bool? IsChoosen { get; set; }
 
         public virtual IEnumerable<FrontDictionaryPosition> ChildPositions { get; set; }
         public virtual IEnumerable<FrontDictionaryDepartment> ChiefDepartments { get; set; }

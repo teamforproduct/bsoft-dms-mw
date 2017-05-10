@@ -112,6 +112,7 @@ namespace BL.Database.Documents
                                     RegistrationNumberPrefix = file.Document.RegistrationNumberPrefix,
                                     RegistrationNumberSuffix = file.Document.RegistrationNumberSuffix,
                                     RegistrationFullNumber = "#" + file.Document.Id,
+                                    EventId = file.EventId,
                                     File = new BaseFile
                                     {
                                         Extension = file.Extension,
@@ -188,6 +189,7 @@ namespace BL.Database.Documents
                             WasChangedExternal = false,
                             ExecutorPositionName = x.fl.ExecutorPosition.Name,
                             ExecutorPositionExecutorAgentName = x.fl.ExecutorPositionExecutorAgent.Name + (x.fl.ExecutorPositionExecutorType.Suffix != null ? " (" + x.fl.ExecutorPositionExecutorType.Suffix + ")" : null),
+                            EventId = x.fl.EventId,
                             File = new BaseFile
                             {
                                 Extension = x.fl.Extension,

@@ -95,6 +95,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public string PdfFileLink { get; set; }
         public string PreviewFileLink { get; set; }
         public string FileLink { get; set; }
+        public int? EventId { get; set; }
         /// <summary>
         /// Событие
         /// </summary>

@@ -619,7 +619,7 @@ namespace BL.Database.Documents
                         //TargetPositionId = x.TargetPositionId,
                         //SourcePositionId = x.SourcePositionId,
                         //ReadDate = x.ReadDate,
-                        IsRead = !x.Accesses.AsQueryable().Where(filterPositionContains).Any(y=>!y.ReadDate.HasValue),
+                        IsRead = !x.Accesses.AsQueryable().Where(filterPositionContains).Any(y => !y.ReadDate.HasValue),
 
                         PaperId = x.Paper.Id,
                         PaperName = x.Paper.Name,
@@ -640,7 +640,7 @@ namespace BL.Database.Documents
                 CommonQueries.SetFiles(context, res);
                 CommonQueries.SetWaitInfo(context, res);
                 CommonQueries.SetReadInfo(context, res);
-                
+
                 #endregion filling
 
                 transaction.Complete();
@@ -694,7 +694,7 @@ namespace BL.Database.Documents
                             DueDate = isDetail ? DbFunctions.TruncateTime(y.DueDate) : null,
                             SourcePositionExecutorAgentName = isDetail ?
                             y.OnEvent.Accesses.Where(z => z.AccessTypeId == (int)EnumEventAccessTypes.Source)
-                                .Select(z=>z.Agent.Name + (z.PositionExecutorType.Suffix != null ? " (" + z.PositionExecutorType.Suffix + ")" : null)).FirstOrDefault()
+                                .Select(z => z.Agent.Name + (z.PositionExecutorType.Suffix != null ? " (" + z.PositionExecutorType.Suffix + ")" : null)).FirstOrDefault()
                             : null,
                             TargetPositionExecutorAgentName = isDetail ?
                             y.OnEvent.Accesses.Where(z => z.AccessTypeId <= (int)EnumEventAccessTypes.Target).OrderByDescending(z => z.AccessTypeId)
@@ -814,7 +814,7 @@ namespace BL.Database.Documents
                             EventType = x.OnEvent.EventTypeId,
                             EventTypeName = x.OnEvent.EventType.WaitDescription/*?? x.OnEvent.EventType.Name*/,
                             Date = x.OnEvent.Date,
-                         },
+                        },
                         OffEvent = !x.OffEventId.HasValue
                         ? null
                         : new FrontDocumentEvent
@@ -940,8 +940,8 @@ namespace BL.Database.Documents
                 }).ToList();
 
                 res.ForEach(x => CommonQueries.SetRegistrationFullNumber(x));
-                CommonQueries.SetAccessGroups(context, res.Where(x=>x.SendEvent != null).Select(x=>x.SendEvent).Concat(res.Where(x => x.DoneEvent != null).Select(x => x.DoneEvent)).ToList());
-               transaction.Complete();
+                CommonQueries.SetAccessGroups(context, res.Where(x => x.SendEvent != null).Select(x => x.SendEvent).Concat(res.Where(x => x.DoneEvent != null).Select(x => x.DoneEvent)).ToList());
+                transaction.Complete();
                 return res;
             }
         }
@@ -961,8 +961,12 @@ namespace BL.Database.Documents
                     ExecutorAgentId = x.Position.ExecutorAgentId,
                     DepartmentName = x.Position.Department.Name,
                     ExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : (string)null),
+                    IsActive = x.IsActive,
+                    Order = x.Position.Order,
+                    IsChoosen = x.IsInWork,
                 }).Distinct().ToList();
                 transaction.Complete();
+                res.ForEach(x => x.IsChoosen = (x.IsChoosen ?? false && (context.CurrentPositionsIdList.Contains(x.Id))) ? true : (bool?)null);
                 return res;
             }
         }
@@ -1023,7 +1027,7 @@ namespace BL.Database.Documents
                     var waits = document.Waits.ToList();
                     for (var i = 0; i < waitDb.Count(); i++) waits[i].OnEventId = waitDb[i].OnEventId;
 
-                    var positions = document.Waits.SelectMany(x => x.OnEvent.Accesses).Where(x=>x.PositionId.HasValue).Select(x => x.PositionId.Value).ToList();
+                    var positions = document.Waits.SelectMany(x => x.OnEvent.Accesses).Where(x => x.PositionId.HasValue).Select(x => x.PositionId.Value).ToList();
                     CommonQueries.ModifyDocumentAccessesStatistics(context, document.Id, positions);
                 }
                 CommonQueries.AddFullTextCacheInfo(context, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
@@ -2078,12 +2082,14 @@ namespace BL.Database.Documents
                     doc.Events = dbContext.DocumentEventsSet.Where(x => x.ClientId == context.Client.Id)
                         .Where(x => x.DocumentId == sendList.DocumentId && x.Task.Id == sendList.TaskId
                                     && x.EventTypeId == (int)EnumEventTypes.SendForControl
-                                    && x.Accesses.Any(y=>y.PositionId == sendList.SourcePositionId))
-                        .Select(x => new    {   eventC = x,
-                                                source = x.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source) ,
-                                                target = x.Accesses.Where(y => y.AccessTypeId <= (int)EnumEventAccessTypes.Target)
-                                                                    .OrderByDescending(y=> y.AccessTypeId).FirstOrDefault()
-                                            })
+                                    && x.Accesses.Any(y => y.PositionId == sendList.SourcePositionId))
+                        .Select(x => new
+                        {
+                            eventC = x,
+                            source = x.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source),
+                            target = x.Accesses.Where(y => y.AccessTypeId <= (int)EnumEventAccessTypes.Target)
+                                                                    .OrderByDescending(y => y.AccessTypeId).FirstOrDefault()
+                        })
                         .Select(x => new InternalDocumentEvent
                         {
                             Id = x.eventC.Id,
@@ -2112,7 +2118,7 @@ namespace BL.Database.Documents
                             eventCSourcePositionId = x.OnEvent
                                                         .ChildEvents.FirstOrDefault(y => y.ParentEventId == x.OnEvent.Id && y.EventTypeId == (int)EnumEventTypes.InfoSendForResponsibleExecutionReportingControler)
                                                         .Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
-                        }).Where(x => x.eventCSourcePositionId == null && x.sourceRE.PositionId == sendList.SourcePositionId 
+                        }).Where(x => x.eventCSourcePositionId == null && x.sourceRE.PositionId == sendList.SourcePositionId
                                     || x.eventCSourcePositionId != null && x.eventCSourcePositionId == sendList.SourcePositionId)
                         .Select(x => new InternalDocumentWait
                         {
@@ -2440,7 +2446,7 @@ namespace BL.Database.Documents
                         StageType = (EnumStageTypes?)x.StageTypeId,
                         Stage = x.Stage,
                         SourcePositionId = x.AccessGroups.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
-                        SourceAgentId = x.AccessGroups.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).AgentId??0,
+                        SourceAgentId = x.AccessGroups.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).AgentId ?? 0,
                         //TargetAgentId = x.TargetAgentId
 
                     }).ToList();
