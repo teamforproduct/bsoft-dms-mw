@@ -28,40 +28,37 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = CommonQueries.GetDocumentFileQuery(context, filter?.File);
+                #region qry
+                var qrys = CommonQueries.GetDocumentFileQueries(context, filter?.File);
 
                 if (filter?.Document != null)
                 {
-                    var documentIds = CommonQueries.GetDocumentQuery(context, filter.Document, true)
-                                        .Select(x => x.Id);
-
-                    qry = qry.Where(x => documentIds.Contains(x.DocumentId));
+                    var documentIds = CommonQueries.GetDocumentQuery(context, filter.Document, true).Select(x => x.Id);
+                    qrys = qrys.Select(qry => { return qry.Where(x => documentIds.Contains(x.DocumentId)); }).ToList();
                 }
 
                 if (filter?.Event != null)
                 {
-                    var eventsDocumentIds = CommonQueries.GetDocumentEventQuery(context, filter?.Event)
-                                                .Select(x => x.DocumentId);
-
-                    qry = qry.Where(x => eventsDocumentIds.Contains(x.DocumentId));
+                    var eventsDocumentIds = CommonQueries.GetDocumentEventQuery(context, filter?.Event).Select(x => x.DocumentId);
+                    qrys = qrys.Select(qry => { return qry.Where(x => eventsDocumentIds.Contains(x.DocumentId)); }).ToList();
                 }
 
                 if (filter?.Wait != null)
                 {
-                    var waitsDocumentIds = CommonQueries.GetDocumentWaitQuery(context, filter?.Wait)
-                                                .Select(x => x.DocumentId);
-
-                    qry = qry.Where(x => waitsDocumentIds.Contains(x.DocumentId));
+                    var waitsDocumentIds = CommonQueries.GetDocumentWaitQuery(context, filter?.Wait).Select(x => x.DocumentId);
+                    qrys = qrys.Select(qry => { return qry.Where(x => waitsDocumentIds.Contains(x.DocumentId)); }).ToList();
                 }
 
                 //TODO Sort
-                qry = qry.OrderByDescending(x => x.LastChangeDate);
+                qrys = qrys.Select(qry => { return qry.OrderByDescending(x => x.LastChangeDate).AsQueryable(); }).ToList();
+                #endregion qry   
 
+                #region paging
                 if (paging != null)
                 {
                     if (paging.IsOnlyCounter ?? true)
                     {
-                        paging.TotalItemsCount = qry.Count();
+                        paging.TotalItemsCount = qrys.Sum(qry => qry.Count());
                     }
 
                     if (paging.IsOnlyCounter ?? false)
@@ -74,7 +71,27 @@ namespace BL.Database.Documents
                         var skip = paging.PageSize * (paging.CurrentPage - 1);
                         var take = paging.PageSize;
 
-                        qry = qry.Skip(() => skip).Take(() => take);
+                        if (qrys.Count > 1)
+                        {
+                            var take1 = paging.PageSize * (paging.CurrentPage - 1) + paging.PageSize;
+
+                            qrys = qrys.Select(qry => qry.Take(() => take1)).ToList();
+
+                            var qryConcat = qrys.First();
+
+                            foreach (var qry in qrys.Skip(1).ToList())
+                            {
+                                qryConcat = qryConcat.Concat(qry);
+                            }
+
+                            qrys.Clear();
+                            qrys.Add(qryConcat);
+                        }
+
+                        //TODO Sort
+                        qrys = qrys.Select(qry => { return qry.OrderByDescending(x => x.LastChangeDate).AsQueryable(); }).ToList();
+
+                        qrys = qrys.Select(qry => qry.Skip(() => skip).Take(() => take)).ToList();
                     }
                 }
 
@@ -82,10 +99,21 @@ namespace BL.Database.Documents
                 {
                     throw new WrongAPIParameters();
                 }
+                #endregion paging
 
+                #region filling
+                IQueryable<DocumentFiles> qryRes = qrys.First(); ;
+
+                if (qrys.Count > 1)
+                {
+                    foreach (var qry in qrys.Skip(1).ToList())
+                    {
+                        qryRes = qryRes.Concat(qry);
+                    }
+                }
                 var isNeedRegistrationFullNumber = !(filter?.File?.DocumentId?.Any() ?? false);
 
-                var qryFE = dbContext.DocumentFilesSet.Where(x => qry.Select(y => y.Id).Contains(x.Id))
+                var qryFE = dbContext.DocumentFilesSet.Where(x => qryRes.Select(y => y.Id).Contains(x.Id))
                                 .OrderByDescending(x => x.LastChangeDate)
                                 .Join(dbContext.DictionaryAgentsSet, o => o.LastChangeUserId, i => i.Id, (file, agent) => new FrontDocumentFile
                                 {
@@ -105,7 +133,7 @@ namespace BL.Database.Documents
                                     Version = file.Version,
                                     WasChangedExternal = false,
                                     ExecutorPositionName = file.ExecutorPosition.Name,
-                                    ExecutorPositionExecutorAgentName = file.ExecutorPositionExecutorAgent.Name 
+                                    ExecutorPositionExecutorAgentName = file.ExecutorPositionExecutorAgent.Name
                                         + (file.ExecutorPositionExecutorType.Suffix != null ? " (" + file.ExecutorPositionExecutorType.Suffix + ")" : null),
                                     DocumentDate = (file.Document.LinkId.HasValue || isNeedRegistrationFullNumber) ? file.Document.RegistrationDate ?? file.Document.CreateDate : (DateTime?)null,
                                     RegistrationNumber = file.Document.RegistrationNumber,
@@ -159,6 +187,7 @@ namespace BL.Database.Documents
                 //var events = res.Select(x => x.Event).ToList();
                 //CommonQueries.SetAccessGroups(context, events);
                 //CommonQueries.SetWaitInfo(context, events);
+                #endregion filling
                 transaction.Complete();
                 return res;
             }

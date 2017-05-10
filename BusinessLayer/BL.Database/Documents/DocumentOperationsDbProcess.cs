@@ -484,13 +484,11 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 #region qry
-                var qrys = CommonQueries.GetDocumentEventQueryWithoutUnion(context, filter?.Event);
+                var qrys = CommonQueries.GetDocumentEventQueries(context, filter?.Event);
 
                 if (filter?.Document != null)
                 {
-                    var documentIds = CommonQueries.GetDocumentQuery(context, filter?.Document)
-                                        .Select(x => x.Id);
-
+                    var documentIds = CommonQueries.GetDocumentQuery(context, filter?.Document).Select(x => x.Id);
                     qrys = qrys.Select(qry => { return qry.Where(x => documentIds.Contains(x.DocumentId)); }).ToList();
                 }
 
@@ -654,7 +652,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 #region qry
-                var qrys = CommonQueries.GetDocumentWaitQueryWithoutUnion(context, filter?.Wait);
+                var qrys = CommonQueries.GetDocumentWaitQueries(context, filter?.Wait);
 
                 if (filter?.Document != null)
                 {
@@ -966,7 +964,7 @@ namespace BL.Database.Documents
                     IsChoosen = x.IsInWork,
                 }).Distinct().ToList();
                 transaction.Complete();
-                res.ForEach(x => x.IsChoosen = (x.IsChoosen ?? false && (context.CurrentPositionsIdList.Contains(x.Id))) ? true : (bool?)null);
+                res.ForEach(x => x.IsChoosen = (x.IsChoosen ?? false && (context.CurrentPositionsAccessLevel.Any(y => y.Key == x.Id && y.Value <= x.AccessLevelId))) ? true : (bool?)null);
                 return res;
             }
         }
