@@ -81,6 +81,11 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Признак выбрана ли должность для работы
         /// </summary>
         public bool? IsChoosen { get; set; }
+        /// <summary>
+        /// ИД уровня доступа
+        /// </summary>
+        [IgnoreDataMember]
+        public int? AccessLevelId { get; set; }
 
         public virtual IEnumerable<FrontDictionaryPosition> ChildPositions { get; set; }
         public virtual IEnumerable<FrontDictionaryDepartment> ChiefDepartments { get; set; }

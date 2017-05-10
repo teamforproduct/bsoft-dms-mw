@@ -966,7 +966,7 @@ namespace BL.Database.Documents
                     IsChoosen = x.IsInWork,
                 }).Distinct().ToList();
                 transaction.Complete();
-                res.ForEach(x => x.IsChoosen = (x.IsChoosen ?? false && (context.CurrentPositionsIdList.Contains(x.Id))) ? true : (bool?)null);
+                res.ForEach(x => x.IsChoosen = (x.IsChoosen ?? false && (context.CurrentPositionsAccessLevel.Any(y => y.Key == x.Id && y.Value <= x.AccessLevelId))) ? true : (bool?)null);
                 return res;
             }
         }
