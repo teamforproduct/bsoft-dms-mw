@@ -962,9 +962,10 @@ namespace BL.Database.Documents
                     IsActive = x.IsActive,
                     Order = x.Position.Order,
                     IsChoosen = x.IsInWork,
+                    AccessLevelId = x.AccessLevelId,
                 }).Distinct().ToList();
                 transaction.Complete();
-                res.ForEach(x => x.IsChoosen = (x.IsChoosen ?? false && (context.CurrentPositionsAccessLevel.Any(y => y.Key == x.Id && y.Value <= x.AccessLevelId))) ? true : (bool?)null);
+                res.ForEach(x => x.IsChoosen = (((x.IsChoosen ?? false) && (context.CurrentPositionsAccessLevel.Any(y => y.Key == x.Id && y.Value <= x.AccessLevelId))) ? true : (bool?)null));
                 return res;
             }
         }
