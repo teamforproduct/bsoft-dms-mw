@@ -176,7 +176,7 @@ namespace BL.Logic.DocumentCore
             return _operationDb.GetDocumentSubscriptions(ctx, filter, paging);
         }
 
-        public IEnumerable<FrontDocumentAccess> GetDocumentWorkGroup(IContext ctx, FilterDictionaryPosition filter)
+        public IEnumerable<FrontDictionaryPosition> GetDocumentWorkGroup(IContext ctx, FilterDictionaryPosition filter)
         {
             return _operationDb.GetDocumentWorkGroup(ctx, filter);
         }

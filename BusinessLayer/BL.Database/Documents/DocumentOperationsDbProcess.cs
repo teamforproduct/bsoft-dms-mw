@@ -946,26 +946,27 @@ namespace BL.Database.Documents
             }
         }
 
-        public IEnumerable<FrontDocumentAccess> GetDocumentWorkGroup(IContext context, FilterDictionaryPosition filter)
+        public IEnumerable<FrontDictionaryPosition> GetDocumentWorkGroup(IContext context, FilterDictionaryPosition filter)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetDocumentWorkGroupQuery(context, filter);
                 qry = qry.OrderBy(x => x.Position.Name);
-                var res = qry.Where(x => x.PositionId.HasValue).Select(x => new FrontDocumentAccess
+                var res = qry.Where(x => x.PositionId.HasValue).Select(x => new FrontDictionaryPosition
                 {
-                    PositionId = x.PositionId.Value,
-                    PositionName = x.Position.Name,
+                    Id = x.PositionId.Value,
+                    Name = x.Position.Name,
                     DepartmentId = x.Position.DepartmentId,
                     ExecutorAgentId = x.Position.ExecutorAgentId,
                     DepartmentName = x.Position.Department.Name,
                     ExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : (string)null),
-                    AccessLevelId = x.AccessLevelId,
-                    IsInWork = x.IsInWork,
+                    IsActive = x.IsActive,
+                    Order = x.Position.Order,
+                    IsChoosen = x.IsInWork,
                 }).Distinct().ToList();
                 transaction.Complete();
-                res.ForEach(x => x.IsChoosen = (x.IsInWork ?? false && (context.CurrentPositionsAccessLevel.Any(y=>y.Key == x.PositionId && y.Value <= x.AccessLevelId))) ? true : (bool?)null);
+                res.ForEach(x => x.IsChoosen = (x.IsChoosen ?? false && (context.CurrentPositionsIdList.Contains(x.Id))) ? true : (bool?)null);
                 return res;
             }
         }

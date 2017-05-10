@@ -29,7 +29,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpGet]
         [Route(Features.WorkGroups)]
-        [ResponseType(typeof(List<FrontDocumentAccess>))]
+        [ResponseType(typeof(List<FrontDictionaryPosition>))]
         public async Task<IHttpActionResult> Get([FromUri] FilterDictionaryPosition filter)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
