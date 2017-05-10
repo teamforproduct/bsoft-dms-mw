@@ -56,6 +56,7 @@ namespace BL.Database.Common
                 EventId = x.Key,
                 AccessGroups = x.Select(y => new FrontDocumentEventAccessGroup
                 {
+                    Id = y.Id,
                     AccessType = (EnumEventAccessTypes)y.AccessTypeId,
                     AccessGroupType = (EnumEventAccessGroupTypes)y.AccessGroupTypeId,
                     RecordId = y.AgentId ?? y.CompanyId ?? y.DepartmentId ?? y.PositionId ?? y.StandartSendListId,
@@ -127,6 +128,7 @@ namespace BL.Database.Common
                 EventId = x.Key,
                 AccessGroups = x.Select(y => new FrontDocumentSendListAccessGroup
                 {
+                    Id = y.Id,
                     AccessType = (EnumEventAccessTypes)y.AccessTypeId,
                     AccessGroupType = (EnumEventAccessGroupTypes)y.AccessGroupTypeId,
                     RecordId = y.AgentId ?? y.CompanyId ?? y.DepartmentId ?? y.PositionId ?? y.StandartSendListId,
@@ -149,6 +151,7 @@ namespace BL.Database.Common
                 EventId = x.Key,
                 AccessGroups = x.Select(y => new InternalDocumentSendListAccessGroup
                 {
+                    Id = y.Id,
                     AccessType = (EnumEventAccessTypes)y.AccessTypeId,
                     AccessGroupType = (EnumEventAccessGroupTypes)y.AccessGroupTypeId,
                     AgentId = y.AgentId,
@@ -166,6 +169,7 @@ namespace BL.Database.Common
             foreach (var item in items.Where(x => x != null))
                 item.Accesses = dbContext.DocumentEventAccessesSet.Where(x => x.EventId == item.Id).Select(y => new FrontDocumentEventAccess
                 {
+                    Id = y.Id,
                     AccessType = (EnumEventAccessTypes)y.AccessTypeId,
                     RecordId = y.PositionId ?? y.AgentId,
                     Name = y.Position.Name ?? y.Agent.Name,
@@ -942,7 +946,18 @@ namespace BL.Database.Common
         #endregion
 
         #region Files
+
         public static IQueryable<DocumentFiles> GetDocumentFileQuery(IContext context, FilterDocumentFile filter, bool isVerifyAccessLevel = true)
+        {
+            var qrys = GetDocumentFileQueries(context, filter, isVerifyAccessLevel);
+            var res = qrys.First();
+            foreach (var qry in qrys.Skip(1).ToList())
+            {
+                res = res.Concat(qry);
+            }
+            return res;
+        }
+        public static List<IQueryable<DocumentFiles>> GetDocumentFileQueries(IContext context, FilterDocumentFile filter, bool isVerifyAccessLevel = true)
         {
             var dbContext = context.DbContext as DmsContext;
             var qry = dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id).AsQueryable();
@@ -1064,8 +1079,22 @@ namespace BL.Database.Common
                     qry = qry.Where(filterContains);
                 }
             }
+            var res = new List<IQueryable<DocumentFiles>>();
 
-            return qry;
+            if (!context.IsAdmin)
+            {
+                res.Add(qry.Where(x => x.TypeId != (int)EnumFileTypes.Additional));
+                var filterPositionContains = PredicateBuilder.New<DocumentEventAccesses>(false);
+                filterPositionContains = context.CurrentPositionsAccessLevel.Aggregate(filterPositionContains,
+                    (current, value) => current.Or(e => e.PositionId == value.Key && e.Document.Accesses.Any(x => x.PositionId == value.Key && x.AccessLevelId >= value.Value)).Expand());
+                res.Add(qry.Where(x => x.TypeId == (int)EnumFileTypes.Additional).Where(x => x.Event.Accesses.AsQueryable().Where(filterPositionContains).Any()));
+            }
+            else
+            {
+                res.Add(qry);
+            }
+
+            return res;
         }
 
         public static IEnumerable<InternalDocumentFile> GetInternalDocumentFiles(IContext context, int documentId)

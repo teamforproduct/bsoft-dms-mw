@@ -488,9 +488,7 @@ namespace BL.Database.Documents
 
                 if (filter?.Document != null)
                 {
-                    var documentIds = CommonQueries.GetDocumentQuery(context, filter?.Document)
-                                        .Select(x => x.Id);
-
+                    var documentIds = CommonQueries.GetDocumentQuery(context, filter?.Document).Select(x => x.Id);
                     qrys = qrys.Select(qry => { return qry.Where(x => documentIds.Contains(x.DocumentId)); }).ToList();
                 }
 
