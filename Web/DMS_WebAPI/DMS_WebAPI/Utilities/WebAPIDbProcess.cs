@@ -672,10 +672,10 @@ namespace DMS_WebAPI.Utilities
 
             if (filter != null)
             {
-                if (filter.ClientIds?.Count > 0)
+                if (filter.IDs?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.New<AspNetClients>(false);
-                    filterContains = filter.ClientIds.Aggregate(filterContains,
+                    filterContains = filter.IDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
                     qry = qry.Where(filterContains);
@@ -698,7 +698,7 @@ namespace DMS_WebAPI.Utilities
 
         public FrontAspNetClient GetClient(int id)
         {
-            return GetClients(new FilterAspNetClients { ClientIds = new List<int> { id } }).FirstOrDefault();
+            return GetClients(new FilterAspNetClients { IDs = new List<int> { id } }).FirstOrDefault();
         }
         public FrontAspNetClient GetClient(string clientCode)
         {
@@ -716,7 +716,7 @@ namespace DMS_WebAPI.Utilities
 
         public string GetClientCode(int clientId)
         {
-            var res = GetClients(new FilterAspNetClients { ClientIds = new List<int> { clientId } }).FirstOrDefault();
+            var res = GetClients(new FilterAspNetClients { IDs = new List<int> { clientId } }).FirstOrDefault();
 
             if (res == null) throw new ClientIsNotFound();
 

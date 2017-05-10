@@ -1,7 +1,7 @@
 ﻿using BL.CrossCutting.DependencyInjection;
-using BL.CrossCutting.Interfaces;
 using BL.Model.AdminCore.Clients;
 using BL.Model.SystemCore;
+using BL.Model.WebAPI.Filters;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Net;
@@ -88,6 +88,20 @@ namespace DMS_WebAPI.ControllersV3.Clients
             var tmpService = DmsResolver.Current.Get<WebAPIService>();
             await tmpService.DeleteClient(Id);
             return new JsonResult(null, this);
+        }
+
+        /// <summary>
+        /// Определяет есть ли уже клиент с таким имененм в списке клиентов или заявках
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("Exists")]
+        public IHttpActionResult Exists([FromUri] FilterAspNetClients filter)
+        {
+            var tmpService = DmsResolver.Current.Get<WebAPIService>();
+            var res = tmpService.ExistsClient(filter);
+            return new JsonResult(res, this);
         }
 
     }

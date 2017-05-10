@@ -592,12 +592,21 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
+        public bool ExistsClient(FilterAspNetClients filter)
+        {
+            var f = new FilterAspNetClientRequests { CodeExact = filter.Code };
+
+            // Проверка уникальности доменного имени
+            var exists = _webDb.ExistsClientRequests(f);
+
+            if (exists) return true;
+
+            return _webDb.ExistsClients(filter);
+        }
+
         public int AddClientSaaSRequest(AddClientSaaS model)
         {
-            // Проверка уникальности доменного имени
-            if (_webDb.ExistsClients(new FilterAspNetClients { Code = model.ClientCode })) throw new ClientCodeAlreadyExists(model.ClientCode);
-
-            if (_webDb.ExistsClientRequests(new FilterAspNetClientRequests { CodeExact = model.ClientCode })) throw new ClientCodeAlreadyExists(model.ClientCode);
+            if (ExistsClient(new FilterAspNetClients { Code = model.ClientCode })) throw new ClientCodeAlreadyExists(model.ClientCode);
 
             if (string.IsNullOrEmpty(model.ClientName)) model.ClientName = model.ClientCode;
 
@@ -709,8 +718,8 @@ namespace DMS_WebAPI.Utilities
                         //content.Headers.Add(key, value);
                         httpClient.DefaultRequestHeaders.Add(key, value);
                     }
-                    catch {  }
-                    
+                    catch { }
+
                 }
 
                 var response = await httpClient.PostAsync(uri, content);
@@ -880,7 +889,7 @@ namespace DMS_WebAPI.Utilities
 
         public async Task DeleteClient(int Id)
         {
-            var client = _webDb.GetClients(new FilterAspNetClients { ClientIds = new List<int> { Id } }).FirstOrDefault();
+            var client = _webDb.GetClients(new FilterAspNetClients { IDs = new List<int> { Id } }).FirstOrDefault();
 
             if (client == null) throw new ClientIsNotFound();
 
