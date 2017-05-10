@@ -638,7 +638,7 @@ namespace BL.Database.Common
         #region Events
         public static IQueryable<DocumentEvents> GetDocumentEventQuery(IContext context, FilterDocumentEvent filter)
         {
-            var qrys = GetDocumentEventQueryWithoutUnion(context, filter);
+            var qrys = GetDocumentEventQueries(context, filter);
             var res = qrys.First();
             foreach (var qry in qrys.Skip(1).ToList())
             {
@@ -718,7 +718,7 @@ namespace BL.Database.Common
             return qry;
 
         }
-        public static List<IQueryable<DocumentEvents>> GetDocumentEventQueryWithoutUnion(IContext context, FilterDocumentEvent filter)
+        public static List<IQueryable<DocumentEvents>> GetDocumentEventQueries(IContext context, FilterDocumentEvent filter)
         {
             var dbContext = context.DbContext as DmsContext;
 
@@ -1105,7 +1105,7 @@ namespace BL.Database.Common
         #region Waits
         public static IQueryable<DocumentWaits> GetDocumentWaitQuery(IContext context, FilterDocumentWait filter)
         {
-            var qrys = GetDocumentWaitQueryWithoutUnion(context, filter);
+            var qrys = GetDocumentWaitQueries(context, filter);
             var res = qrys.First();
             foreach (var qry in qrys.Skip(1).ToList())
             {
@@ -1114,7 +1114,7 @@ namespace BL.Database.Common
             return res;
         }
 
-        public static List<IQueryable<DocumentWaits>> GetDocumentWaitQueryWithoutUnion(IContext context, FilterDocumentWait filter)
+        public static List<IQueryable<DocumentWaits>> GetDocumentWaitQueries(IContext context, FilterDocumentWait filter)
         {
             var dbContext = context.DbContext as DmsContext;
 

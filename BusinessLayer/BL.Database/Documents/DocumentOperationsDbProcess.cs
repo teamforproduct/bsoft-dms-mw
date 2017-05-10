@@ -484,7 +484,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 #region qry
-                var qrys = CommonQueries.GetDocumentEventQueryWithoutUnion(context, filter?.Event);
+                var qrys = CommonQueries.GetDocumentEventQueries(context, filter?.Event);
 
                 if (filter?.Document != null)
                 {
@@ -654,7 +654,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 #region qry
-                var qrys = CommonQueries.GetDocumentWaitQueryWithoutUnion(context, filter?.Wait);
+                var qrys = CommonQueries.GetDocumentWaitQueries(context, filter?.Wait);
 
                 if (filter?.Document != null)
                 {
