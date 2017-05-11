@@ -26,7 +26,7 @@ namespace BL.Logic.DictionaryCore
             using (var transaction = Transactions.GetTransaction())
             {
                 var frontObj = _dictDb.GetDepartments(_context, new FilterDictionaryDepartment { IDs = new List<int> { Model } }).FirstOrDefault();
-                _logger.Information(_context, null, (int)EnumObjects.DictionaryDepartments, (int)CommandType, frontObj.Id, frontObj);
+                if (frontObj != null) _logger.Information(_context, null, (int)EnumObjects.DictionaryDepartments, (int)CommandType, frontObj.Id, frontObj);
 
                 // Удаляю отдел и дочерние отделы с должностями и всем барахлом
                 _dictService.DeleteDepartments(_context, new List<int>() { Model });

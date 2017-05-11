@@ -29,7 +29,7 @@ namespace BL.Logic.DictionaryCore
             using (var transaction = Transactions.GetTransaction())
             {
                 var frontObj = _dictDb.GetPositions(_context, new FilterDictionaryPosition { IDs = new List<int> { Model } }).FirstOrDefault();
-                _logger.Information(_context, null, (int)EnumObjects.DictionaryPositions, (int)CommandType, frontObj.Id, frontObj);
+                if (frontObj != null) _logger.Information(_context, null, (int)EnumObjects.DictionaryPositions, (int)CommandType, frontObj.Id, frontObj);
 
                 _dictService.DeletePositions(_context, new List<int> { Model });
                 transaction.Complete();

@@ -489,12 +489,12 @@ namespace BL.Database.DatabaseContext
                 );
 
 
-            AddPermission(2300, Modules.User, Features.Positions,
-                readRoles: new List<Roles> { Roles.Admin, Roles.User },
-                createRoles: new List<Roles> { Roles.Admin, Roles.User },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.User },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.User }
-                );
+            //AddPermission(2300, Modules.User, Features.Positions,
+            //    readRoles: new List<Roles> { Roles.Admin, Roles.User },
+            //    createRoles: new List<Roles> { Roles.Admin, Roles.User },
+            //    updateRoles: new List<Roles> { Roles.Admin, Roles.User },
+            //    deleteRoles: new List<Roles> { Roles.Admin, Roles.User }
+            //    );
 
 
 

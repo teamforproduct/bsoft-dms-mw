@@ -262,11 +262,11 @@
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
-              <con:endpoint>http://10.88.12.22:80/</con:endpoint>
+              <con:endpoint>http://localhost:21182/</con:endpoint>
               <con:request>[1037,1041,1044]</con:request>
               <con:originalUri>http://10.88.12.22/api/v3/User/Assignments</con:originalUri>
               <con:credentials>
-                <con:selectedAuthProfile>pr docum t@t.t</con:selectedAuthProfile>
+                <con:selectedAuthProfile>lh docum t@t.t</con:selectedAuthProfile>
                 <con:authType>OAuth 2.0</con:authType>
               </con:credentials>
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
@@ -7011,7 +7011,67 @@
             </con:request>
           </con:method>
         </con:resource>
-      </con:resource>
+      <con:resource name="AddInOrg" path="AddInOrg" id="d2db0a96-1310-4538-a220-da2181444794">
+          <con:settings/>
+          <con:parameters/>
+          
+          <con:method name="Employee/AddInOrg" id="ad5eb4d3-8cb3-4ce1-859c-c4bf6ef6a33c" method="POST">
+            <con:settings/>
+            <con:parameters/>
+            <con:representation type="REQUEST">
+              <con:mediaType>application/json</con:mediaType>
+              <con:params/>
+            </con:representation>
+            <con:representation type="FAULT">
+              <con:mediaType>application/json; charset=utf-8</con:mediaType>
+              <con:status>401</con:status>
+              <con:params/>
+              <con:element xmlns:add="http://10.88.12.22/api/v3/Employee/Addresses">add:Fault</con:element>
+            </con:representation>
+            <con:representation type="RESPONSE">
+              <con:mediaType>application/json; charset=utf-8</con:mediaType>
+              <con:status>200</con:status>
+              <con:params/>
+              <con:element xmlns:add="http://10.88.12.22/api/v3/Employee/Addresses">add:Response</con:element>
+            </con:representation>
+            <con:request name="Add Employee/AddInOrg" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+              <con:settings>
+                <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+              </con:settings>
+              <con:endpoint>http://10.88.12.22:80/</con:endpoint>
+              <con:request>{
+  "OrgName": "sample string 1",
+  "OrgId": 1,
+  "DepartmentName": "sample string 2",
+  "DepartmentIndex": "sample string 3",
+  "DepartmentId": 1,
+  "PositionName": "sample string 4",
+  "PositionId": 1,
+  "Login": "sample string 5",
+  "Phone": "sample string 7",
+  "LanguageId": 8,
+  "ExecutorType": 1,
+  "AccessLevel": 10,
+  "FirstName": "sample string 12",
+  "LastName": "sample string 13",
+  "MiddleName": "sample string 14",
+  "TaxCode": "sample string 15",
+  "IsMale": true,
+  "BirthDate": "2017-05-10T14:19:08.5887449Z"
+}              </con:request>
+              <con:originalUri>http://10.88.12.22/api/v3/Employee/Addresses</con:originalUri>
+              <con:credentials>
+                <con:selectedAuthProfile>pr docum t@t.t</con:selectedAuthProfile>
+                <con:authType>OAuth 2.0</con:authType>
+              </con:credentials>
+              <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+              <con:jmsPropertyConfig/>
+              <con:parameters/>
+              <con:parameterOrder/>
+            </con:request>
+          </con:method>
+          
+        </con:resource></con:resource>
       <con:resource name="Persons" path="Person" id="ed6a8907-199e-4bbb-8e8f-3d1c499a0326">
         <con:settings/>
         <con:parameters/>
@@ -8008,62 +8068,14 @@
                 <con:default/>
                 <con:description xsi:nil="true"/>
               </con:parameter>
-              <con:parameter>
-                <con:name>IsDontSaveSearchQueryLog</con:name>
-                <con:value/>
-                <con:style>QUERY</con:style>
-                <con:default/>
-                <con:description xsi:nil="true"/>
-              </con:parameter>
-              <con:parameter>
-                <con:name>CurrentPage</con:name>
-                <con:value/>
-                <con:style>QUERY</con:style>
-                <con:default/>
-                <con:description xsi:nil="true"/>
-              </con:parameter>
-              <con:parameter>
-                <con:name>PageSize</con:name>
-                <con:value/>
-                <con:style>QUERY</con:style>
-                <con:default/>
-                <con:description xsi:nil="true"/>
-              </con:parameter>
-              <con:parameter>
-                <con:name>IsAll</con:name>
-                <con:value/>
-                <con:style>QUERY</con:style>
-                <con:default/>
-                <con:description xsi:nil="true"/>
-              </con:parameter>
-              <con:parameter>
-                <con:name>IsOnlyCounter</con:name>
-                <con:value/>
-                <con:style>QUERY</con:style>
-                <con:default/>
-                <con:description xsi:nil="true"/>
-              </con:parameter>
-              <con:parameter>
-                <con:name>Sort</con:name>
-                <con:value/>
-                <con:style>QUERY</con:style>
-                <con:default/>
-                <con:description xsi:nil="true"/>
-              </con:parameter>
-              <con:parameter>
-                <con:name>IDs</con:name>
-                <con:value/>
-                <con:style>QUERY</con:style>
-                <con:default/>
-                <con:description xsi:nil="true"/>
-              </con:parameter>
-              <con:parameter>
-                <con:name>Name</con:name>
-                <con:value/>
-                <con:style>QUERY</con:style>
-                <con:default/>
-                <con:description xsi:nil="true"/>
-              </con:parameter>
+              
+              
+              
+              
+              
+              
+              
+              
               <con:parameter>
                 <con:name>IsActive</con:name>
                 <con:value/>
@@ -8081,37 +8093,21 @@
                 <con:params/>
                 <con:element xmlns:main="http://10.88.12.22/api/v3/Org/Info/Main">main:Response</con:element>
               </con:representation>
-              <con:request name="Get Org/Info/Main" id="8da02a4b-c3e3-4592-aa6d-79aef8e4fab6" mediaType="application/json">
+              <con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>401</con:status><con:params/><con:element xmlns:main="http://10.88.12.22/api/v3/Org/Info/Main">main:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Get Org/Info/Main" id="8da02a4b-c3e3-4592-aa6d-79aef8e4fab6" mediaType="application/json">
                 <con:settings>
                   <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                 </con:settings>
-                <con:endpoint>http://10.88.12.22:80/</con:endpoint>
+                <con:endpoint>http://localhost:21182/</con:endpoint>
                 <con:request/>
                 <con:originalUri>http://10.88.12.22/api/v3/Org/Info/Main</con:originalUri>
                 <con:credentials>
-                  <con:selectedAuthProfile>pr docum t@t.t</con:selectedAuthProfile>
+                  <con:selectedAuthProfile>lh docum t@t.t</con:selectedAuthProfile>
                   <con:authType>OAuth 2.0</con:authType>
                 </con:credentials>
                 <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
                 <con:jmsPropertyConfig/>
-                <con:parameters>
-                  <con:entry key="FullTextSearchString" value="Хороший"/>
-                  <con:entry key="PageSize" value="${#Project#PageSize}"/>
-                  <con:entry key="IsDontSaveSearchQueryLog" value="${#Project#IsDontSaveSearchQueryLog}"/>
-                  <con:entry key="CurrentPage" value="1"/>
-                </con:parameters>
-                <con:parameterOrder>
-                  <con:entry>FullTextSearchString</con:entry>
-                  <con:entry>IsDontSaveSearchQueryLog</con:entry>
-                  <con:entry>CurrentPage</con:entry>
-                  <con:entry>PageSize</con:entry>
-                  <con:entry>IsAll</con:entry>
-                  <con:entry>IsOnlyCounter</con:entry>
-                  <con:entry>Sort</con:entry>
-                  <con:entry>IDs</con:entry>
-                  <con:entry>Name</con:entry>
-                  <con:entry>IsActive</con:entry>
-                </con:parameterOrder>
+                <con:parameters/>
+                <con:parameterOrder><con:entry>FullTextSearchString</con:entry><con:entry>IsActive</con:entry></con:parameterOrder>
               </con:request>
             </con:method>
           </con:resource>
@@ -9067,11 +9063,11 @@
               <con:params/>
               <con:element xmlns:info="http://10.88.12.22/api/v3/Org/Info">info:Response</con:element>
             </con:representation>
-            <con:request name="Chg Org/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
+            <con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Chg Org/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
-              <con:endpoint>http://10.88.12.22:80/</con:endpoint>
+              <con:endpoint>http://localhost:21182/</con:endpoint>
               <con:request>{
   "Id": 1486,
   "IsActive": true,
@@ -9082,7 +9078,7 @@
 }</con:request>
               <con:originalUri>http://10.88.12.22/api/v3/Org/Info</con:originalUri>
               <con:credentials>
-                <con:selectedAuthProfile>pr docum t@t.t</con:selectedAuthProfile>
+                <con:selectedAuthProfile>lh docum t@t.t</con:selectedAuthProfile>
                 <con:authType>OAuth 2.0</con:authType>
               </con:credentials>
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
@@ -11854,15 +11850,15 @@
       <con:clientID>docum</con:clientID>
       <con:clientSecret>-</con:clientSecret>
       <con:accessTokenURI>http://localhost:21182/api/v3/token</con:accessTokenURI>
-      <con:accessToken>UMzXipeK0k6WoI4KRrOl9uH6SsFdQ5owNiSJXc4mi7U0mREh44VxGHjVjzkVIGVvZFPwXEHkxfqhJ9J--u4UGpHZ6EgKtbaCM_A6TgZCclErgQtlD1uOJNSHs-6Kd1IvSc6pPtOob1_ldY020AusVKcQBVDYssgtWopAyV_BnL4D0SF44FE5fcOyNPjg-WDsXWCoXKSexHpiM5jbO_qdvxt61wRLfCfeJWb9Al_Kc4kaGU0OPENxL49PAR-OOuTkKk28rClyPwRnaleJE0Ctf9O-LBx6xAxiMxtP8a2caOGKNnshEvUNa9KOl7Nm-EX7W977cHhMASTAKcQstw3xVtsE5Y4twRS5XIrNCgxUYZgMMjZTMSHThjgFp4tucNjcviqYvH9NAjW-LCgzHAnkp5jcsDFre3u-506-fvOaptloRzevT8_cCw8u2pdELfjlAvpT4KB2wQz91ExVBXCw08M1RWodpfiGZKJeXZeCMDg</con:accessToken>
+      <con:accessToken>7aVjT7SVfU4yIwt-S9R8EVa98NFDRC-jQXDhoQonwY-34WRkv77DIVa9Hc5HQr7wMXaKAbD8dOjPZEEwu5j0jqruTjlK3mdGOyzROIlGCDf3jWNdPrZo_YcbTYERrF5SF9euEd_-lBfpBTZMR36ZjR4ACkxsl4KkxkR8F4_gllv8e93FDN1am1KhExP8vOEFXUv_X72b23bhwmKhgvh69oXXJszfhzUQv9qcqgkTGxqN-kSuxhWQF9po2ObSGqMqXE0SP5rkyHpreJ_3mlBLAf-o_i1yAanlss-pWutMqbLJ1W3eK3kVDTzT_bWKnZV0fILOlUpSTh_nulNlD2C-8sQBb_mHmCnsnqfg_UG1QvLkOruhUEK81suCrcvDtGTBBqfYyq5M11yhBvxFfJsId31gV_odh8qL9wmMzenZPbv7QN2z2jC0y42qlfVAsch8orkHOOI9sKnJRFw23yq4FPT_J2GwWyzphdWZQ3v66pg</con:accessToken>
       <con:accessTokenPosition>HEADER</con:accessTokenPosition>
       <con:oAuth2Flow>RESOURCE_OWNER_PASSWORD_CREDENTIALS</con:oAuth2Flow>
       <con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod>
       <con:scope>fingerprint</con:scope>
-      <con:accessTokenStatus>UNKNOWN</con:accessTokenStatus>
+      <con:accessTokenStatus>RETRIEVED_FROM_SERVER</con:accessTokenStatus>
       <con:accessTokenStartingStatus>RETRIEVED_FROM_SERVER</con:accessTokenStartingStatus>
       <con:accessTokenExpirationTime>1209599</con:accessTokenExpirationTime>
-      <con:accessTokenIssuedTime>1493769334</con:accessTokenIssuedTime>
+      <con:accessTokenIssuedTime>1494364846</con:accessTokenIssuedTime>
       <con:resourceOwnerName>t@t.t</con:resourceOwnerName>
       <con:resourceOwnerPassword>P@ssw0rd</con:resourceOwnerPassword>
     </con:oAuth2Profile>

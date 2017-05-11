@@ -29,7 +29,7 @@ namespace BL.Logic.DictionaryCore
                 var id = _dictDb.AddDepartment(_context, model);
 
                 var frontObj = _dictDb.GetInternalDepartments(_context, new FilterDictionaryDepartment { IDs = new List<int> { id } }).FirstOrDefault();
-                _logger.Information(_context, null, (int)EnumObjects.DictionaryDepartments, (int)CommandType, frontObj.Id, frontObj);
+                if (frontObj != null) _logger.Information(_context, null, (int)EnumObjects.DictionaryDepartments, (int)CommandType, frontObj.Id, frontObj);
 
                 transaction.Complete();
                 return id;
