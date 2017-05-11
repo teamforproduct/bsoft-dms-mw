@@ -8,10 +8,21 @@ using DMS_WebAPI.Utilities;
 
 namespace DMS_WebAPI.ControllersV3.System
 {
+    /// <summary>
+    /// 
+    /// </summary>
     [Authorize]
-    [Route(ApiPrefix.V3)]
+    [RoutePrefix("api/v3")]
     public class ImageController : Controller
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="clientId"></param>
+        /// <param name="fileType"></param>
+        /// <param name="fileId"></param>
+        /// <returns></returns>
+        /// <exception cref="CannotAccessToFile"></exception>
         [HttpGet]
         [Route("files/{clientId}/{fileType}/{fileId}")]
         public async Task<ActionResult> GetFile(int clientId, int fileType, int fileId)
