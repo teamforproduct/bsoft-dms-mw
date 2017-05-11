@@ -23,7 +23,7 @@ namespace BL.Logic.DictionaryCore
                 _dictDb.UpdateAgentOrg(_context, model);
 
                 var frontObj = _dictDb.GetAgentOrgs(_context, new FilterDictionaryAgentOrg { IDs = new List<int> { model.Id } }).FirstOrDefault();
-                _logger.Information(_context, null, (int)EnumObjects.DictionaryAgentClientCompanies, (int)CommandType, frontObj.Id, frontObj);
+                if (frontObj != null) _logger.Information(_context, null, (int)EnumObjects.DictionaryAgentClientCompanies, (int)CommandType, frontObj.Id, frontObj);
 
                 transaction.Complete();
             }

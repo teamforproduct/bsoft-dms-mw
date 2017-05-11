@@ -36,6 +36,7 @@ namespace BL.Logic.DictionaryCore
 
         public DictionaryService(AdminsDbProcess adminDb, DictionariesDbProcess dictDb, ICommandService commandService)
         {
+            _adminDb = adminDb;
             _dictDb = dictDb;
             _commandService = commandService;
         }

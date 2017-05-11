@@ -47,12 +47,13 @@ namespace BL.Logic.DictionaryCore
                 { SetAllSubordinations(new SetSubordinations { IsChecked = true, PositionId = model.Id, SubordinationTypeId = EnumSubordinationTypes.Informing }); }
 
                 // базовые роли
-                Roles role = Model.Role ?? Roles.User;
+                Roles role = Roles.User;
+                if (Model.Role != null || Model.Role > 0) role = Model.Role.Value;
+
                 SetDefaultRoles(model.Id, new List<Roles> { role });
 
                 var frontObj = _dictDb.GetPositions(_context, new FilterDictionaryPosition { IDs = new List<int> { model.Id } }).FirstOrDefault();
-                _logger.Information(_context, null, (int)EnumObjects.DictionaryPositions, (int)CommandType, frontObj.Id, frontObj);
-
+                if (frontObj != null) _logger.Information(_context, null, (int)EnumObjects.DictionaryPositions, (int)CommandType, frontObj.Id, frontObj);
 
                 transaction.Complete();
             }

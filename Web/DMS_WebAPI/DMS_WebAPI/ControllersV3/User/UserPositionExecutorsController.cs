@@ -20,7 +20,7 @@ namespace DMS_WebAPI.ControllersV3.User
     /// Пользователь. Делегирование полномочий. Пользователь может делегировать часть своих полномочий: назначить себе ио или референта
     /// </summary>
     [Authorize]
-    [DimanicAuthorize]
+    //[DimanicAuthorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserPositionExecutorsController : WebApiController
     {
