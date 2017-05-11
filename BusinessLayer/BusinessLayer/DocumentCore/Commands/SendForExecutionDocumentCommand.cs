@@ -105,8 +105,8 @@ namespace BL.Logic.DocumentCore.Commands
 
             var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, _eventType, EnumEventCorrespondentType.FromSourceToTarget);
             var newEvent = Model.StartEvent = waitTarget.OnEvent;
-            CommonDocumentUtilities.SetLastChange(_context, Model);
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.AccessLevel, newEvent.Accesses);
+            CommonDocumentUtilities.SetLastChange(_context, Model);
             _document.SendLists = new List<InternalDocumentSendList> { Model };
 
             if (Model.IsWorkGroup)

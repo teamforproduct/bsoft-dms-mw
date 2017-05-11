@@ -58,7 +58,7 @@ namespace BL.Logic.DocumentCore.Commands
         {
             var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task);
             var ev = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.SendMessage, Model.EventDate, Model.Description, null, Model.ParentEventId, taskId,
-                                                                    accessGroups: Model.TargetAccessGroups, isVeryfyDocumentAccess: true);
+                                                                    accessGroups: Model.TargetAccessGroups);
             if (!ev.Accesses.Any(x => x.AccessType != EnumEventAccessTypes.Source))
             {
                 throw new NobodyIsChosen();

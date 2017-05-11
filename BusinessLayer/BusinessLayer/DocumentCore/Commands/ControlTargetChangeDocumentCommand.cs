@@ -76,7 +76,7 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 addDescripton = addDescripton.Remove(addDescripton.Length - 1);
                 var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, EnumEventTypes.ControlTargetChange, Model.EventDate, Model.TargetDescription, addDescripton, Model.EventId, _docWait.OnEvent.TaskId,
-                    accessGroups: Model.TargetCopyAccessGroups, isVeryfyDocumentAccess: true);
+                    accessGroups: Model.TargetCopyAccessGroups);
                 _docWait.TargetDescription = Model.TargetDescription;
                 _docWait.AttentionDate = Model.TargetAttentionDate;
                 CommonDocumentUtilities.SetLastChange(_context, _docWait);

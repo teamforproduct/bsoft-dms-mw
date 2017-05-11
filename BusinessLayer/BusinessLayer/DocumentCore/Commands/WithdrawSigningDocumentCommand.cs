@@ -83,7 +83,7 @@ namespace BL.Logic.DocumentCore.Commands
                 .Concat(new List<AccessGroup> { new AccessGroup { AccessType = EnumEventAccessTypes.Target, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = _docWait.OnEvent.TargetPositionId } })
                 .ToList();
             _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, null, Model.EventId, _docWait.OnEvent.TaskId, 
-                _docWait.OnEvent.TargetPositionId, null, _docWait.OnEvent.SourcePositionId, null, evAcceesses, true); //TODO can include not in WG?
+                _docWait.OnEvent.TargetPositionId, null, _docWait.OnEvent.SourcePositionId, null, evAcceesses); 
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
             var sendList = _document.SendLists.FirstOrDefault(x => x.IsInitial);
             if (sendList != null)

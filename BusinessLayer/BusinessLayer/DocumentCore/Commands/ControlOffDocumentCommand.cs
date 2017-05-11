@@ -79,7 +79,7 @@ namespace BL.Logic.DocumentCore.Commands
 
             _docWait.OffEvent =
                 CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, EnumEventTypes.ControlOff, Model.EventDate, Model.Description, null, Model.EventId, _docWait.OnEvent.TaskId, 
-                    _docWait.OnEvent.TargetPositionId, accessGroups: evAcceesses, isVeryfyDocumentAccess: true);
+                    _docWait.OnEvent.TargetPositionId, accessGroups: evAcceesses);
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
             _operationDb.CloseDocumentWait(_context, _document, GetIsUseInternalSign(), GetIsUseCertificateSign(), Model.ServerPath);
             return _docWait.DocumentId;

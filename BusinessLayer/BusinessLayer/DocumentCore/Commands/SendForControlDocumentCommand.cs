@@ -106,21 +106,11 @@ namespace BL.Logic.DocumentCore.Commands
         }
         public override object Execute()
         {
-            //_document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
-            //var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, _eventType, EnumEventCorrespondentType.FromTargetToTarget);
-            //_document.Waits = new List<InternalDocumentWait> { waitTarget };
-
-            //if (Model.SourcePositionId != Model.TargetPositionId)
-            //{
-            //    _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model);
-            //}
-            //Model.CloseEvent = Model.StartEvent = waitTarget.OnEvent;
-
             _document.Subscriptions = null;
 
             var newEvent = Model.CloseEvent = Model.StartEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
-            CommonDocumentUtilities.SetLastChange(_context, Model);
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.AccessLevel, newEvent.Accesses);
+            CommonDocumentUtilities.SetLastChange(_context, Model);
             _document.SendLists = new List<InternalDocumentSendList> { Model };
 
             var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromTargetToTarget, true, true); //TODO ? Can present copy
@@ -131,9 +121,6 @@ namespace BL.Logic.DocumentCore.Commands
                 _document.Waits = _document.Waits.Concat(CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromSourceToSource, false));
             }
             _operationDb.SendBySendList(_context, _document);
-
-            //if (_document.IsLaunchPlan)
-            //    DmsResolver.Current.Get<IAutoPlanService>().ManualRunAutoPlan(_context, null, _document.Id);
 
             _documentServ.CheckIsInWorkForControls(_context, new FilterDocumentAccess { DocumentId = new List<int> { _document.Id } });
 

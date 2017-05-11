@@ -132,34 +132,6 @@ namespace BL.Logic.Common
                 {
                     sl.SourcePositionId = context.CurrentPositionId;
                 }
-                sl.SourcePositionExecutorAgentId = null;
-                sl.TargetPositionExecutorAgentId = null;
-                sl.SourcePositionExecutorTypeId = null;
-                sl.TargetPositionExecutorTypeId = null;
-                //else
-                //{
-                //    var positionExecutorAgentId = GetExecutorAgentIdByPositionId(context, sl.SourcePositionId);
-                //    if (positionExecutorAgentId.HasValue)
-                //    {
-                //        sl.SourcePositionExecutorAgentId = positionExecutorAgentId.Value;
-                //    }
-                //    else
-                //    {
-                //        throw new ExecutorAgentForPositionIsNotDefined();
-                //    }
-                //}
-                //if (sl.TargetPositionId.HasValue)
-                //{
-                //    var positionExecutorAgentId = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(context, sl.TargetPositionId);
-                //    if (positionExecutorAgentId.HasValue)
-                //    {
-                //        sl.TargetPositionExecutorAgentId = positionExecutorAgentId.Value;
-                //    }
-                //    else
-                //    {
-                //        throw new ExecutorAgentForPositionIsNotDefined();
-                //    }
-                //}
                 sl.StartEventId = null;
                 sl.CloseEventId = null;
                 sl.SourceAgentId = context.CurrentAgentId;
@@ -178,7 +150,7 @@ namespace BL.Logic.Common
         {
             documents.ToList().ForEach(x => SetLastChange(context, x));
         }
-        public static void SetAccessess(IContext context, InternalDocumentEvent ev, List<AccessGroup> accessGroups, bool isVeryfyDocumentAccess = false)
+        public static void SetAccessess(IContext context, InternalDocumentEvent ev, List<AccessGroup> accessGroups)
         {
             if (ev != null)
             {
@@ -233,11 +205,6 @@ namespace BL.Logic.Common
                       }
                       positions = positions.Where(y => !accesses.Select(z => z.PositionId).Contains(y)).ToList();
                       agents = agents.Where(y => !accesses.Select(z => z.AgentId).Contains(y)).ToList();
-                      if (isVeryfyDocumentAccess)
-                      {
-                          positions = positions.Where(y => docAccesses.Select(z => z.PositionId).Contains(y)).ToList();
-                          agents = agents.Where(y => docAccesses.Select(z => z.AgentId).Contains(y)).ToList();
-                      }
                       accesses.AddRange(positions.Select(y =>
                       {
                           var positionExecutor = GetExecutorAgentIdByPositionId(context, y);
@@ -308,8 +275,6 @@ namespace BL.Logic.Common
             sendList.StageType = model.StageType;
             sendList.SendType = model.SendType;
             sendList.TargetPositionId = model.TargetPositionId;
-            sendList.TargetPositionExecutorAgentId = null;
-            sendList.TargetPositionExecutorTypeId = null;
             sendList.TargetAgentId = model.TargetAgentId;
             sendList.Description = model.Description;
             sendList.DueDate = model.DueDate;
@@ -394,7 +359,7 @@ namespace BL.Logic.Common
                 CreateDate = DateTime.UtcNow,
             };
             SetLastChange(context, res);
-            SetAccessess(context, res, ConvertToAccessGroup(model.AccessGroups.ToList()), false);
+            SetAccessess(context, res, ConvertToAccessGroup(model.AccessGroups.ToList()));
             return res;
         }
 
@@ -407,7 +372,7 @@ namespace BL.Logic.Common
         }
 
         public static InternalDocumentEvent GetNewDocumentEvent(IContext context, int entityTypeId, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string addDescription = null, int? parentEventId = null, int? taskId = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null,
-                                                                List<AccessGroup> accessGroups = null, bool isVeryfyDocumentAccess = false)
+                                                                List<AccessGroup> accessGroups = null)
         {
             var sourcePositionExecutor = GetExecutorAgentIdByPositionId(context, sourcePositionId ?? context.CurrentPositionId);
             var targetPositionExecutor = GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId);
@@ -433,15 +398,15 @@ namespace BL.Logic.Common
                 CreateDate = DateTime.UtcNow,
             };
             SetLastChange(context, res);
-            SetAccessess(context, res, accessGroups, isVeryfyDocumentAccess);
+            SetAccessess(context, res, accessGroups);
             return res;
         }
 
-        public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvents(IContext context, int entityTypeId, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string addDescription = null, int? parentEventId = null, int? taskId = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, List<AccessGroup> accessGroups = null, bool isVeryfyDocumentAccess = false)
+        public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvents(IContext context, int entityTypeId, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string addDescription = null, int? parentEventId = null, int? taskId = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, List<AccessGroup> accessGroups = null)
         {
             return new List<InternalDocumentEvent>
             {
-                GetNewDocumentEvent(context,entityTypeId, documentId,eventType,eventDate,description,addDescription,parentEventId,taskId,targetPositionId,targetAgentId,sourcePositionId,sourceAgentId,accessGroups,isVeryfyDocumentAccess),
+                GetNewDocumentEvent(context,entityTypeId, documentId,eventType,eventDate,description,addDescription,parentEventId,taskId,targetPositionId,targetAgentId,sourcePositionId,sourceAgentId,accessGroups),
             };
         }
 
@@ -468,7 +433,7 @@ namespace BL.Logic.Common
                 DueDate = controlOnModel.DueDate,
                 AttentionDate = controlOnModel.AttentionDate,
                 OnEvent = eventType == null ? null : GetNewDocumentEvent(context, entityTypeId, controlOnModel.DocumentId, eventType.Value, controlOnModel.EventDate, controlOnModel.Description, null, controlOnModel.ParentEventId, taskId,
-                        accessGroups: controlOnModel.TargetCopyAccessGroups, isVeryfyDocumentAccess: true)
+                        accessGroups: controlOnModel.TargetCopyAccessGroups)
             };
             SetLastChange(context, res);
             return res;
@@ -581,12 +546,8 @@ namespace BL.Logic.Common
                 StageType = model.StageType,
                 SendType = model.SendType,
                 SourcePositionId = context.CurrentPositionId,
-                SourcePositionExecutorAgentId = null,
-                SourcePositionExecutorTypeId = null,
                 SourceAgentId = context.CurrentAgentId,
                 TargetPositionId = model.TargetPositionId,
-                TargetPositionExecutorAgentId = null,
-                TargetPositionExecutorTypeId = null,
                 TargetAgentId = model.TargetAgentId,
                 TaskId = taskId,
                 Description = model.Description,

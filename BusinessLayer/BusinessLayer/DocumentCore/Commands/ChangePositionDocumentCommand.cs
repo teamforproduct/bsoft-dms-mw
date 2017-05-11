@@ -57,7 +57,7 @@ namespace BL.Logic.DocumentCore.Commands
                 .Concat(new List<AccessGroup> { new AccessGroup { AccessType = EnumEventAccessTypes.Source, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = Model.NewPositionId } })
                 .ToList();
             _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.ChangePosition, Model.EventDate, Model.Description, null, null, null, 
-                Model.NewPositionId, null, Model.NewPositionId, accessGroups: evAcceesses, isVeryfyDocumentAccess: true);
+                Model.NewPositionId, null, Model.NewPositionId, accessGroups: evAcceesses);
 
             _documentDb.ChangePositionDocument(_context, Model, _document);
 

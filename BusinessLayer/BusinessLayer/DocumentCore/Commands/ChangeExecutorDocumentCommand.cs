@@ -101,7 +101,7 @@ namespace BL.Logic.DocumentCore.Commands
                 .Concat(new List<AccessGroup> { new AccessGroup { AccessType = EnumEventAccessTypes.Target, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = Model.PositionId } })
                 .ToList();
             _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.ChangeExecutor, Model.EventDate, Model.Description, null, null, null, 
-                Model.PositionId, accessGroups: evAcceesses, isVeryfyDocumentAccess: true);
+                Model.PositionId, accessGroups: evAcceesses);
 
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.AccessLevel, _document.Events.First().Accesses);
 
