@@ -258,7 +258,7 @@
               <con:mediaType>application/json</con:mediaType>
               <con:params/>
             </con:representation>
-            <con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>401</con:status><con:params/><con:element xmlns:ass="http://10.88.12.22/api/v3/User/Assignments">ass:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Add User/Assignments" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
+            <con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>401</con:status><con:params/><con:element xmlns:ass="http://10.88.12.22/api/v3/User/Assignments">ass:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="SetPos docum t@t.t" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -273,7 +273,21 @@
               <con:jmsPropertyConfig/>
               <con:parameters/>
             </con:request>
-          </con:method>
+          <con:request name="SetPos hav andrey.khaetskiy@yahoo.com" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
+              <con:settings>
+                <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+              </con:settings>
+              <con:endpoint>http://localhost:21182/</con:endpoint>
+              <con:request>[201373924]</con:request>
+              <con:originalUri>http://10.88.12.22/api/v3/User/Assignments</con:originalUri>
+              <con:credentials>
+                <con:selectedAuthProfile>lh hav andrey.khaetskiy@yahoo.com</con:selectedAuthProfile>
+                <con:authType>OAuth 2.0</con:authType>
+              </con:credentials>
+              <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+              <con:jmsPropertyConfig/>
+              <con:parameters/>
+            </con:request></con:method>
         </con:resource>
         <con:resource name="Addresses" path="Addresses" id="d6b07096-85e5-4deb-8ed2-8919b43e7eb1">
           <con:settings/>
@@ -7034,30 +7048,26 @@
               <con:params/>
               <con:element xmlns:add="http://10.88.12.22/api/v3/Employee/Addresses">add:Response</con:element>
             </con:representation>
-            <con:request name="Add Employee/AddInOrg" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+            <con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Add Employee/AddInOrg" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
               <con:endpoint>http://10.88.12.22:80/</con:endpoint>
               <con:request>{
-  "OrgName": "sample string 1",
   "OrgId": 1,
-  "DepartmentName": "sample string 2",
-  "DepartmentIndex": "sample string 3",
   "DepartmentId": 1,
-  "PositionName": "sample string 4",
   "PositionId": 1,
-  "Login": "sample string 5",
-  "Phone": "sample string 7",
-  "LanguageId": 8,
+  "Login": "nzmtaqpb@10mail.org",
+  "Phone": "+7 978 12345678",
+  "LanguageId": 570,
   "ExecutorType": 1,
   "AccessLevel": 10,
-  "FirstName": "sample string 12",
-  "LastName": "sample string 13",
-  "MiddleName": "sample string 14",
-  "TaxCode": "sample string 15",
+  "FirstName": "Имя",
+  "LastName": "Фамилия",
+  "MiddleName": "Отчество",
+  "TaxCode": "888555222",
   "IsMale": true,
-  "BirthDate": "2017-05-10T14:19:08.5887449Z"
+  "BirthDate": "2017-05-10T00:00:00.0000000Z"
 }              </con:request>
               <con:originalUri>http://10.88.12.22/api/v3/Employee/Addresses</con:originalUri>
               <con:credentials>
@@ -7069,7 +7079,38 @@
               <con:parameters/>
               <con:parameterOrder/>
             </con:request>
-          </con:method>
+          <con:request name="Add Employee/AddInOrg" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+              <con:settings>
+                <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+              </con:settings>
+              <con:endpoint>http://localhost:21182/</con:endpoint>
+              <con:request>{
+  "OrgName": "Организация 1",
+  "DepartmentName": "Отдел №2",
+  "DepartmentIndex": "ind",
+  "PositionName": "Должность отдела",
+  "Login": "nzmtaqpb@10mail.org",
+  "Phone": "+7 978 12345678",
+  "LanguageId": 570,
+  "ExecutorType": 1,
+  "AccessLevel": 10,
+  "FirstName": "Имя",
+  "LastName": "Фамилия",
+  "MiddleName": "Отчество",
+  "TaxCode": "888555222",
+  "IsMale": true,
+  "BirthDate": "2017-05-10T00:00:00.0000000Z"
+}              </con:request>
+              <con:originalUri>http://10.88.12.22/api/v3/Employee/Addresses</con:originalUri>
+              <con:credentials>
+                <con:selectedAuthProfile>lh hav andrey.khaetskiy@yahoo.com</con:selectedAuthProfile>
+                <con:authType>OAuth 2.0</con:authType>
+              </con:credentials>
+              <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+              <con:jmsPropertyConfig/>
+              <con:parameters/>
+              <con:parameterOrder/>
+            </con:request></con:method>
           
         </con:resource></con:resource>
       <con:resource name="Persons" path="Person" id="ed6a8907-199e-4bbb-8e8f-3d1c499a0326">
@@ -11903,7 +11944,7 @@
       <con:resourceOwnerName>sergey_pauls@mail.ru</con:resourceOwnerName>
       <con:resourceOwnerPassword>P@ssw0rd</con:resourceOwnerPassword>
     </con:oAuth2Profile>
-  </con:oAuth2ProfileContainer>
+  <con:oAuth2Profile><con:name>lh hav andrey.khaetskiy@yahoo.com</con:name><con:clientID>hav</con:clientID><con:clientSecret>-</con:clientSecret><con:accessTokenURI>http://localhost:21182/api/v3/token</con:accessTokenURI><con:accessToken>zxkNk-ynPB5B9xR0vAmNgdpS4gX-K_cMgN0sBT2XrCyt1D8C7Gn8gErRvlOgMk5dkUf8S9o9nKogehCCUNfSMQ2FrsrDTLSfBd7b-3Z3ZGu6mrY5FWobHiJBYOU2NS7BWYhA3ZpUjXi_65u-aPwp_scW2_lQjCvNrs8ev_09mX4s7zSyAyNwvFECrtIbfi0BqA1EG9dInGBaA1LQLcgRSpHJ9k8KWN6UTnxPDqaqh0bMhJOPosagAfAJfEaziGP7rmMa87hV1xny1e4D9V6KKgEyboaIdnnBWwySaRR6TuduxAi_TENCj5Ym6XWW2KW2Dqglmw_cShW9J5M1hjj61RvEWe90f5nVLAOj5Fx8e9eDH6hTnMqjDp9S-GQvfKZ_rcE1ah1KjtGea3fiu86iE-18Clscv2P6yAcZizIIzbzgs0cpunczoQ06yJ6YggApHWfIVQ5L4akI-HvZdC2Gblf9JDH8FYu4YtLpeJwQIAouYX4XVCVAMZavWATA0pEG</con:accessToken><con:accessTokenPosition>HEADER</con:accessTokenPosition><con:oAuth2Flow>RESOURCE_OWNER_PASSWORD_CREDENTIALS</con:oAuth2Flow><con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod><con:scope>fingerprint</con:scope><con:accessTokenStatus>RETRIEVED_FROM_SERVER</con:accessTokenStatus><con:accessTokenStartingStatus>RETRIEVED_FROM_SERVER</con:accessTokenStartingStatus><con:accessTokenExpirationTime>1209599</con:accessTokenExpirationTime><con:accessTokenIssuedTime>1494483379</con:accessTokenIssuedTime><con:resourceOwnerName>andrey.khaetskiy@yahoo.com</con:resourceOwnerName><con:resourceOwnerPassword>P@ssw0rd</con:resourceOwnerPassword></con:oAuth2Profile></con:oAuth2ProfileContainer>
   <con:oAuth1ProfileContainer/>
   <con:sensitiveInformation/>
 </con:soapui-project>
