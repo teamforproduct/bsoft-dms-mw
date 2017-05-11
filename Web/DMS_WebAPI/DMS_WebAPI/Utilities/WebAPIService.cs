@@ -272,6 +272,11 @@ namespace DMS_WebAPI.Utilities
 
                         orgId = (int)dicService.ExecuteAction(EnumDictionaryActions.AddOrg, context, org);
                     }
+                    else
+                    {
+                        orgId = model.OrgId.Value;
+                    }
+
 
                     if (model.DepartmentId == null && !string.IsNullOrEmpty(model.DepartmentName))
                     {
@@ -283,6 +288,10 @@ namespace DMS_WebAPI.Utilities
                         dep.Index = model.DepartmentIndex;
 
                         depId = (int)dicService.ExecuteAction(EnumDictionaryActions.AddDepartment, context, dep);
+                    }
+                    else
+                    {
+                        depId = model.DepartmentId.Value;
                     }
 
                     // не ожидал такой поворот событий. Добавляю тут журналы чтобы при создании должности на них проставились доступы по умолчанию
@@ -335,6 +344,10 @@ namespace DMS_WebAPI.Utilities
 
                         // Создается должность. + доступы к журналам, рассылка и роль
                         posId = (int)dicService.ExecuteAction(EnumDictionaryActions.AddPosition, context, pos);
+                    }
+                    else
+                    {
+                        posId = model.PositionId.Value;
                     }
 
                     transaction.Complete();
@@ -405,11 +418,14 @@ namespace DMS_WebAPI.Utilities
 
                 if (res != null) DeleteUserEmployee(context, res.EmployeeId);
 
-                if (posId > 0) dicService.ExecuteAction(EnumDictionaryActions.DeletePosition, context, posId);
+                // Если создавали новую должность
+                if (!model.PositionId.HasValue && posId > 0) dicService.ExecuteAction(EnumDictionaryActions.DeletePosition, context, posId);
 
-                if (depId > 0) dicService.ExecuteAction(EnumDictionaryActions.DeleteDepartment, context, depId);
+                // Если создавали новый отдел
+                if (!model.DepartmentId.HasValue && depId > 0) dicService.ExecuteAction(EnumDictionaryActions.DeleteDepartment, context, depId);
 
-                if (orgId > 0) dicService.ExecuteAction(EnumDictionaryActions.DeleteOrg, context, orgId);
+                // Если создавали новую организацию
+                if (!model.OrgId.HasValue && orgId > 0) dicService.ExecuteAction(EnumDictionaryActions.DeleteOrg, context, orgId);
 
                 throw;
             }
