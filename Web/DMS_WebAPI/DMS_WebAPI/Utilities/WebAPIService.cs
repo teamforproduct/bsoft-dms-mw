@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Extensions;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
@@ -229,7 +230,7 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public int AddUserEmployeeInOrg(IContext context, AddEmployeeInOrg model, bool sendEmail = true, bool createJournals = false)
+        public int AddUserEmployeeInOrg(IContext context, AddEmployeeInOrg model, AddJournalsInOrg jmodel = null, bool sendEmail = true)
         {
             var dicService = DmsResolver.Current.Get<IDictionaryService>();
             var admService = DmsResolver.Current.Get<IAdminService>();
@@ -287,16 +288,15 @@ namespace DMS_WebAPI.Utilities
                     // не ожидал такой поворот событий. Добавляю тут журналы чтобы при создании должности на них проставились доступы по умолчанию
                     // нужно дробить логику создания должности на блоки и выносить в сервис из команды
 
-                    if (createJournals)
+                    if (jmodel != null)
                     {
-                        var languages = DmsResolver.Current.Get<ILanguages>();
                         var jrn = new AddRegistrationJournal
                         {
                             DepartmentId = depId,
                             IsActive = true,
                             IsIncoming = true,
-                            Index = EnumDocumentDirections.Incoming.ToString(),
-                            Name = languages.GetTranslation(context.Employee.LanguageId, languages.GetLabel("Journals", EnumDocumentDirections.Incoming.ToString())),
+                            Index = jmodel.IncomingJournalIndex,
+                            Name = jmodel.IncomingJournalName,
                         };
 
                         dicService.ExecuteAction(EnumDictionaryActions.AddRegistrationJournal, context, jrn);
@@ -306,8 +306,8 @@ namespace DMS_WebAPI.Utilities
                             DepartmentId = depId,
                             IsActive = true,
                             IsOutcoming = true,
-                            Index = EnumDocumentDirections.Outcoming.ToString(),
-                            Name = languages.GetTranslation(context.Employee.LanguageId, languages.GetLabel("Journals", EnumDocumentDirections.Outcoming.ToString())),
+                            Index = jmodel.OutcomingJournalIndex,
+                            Name = jmodel.OutcomingJournalName,
                         };
 
                         dicService.ExecuteAction(EnumDictionaryActions.AddRegistrationJournal, context, jrn);
@@ -317,8 +317,8 @@ namespace DMS_WebAPI.Utilities
                             DepartmentId = depId,
                             IsActive = true,
                             IsInternal = true,
-                            Index = EnumDocumentDirections.Internal.ToString(),
-                            Name = languages.GetTranslation(context.Employee.LanguageId, languages.GetLabel("Journals", EnumDocumentDirections.Internal.ToString())),
+                            Index = jmodel.InternalJournalIndex,
+                            Name = jmodel.InternalJournalName,
                         };
 
                         dicService.ExecuteAction(EnumDictionaryActions.AddRegistrationJournal, context, jrn);
@@ -350,7 +350,7 @@ namespace DMS_WebAPI.Utilities
                 ass.AgentId = res.EmployeeId;
                 ass.IsActive = true;
                 ass.PositionId = posId;
-                ass.StartDate = DateTime.UtcNow;
+                ass.StartDate = DateTime.UtcNow.StartOfDay(); // AAV попросил делать назначение на начало дня.
                 ass.PositionExecutorTypeId = model.ExecutorType;
 
                 assignmentId = (int)dicService.ExecuteAction(EnumDictionaryActions.AddExecutor, context, ass);
@@ -859,27 +859,40 @@ namespace DMS_WebAPI.Utilities
                 throw;
             }
 
-            AddUserEmployeeInOrg(ctx, new AddEmployeeInOrg
-            {
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                MiddleName = model.MiddleName,
-                OrgName = model.OrgName, // languages.GetTranslation(ctx.Employee.LanguageId, "##l@Clients:" + "MyCompany" + "@l##"),
-                DepartmentIndex = "01",
-                DepartmentName = model.DepartmentName, // languages.GetTranslation(ctx.Employee.LanguageId, "##l@Clients:" + "MyDepartment" + "@l##"),
-                PositionName = model.PositionName, // languages.GetTranslation(ctx.Employee.LanguageId, "##l@Clients:" + "MyPosition" + "@l##"),
-                ExecutorType = EnumPositionExecutionTypes.Personal,
-                AccessLevel = EnumAccessLevels.Personally,
-                LanguageId = ctx.Employee.LanguageId,
-                Phone = model.PhoneNumber,
-                Login = model.Email,
-                Role = Roles.Admin,
-                Password = model.Password,
-                // Создание клиента происходит по факту клика по ссылке в письме, поэтому при создании пользователя подтверждать емаил не нужно
-                EmailConfirmed = true,
-                IsChangePasswordRequired = false,
-                IsEmailConfirmRequired = false,
-            }, sendEmail: false, createJournals: true);
+            AddUserEmployeeInOrg(ctx,
+                new AddEmployeeInOrg
+                {
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    MiddleName = model.MiddleName,
+                    OrgName = model.OrgName, // languages.GetTranslation(ctx.Employee.LanguageId, "##l@Clients:" + "MyCompany" + "@l##"),
+                    DepartmentIndex = "01",
+                    DepartmentName = model.DepartmentName, // languages.GetTranslation(ctx.Employee.LanguageId, "##l@Clients:" + "MyDepartment" + "@l##"),
+                    PositionName = model.PositionName, // languages.GetTranslation(ctx.Employee.LanguageId, "##l@Clients:" + "MyPosition" + "@l##"),
+                    ExecutorType = EnumPositionExecutionTypes.Personal,
+                    AccessLevel = EnumAccessLevels.Personally,
+                    LanguageId = ctx.Employee.LanguageId,
+                    Phone = model.PhoneNumber,
+                    Login = model.Email,
+                    Role = Roles.Admin,
+                    Password = model.Password,
+                    // Создание клиента происходит по факту клика по ссылке в письме, поэтому при создании пользователя подтверждать емаил не нужно
+                    EmailConfirmed = true,
+                    IsChangePasswordRequired = false,
+                    IsEmailConfirmRequired = false,
+                }, 
+                new AddJournalsInOrg
+                {
+                    IncomingJournalIndex = "01",
+                    IncomingJournalName = languages.GetTranslation(ctx.Employee.LanguageId, languages.GetLabel("Journals", EnumDocumentDirections.Incoming.ToString())),
+
+                    OutcomingJournalIndex = "02",
+                    OutcomingJournalName = languages.GetTranslation(ctx.Employee.LanguageId, languages.GetLabel("Journals", EnumDocumentDirections.Outcoming.ToString())),
+
+                    InternalJournalIndex = "03",
+                    InternalJournalName = languages.GetTranslation(ctx.Employee.LanguageId, languages.GetLabel("Journals", EnumDocumentDirections.Internal.ToString())),
+                },
+                sendEmail: false);
 
 
             //UserManager.AddLogin(userId, new UserLoginInfo {    })

@@ -223,7 +223,8 @@ namespace BL.Database.DatabaseContext
                 deleteRoles: new List<Roles> { Roles.Admin }
                 );
             AddPermission(710, Modules.Role, Features.Permissions, c: false, d: false,
-                readRoles: new List<Roles> { Roles.Admin }
+                readRoles: new List<Roles> { Roles.Admin },
+                updateRoles: new List<Roles> { Roles.Admin}
                 );
             AddPermission(720, Modules.Role, Features.Employees, c: false, u: false, d: false,
                 readRoles: new List<Roles> { Roles.Admin }
