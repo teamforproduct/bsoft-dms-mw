@@ -4629,7 +4629,7 @@ namespace BL.Database.Dictionaries
                 qry = qry.OrderBy(x => x.DepartmentId).ThenBy(x => x.Order).ThenBy(x => x.Name);
 
                 var filterMaxSubordinationTypeContains = PredicateBuilder.New<AdminSubordinations>(false);
-                if (filter.SubordinatedPositions?.Count() > 0)
+                if (filter?.SubordinatedPositions?.Count() > 0)
                 {
                     filterMaxSubordinationTypeContains = filter.SubordinatedPositions.Aggregate(filterMaxSubordinationTypeContains,
                         (current, value) => current.Or(e => e.SourcePositionId == value).Expand());
@@ -4656,7 +4656,7 @@ namespace BL.Database.Dictionaries
                                                         .Max(y => y.SubordinationTypeId)
                 });
 
-                if (filter.SubordinatedTypeId.HasValue)
+                if (filter?.SubordinatedTypeId != null)
                 {
                     qry2 = qry2.Where(x => x.MaxSubordinationTypeId >= filter.SubordinatedTypeId);
                 }

@@ -263,7 +263,7 @@
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
               <con:endpoint>http://localhost:21182/</con:endpoint>
-              <con:request>[1037,1041,1044]</con:request>
+              <con:request>[1044, 201373828, 1041, 1037]</con:request>
               <con:originalUri>http://10.88.12.22/api/v3/User/Assignments</con:originalUri>
               <con:credentials>
                 <con:selectedAuthProfile>lh docum t@t.t</con:selectedAuthProfile>
@@ -7038,7 +7038,7 @@
             </con:representation>
             <con:representation type="FAULT">
               <con:mediaType>application/json; charset=utf-8</con:mediaType>
-              <con:status>401</con:status>
+              <con:status>401 500</con:status>
               <con:params/>
               <con:element xmlns:add="http://10.88.12.22/api/v3/Employee/Addresses">add:Fault</con:element>
             </con:representation>
@@ -7048,7 +7048,7 @@
               <con:params/>
               <con:element xmlns:add="http://10.88.12.22/api/v3/Employee/Addresses">add:Response</con:element>
             </con:representation>
-            <con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Add Employee/AddInOrg" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+            <con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Add Employee/AddInOrg" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -7085,11 +7085,11 @@
               </con:settings>
               <con:endpoint>http://localhost:21182/</con:endpoint>
               <con:request>{
-  "OrgName": "Организация 1",
-  "DepartmentName": "Отдел №2",
+  "OrgName": "Организация 3",
+  "DepartmentName": "Отдел №6",
   "DepartmentIndex": "ind",
   "PositionName": "Должность отдела",
-  "Login": "nzmtaqpb@10mail.org",
+  "Login": "mnebdhjd@yomail.info",
   "Phone": "+7 978 12345678",
   "LanguageId": 570,
   "ExecutorType": 1,
@@ -7100,10 +7100,10 @@
   "TaxCode": "888555222",
   "IsMale": true,
   "BirthDate": "2017-05-10T00:00:00.0000000Z"
-}              </con:request>
+} </con:request>
               <con:originalUri>http://10.88.12.22/api/v3/Employee/Addresses</con:originalUri>
               <con:credentials>
-                <con:selectedAuthProfile>lh hav andrey.khaetskiy@yahoo.com</con:selectedAuthProfile>
+                <con:selectedAuthProfile>lh docum t@t.t</con:selectedAuthProfile>
                 <con:authType>OAuth 2.0</con:authType>
               </con:credentials>
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
