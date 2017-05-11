@@ -14,7 +14,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
     {
         private readonly ITemplateDocumentsDbProcess _operationDb;
         private readonly IFileStore _fStore;
-        InternalTemplateAttachedFile _docFile;
+        InternalTemplateDocumentFile _docFile;
 
         public DeleteTemplateFileCommand(ITemplateDocumentsDbProcess operationDb, IFileStore fStore)
         {
@@ -41,7 +41,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType, false);
+            _adminProc.VerifyAccess(_context, CommandType, false);
             _docFile = _operationDb.DeleteTemplateAttachedFilePrepare(_context, Model);
             if (_docFile == null)
             {

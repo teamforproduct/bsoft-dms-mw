@@ -43,6 +43,18 @@ namespace BL.Database.Documents
             }
         }
 
+        public int GetRestrictedSendListsCounter(IContext ctx, int documentId)
+        {
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = CommonQueries.GetDocumentRestrictedSendListQuery(ctx, new FilterDocumentRestrictedSendList { DocumentId = new List<int> { documentId } });
+                var res = qry.Count();
+                transaction.Complete();
+                return res;
+            }
+        }
+
         public IEnumerable<FrontDocumentRestrictedSendList> GetRestrictedSendLists(IContext ctx, int documentId)
         {
             var dbContext = ctx.DbContext as DmsContext;
@@ -79,7 +91,7 @@ namespace BL.Database.Documents
                     Details = new List<string>
                     {
                         x.Position.Name,
-                        x.Position.Department.FullPath + " " + x.Position.Department.Name,
+                        x.Position.Department.Code + " " + x.Position.Department.Name,
                     },
                 }).ToList();
                 transaction.Complete();
@@ -87,28 +99,7 @@ namespace BL.Database.Documents
             }
         }
 
-        private void SetAccessGroups(IContext context, List<FrontDocumentSendList> items)
-        {
-            var dbContext = context.DbContext as DmsContext;
-            var qryAcc = dbContext.DocumentSendListAccessGroupsSet.AsQueryable();
-            var ids = items.Select(x => x.Id).ToList();
-            var filterContains = PredicateBuilder.New<DocumentSendListAccessGroups>(false);
-            filterContains = ids.Aggregate(filterContains,
-                (current, value) => current.Or(e => e.SendListId == value).Expand());
-            qryAcc = qryAcc.Where(filterContains);
-            var accGroups = qryAcc.GroupBy(x => x.SendListId).Select(x => new
-            {
-                EventId = x.Key,
-                AccessGroups = x.Select(y => new FrontDocumentSendListAccessGroup
-                {
-                    AccessType = (EnumEventAccessTypes)y.AccessTypeId,
-                    AccessGroupType = (EnumEventAccessGroupTypes)y.AccessGroupTypeId,
-                    RecordId = y.AgentId ?? y.CompanyId ?? y.DepartmentId ?? y.PositionId ?? y.StandartSendListId,
-                    Name = y.Agent.Name ?? y.Company.Agent.Name ?? y.Department.Name ?? y.Position.Name ?? y.StandartSendList.Name,
-                }).ToList(),
-            }).ToList();
-            items.ForEach(x => x.AccessGroups = accGroups.Where(y => y.EventId == x.Id).Select(y => y.AccessGroups).FirstOrDefault());
-        }
+
 
 
         public IEnumerable<FrontDocumentSendList> GetSendLists(IContext context, int documentId)
@@ -116,20 +107,140 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var res = CommonQueries.GetDocumentSendList(context, new FilterDocumentSendList { DocumentId = new List<int> { documentId } }).ToList();
-                SetAccessGroups(context, res);
+                var qry = CommonQueries.GetDocumentSendListQuery(context, new FilterDocumentSendList { DocumentId = new List<int> { documentId } });
+                var res = qry.Select(y => new FrontDocumentSendList
+                {
+                    Id = y.Id,
+                    DocumentId = y.DocumentId,
+                    Stage = y.Stage,
+                    SendType = (EnumSendTypes)y.SendTypeId,
+                    SendTypeName = y.SendType.Name,
+                    SendTypeCode = y.SendType.Code,
+                    StageType = (EnumStageTypes?)y.StageTypeId,
+                    StageTypeName = y.StageType.Name,
+                    StageTypeCode = y.StageType.Code,
+                    SendTypeIsImportant = y.SendType.IsImportant,
+                    Task = y.Task.Task,
+                    IsWorkGroup = y.IsWorkGroup,
+                    IsAddControl = y.IsAddControl,
+                    SelfDescription = y.SelfDescription,
+                    SelfDueDate = y.SelfDueDate,
+                    SelfDueDay = y.SelfDueDay,
+                    SelfAttentionDate = y.SelfAttentionDate,
+                    SelfAttentionDay = y.SelfAttentionDay,
+                    Description = y.Description,
+                    AddDescription = y.AddDescription,
+                    DueDate = y.DueDate,
+                    DueDay = y.DueDay,
+                    StartEventId = y.StartEventId,
+                    CloseEventId = y.CloseEventId,
+                    IsInitial = y.IsInitial,
+                    AccessLevel = (EnumAccessLevels)y.AccessLevelId,
+                    AccessLevelName = y.AccessLevel.Name,
+                    StartEvent = y.StartEvent == null
+                                        ? null
+                                        : new FrontDocumentEvent
+                                        {
+                                            Id = y.StartEvent.Id,
+                                            EventType = y.StartEvent.EventTypeId,
+                                            EventTypeName = y.StartEvent.EventType.Name,
+                                            Date = y.StartEvent.Date,
+                                            Description = y.StartEvent.Description,
+                                            AddDescription = y.StartEvent.AddDescription,
+                                            DueDate = y.StartEvent.OnWait.Select(z => z.DueDate).FirstOrDefault(),
+                                        },
+                    CloseEvent = y.CloseEvent == null || y.StartEventId == y.CloseEventId
+                                        ? null
+                                        : new FrontDocumentEvent
+                                        {
+                                            Id = y.CloseEvent.Id,
+                                            EventType = y.CloseEvent.EventTypeId,
+                                            EventTypeName = y.CloseEvent.EventType.Name,
+                                            Date = y.CloseEvent.Date,
+                                            Description = y.CloseEvent.Description,
+                                            AddDescription = y.CloseEvent.AddDescription,
+                                            DueDate = null,
+                                        },
+                }).ToList();
+                CommonQueries.SetAccessGroups(context, res);
+                CommonQueries.SetAccessGroups(context, res.Where(x => x.StartEvent != null).Select(x => x.StartEvent).Concat(res.Where(x => x.CloseEvent != null).Select(x => x.CloseEvent)).ToList());
                 transaction.Complete();
                 return res;
             }
         }
-
+        public int GetSendListsCounter(IContext context, int documentId)
+        {
+            var dbContext = context.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
+            {
+                var qry = CommonQueries.GetDocumentSendListQuery(context, new FilterDocumentSendList { DocumentId = new List<int> { documentId } });
+                var res = qry.Count();
+                transaction.Complete();
+                return res;
+            }
+        }
         public FrontDocumentSendList GetSendList(IContext ctx, int id)
         {
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var res = CommonQueries.GetDocumentSendList(ctx, new FilterDocumentSendList { Id = new List<int> { id } }).FirstOrDefault();
-                SetAccessGroups(ctx, new List<FrontDocumentSendList> { res });
+                var qry = CommonQueries.GetDocumentSendListQuery(ctx, new FilterDocumentSendList { Id = new List<int> { id } });
+                var res = qry.Select(y => new FrontDocumentSendList
+                {
+                    Id = y.Id,
+                    DocumentId = y.DocumentId,
+                    Stage = y.Stage,
+                    SendType = (EnumSendTypes)y.SendTypeId,
+                    SendTypeName = y.SendType.Name,
+                    SendTypeCode = y.SendType.Code,
+                    StageType = (EnumStageTypes?)y.StageTypeId,
+                    StageTypeName = y.StageType.Name,
+                    StageTypeCode = y.StageType.Code,
+                    SendTypeIsImportant = y.SendType.IsImportant,
+                    Task = y.Task.Task,
+                    IsWorkGroup = y.IsWorkGroup,
+                    IsAddControl = y.IsAddControl,
+                    SelfDescription = y.SelfDescription,
+                    SelfDueDate = y.SelfDueDate,
+                    SelfDueDay = y.SelfDueDay,
+                    SelfAttentionDate = y.SelfAttentionDate,
+                    SelfAttentionDay = y.SelfAttentionDay,
+                    Description = y.Description,
+                    AddDescription = y.AddDescription,
+                    DueDate = y.DueDate,
+                    DueDay = y.DueDay,
+                    StartEventId = y.StartEventId,
+                    CloseEventId = y.CloseEventId,
+                    IsInitial = y.IsInitial,
+                    AccessLevel = (EnumAccessLevels)y.AccessLevelId,
+                    AccessLevelName = y.AccessLevel.Name,
+                    StartEvent = y.StartEvent == null
+                                        ? null
+                                        : new FrontDocumentEvent
+                                        {
+                                            Id = y.StartEvent.Id,
+                                            EventType = y.StartEvent.EventTypeId,
+                                            EventTypeName = y.StartEvent.EventType.Name,
+                                            Date = y.StartEvent.Date,
+                                            Description = y.StartEvent.Description,
+                                            AddDescription = y.StartEvent.AddDescription,
+                                            DueDate = y.StartEvent.OnWait.Select(z => z.DueDate).FirstOrDefault(),
+                                        },
+                    CloseEvent = y.CloseEvent == null || y.StartEventId == y.CloseEventId
+                                        ? null
+                                        : new FrontDocumentEvent
+                                        {
+                                            Id = y.CloseEvent.Id,
+                                            EventType = y.CloseEvent.EventTypeId,
+                                            EventTypeName = y.CloseEvent.EventType.Name,
+                                            Date = y.CloseEvent.Date,
+                                            Description = y.CloseEvent.Description,
+                                            AddDescription = y.CloseEvent.AddDescription,
+                                            DueDate = null,
+                                        },
+                }).FirstOrDefault();
+                CommonQueries.SetAccessGroups(ctx, new List<FrontDocumentSendList> { res });
+                CommonQueries.SetAccessGroups(ctx, new List<FrontDocumentEvent> { res.StartEvent, res.CloseEvent });
                 transaction.Complete();
                 return res;
             }
@@ -145,7 +256,7 @@ namespace BL.Database.Documents
                 var linkId = dbContext.DocumentsSet.Where(y => y.Id == model.DocumentId)
                     .Where(y => y.Accesses.Any(z => z.PositionId == model.CurrentPositionId && z.IsInWork))
                     .Select(y => y.LinkId).FirstOrDefault();
-                var qry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                var qry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.Client.Id)
                     .Where(x => x.DocumentId != model.DocumentId && x.Document.LinkId == linkId);
                 var filterContains = PredicateBuilder.New<DocumentAccesses>(false);
                 filterContains = model.Positions.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
@@ -178,7 +289,7 @@ namespace BL.Database.Documents
                 var filterPositionsContains = PredicateBuilder.New<DictionaryPositions>(false);
                 filterPositionsContains = model.Positions.Aggregate(filterPositionsContains,
                     (current, value) => current.Or(e => e.Id == value).Expand());
-                res.Positions = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == ctx.CurrentClientId).Where(filterPositionsContains)
+                res.Positions = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == ctx.Client.Id).Where(filterPositionsContains)
                     .Select(x => new FrontDictionaryPosition
                     {
                         Id = x.Id,

@@ -231,7 +231,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #region DictionaryStandartSendLists
         FrontDictionaryStandartSendList GetStandartSendList(IContext context, int id);
         FrontDictionaryStandartSendList GetUserStandartSendList(IContext context, int id);
-
+        IEnumerable<AutocompleteItem> GetStandartSendListsShortList(IContext ctx, FilterDictionaryStandartSendList filter, UIPaging paging);
         IEnumerable<FrontDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter);
         IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, bool SearchInPositionsOnly = false);
         IEnumerable<FrontMainDictionaryStandartSendList> GetMainUserStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter);

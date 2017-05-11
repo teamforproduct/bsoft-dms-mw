@@ -21,8 +21,10 @@ namespace BL.Database.Documents.Interfaces
         int GetDocumentIdBySendListId(IContext ctx, int id);
         IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterBase filters, UIPaging paging, EnumGroupCountType? groupCountType = null);
         FrontDocument GetDocument(IContext ctx, int documentId);
-
-        IEnumerable<int> GetLinkedDocumentIds(IContext ctx, int documentId);
+        IEnumerable<FrontDocument> GetLinkedDocuments(IContext context, int linkId);
+        FrontDocumentLinkShot GetLinkedDocumentIds(IContext ctx, int documentId);
+        IEnumerable<FrontDocumentTag> GetDocumentTags(IContext context, FilterDocumentTag filter);
+        int GetDocumentTagsCounter(IContext context, FilterDocumentTag filter);
         InternalDocument ReportDocumentForDigitalSignaturePrepare(IContext ctx, DigitalSignatureDocumentPdf model);
         FrontReport ReportDocumentForDigitalSignature(IContext ctx, DigitalSignatureDocumentPdf model, bool isUseInternalSign, bool isUseCertificateSign);
         InternalDocument ReportRegistrationCardDocumentPrepare(IContext ctx, int documentId);

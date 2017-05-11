@@ -37,7 +37,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
             _document = _operationDb.ModifyDocumentTagsPrepare(_context, Model.DocumentId);
             if (_document == null)
             {
@@ -50,7 +50,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         {
             DocTags = new InternalDocumentTag
             {
-                ClientId = _context.CurrentClientId,
+                ClientId = _context.Client.Id,
                 EntityTypeId = _document.EntityTypeId,
                 DocumentId = Model.DocumentId,
                 Tags = Model.Tags

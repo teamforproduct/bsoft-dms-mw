@@ -37,8 +37,6 @@ namespace BL.Logic.SystemServices.FullTextSearch
         private const string FIELD_DATE_FROM_ID = "DateFrom";
         private const string FIELD_DATE_TO_ID = "DateTo";
         private const string FIELD_FEATURE_ID = "FeatureId";
-        //private const string NO_RULES_VALUE = "N";
-        //        private const int MAX_DOCUMENT_COUNT_RETURN = 100000;//int.MaxValue;
 
         private IndexWriter _writer;
         private readonly Directory _directory;
@@ -303,7 +301,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     Filters = rdoc.luc.Get(FIELD_FILTERS),
                     //Score = rdoc.doc.Score
                 }).ToList();
-            FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{text}' FetchRowsFromLucena: {res.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
+            FileLogger.AppendTextToFile($"{DateTime.Now} '{text}' FetchRowsFromLucena: {res.Count} rows", @"C:\TEMPLOGS\fulltext.log");
             return res;
         }
 

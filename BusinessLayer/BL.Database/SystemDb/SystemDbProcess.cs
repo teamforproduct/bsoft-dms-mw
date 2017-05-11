@@ -6,7 +6,6 @@ using BL.Database.DatabaseContext;
 using BL.Database.DBModel.Document;
 using BL.Database.DBModel.System;
 using BL.Database.Helper;
-using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
@@ -17,7 +16,6 @@ using LinqKit;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using BL.CrossCutting.Helpers.CashService;
 using BL.Model.Constants;
@@ -198,66 +196,43 @@ namespace BL.Database.SystemDb
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                //dbContext.AdminRolePermissionsSet.Delete();
-
-                //dbContext.SystemPermissionsSet.Delete();
-
-                //dbContext.SystemFeaturesSet.Delete();
-
-                //dbContext.SystemModulesSet.Delete();
-
-                //dbContext.SystemAccessTypesSet.Delete();
-
                 DmsDbImportData.InitPermissions();
 
-                //foreach (var item in DmsDbImportData.GetSystemAccessTypes())
-                //{
-                //    dbContext.SystemAccessTypesSet.Attach(item);
-                //    dbContext.Entry(item).State = EntityState.Added;
-                //    dbContext.SaveChanges();
-                //}
-
-                var modules = dbContext.SystemModulesSet.ToList();
-
-                foreach (var item in DmsDbImportData.GetSystemModules().Where(x => !modules.Any(y => y.Id == x.Id)))
+                foreach (var item in DmsDbImportData.GetSystemAccessTypes())
                 {
-                    dbContext.SystemModulesSet.Attach(item);
+                    dbContext.SafeAttach(item);
+                    dbContext.Entry(item).State = EntityState.Added;
+                    dbContext.SaveChanges();
+                }
+                var modules = dbContext.SystemModulesSet.ToList();
+                foreach (var item in DmsDbImportData.GetSystemModules().Where(x => modules.All(y => y.Id != x.Id)))
+                {
+                    dbContext.SafeAttach(item);
                     dbContext.Entry(item).State = EntityState.Added;
                     dbContext.SaveChanges();
                 }
 
                 var features = dbContext.SystemFeaturesSet.ToList();
 
-                foreach (var item in DmsDbImportData.GetSystemFeatures().Where(x => !features.Any(y => y.Id == x.Id)))
+                foreach (var item in DmsDbImportData.GetSystemFeatures().Where(x => features.All(y => y.Id != x.Id)))
                 {
-                    dbContext.SystemFeaturesSet.Attach(item);
+                    dbContext.SafeAttach(item);
                     dbContext.Entry(item).State = EntityState.Added;
                     dbContext.SaveChanges();
                 }
 
                 var permissions = dbContext.SystemPermissionsSet.ToList();
 
-                foreach (var item in DmsDbImportData.GetSystemPermissions().Where(x => !permissions.Any(y => y.Id == x.Id)))
+                foreach (var item in DmsDbImportData.GetSystemPermissions().Where(x => permissions.All(y => y.Id != x.Id)))
                 {
-                    dbContext.SystemPermissionsSet.Attach(item);
+                    dbContext.SafeAttach(item);
                     dbContext.Entry(item).State = EntityState.Added;
                     dbContext.SaveChanges();
                 }
-
-                //var rolePermissions = dbContext.AdminRolePermissionsSet.ToList();
-
-                //foreach (var item in DmsDbImportData.GetAdminRolePermissions().Where(x => !rolePermissions.Any(y => y.PermissionId == x.PermissionId && y.RoleId == x.RoleId)))
-                //{
-                //    item.
-                //    dbContext.AdminRolePermissionsSet.Attach(item);
-                //    dbContext.Entry(item).State = EntityState.Added;
-                //    dbContext.SaveChanges();
-                //}
-
-
-                transaction.Complete();
                 _cacheService.RefreshKey(ctx, SettingConstants.PERMISSION_CASHE_KEY);
                 _cacheService.RefreshKey(ctx, SettingConstants.PERMISSION_ADMIN_ROLE_CASHE_KEY);
+                transaction.Complete();
+
             }
 
         }
@@ -410,7 +385,7 @@ namespace BL.Database.SystemDb
 
         private IQueryable<SystemSearchQueryLogs> GetSystemSearchQueryLogsQuery(IContext ctx, DmsContext dbContext, FilterSystemSearchQueryLog filter)
         {
-            var qry = dbContext.SystemSearchQueryLogsSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.SystemSearchQueryLogsSet.Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -468,7 +443,7 @@ namespace BL.Database.SystemDb
 
         private IQueryable<SystemLogs> GetSystemLogsQuery(IContext ctx, DmsContext dbContext, FilterSystemLog filter)
         {
-            var qry = dbContext.LogSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.LogSet.Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -661,12 +636,12 @@ namespace BL.Database.SystemDb
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var cset = dbContext.SettingsSet.FirstOrDefault(x => ctx.CurrentClientId == x.ClientId && x.Key == model.Key);
+                var cset = dbContext.SettingsSet.FirstOrDefault(x => ctx.Client.Id == x.ClientId && x.Key == model.Key);
                 if (cset == null)
                 {
                     var nsett = new SystemSettings
                     {
-                        ClientId = ctx.CurrentClientId,
+                        ClientId = ctx.Client.Id,
                         ExecutorAgentId = model.AgentId,
                         Key = model.Key,
                         Value = model.Value,
@@ -709,13 +684,13 @@ namespace BL.Database.SystemDb
                 {
                     res = dbContext.SettingsSet.Where(
                             x =>
-                                ctx.CurrentClientId == x.ClientId && x.Key == filter.Key && x.ExecutorAgentId == filter.AgentId.Value)
+                                ctx.Client.Id == x.ClientId && x.Key == filter.Key && x.ExecutorAgentId == filter.AgentId.Value)
                             .Select(x => x.Value)
                             .FirstOrDefault();
                 }
                 else
                 {
-                    res = dbContext.SettingsSet.Where(x => ctx.CurrentClientId == x.ClientId && x.Key == filter.Key)
+                    res = dbContext.SettingsSet.Where(x => ctx.Client.Id == x.ClientId && x.Key == filter.Key)
                             .OrderBy(x => x.ExecutorAgentId)
                             .Select(x => x.Value)
                             .FirstOrDefault();
@@ -731,7 +706,7 @@ namespace BL.Database.SystemDb
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                dbContext.SettingsSet.Where(x => ctx.CurrentClientId == x.ClientId).Delete();
+                dbContext.SettingsSet.Where(x => ctx.Client.Id == x.ClientId).Delete();
                 transaction.Complete();
             }
         }
@@ -796,7 +771,7 @@ namespace BL.Database.SystemDb
 
         public IQueryable<SystemSettings> GetSettingsQuery(IContext ctx, DmsContext dbContext, FilterSystemSetting filter)
         {
-            var qry = dbContext.SettingsSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.SettingsSet.Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -885,8 +860,8 @@ namespace BL.Database.SystemDb
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                dbContext.SystemObjectsSet.Attach(item);
-                dbContext.Entry(item).State = System.Data.Entity.EntityState.Modified;
+                dbContext.SafeAttach(item);
+                dbContext.Entry(item).State = EntityState.Modified;
                 dbContext.SaveChanges();
                 transaction.Complete();
             }
@@ -981,11 +956,11 @@ namespace BL.Database.SystemDb
             {
                 var qry = GetSystemActionsQuery(ctx, dbContext, filter);
                 qry.Delete();
-
+                _cacheService.RefreshKey(ctx, SettingConstants.ACTION_CASHE_KEY);
                 transaction.Complete();
 
             }
-
+            
         }
 
         public void AddSystemAction(IContext ctx, SystemActions item)
@@ -993,24 +968,13 @@ namespace BL.Database.SystemDb
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = dbContext.Database.BeginTransaction())
             {
-                //dbContext.Database.ExecuteSqlCommand("SET IDENTITY_INSERT [DMS].[SystemActions] ON");
-
-                //dbContext.Database.ExecuteSqlCommand(
-                //String.Format(@"INSERT INTO[DMS].[SystemActions]
-                //(Id, ObjectId, Code, API, [Description], IsGrantable, IsGrantableByRecordId, IsVisible, IsVisibleInMenu,  GrantId, Category, PermissionId) 
-                //VALUES
-                //({0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11})",
-                //item.Id, item.ObjectId, "'" + item.Code + "'", "'" + item.API + "'", "'" + item.Description + "'", item.IsGrantable ? 1 : 0, item.IsGrantableByRecordId ? 1 : 0, item.IsVisible ? 1 : 0, item.IsVisibleInMenu ? 1 : 0, item.GrantId.ToString() == string.Empty ? "null" : item.GrantId.ToString(), item.Category ?? "null", item.PermissionId.ToString() == string.Empty ? "null" : item.PermissionId.ToString())
-                //);
-
                 dbContext.SystemActionsSet.Add(item);
 
                 dbContext.SaveChanges();
-
-                //dbContext.Database.ExecuteSqlCommand("SET IDENTITY_INSERT [DMS].[SystemActions] OFF");
-
+                _cacheService.RefreshKey(ctx, SettingConstants.ACTION_CASHE_KEY);
                 transaction.Commit();
             }
+            
         }
 
         public void UpdateSystemAction(IContext ctx, SystemActions item)
@@ -1018,11 +982,12 @@ namespace BL.Database.SystemDb
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                dbContext.SystemActionsSet.Attach(item);
+                dbContext.SafeAttach(item);
                 dbContext.Entry(item).State = EntityState.Modified;
                 dbContext.SaveChanges();
-                transaction.Complete();
+               
                 _cacheService.RefreshKey(ctx, SettingConstants.ACTION_CASHE_KEY);
+                transaction.Complete();
             }
         }
 
@@ -1267,7 +1232,7 @@ namespace BL.Database.SystemDb
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry =
-                    dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == ctx.CurrentClientId).AsQueryable();
+                    dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == ctx.Client.Id).AsQueryable();
 
                 if (filter.PropertyLinkId != null)
                 {
@@ -1308,7 +1273,7 @@ namespace BL.Database.SystemDb
 
         private IQueryable<Properties> GetPropertiesQuery(DmsContext dbContext, IContext ctx, FilterProperty filter)
         {
-            var qry = dbContext.PropertiesSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.PropertiesSet.Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -1371,7 +1336,7 @@ namespace BL.Database.SystemDb
             {
                 var item = new Properties
                 {
-                    ClientId = ctx.CurrentClientId,
+                    ClientId = ctx.Client.Id,
                     Code = model.Code,
                     TypeCode = model.TypeCode,
                     Description = model.Description,
@@ -1388,7 +1353,7 @@ namespace BL.Database.SystemDb
                     LastChangeDate = model.LastChangeDate,
                     LastChangeUserId = model.LastChangeUserId,
                 };
-                dbContext.PropertiesSet.Attach(item);
+                dbContext.SafeAttach(item);
                 dbContext.Entry(item).State = EntityState.Added;
 
                 dbContext.SaveChanges();
@@ -1406,7 +1371,7 @@ namespace BL.Database.SystemDb
                 var item = new Properties
                 {
                     Id = model.Id,
-                    ClientId = ctx.CurrentClientId,
+                    ClientId = ctx.Client.Id,
                     Code = model.Code,
                     TypeCode = model.TypeCode,
                     Description = model.Description,
@@ -1423,7 +1388,7 @@ namespace BL.Database.SystemDb
                     LastChangeDate = model.LastChangeDate,
                     LastChangeUserId = model.LastChangeUserId,
                 };
-                dbContext.PropertiesSet.Attach(item);
+                dbContext.SafeAttach(item);
                 dbContext.Entry(item).State = EntityState.Modified;
 
                 dbContext.SaveChanges();
@@ -1448,7 +1413,7 @@ namespace BL.Database.SystemDb
 
         private IQueryable<PropertyLinks> GetPropertyLinksQuery(IContext ctx, DmsContext dbContext, FilterPropertyLink filter)
         {
-            var qry = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter != null)
             {
@@ -1533,7 +1498,7 @@ namespace BL.Database.SystemDb
                     LastChangeDate = model.LastChangeDate,
                     LastChangeUserId = model.LastChangeUserId,
                 };
-                dbContext.PropertyLinksSet.Attach(item);
+                dbContext.SafeAttach(item);
                 dbContext.Entry(item).State = EntityState.Added;
 
                 dbContext.SaveChanges();
@@ -1556,7 +1521,7 @@ namespace BL.Database.SystemDb
                     LastChangeDate = model.LastChangeDate,
                     LastChangeUserId = model.LastChangeUserId,
                 };
-                dbContext.PropertyLinksSet.Attach(item);
+                dbContext.SafeAttach(item);
                 var entry = dbContext.Entry(item);
                 entry.Property(p => p.Filers).IsModified = true;
                 entry.Property(p => p.IsMandatory).IsModified = true;
@@ -1618,11 +1583,9 @@ namespace BL.Database.SystemDb
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                // RODO DestinationAgentEmail = "sergozubr@rambler.ru"
-                var res = dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.CurrentClientId)
-                        .Where(x => (x.SendDate == null || x.SendDate < x.LastChangeDate)
-                                    && ((x.TargetAgentId != null && x.SourceAgentId != x.TargetAgentId)
-                                        || (x.TargetPositionId != null && x.SourcePositionId != x.TargetPositionId)))
+                // TODO DestinationAgentEmail = "sergozubr@rambler.ru"
+                var res = dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.Client.Id)
+                        .Where(x => x.Accesses.Any(y=>!y.SendDate.HasValue)) //TODO уточнить критерии рассылки
                         .Select(x => new InternalDataForMail
                         {
                             EventId = x.Id,
@@ -1632,15 +1595,15 @@ namespace BL.Database.SystemDb
                             DocumentId = x.DocumentId,
                             DocumentName = x.Document.Description,
                             EventType = (EnumEventTypes)x.EventTypeId,
-                            DestinationAgentId = x.TargetAgentId ?? 0,
-                            DestinationAgentName = (x.TargetAgent == null) ? "" : x.TargetAgent.Name,
-                            DestinationPositionId = x.TargetPositionId ?? 0,
-                            DestinationPositionName = (x.TargetPosition == null) ? "" : x.TargetPosition.Name,
-                            SourceAgentId = x.SourceAgentId ?? 0,
-                            SourceAgentName = x.SourceAgent.Name,
-                            SourcePositiontId = x.SourcePositionId ?? 0,
-                            SourcePositionName = x.SourcePosition == null ? "" : x.SourcePosition.Name,
-                            WasUpdated = !(x.SendDate == null),
+                            //DestinationAgentId = x.TargetAgentId ?? 0,
+                            //DestinationAgentName = (x.TargetAgent == null) ? "" : x.TargetAgent.Name,
+                            //DestinationPositionId = x.TargetPositionId ?? 0,
+                            //DestinationPositionName = (x.TargetPosition == null) ? "" : x.TargetPosition.Name,
+                            //SourceAgentId = x.SourceAgentId ?? 0,
+                            //SourceAgentName = x.SourceAgent.Name,
+                            //SourcePositiontId = x.SourcePositionId ?? 0,
+                            //SourcePositionName = x.SourcePosition == null ? "" : x.SourcePosition.Name,
+                            //WasUpdated = !(x.SendDate == null),
                             DestinationAgentEmail = "sergozubr@rambler.ru"
                         }).ToList();
                 transaction.Complete();
@@ -1654,15 +1617,13 @@ namespace BL.Database.SystemDb
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                //TODO будет ли это работать?? 
-                var upd = new List<DbEntityEntry>();
+                //TODO convert it to Update method
                 mailProcessed.ProcessedEventIds.ForEach(x =>
                 {
-                    var evt = new DocumentEvents { Id = x, SendDate = mailProcessed.ProcessedDate };
-                    dbContext.DocumentEventsSet.Attach(evt);
-                    var entry = dbContext.Entry(evt);
-                    entry.Property(p => p.SendDate).IsModified = true;
-                    upd.Add(entry);
+                    //var evt = new DocumentEvents { Id = x, SendDate = mailProcessed.ProcessedDate };
+                    //dbContext.SafeAttach(evt);
+                    //var entry = dbContext.Entry(evt);
+                    //entry.Property(p => p.SendDate).IsModified = true;
                 });
                 dbContext.SaveChanges();
                 transaction.Complete();
@@ -1678,7 +1639,7 @@ namespace BL.Database.SystemDb
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == ctx.CurrentClientId).AsQueryable();
+                var qry = dbContext.PropertyLinksSet.Where(x => x.Property.ClientId == ctx.Client.Id).AsQueryable();
 
                 qry = qry.Where(x => x.ObjectId == (int)filter.Object);
 
@@ -1722,7 +1683,7 @@ namespace BL.Database.SystemDb
                     closedSendLists = closedSendLists.Where(x => x.DocumentId == documentId);
                 }
 
-                var sendLists = dbContext.DocumentSendListsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                var sendLists = dbContext.DocumentSendListsSet.Where(x => x.ClientId == ctx.Client.Id)
                                     .Where(x => x.Document.IsLaunchPlan && !x.StartEventId.HasValue);
 
                 if (documentId.HasValue)
@@ -1760,7 +1721,7 @@ namespace BL.Database.SystemDb
             using (var transaction = Transactions.GetTransaction())
             {
                 var date = DateTime.UtcNow.AddMinutes(-timeMinForClearTrashDocuments);
-                var qry = dbContext.DocumentsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                var qry = dbContext.DocumentsSet.Where(x => x.ClientId == ctx.Client.Id)
                     .Where(
                         x =>
                             !x.IsRegistered.HasValue && !x.Waits.Any() && !x.Subscriptions.Any() &&

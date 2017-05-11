@@ -22,7 +22,7 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.DocumentTagsSet.Where(x => x.ClientId == ctx.CurrentClientId)
+                var qry = dbContext.DocumentTagsSet.Where(x => x.ClientId == ctx.Client.Id)
                     .Where(x => x.DocumentId == documentId).AsQueryable();
                 if (!ctx.IsAdmin)
                 {

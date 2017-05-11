@@ -1,7 +1,4 @@
-﻿using BL.Model.Database;
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
+﻿using System.Runtime.Serialization;
 
 namespace BL.Model.WebAPI.IncomingModel
 {

@@ -30,12 +30,12 @@ namespace DMS_WebAPI.ControllersV3.System
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
-                var srv = dbProc.GetClientServer(context.CurrentClientId);
+                var srv = dbProc.GetClientServer(context.Client.Id);
 
                 var ctx = new AdminContext(srv);
                 var ftService = DmsResolver.Current.Get<IFullTextSearchService>();
                 ftService.ReindexDatabase(ctx);
-                return new JsonResult(new FrontAdminServer { Id = ctx.CurrentClientId }, this);
+                return new JsonResult(new FrontAdminServer { Id = ctx.Client.Id }, this);
             });
         }
 

@@ -89,8 +89,8 @@ namespace BL.Logic.ClientCore
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             foreach (var item in GetAddressTypes())
             {
-                item.Name = languages.GetTranslation(context.CurrentEmployee.LanguageId, item.Name);
-                item.Code = languages.GetTranslation(context.CurrentEmployee.LanguageId, item.Code);
+                item.Name = languages.GetTranslation(context.Employee.LanguageId, item.Name);
+                item.Code = languages.GetTranslation(context.Employee.LanguageId, item.Code);
                 tmpService.ExecuteAction(EnumDictionaryActions.AddAddressType, context, item);
             };
             #endregion
@@ -99,7 +99,7 @@ namespace BL.Logic.ClientCore
 
             foreach (var item in GetDocumentTypes())
             {
-                item.Name = languages.GetTranslation(context.CurrentEmployee.LanguageId, item.Name);
+                item.Name = languages.GetTranslation(context.Employee.LanguageId, item.Name);
                 tmpService.ExecuteAction(EnumDictionaryActions.AddDocumentType, context, item);
             };
 
@@ -109,6 +109,15 @@ namespace BL.Logic.ClientCore
 
             #endregion
 
+
+            #region [+] Tags ...
+            foreach (var item in GetTags(context))
+            {
+                tmpService.ExecuteAction(EnumDictionaryActions.AddTag, context, item);
+            };
+            #endregion
+
+
             // Включить соответствующие воркеры
         }
 
@@ -117,7 +126,7 @@ namespace BL.Logic.ClientCore
             // Остановить соответствующие воркеры
             using (var transaction = Transactions.GetTransaction())
             {
-                _DictDb.DeleteRegistrationJournals(context, null);
+                
 
                 _DictDb.DeleteDocumentType(context, null);
 
@@ -138,7 +147,7 @@ namespace BL.Logic.ClientCore
 
                 _EncrDb.DeleteCertificate(context, null);
 
-
+                _DictDb.DeleteRegistrationJournals(context, null);
 
                 _DictDb.DeleteTags(context, null);
 
@@ -180,7 +189,7 @@ namespace BL.Logic.ClientCore
 
                 _DictDb.DeleteAgents(context, null);
 
-                _FTextDb.Delete(context, context.CurrentClientId);
+                _FTextDb.Delete(context, context.Client.Id);
 
                 // Удаляю, то что накопилось во время удаленя агентов
                 _SystemDb.DeleteSystemLogs(context, null);
@@ -210,8 +219,8 @@ namespace BL.Logic.ClientCore
             var languageService = DmsResolver.Current.Get<ILanguages>();
 
             string specCode = ctype.ToString();
-            string code = languageService.GetTranslation(context.CurrentEmployee.LanguageId, GetLabel("ContactTypesCode", ctype.ToString())); ;
-            string name = languageService.GetTranslation(context.CurrentEmployee.LanguageId, GetLabel("ContactTypes", ctype.ToString()));
+            string code = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("ContactTypesCode", ctype.ToString())); ;
+            string name = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("ContactTypes", ctype.ToString()));
 
             var model = new AddContactType()
             {
@@ -232,7 +241,6 @@ namespace BL.Logic.ClientCore
             var items = new List<AddAddressType>();
 
             items.Add(GetAddressType(EnumAddressTypes.Actual));
-            items.Add(GetAddressType(EnumAddressTypes.Current));
             items.Add(GetAddressType(EnumAddressTypes.Legal));
             items.Add(GetAddressType(EnumAddressTypes.Working));
             return items;
@@ -267,6 +275,22 @@ namespace BL.Logic.ClientCore
             return items;
         }
 
+        private static List<AddTag> GetTags(IContext context)
+        {
+            var languageService = DmsResolver.Current.Get<ILanguages>();
+            var items = new List<AddTag>();
+
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("Tags", "Trade")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("Tags", "Development")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("Tags", "Production")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("Tags", "Design")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("Tags", "Finance")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("Tags", "Accounting")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("Tags", "Staff")) });
+
+            return items;
+        }
+
         private static AddDocumentType GetDocumentTypes(EnumDocumentTypes id)
         {
             string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
@@ -282,36 +306,25 @@ namespace BL.Logic.ClientCore
         {
             var items = new List<InternalSystemSetting>();
 
-            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.SUBORDINATIONS_SEND_ALL_FOR_EXECUTION));
-            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.SUBORDINATIONS_SEND_ALL_FOR_INFORMING));
+            items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.SUBORDINATIONS_SEND_ALL_FOR_EXECUTION));
+            items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.SUBORDINATIONS_SEND_ALL_FOR_INFORMING));
 
-            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.DIGITAL_SIGNATURE_IS_USE_CERTIFICATE_SIGN));
-            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.DIGITAL_SIGNATURE_IS_USE_INTERNAL_SIGN));
+            items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.DIGITAL_SIGNATURE_IS_USE_CERTIFICATE_SIGN));
+            items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.DIGITAL_SIGNATURE_IS_USE_INTERNAL_SIGN));
 
-            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.MAILSERVER_TIMEOUT_MINUTE));
-            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.MAILSERVER_TYPE));
-            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.MAILSERVER_SYSTEMMAIL));
-            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.MAILSERVER_NAME));
-            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.MAILSERVER_LOGIN));
-            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.MAILSERVER_PASSWORD));
-            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.MAILSERVER_PORT));
 
-            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.CLEARTRASHDOCUMENTS_TIMEOUT_MINUTE_FOR_CLEAR));
+            items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.CLEARTRASHDOCUMENTS_TIMEOUT_MINUTE_FOR_CLEAR));
 
-            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.IRF_DMS_FILESTORE_PATH));
-            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_DocumentForDigitalSignature));
-            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegisterTransmissionDocuments));
-            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegistrationCardIncomingDocument));
-            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegistrationCardInternalDocument));
-            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegistrationCardOutcomingDocument));
+            items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_DocumentForDigitalSignature));
+            items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegisterTransmissionDocuments));
+            items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegistrationCardIncomingDocument));
+            items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegistrationCardInternalDocument));
+            items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegistrationCardOutcomingDocument));
 
-            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_DATASTORE_PATH));
-            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_REFRESH_TIMEOUT));
-            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED));
-            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_ROWLIMIT));
+            items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED));
 
-            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.RUN_AUTOPLAN_TIMEOUT_MINUTE));
-            items.Add(SettingsFactory.GetDefaultSetting(EnumSystemSettings.RUN_CLEARTRASHDOCUMENTS_TIMEOUT_MINUTE));
+            items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.RUN_AUTOPLAN_TIMEOUT_MINUTE));
+            items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.RUN_CLEARTRASHDOCUMENTS_TIMEOUT_MINUTE));
 
             return items;
         }

@@ -60,7 +60,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
             _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId, Model.Task);
             if (_document == null)
             {
@@ -96,7 +96,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             if (Model.TargetPositionId.HasValue
                 && (Model.DueDate.HasValue || Model.DueDay.HasValue)
                 && (_sendList.SendType == EnumSendTypes.SendForSigning || _sendList.SendType == EnumSendTypes.SendForVisaing || _sendList.SendType == EnumSendTypes.SendForАgreement || _sendList.SendType == EnumSendTypes.SendForАpproval)
-                && !_admin.VerifySubordination(_context, new VerifySubordination
+                && !_adminProc.VerifySubordination(_context, new VerifySubordination
                 {
                     SubordinationType = EnumSubordinationTypes.Execution,
                     TargetPosition = Model.TargetPositionId.Value,

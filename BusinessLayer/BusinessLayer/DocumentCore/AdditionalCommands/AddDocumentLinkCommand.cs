@@ -49,7 +49,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
                 throw new CouldNotPerformOperation();
             }
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
             _document = _operationDb.AddDocumentLinkPrepare(_context, Model);
             if (_document?.Id == null || _document?.ParentDocumentId == null)
             {

@@ -156,7 +156,7 @@ namespace BL.Database.Admins
                     Name = model.Name,
                     IsDefault = model.IsDefault
                 };
-                dbContext.AdminLanguagesSet.Attach(item);
+                dbContext.SafeAttach(item);
                 var entity = dbContext.Entry(item);
 
                 entity.Property(x => x.Code).IsModified = true;
@@ -184,7 +184,7 @@ namespace BL.Database.Admins
 
         private IQueryable<AdminLanguageValues> GetAdminLanguageValuesQuery(IContext ctx, DmsContext dbContext, FilterAdminLanguageValue filter)
         {
-            var qry = dbContext.AdminLanguageValuesSet.Where(x => x.ClientId == ctx.CurrentClientId).AsQueryable();
+            var qry = dbContext.AdminLanguageValuesSet.Where(x => x.ClientId == ctx.Client.Id).AsQueryable();
 
             if (filter.LanguageValueId?.Count > 0)
             {
@@ -272,7 +272,7 @@ namespace BL.Database.Admins
                     LanguageId = model.LanguageId,
                     Label = model.Label,
                     Value = model.Value,
-                    ClientId = ctx.CurrentClientId
+                    ClientId = ctx.Client.Id
                 };
                 dbContext.AdminLanguageValuesSet.Add(item);
                 dbContext.SaveChanges();
@@ -305,7 +305,7 @@ namespace BL.Database.Admins
                     Label = model.Label,
                     Value = model.Value
                 };
-                dbContext.AdminLanguageValuesSet.Attach(item);
+                dbContext.SafeAttach(item);
                 var entity = dbContext.Entry(item);
 
                 entity.Property(x => x.LanguageId).IsModified = true;

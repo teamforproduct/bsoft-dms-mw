@@ -1,6 +1,7 @@
 ﻿using BL.CrossCutting.CryptographicWorker;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Helpers.CashService;
+using BL.CrossCutting.Interfaces;
 using Ninject.Modules;
 
 namespace BL.CrossCutting.DependencyInjection

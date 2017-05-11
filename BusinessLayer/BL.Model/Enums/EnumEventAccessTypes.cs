@@ -23,7 +23,7 @@
         /// <summary>
         /// Досылка
         /// </summary>
-        AddTarget = 40,
+        TargetAdditional = 40,
 
     }
 }

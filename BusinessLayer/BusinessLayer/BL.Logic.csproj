@@ -271,7 +271,6 @@
     <Compile Include="DocumentCore\Commands\AskPostponeDueDateDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\CancelPostponeDueDateDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\SendDocumentCommand.cs" />
-    <Compile Include="DocumentCore\Commands\SendMessageDocumentCommand_OLD.cs" />
     <Compile Include="DocumentCore\Commands\VerifySigningDocumentCommand.cs" />
     <Compile Include="DocumentCore\ReportCommand\ReportDocumentForDigitalSignature.cs" />
     <Compile Include="DocumentCore\TemplateCommands\AddTemplateAccessCommand.cs" />
@@ -289,7 +288,8 @@
     <Compile Include="EncryptionCore\Certificate\ModifyEncryptionCertificateCommand.cs" />
     <Compile Include="EncryptionCore\Interfaces\IEncryptionService.cs" />
     <Compile Include="DocumentCore\Commands\SelfAffixSigningDocumentCommand.cs" />
-    <Compile Include="Settings\SettingsFactory.cs" />
+    <Compile Include="Settings\SettingValues.cs" />
+    <Compile Include="Settings\SettingFactory.cs" />
     <Compile Include="SystemCore\FullTextSearch.cs" />
     <Compile Include="SystemCore\Settings\SetSettingCommand.cs" />
     <Compile Include="SystemCore\Settings\BaseSettingCommand.cs" />
@@ -400,6 +400,8 @@
     <Compile Include="SystemServices\AutoPlan\AutoPlanService.cs" />
     <Compile Include="SystemServices\AutoPlan\IAutoPlanService.cs" />
     <Compile Include="SystemServices\BaseSystemWorkerService.cs" />
+    <Compile Include="SystemServices\FileService\FileService.cs" />
+    <Compile Include="SystemServices\FileService\IFileService.cs" />
     <Compile Include="SystemServices\FullTextSearch\CaseInsensitiveWhitespaceAnalyzer.cs" />
     <Compile Include="SystemServices\FullTextSearch\FullTextIndexWorker.cs" />
     <Compile Include="SystemServices\FullTextSearch\FullTextSearchService.cs" />

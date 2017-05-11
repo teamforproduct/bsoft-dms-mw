@@ -20,7 +20,7 @@ namespace DMS_WebAPI.ControllersV3.User
         private IHttpActionResult GetById(IContext context)
         {
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            var user = webService.GetUser(context, context.CurrentAgentId);
+            var user = webService.GetUserById(context.User.Id);
             var res = new JsonResult(new FrontAspNetUserControlQuestion
             {
                 Question = user.ControlQuestion?.Name,

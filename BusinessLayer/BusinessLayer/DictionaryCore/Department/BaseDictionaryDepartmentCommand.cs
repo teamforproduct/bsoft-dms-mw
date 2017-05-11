@@ -47,30 +47,47 @@ namespace BL.Logic.DictionaryCore
         public override object Execute()
         { throw new NotImplementedException(); }
 
-        protected string GetCode()
+        protected CodePath GetCodePath()
         {
             string code = string.Empty;
+            string path = string.Empty;
 
             if ((Model.ParentId ?? 0) > 0)
             {
-                var parentDepartment = _dictDb.GetDepartment(_context, new FilterDictionaryDepartment() { IDs = new List<int> { Model.ParentId ?? 0 } });
+                var parentDepartment = _dictDb.GetInternalDepartments(_context, new FilterDictionaryDepartment() { IDs = new List<int> { Model.ParentId ?? 0 } }).FirstOrDefault();
                 code = parentDepartment.Code;
+                path = parentDepartment.Path;
             }
 
-            return code + (code == string.Empty ? string.Empty : "/") + Model.Index;
+            return new CodePath
+            {
+                Code = code + (code == string.Empty ? string.Empty : "/") + Model.Index,
+                Path = path + (path == string.Empty ? string.Empty : "/") + Model.ParentId?.ToString()
+            };
         }
 
-        protected void UpdateCodeForChildDepartment(int departmentId, string codePrefix)
+        protected class CodePath
         {
-            var childDepartments = _dictDb.GetDepartments(_context, new FilterDictionaryDepartment() { ParentIDs = new List<int> { departmentId } });
+            public string Code { set; get; }
+
+            public string Path { set; get; }
+        }
+
+        protected void UpdateCodeForChildDepartment(int departmentId, string codePrefix, string pathPrefix)
+        {
+            var filter = new FilterDictionaryDepartment() { ParentIDs = new List<int> { departmentId } };
+
+            var childDepartments = _dictDb.GetInternalDepartments(_context, filter);
 
             if (childDepartments.Count() == 0) return;
 
-            _dictDb.UpdateDepartmentCode(_context, codePrefix, new FilterDictionaryDepartment() { ParentIDs = new List<int> { departmentId } });
+            _dictDb.UpdateDepartmentCode(_context, codePrefix, pathPrefix, new FilterDictionaryDepartment() { ParentIDs = new List<int> { departmentId } });
+
+            childDepartments = _dictDb.GetInternalDepartments(_context, filter);
 
             foreach (var dep in childDepartments)
             {
-                UpdateCodeForChildDepartment(dep.Id, dep.Code);
+                UpdateCodeForChildDepartment(dep.Id, dep.Code, dep.Path + (string.IsNullOrEmpty(dep.Path) ? string.Empty : "/") + dep.Id.ToString());
             }
 
         }

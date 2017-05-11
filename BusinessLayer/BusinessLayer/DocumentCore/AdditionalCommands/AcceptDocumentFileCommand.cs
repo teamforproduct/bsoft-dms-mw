@@ -14,7 +14,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         private readonly IDocumentFileDbProcess _operationDb;
         private readonly IFileStore _fStore;
 
-        private InternalDocumentAttachedFile _file;
+        private InternalDocumentFile _file;
 
         public AcceptDocumentFileCommand(IDocumentFileDbProcess operationDb, IFileStore fStore)
         {
@@ -81,7 +81,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
             _context.SetCurrentPosition(_document.ExecutorPositionId);
 
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
 
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
@@ -96,7 +96,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _file.IsWorkedOut = true;
             _file.IsMainVersion = true;
             CommonDocumentUtilities.SetLastChange(_context, _file);
-            _file.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, _file.DocumentId, EnumEventTypes.AcceptDocumentFile, null, _file.Name + "." + _file.Extension, null, null, _file.ExecutorPositionId);
+            _file.Event = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _file.DocumentId, EnumEventTypes.AcceptDocumentFile, null, _file.File.FileName, null,null, null, _file.ExecutorPositionId);
             _operationDb.UpdateFileOrVersion(_context, _file);
             return _file.Id;
         }

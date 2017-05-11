@@ -54,7 +54,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
             {
                 throw new CouldNotPerformOperationWithPaper();
             }
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
             return true;
         }
 

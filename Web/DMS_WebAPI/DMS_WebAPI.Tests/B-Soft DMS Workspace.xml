@@ -2,9 +2,5 @@
 <con:soapui-workspace name="IsSetDefaultsForExecution" soapui-version="5.3.0" xmlns:con="http://eviware.com/soapui/config">
   <con:settings/>
   <con:project name="BSOFT-BASE">C:/Source/Repos/bsoft-dms-mw/Web/DMS_WebAPI/DMS_WebAPI.Tests/BSOFT-BASE-soapui-project.xml</con:project>
-  <con:project name="Dictionary">C:/Source/Repos/bsoft-dms-mw/Web/DMS_WebAPI/DMS_WebAPI.Tests/DICTIONARY-soapui-project.xml</con:project>
-  <con:project name="Documents">C:/Source/Repos/bsoft-dms-mw/Web/DMS_WebAPI/DMS_WebAPI.Tests/DOCUMENTS-soapui-project.xml</con:project>
-  <con:project name="Template">C:/Source/Repos/bsoft-dms-mw/Web/DMS_WebAPI/DMS_WebAPI.Tests/TEMPLATE-soapui-project.xml</con:project>
-  <con:project name="Adminka">C:/Source/Repos/bsoft-dms-mw/Web/DMS_WebAPI/DMS_WebAPI.Tests/ADMINKA-soapui-project.xml</con:project>
   <con:collectInfoForSupport>false</con:collectInfoForSupport>
 </con:soapui-workspace>

@@ -71,7 +71,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
             {
                 _context.SetCurrentPosition(_paper.LastPaperEvent.TargetPositionId);
             }
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
                 throw new CouldNotPerformOperationWithPaper();

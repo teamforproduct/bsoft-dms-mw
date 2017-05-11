@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace BL.Model.Enums
+﻿namespace BL.Model.Enums
 {
     /// <summary>
     /// Типы контактов 
@@ -14,6 +8,5 @@ namespace BL.Model.Enums
         Working,
         Legal,
         Actual,
-        Current,
     }
 }

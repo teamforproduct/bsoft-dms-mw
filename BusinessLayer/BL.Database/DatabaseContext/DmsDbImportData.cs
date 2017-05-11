@@ -83,75 +83,73 @@ namespace BL.Database.DatabaseContext
             systemRolePermissions.Clear();
 
             AddPermission(100, Modules.Org, Features.Info,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
                 createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
                 updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
                 deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg }
                 );
             AddPermission(110, Modules.Org, Features.Addresses,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
                 createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
                 updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
                 deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg }
                 );
             AddPermission(120, Modules.Org, Features.Contacts,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
                 createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
                 updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
                 deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg }
                 );
             AddPermission(200, Modules.Department, Features.Info,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
                 createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
                 updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
                 deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg }
                 );
             AddPermission(210, Modules.Department, Features.Admins, u: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
                 createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
                 updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
                 deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg }
                 );
             AddPermission(300, Modules.Position, Features.Info,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg }
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments }
                 );
             AddPermission(310, Modules.Position, Features.SendRules, c: false, d: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg }
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments }
                 );
             AddPermission(320, Modules.Position, Features.Executors,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg }
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments }
                 );
             AddPermission(330, Modules.Position, Features.Roles, c: false, d: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg }
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments }
                 );
             AddPermission(340, Modules.Position, Features.Journals, c: false, d: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg }
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments }
                 );
             AddPermission(350, Modules.Position, Features.DocumentAccesses, r: false, c: false, d: false,
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.DocumAccess }
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.DocumAccess }
                 );
 
 
             AddPermission(400, Modules.Journal, Features.Info,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementJournals, Roles.ManagementDocumDictionaries },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementJournals, Roles.ManagementDocumDictionaries },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementJournals, Roles.ManagementDocumDictionaries },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementJournals, Roles.ManagementDocumDictionaries }
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementJournals, Roles.ManagementDocumDictionaries },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementJournals, Roles.ManagementDocumDictionaries },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementJournals, Roles.ManagementDocumDictionaries },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementJournals, Roles.ManagementDocumDictionaries }
                 );
             AddPermission(410, Modules.Journal, Features.Positions, c: false, d: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementJournals, Roles.ManagementDocumDictionaries },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementJournals, Roles.ManagementDocumDictionaries }
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementJournals, Roles.ManagementDocumDictionaries },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementJournals, Roles.ManagementDocumDictionaries }
                 );
 
             AddPermission(500, Modules.Templates, Features.Info,
@@ -223,7 +221,8 @@ namespace BL.Database.DatabaseContext
                 deleteRoles: new List<Roles> { Roles.Admin }
                 );
             AddPermission(710, Modules.Role, Features.Permissions, c: false, d: false,
-                readRoles: new List<Roles> { Roles.Admin }
+                readRoles: new List<Roles> { Roles.Admin },
+                updateRoles: new List<Roles> { Roles.Admin}
                 );
             AddPermission(720, Modules.Role, Features.Employees, c: false, u: false, d: false,
                 readRoles: new List<Roles> { Roles.Admin }
@@ -234,40 +233,40 @@ namespace BL.Database.DatabaseContext
 
 
             AddPermission(800, Modules.Employee, Features.Info,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees }
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees }
                 );
             AddPermission(810, Modules.Employee, Features.Assignments,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees }
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees }
                 );
             AddPermission(820, Modules.Employee, Features.Roles, c: false, d: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees }
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees }
                 );
             AddPermission(830, Modules.Employee, Features.Passport, c: false, d: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees }
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees }
                 );
             AddPermission(840, Modules.Employee, Features.Addresses,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees }
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees }
                 );
             AddPermission(850, Modules.Employee, Features.Contacts,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees }
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees }
                 );
 
             AddPermission(860, Modules.Employee, Features.AddInOrg, r: false, u: false, d: false,
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementEmployees }
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementEmployees }
                 );
 
             AddPermission(900, Modules.Company, Features.Info,
@@ -352,16 +351,16 @@ namespace BL.Database.DatabaseContext
                 );
 
             AddPermission(1300, Modules.SendList, Features.Info,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementDepartments },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementDepartments },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementDepartments },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementDepartments }
                 );
             AddPermission(1310, Modules.SendList, Features.Contents,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementDepartments },
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementDepartments },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementDepartments },
+                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementDepartments }
                 );
 
             AddPermission(1400, Modules.ContactType, Features.Info,
@@ -382,8 +381,8 @@ namespace BL.Database.DatabaseContext
                 );
 
             AddPermission(1600, Modules.Auth, Features.Info, c: false, d: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAuth },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAuth }
+                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAuth, Roles.ManagementDepartments },
+                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAuth, Roles.ManagementDepartments }
                 );
             AddPermission(1610, Modules.Settings, Features.Info, c: false, d: false,
                 readRoles: new List<Roles> { Roles.Admin },
@@ -489,12 +488,12 @@ namespace BL.Database.DatabaseContext
                 );
 
 
-            AddPermission(2300, Modules.User, Features.Positions,
-                readRoles: new List<Roles> { Roles.Admin, Roles.User },
-                createRoles: new List<Roles> { Roles.Admin, Roles.User },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.User },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.User }
-                );
+            //AddPermission(2300, Modules.User, Features.Positions,
+            //    readRoles: new List<Roles> { Roles.Admin, Roles.User },
+            //    createRoles: new List<Roles> { Roles.Admin, Roles.User },
+            //    updateRoles: new List<Roles> { Roles.Admin, Roles.User },
+            //    deleteRoles: new List<Roles> { Roles.Admin, Roles.User }
+            //    );
 
 
 
@@ -1141,6 +1140,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetAdminRoleType(Roles.ManagementEmployees));
             items.Add(GetAdminRoleType(Roles.ManagementJournals));
             items.Add(GetAdminRoleType(Roles.ManagementOrg));
+            items.Add(GetAdminRoleType(Roles.ManagementDepartments));
 
             return items;
         }
@@ -1210,6 +1210,7 @@ namespace BL.Database.DatabaseContext
 
         public static List<SystemValueTypes> GetSystemValueTypes()
         {
+            // Синхронизировать с ApplicationDbImportData
             var items = new List<SystemValueTypes>();
 
             items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Text, Code = "text", Description = "text" });

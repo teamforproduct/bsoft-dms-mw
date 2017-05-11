@@ -1,11 +1,11 @@
-﻿using System;
+﻿using DMS_WebAPI.DatabaseContext;
+using DMS_WebAPI.Providers;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
 using Owin;
-using DMS_WebAPI.Providers;
-using DMS_WebAPI.Models;
+using System;
 
 namespace DMS_WebAPI
 {

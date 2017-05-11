@@ -36,6 +36,7 @@ namespace BL.Logic.DictionaryCore
 
         public DictionaryService(AdminsDbProcess adminDb, DictionariesDbProcess dictDb, ICommandService commandService)
         {
+            _adminDb = adminDb;
             _dictDb = dictDb;
             _commandService = commandService;
         }
@@ -771,7 +772,7 @@ namespace BL.Logic.DictionaryCore
 
                 if (item.NewOrder != item.OldOrder)
                 {
-                    _dictDb.UpdatePositionOrder(context, item.Id, item.NewOrder); 
+                    _dictDb.UpdatePositionOrder(context, item.Id, item.NewOrder);
                 }
             }
 
@@ -1179,6 +1180,15 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetStandartSendLists(context, filter, null);
         }
 
+        public IEnumerable<AutocompleteItem> GetStandartSendListsShortList(IContext ctx, FilterDictionaryStandartSendList filter, UIPaging paging)
+        {
+            if (filter == null) filter = new FilterDictionaryStandartSendList();
+
+            filter.IsActive = true;
+
+            return _dictDb.GetStandartSendListsShortList(ctx, filter, paging);
+        }
+
         public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, bool SearchInPositionsOnly = false)
         {
 
@@ -1334,6 +1344,40 @@ namespace BL.Logic.DictionaryCore
         public IEnumerable<ITreeItem> GetStaffList(IContext context, FullTextSearch ftSearch, FilterDictionaryStaffList filter)
         {
 
+            // Тонкий момент, проверяю не является ли сотрудник локальным администратором.
+            // Если не локальный значит, надеюсь, что глобальный и отображаю все
+            var adminService = DmsResolver.Current.Get<IAdminService>();
+            var employeeDepartments = adminService.GetInternalEmployeeDepartments(context, context.Employee.Id);
+
+            if (employeeDepartments != null)
+            {
+                List<int> safeList = new List<int>();
+
+                var deps = _dictDb.GetInternalDepartments(context, new FilterDictionaryDepartment { IDs = employeeDepartments });
+
+                safeList.AddRange(employeeDepartments);
+
+                // собираю список Id включая родительские отделы
+                foreach (var dep in deps)
+                {
+                    if (dep.Path != null) safeList.AddRange(dep.Path?.Split('/').Select(x => int.Parse(x)));
+                }
+
+                safeList = safeList.Distinct().ToList();
+
+                // Если передан фильтр, то проверяю чтобы переданный id были из safeList
+                if (filter?.DepartmentIDs?.Count() > 0)
+                {
+                    filter.DepartmentIDs = filter.DepartmentIDs.Where(x => safeList.Contains(x)).ToList();
+                }
+                else
+                {
+                    if (filter == null) filter = new FilterDictionaryStaffList();
+                    filter.DepartmentIDs = safeList;
+                }
+
+            }
+
             int levelCount = filter?.LevelCount ?? 0;
             IEnumerable<TreeItem> executors = null;
             IEnumerable<TreeItem> positions = null;
@@ -1346,7 +1390,7 @@ namespace BL.Logic.DictionaryCore
                 {
                     StartDate = DateTime.UtcNow,
                     EndDate = DateTime.UtcNow,
-                    IsActive = filter?.IsActive
+                    IsActive = filter?.IsActive,
                 });
             }
 
@@ -1354,7 +1398,8 @@ namespace BL.Logic.DictionaryCore
             {
                 positions = _dictDb.GetPositionsForStaffList(context, new FilterDictionaryPosition()
                 {
-                    IsActive = filter?.IsActive
+                    IsActive = filter?.IsActive,
+                    DepartmentIDs = employeeDepartments,
                 });
             }
 
@@ -1371,7 +1416,8 @@ namespace BL.Logic.DictionaryCore
             {
                 companies = _dictDb.GetAgentOrgsForStaffList(context, new FilterDictionaryAgentOrg()
                 {
-                    IsActive = filter?.IsActive
+                    IsActive = filter?.IsActive,
+                    DepartmentIDs = employeeDepartments,
                 });
             }
 

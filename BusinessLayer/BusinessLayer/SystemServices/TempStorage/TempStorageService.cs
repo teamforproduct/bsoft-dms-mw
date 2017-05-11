@@ -21,9 +21,9 @@ namespace BL.Logic.SystemServices.TempStorage
             _cleanTimer = new Timer(OnSinchronize, null, timerRefresh, timerRefresh);
         }
 
-        public int AddToStore(EnumObjects ownerType, int ownerId, int objectId, object storeobject)
+        public int AddToStore(object storeobject, EnumObjects? ownerType, int? ownerId, int? objectId)
         {
-            storeObjects.RemoveAll(x => x.ObjectId == objectId && x.OwnerId == ownerId && x.OwnerType == ownerType);
+            //storeObjects.RemoveAll(x => x.ObjectId == objectId && x.OwnerId == ownerId && x.OwnerType == ownerType);
             var newObj = new TempStoreObject
             {
                 Id = 0,
@@ -44,6 +44,17 @@ namespace BL.Logic.SystemServices.TempStorage
 
         }
 
+        public List<object> GetStoreObjectList(EnumObjects ownerType, int ownerId, int objectId)
+        {
+            var lstObj = storeObjects.Where(x => x.ObjectId == objectId && x.OwnerId == ownerId && x.OwnerType == ownerType).ToList();
+            foreach (var obj in lstObj)
+            {
+                obj.LastUsage = DateTime.Now;
+            }
+                
+            return lstObj.Select(x=>x.StoreObject).ToList();
+        }
+
         public object GetStoreObject(EnumObjects ownerType, int ownerId, int objectId)
         {
             var obj = storeObjects.FirstOrDefault(x => x.ObjectId == objectId && x.OwnerId == ownerId && x.OwnerType == ownerType);
@@ -58,29 +69,51 @@ namespace BL.Logic.SystemServices.TempStorage
             return obj?.StoreObject;
         }
 
+        public List<object> ExtractStoreObjectList(EnumObjects ownerType, int ownerId, int objectId)
+        {
+            var lstObj = storeObjects.Where(x => x.ObjectId == objectId && x.OwnerId == ownerId && x.OwnerType == ownerType).ToList();
+            foreach (var obj in lstObj)
+            {
+                RemoveObject(obj);
+            }
+
+            return lstObj.Select(x => x.StoreObject).ToList();
+        }
+
         public object ExtractStoreObject(EnumObjects ownerType, int ownerId, int objectId)
         {
             var obj = storeObjects.FirstOrDefault(x => x.ObjectId == objectId && x.OwnerId == ownerId && x.OwnerType == ownerType);
-            if (obj!=null) storeObjects.Remove(obj);
+            if (obj!=null) RemoveObject(obj);
             return obj?.StoreObject;
         }
 
         public object ExtractStoreObject(int objectId)
         {
             var obj = storeObjects.FirstOrDefault(x => x.Id == objectId);
-            if (obj != null) storeObjects.Remove(obj);
+            if (obj != null) RemoveObject(obj);
             return obj?.StoreObject;
         }
 
         public void RemoveStoreObject(int objectId)
         {
             var obj = storeObjects.FirstOrDefault(x => x.Id == objectId);
-            if (obj != null) storeObjects.Remove(obj);
+            if (obj != null) RemoveObject(obj);
+        }
+
+        private void RemoveObject(TempStoreObject obj)
+        {
+            lock (lockObject)
+            {
+                storeObjects.Remove(obj);
+            }
         }
 
         private void OnSinchronize(object state)
         {
-            storeObjects.RemoveAll(x => (DateTime.Now - x.LastUsage).TotalMinutes > timeToStore);
+            lock (lockObject)
+            {
+                storeObjects.RemoveAll(x => (DateTime.Now - x.LastUsage).TotalMinutes > timeToStore);
+            }
         }
     }
 }

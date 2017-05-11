@@ -13,6 +13,9 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
+using BL.Logic.SystemServices.FileService;
+using Microsoft.Ajax.Utilities;
+using System.Linq;
 
 namespace DMS_WebAPI.ControllersV3.Documents
 {
@@ -33,21 +36,37 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [HttpPost]
         [DimanicAuthorize("R")]
         [Route(Features.Files + "/Main")]
-        [ResponseType(typeof(List<FrontDocumentAttachedFile>))]
+        [ResponseType(typeof(List<FrontDocumentFile>))]
         public async Task<IHttpActionResult> PostGetList([FromBody]IncomingBase model)
         {
+            var request = HttpContext.Current.Request;
+            var appUrl = HttpRuntime.AppDomainAppVirtualPath;
+
+            if (appUrl != "/")
+                appUrl = "/" + appUrl;
+
+            var baseUrl = string.Format("{0}://{1}{2}", request.Url.Scheme, request.Url.Authority, appUrl);
+            baseUrl += ApiPrefix.V3;
+
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 if (model == null) model = new IncomingBase();
                 if (model.Filter == null) model.Filter = new FilterBase();
                 if (model.Paging == null) model.Paging = new UIPaging();
-
+                var baseurl = param.ToString();
                 var docProc = DmsResolver.Current.Get<IDocumentFileService>();
                 var items = docProc.GetDocumentFiles(context, model.Filter, model.Paging);
+                var fileService = DmsResolver.Current.Get<IFileService>();
+                items.ForEach(x =>
+                {
+                    x.FileLink = fileService.GetFileUri(baseurl, context, EnumDocumentFileType.UserFile, x.Id);
+                    x.PdfFileLink = fileService.GetFileUri(baseurl, context, EnumDocumentFileType.PdfFile, x.Id);
+                    x.PreviewFileLink = fileService.GetFileUri(baseurl, context, EnumDocumentFileType.PdfPreview, x.Id);
+                });
                 var res = new JsonResult(items, this);
                 res.Paging = model.Paging;
                 return res;
-            });
+            }, baseUrl);
         }
 
         /// <summary>
@@ -57,7 +76,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns>Событие</returns>
         [HttpGet]
         [Route(Features.Files + "/{Id:int}")]
-        [ResponseType(typeof(FrontDocumentAttachedFile))]
+        [ResponseType(typeof(FrontDocumentFile))]
         public async Task<IHttpActionResult> Get(int Id)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
@@ -76,7 +95,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns>Событие</returns>
         [HttpGet]
         [Route(Features.Files + "/{Id:int}/Pdf")]
-        [ResponseType(typeof(FrontDocumentAttachedFile))]
+        [ResponseType(typeof(FrontDocumentFile))]
         public async Task<IHttpActionResult> GetPdf(int Id)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
@@ -95,7 +114,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns>Событие</returns>
         [HttpGet]
         [Route(Features.Files + "/{Id:int}/Preview")]
-        [ResponseType(typeof(FrontDocumentAttachedFile))]
+        [ResponseType(typeof(FrontDocumentFile))]
         public async Task<IHttpActionResult> GetPreview(int Id)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
@@ -108,49 +127,20 @@ namespace DMS_WebAPI.ControllersV3.Documents
         }
 
         /// <summary>
-        /// Добавляет файл, если файл с таким именем есть создается новая версия файла
+        /// Добавляет файл, в зависимости от параметров новый или версию существующего
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Files)]
-        public async Task<IHttpActionResult> Post([FromUri]AddDocumentFile model)
+        public async Task<IHttpActionResult> Post([FromBody]List<AddDocumentFile> model)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var file = (HttpPostedFile)param;
-                model.PostedFileData = file;
-                model.FileName = file.FileName;
-                model.FileType = file.ContentType;
-                model.IsUseMainNameFile = false;
-
-                var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentFile, model, model.CurrentPositionId);
+                var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentFile, model, model.Select(x=>x.CurrentPositionId).FirstOrDefault());
                 var res = new JsonResult(tmpItem, this);
                 return res;
-            }, HttpContext.Current.Request.Files[0]);
-        }
-
-        /// <summary>
-        /// Добавляет версию существующего файла
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpPost]
-        [Route(Features.Files + "/AddUseMainNameFile")]
-        public async Task<IHttpActionResult> PostAddUseMainNameFile([FromUri]AddDocumentFile model)
-        {
-            return await SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                var file = (HttpPostedFile)param;
-                model.PostedFileData = file;
-                model.FileName = file.FileName;
-                model.FileType = file.ContentType;
-                model.IsUseMainNameFile = true;
-
-                var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentFileUseMainNameFile, model, model.CurrentPositionId);
-                var res = new JsonResult(tmpItem, this);
-                return res;
-            }, HttpContext.Current.Request.Files[0]);
+            });
         }
 
         /// <summary>
@@ -329,7 +319,5 @@ namespace DMS_WebAPI.ControllersV3.Documents
                 return res;
             });
         }
-
-
     }
 }

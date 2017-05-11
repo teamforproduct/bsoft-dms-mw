@@ -50,6 +50,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
                    var docProc = DmsResolver.Current.Get<IDocumentService>();
                    var items = docProc.GetDocumentPapers(context, filter, paging);
                    var res = new JsonResult(items, this);
+                   res.Paging = paging;
                    return res;
                });
         }

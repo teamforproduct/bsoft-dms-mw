@@ -26,7 +26,7 @@ namespace BL.Logic.SystemServices.ClearTrashDocuments
         private readonly IDocumentOperationsDbProcess _docOperDb;        
         private readonly IFileStore _fileStore;
 
-        public ClearTrashDocumentsService(IDocumentService documentServ, IDocumentOperationsDbProcess docOperDb, ISettings settings, ILogger logger, ICommandService cmdService, ISystemDbProcess sysDb, IDocumentFileDbProcess docFileDb, IFileStore fileStore) : base(settings, logger)
+        public ClearTrashDocumentsService(IDocumentService documentServ, IDocumentOperationsDbProcess docOperDb, ISettingValues settingValues, ILogger logger, ICommandService cmdService, ISystemDbProcess sysDb, IDocumentFileDbProcess docFileDb, IFileStore fileStore) : base(settingValues, logger)
         {
             _documentServ = documentServ;
             _sysDb = sysDb;
@@ -45,8 +45,8 @@ namespace BL.Logic.SystemServices.ClearTrashDocuments
                 {
                     var ftsSetting = new ClearTrashDocumentsSettings
                     {
-                        TimeToUpdate = Settings.GetClearTrashDocumentsTimeoutMinute(keyValuePair.Value),
-                        TimeForClearTrashDocuments = Settings.GetClearTrashDocumentsTimeoutMinuteForClear(keyValuePair.Value),
+                        TimeToUpdate = SettingValues.GetClearTrashDocumentsTimeoutMinute(keyValuePair.Value),
+                        TimeForClearTrashDocuments = SettingValues.GetClearTrashDocumentsTimeoutMinuteForClear(keyValuePair.Value),
                         DatabaseKey = keyValuePair.Key,
                     };
                     var tmr = new Timer(OnSinchronize, ftsSetting, ftsSetting.TimeToUpdate * 60000, Timeout.Infinite);
@@ -82,7 +82,7 @@ namespace BL.Logic.SystemServices.ClearTrashDocuments
 
             if (ctx == null) return;
             ctx.DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", ctx.CurrentDB));
-            _docOperDb.MarkDocumentEventAsReadAuto(ctx);
+//            _docOperDb.MarkDocumentEventAsReadAuto(ctx);
             _docOperDb.ModifyDocumentAccessesStatistics(ctx);
             _documentServ.CheckIsInWorkForControls(ctx, new FilterDocumentAccess());
 
@@ -111,7 +111,7 @@ namespace BL.Logic.SystemServices.ClearTrashDocuments
             // CLEAR unused PDF copy of the files and their previews. 
             try
             {
-                var pdfFilePeriod = Settings.GetClearOldPdfCopiesInDay(ctx);
+                var pdfFilePeriod = SettingValues.GetClearOldPdfCopiesInDay(ctx);
                 var fileTodelete = _docFileDb.GetOldPdfForAttachedFiles(ctx, pdfFilePeriod);
                 foreach (var file in fileTodelete)
                 {

@@ -18,15 +18,19 @@ namespace BL.Logic.DocumentCore.Interfaces
         IEnumerable<FrontDocument> GetDocuments(IContext ctx, FilterBase filters, UIPaging paging, EnumGroupCountType? groupCountType = null);
         FrontDocument GetDocument(IContext ctx, int documentId);
 
-        IEnumerable<int> GetLinkedDocumentIds(IContext ctx, int documentId);
-
+        FrontDocumentLinkShot GetLinkedDocumentIds(IContext ctx, int documentId);
+        IEnumerable<FrontDocument> GetLinkedDocuments(IContext context, int linkId);
+        IEnumerable<FrontDocumentTag> GetDocumentTags(IContext context, FilterDocumentTag filter);
+        int GetDocumentTagsCounter(IContext context, FilterDocumentTag filter);
         IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontDocument doc);
         object ExecuteAction(EnumDocumentActions act, IContext context, object param);
         FrontDocumentEvent GetDocumentEvent(IContext ctx, int eventId);
         IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterBase filter, UIPaging paging);
         IEnumerable<FrontDocumentWait> GetDocumentWaits(IContext ctx, FilterBase filter, UIPaging paging);
         IEnumerable<FrontDocumentSubscription> GetDocumentSubscriptions(IContext ctx, FilterDocumentSubscription filter, UIPaging paging);
-        IEnumerable<FrontDictionaryPosition> GetDocumentWorkGroup(IContext ctx, FilterDictionaryPosition filter,UIPaging paging);
+        IEnumerable<FrontDictionaryPosition> GetDocumentWorkGroup(IContext ctx, FilterDictionaryPosition filter);
+        int GetDocumentWorkGroupCounter(IContext ctx, FilterDictionaryPosition filter);
+
         FrontRegistrationFullNumber GetNextRegisterDocumentNumber(IContext ctx, RegisterDocumentBase model);
 
         #region DocumentPapers

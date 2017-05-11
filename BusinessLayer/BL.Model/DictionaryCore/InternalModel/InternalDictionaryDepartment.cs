@@ -30,7 +30,6 @@ namespace BL.Model.DictionaryCore.InternalModel
             Name = model.Name;
             FullName = model.FullName;
             Index = model.Index;
-            //Code = model.Code;
             CompanyId = model.CompanyId;
             ChiefPositionId = model.ChiefPositionId;
         }
@@ -69,6 +68,11 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// Код подразделения
         /// </summary>
         public string Code { get; set; }
+
+        /// <summary>
+        /// Путь
+        /// </summary>
+        public string Path { get; set; }
 
         /// <summary>
         /// Компания

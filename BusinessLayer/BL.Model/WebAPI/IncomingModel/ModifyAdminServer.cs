@@ -17,5 +17,6 @@ namespace BL.Model.WebAPI.IncomingModel
         public string ConnectionString { get; set; }
         public string DefaultSchema { get; set; }
         public int ClientId { get; set; }
+
     }
 }

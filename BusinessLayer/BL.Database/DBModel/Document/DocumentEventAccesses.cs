@@ -30,6 +30,12 @@ namespace BL.Database.DBModel.Document
         public bool IsActive { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
+        public int? CountNewEvents { get; set; }
+        public int? CountWaits { get; set; }
+        public int? OverDueCountWaits { get; set; }
+        public DateTime? MinDueDate { get; set; }
+
+
         [ForeignKey("DocumentId")]
         public virtual Documents Document { get; set; }
         [ForeignKey("EventId")]

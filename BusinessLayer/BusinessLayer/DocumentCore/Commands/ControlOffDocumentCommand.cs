@@ -5,6 +5,8 @@ using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.Model.DocumentCore.IncomingModel;
+using System.Collections.Generic;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -62,7 +64,7 @@ namespace BL.Logic.DocumentCore.Commands
                 throw new CouldNotPerformOperation();
             }
             _context.SetCurrentPosition(_docWait.OnEvent.SourcePositionId);
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
             return true;
         }
 
@@ -71,8 +73,13 @@ namespace BL.Logic.DocumentCore.Commands
 
             _docWait.ResultTypeId = Model.ResultTypeId;
 
+            var evAcceesses = (Model.TargetCopyAccessGroups?.Where(x => x.AccessType == EnumEventAccessTypes.TargetCopy) ?? new List<AccessGroup>())
+                .Concat(new List<AccessGroup> { new AccessGroup { AccessType = EnumEventAccessTypes.Target, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = _docWait.OnEvent.TargetPositionId } })
+                .ToList();
+
             _docWait.OffEvent =
-                CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, EnumEventTypes.ControlOff, Model.EventDate, Model.Description, null, _docWait.OnEvent.TaskId, _docWait.OnEvent.TargetPositionId);
+                CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, EnumEventTypes.ControlOff, Model.EventDate, Model.Description, null, Model.EventId, _docWait.OnEvent.TaskId, 
+                    _docWait.OnEvent.TargetPositionId, accessGroups: evAcceesses, isVeryfyDocumentAccess: true);
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
             _operationDb.CloseDocumentWait(_context, _document, GetIsUseInternalSign(), GetIsUseCertificateSign(), Model.ServerPath);
             return _docWait.DocumentId;

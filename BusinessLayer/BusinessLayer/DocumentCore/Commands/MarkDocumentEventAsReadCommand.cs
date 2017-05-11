@@ -18,7 +18,7 @@ namespace BL.Logic.DocumentCore.Commands
             _documentDb = documentDb;
         }
 
-        private IEnumerable<InternalDocumentEvent> _events { get; set; }
+        private IEnumerable<InternalDocumentEventAccess> _eventAccesses { get; set; }
 
         private MarkDocumentEventAsRead Model
         {
@@ -39,8 +39,8 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            _events = _documentDb.MarkDocumentEventsAsReadPrepare(_context, Model);
-            if (!_events.Any())
+            _eventAccesses = _documentDb.MarkDocumentEventsAsReadPrepare(_context, Model);
+            if (!_eventAccesses.Any())
             {
                 return false;
             }
@@ -49,14 +49,13 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            foreach (var x in _events)
-                {
-                    x.LastChangeUserId = _context.CurrentAgentId;
-                    x.LastChangeDate = DateTime.UtcNow;
-                    x.ReadDate = DateTime.UtcNow;
-                    x.ReadAgentId = _context.CurrentAgentId;
-                }
-            _documentDb.MarkDocumentEventAsRead(_context, _events);
+            CommonDocumentUtilities.SetLastChange(_context, _eventAccesses);
+            _eventAccesses.ToList().ForEach(x =>
+            {
+                x.ReadDate = DateTime.UtcNow;
+                x.ReadAgentId = _context.CurrentAgentId;
+            });
+            _documentDb.MarkDocumentEventAsRead(_context, _eventAccesses);
             return null;
         }
     }

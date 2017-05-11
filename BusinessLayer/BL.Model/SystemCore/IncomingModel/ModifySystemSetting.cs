@@ -1,23 +1,7 @@
-﻿using BL.Model.Enums;
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
-
-namespace BL.Model.SystemCore.IncomingModel
+﻿namespace BL.Model.SystemCore.IncomingModel
 {
-    public class ModifySystemSetting
+    public class ModifySystemSetting: ModifyGeneralSetting
     {
-        [IgnoreDataMember]
-        public int Id { get; set; }
-
-        [Required]
-        public string Key { get; set; }
-        [Required]
-        public string Value { get; set; }
-        //[Required]
-        //public EnumValueTypes ValueType { get; set; }
-
         public int? AgentId { get; set; }
-
     }
 }

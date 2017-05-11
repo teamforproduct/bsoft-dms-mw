@@ -13,7 +13,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
         private readonly ITemplateDocumentsDbProcess _operationDb;
         private readonly IFileStore _fStore;
 
-        private InternalTemplateAttachedFile _docFile;
+        private InternalTemplateDocumentFile _docFile;
 
         public ModifyTemplateFileCommand(ITemplateDocumentsDbProcess operationDb, IFileStore fStore)
         {
@@ -40,7 +40,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType, false);
+            _adminProc.VerifyAccess(_context, CommandType, false);
             _docFile = _operationDb.UpdateFilePrepare(_context, Model.Id);
             if (_docFile == null)
             {
@@ -68,7 +68,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
             _operationDb.UpdateFile(_context, _docFile);
 
-            return new FrontTemplateAttachedFile(_docFile);
+            return new FrontTemplateDocumentFile(_docFile);
         }
 
 

@@ -4,6 +4,7 @@ using BL.Model.DocumentCore.Actions;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using System.Linq;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -39,7 +40,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
             _document = _operationDb.AddNoteDocumentPrepare(_context, Model);
             //TODO проверка на контроль с одинаковыми задачами
             return true;
@@ -49,7 +50,13 @@ namespace BL.Logic.DocumentCore.Commands
         {
             var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task);
             _document.Waits = CommonDocumentUtilities.GetNewDocumentWaits(_context, (int)EnumEntytiTypes.Document, Model, EnumEventTypes.ControlOn, taskId);
-            _operationDb.AddDocumentWaits(_context, _document);
+            using (var transaction = Transactions.GetTransaction())
+            {
+                _operationDb.AddDocumentWaits(_context, _document);
+                Model.AddDocumentFiles.ForEach(x => { x.DocumentId = _document.Id; x.EventId = _document.Waits.Select(y => y.OnEventId).First(); });
+                _documentProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, _context, Model.AddDocumentFiles);
+                transaction.Complete();
+            }
             return null;
         }
 

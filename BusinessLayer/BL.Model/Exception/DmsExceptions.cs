@@ -38,6 +38,25 @@ namespace BL.Model.Exception
         public TokenAlreadyExists(System.Exception ex) : base(ex) { }
     }
 
+    public class SettingValueIsNotSet : DmsExceptions
+    {
+        public SettingValueIsNotSet(string settingKey) : base() { Parameters = new List<string> { settingKey }; }
+        public SettingValueIsNotSet(System.Exception ex) : base(ex) { }
+    }
+
+    public class SettingValueIsInvalid : DmsExceptions
+    {
+        public SettingValueIsInvalid(string settingKey) : base() { Parameters = new List<string> { settingKey }; }
+        public SettingValueIsInvalid(System.Exception ex) : base(ex) { }
+    }
+
+    public class ClientRequestIsNotFound : DmsExceptions
+    {
+        public ClientRequestIsNotFound() : base() { }
+        public ClientRequestIsNotFound(System.Exception ex) : base(ex) { }
+    }
+    
+
     #region [+] LicenceError ... 
 
 
@@ -102,6 +121,13 @@ namespace BL.Model.Exception
         public ClientCodeAlreadyExists(System.Exception ex) : base(ex) { }
     }
 
+    public class ClientCreateException : DmsExceptions
+    {
+        public ClientCreateException(System.Exception ex) : base(ex) { }
+        public ClientCreateException(IEnumerable<string> Errors) : base() { base.Errors = Errors; }
+    }
+
+
     /// <summary>
     /// Сообщение при проверке проверочного кода клиента
     /// Проверочный код неверен
@@ -124,10 +150,16 @@ namespace BL.Model.Exception
         public ClientIsNotFound(System.Exception ex) : base(ex) { }
     }
 
-    public class ClientRequired : DmsExceptions
+    public class ClientCodeRequired : DmsExceptions
     {
-        public ClientRequired() : base() { }
-        public ClientRequired(System.Exception ex) : base(ex) { }
+        public ClientCodeRequired() : base() { }
+        public ClientCodeRequired(System.Exception ex) : base(ex) { }
+    }
+
+    public class ClientCodeInvalid : DmsExceptions
+    {
+        public ClientCodeInvalid() : base() { }
+        public ClientCodeInvalid(System.Exception ex) : base(ex) { }
     }
 
 

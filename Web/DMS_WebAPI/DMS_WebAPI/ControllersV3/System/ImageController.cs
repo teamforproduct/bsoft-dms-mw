@@ -1,30 +1,51 @@
-﻿using System.IO;
-using System.Web.Http;
+﻿using System.Threading.Tasks;
 using System.Web.Mvc;
+using BL.CrossCutting.DependencyInjection;
+using BL.Logic.SystemServices.FileService;
+using BL.Model.Enums;
+using BL.Model.Exception;
 using DMS_WebAPI.Utilities;
 
 namespace DMS_WebAPI.ControllersV3.System
 {
-    public class ImageController : WebApiController
+    /// <summary>
+    /// 
+    /// </summary>
+    [Authorize]
+    [RoutePrefix("api/v3")]
+    public class ImageController : Controller
     {
-        public ActionResult GetDmsFile()
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="clientId"></param>
+        /// <param name="fileType"></param>
+        /// <param name="fileId"></param>
+        /// <returns></returns>
+        /// <exception cref="CannotAccessToFile"></exception>
+        [HttpGet]
+        [Route("files/{clientId}/{fileType}/{fileId}")]
+        public async Task<ActionResult> GetFile(int clientId, int fileType, int fileId)
         {
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
 
-                //string filename = "tenderReport.xls";
+            if (context.Client.Id!=clientId) throw new CannotAccessToFile();
 
-                //byte[] filedata = fs.ToArray();
-                //string contentType = "application/vnd.ms-excel";
+            var fileSrv = DmsResolver.Current.Get<IFileService>();
+            var item = await fileSrv.GetFile(context, (EnumDocumentFileType)fileType, fileId);
 
-                //var cd = new System.Net.Mime.ContentDisposition
-                //{
-                //    FileName = filename,
-                //    Inline = true,
-                //};
+            string contentType = fileSrv.GetMimetype(item.File.Extension);
 
-                //Response.AppendHeader("Content-Disposition", cd.ToString());
+            var cd = new global::System.Net.Mime.ContentDisposition
+            {
+                FileName = item.File.FileName,
+                Inline = true,
+            };
 
-                //return File(filedata, contentType);
-            return null;
+            Response.AppendHeader("Content-Disposition", cd.ToString());
+
+            return File(item.File.FileContent, contentType);
+
         }
     }
 }

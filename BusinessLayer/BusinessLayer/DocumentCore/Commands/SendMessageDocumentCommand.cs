@@ -6,6 +6,7 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using System.Linq;
 using BL.Model.DocumentCore.InternalModel;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -44,7 +45,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
             _document = _operationDb.AddNoteDocumentPrepare(_context, Model);
             if (_document == null)
             {
@@ -56,14 +57,20 @@ namespace BL.Logic.DocumentCore.Commands
         public override object Execute()
         {
             var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task);
-            var ev = CommonDocumentUtilities.GetNewDocumentEvent(   _context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.SendMessage, Model.EventDate, Model.Description, null, taskId, 
-                                                                    accessGroups : Model.TargetAccessGroups, isVeryfyDocumentAccess: true);
-            if (!ev.Accesses.Any(x=>x.AccessType!=EnumEventAccessTypes.Source))
+            var ev = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.SendMessage, Model.EventDate, Model.Description, null, Model.ParentEventId, taskId,
+                                                                    accessGroups: Model.TargetAccessGroups, isVeryfyDocumentAccess: true);
+            if (!ev.Accesses.Any(x => x.AccessType != EnumEventAccessTypes.Source))
             {
                 throw new NobodyIsChosen();
             }
             _document.Events = new List<InternalDocumentEvent> { ev };
-            _operationDb.AddDocumentEvents(_context, _document);
+            using (var transaction = Transactions.GetTransaction())
+            {
+                _operationDb.AddDocumentEvents(_context, _document);
+                Model.AddDocumentFiles.ForEach(x => { x.DocumentId = _document.Id; x.EventId = _document.Events.Select(y => y.Id).First(); });
+                _documentProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, _context, Model.AddDocumentFiles);
+                transaction.Complete();
+            }
             return null;
         }
 

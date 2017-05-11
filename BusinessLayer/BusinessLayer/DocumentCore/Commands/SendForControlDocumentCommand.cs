@@ -52,7 +52,7 @@ namespace BL.Logic.DocumentCore.Commands
         public override bool CanExecute()
         {
             _context.SetCurrentPosition(Model.SourcePositionId);
-            _admin.VerifyAccess(_context, CommandType);   //TODO без позиций
+            _adminProc.VerifyAccess(_context, CommandType);   //TODO без позиций
             _document = _operationDb.SendForExecutionDocumentPrepare(_context, Model);
             DmsExceptions ex = null;
             if (_document == null)
@@ -89,7 +89,7 @@ namespace BL.Logic.DocumentCore.Commands
             }
 
             if (Model.TargetPositionId.HasValue
-                && !_admin.VerifySubordination(_context, new VerifySubordination
+                && !_adminProc.VerifySubordination(_context, new VerifySubordination
                 {
                     SubordinationType = EnumSubordinationTypes.Execution,
                     TargetPosition = Model.TargetPositionId.Value,

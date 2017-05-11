@@ -1,6 +1,7 @@
 ﻿using System;
 using BL.Model.Common;
 using BL.Model.Enums;
+using System.Collections.Generic;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
@@ -20,6 +21,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public int? StandartSendListId { get; set; }
         public int? RecordId { get; set; }
         public string Name { get; set; }
+        public List<string> Details { get; set; }
 
         public bool? IsActive { get; set; }
     }

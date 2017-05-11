@@ -1,12 +1,13 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Helpers;
+using BL.CrossCutting.Interfaces;
 using BL.Logic.SystemServices.AutoPlan;
 using BL.Logic.SystemServices.ClearTrashDocuments;
 using BL.Logic.SystemServices.FullTextSearch;
 using BL.Logic.SystemServices.QueueWorker;
 using BL.Model.Enums;
 using BL.Model.WebAPI.Filters;
-using DMS_WebAPI.Models;
+using DMS_WebAPI.DatabaseContext;
 using DMS_WebAPI.Utilities;
 using Microsoft.Owin;
 using Owin;
@@ -38,6 +39,10 @@ namespace DMS_WebAPI
             // Проверка на целостность переводов
             ApplicationDbImportData.CheckLanguages();
 
+
+            // Столкнулись с проблемой вычитки настроек из центральной базы в транзакции (Нельзя использовть два дб. контекста под одной транзакцией). 
+            var genSett = DmsResolver.Current.Get<IGeneralSettings>();
+            genSett.ReadAll();
 
             //Database.SetInitializer(new CreateDatabaseIfNotExists<ApplicationDbContext>());
             //var tt = Database.Exists("DefaultConnection");
@@ -85,7 +90,7 @@ namespace DMS_WebAPI
 
 #if !DEBUG
             // Очистка устаревших пользовательских контекстов
-            var userContextService = DmsResolver.Current.Get<UserContextsWorkerService>();
+            var userContextService = DmsResolver.Current.Get<AuthWorkerService>();
             userContextService.Initialize();
 #endif
 

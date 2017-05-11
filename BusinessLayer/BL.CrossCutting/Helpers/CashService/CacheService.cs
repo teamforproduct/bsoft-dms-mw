@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using BL.CrossCutting.Interfaces;
 using BL.Model.Exception;
@@ -10,6 +12,8 @@ namespace BL.CrossCutting.Helpers.CashService
         private readonly CasheBase<string, object> _dataCashe = new CasheBase<string, object>();
         private readonly CasheBase<string, Func<object>> _queryCashe = new CasheBase<string, Func<object>>();
         private readonly ReaderWriterLockSlim _locker = new ReaderWriterLockSlim();
+
+        private List<KeyValuePair<string, string>> _updateDependency = new List<KeyValuePair<string, string>>();
 
         private string GetInternalKey(string key, int clientId)
         {
@@ -31,15 +35,43 @@ namespace BL.CrossCutting.Helpers.CashService
                 {
                     throw new WrongCasheKey();
                 }
-                 
+
+                foreach (var depend in _updateDependency.Where(x => x.Key == internalKey))
+                {
+                    if (_queryCashe.TryGet(depend.Value, out qry))
+                    {
+                        var data = qry();
+                        _dataCashe.AddOrUpdate(depend.Value, data);
+                    }
+                    else
+                    {
+                        throw new WrongCasheKey();
+                    }
+                }
+
             }
-            finally { _locker.ExitWriteLock(); }
+            catch (Exception ex)
+            {
+
+            }
+            finally
+            {
+                _locker.ExitWriteLock();
+            }
         }
 
         public void AddOrUpdateCasheData(IContext ctx, string key, Func<object> getData)
         {
-            var intK = GetInternalKey(key, ctx.CurrentClientId);
-            _queryCashe.AddOrUpdate(intK, getData);
+            var intK = GetInternalKey(key, ctx.Client.Id);
+            _locker.EnterWriteLock();
+            try
+            {
+                _queryCashe.AddOrUpdate(intK, getData);
+            }
+            finally
+            {
+                _locker.ExitWriteLock();
+            }
             UpdateData(intK);
         }
 
@@ -48,7 +80,7 @@ namespace BL.CrossCutting.Helpers.CashService
             _locker.EnterReadLock();
             try
             {
-                return _queryCashe.Exists(GetInternalKey(key, ctx.CurrentClientId));
+                return _queryCashe.Exists(GetInternalKey(key, ctx.Client.Id));
             }
             finally { _locker.ExitReadLock(); }
         }
@@ -59,18 +91,42 @@ namespace BL.CrossCutting.Helpers.CashService
             try
             {
                 object rv;
-                return _dataCashe.TryGet(GetInternalKey(key, ctx.CurrentClientId), out rv) ? rv : null;
+                return _dataCashe.TryGet(GetInternalKey(key, ctx.Client.Id), out rv) ? rv : null;
             }
             finally { _locker.ExitReadLock(); }
         }
 
+        // be careful with that method. It should be used only inside AddOrUpdate method
+        public object GetDataWithoutLock(IContext ctx, string key)
+        {
+            try
+            {
+                object rv;
+                return _dataCashe.TryGet(GetInternalKey(key, ctx.Client.Id), out rv) ? rv : null;
+            }
+            catch 
+            {
+                return null;
+            }
+        }
+
         public void RefreshKey(IContext ctx, string key)
         {
-            var intK = GetInternalKey(key, ctx.CurrentClientId);
+            var intK = GetInternalKey(key, ctx.Client.Id);
             if (_queryCashe.Exists(intK))
             {
                 UpdateData(intK);
             }
+        }
+
+        public void AddUpdateDependency(IContext ctx, string depends, string dependsFrom)
+        {
+            _updateDependency.Add(new KeyValuePair<string, string>(GetInternalKey(dependsFrom, ctx.Client.Id), GetInternalKey(depends, ctx.Client.Id)));
+        }
+
+        public void RemoveUpdateDependency(IContext ctx, string depends, string dependsFrom)
+        {
+            _updateDependency.RemoveAll(x => x.Key == GetInternalKey(dependsFrom, ctx.Client.Id) && x.Value == GetInternalKey(depends, ctx.Client.Id));
         }
 
         public void Dispose()

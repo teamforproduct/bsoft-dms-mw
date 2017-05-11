@@ -23,13 +23,12 @@ namespace DMS_WebAPI.Controllers.Documents
         /// <param name="paging">paging</param>
         /// <returns>список подписей</returns>
         [ResponseType(typeof(List<FrontDictionaryPosition>))]
-        public IHttpActionResult Get([FromUri] FilterDictionaryPosition filter, [FromUri]UIPaging paging)
+        public IHttpActionResult Get([FromUri] FilterDictionaryPosition filter)
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            var subscriptions = docProc.GetDocumentWorkGroup(ctx, filter, paging);
-            var res = new JsonResult(subscriptions, this);
-            res.Paging = paging;
+            var item = docProc.GetDocumentWorkGroup(ctx, filter);
+            var res = new JsonResult(item, this);
             return res;
         }
     }

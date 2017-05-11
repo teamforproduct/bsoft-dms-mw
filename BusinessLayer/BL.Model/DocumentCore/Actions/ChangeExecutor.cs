@@ -4,6 +4,7 @@ using BL.Model.Enums;
 using BL.Model.Users;
 using System.ComponentModel.DataAnnotations;
 using BL.Model.Extensions;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace BL.Model.DocumentCore.Actions
 {
@@ -42,5 +43,9 @@ namespace BL.Model.DocumentCore.Actions
         /// Массив событий по перемещению бумажных носителей
         /// </summary>
         public List<PaperEvent> PaperEvents { get; set; }
+        /// <summary>
+        /// группы получателей копии
+        /// </summary>
+        public List<AccessGroup> TargetCopyAccessGroups { get; set; }
     }
 }

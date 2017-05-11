@@ -55,7 +55,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
 
             //TODO potential two user could add same new version in same time. Probably need to implement CheckOut flag in future
             _document = _operationDb.RenameDocumentFilePrepare(_context, Model.DocumentId, Model.OrderInDocument);
@@ -78,16 +78,15 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override object Execute()
         {
-            var oldName = _document.DocumentFiles.First().Name;
-            var extension = _document.DocumentFiles.First().Extension;
+            var oldName = _document.DocumentFiles.First().File.Name;
+            var extension = _document.DocumentFiles.First().File.Extension;
 
             Model.FileName = Path.GetFileNameWithoutExtension(Model.FileName);
 
             foreach (var file in _document.DocumentFiles)
             {
                 _fStore.RenameFile(_context, file, Model.FileName);
-
-                file.Name = Model.FileName;
+                file.File.Name = Model.FileName;
                 CommonDocumentUtilities.SetLastChange(_context, file);
             }
 

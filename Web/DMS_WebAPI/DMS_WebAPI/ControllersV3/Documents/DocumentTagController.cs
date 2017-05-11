@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.DocumentCore.Interfaces;
+using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
@@ -33,8 +34,26 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var docProc = DmsResolver.Current.Get<IDocumentTagService>();
-                var items = docProc.GetTags(context, Id);
+                var docProc = DmsResolver.Current.Get<IDocumentService>();
+                var items = docProc.GetDocumentTags(context, new FilterDocumentTag { DocumentId = new List<int> { Id } });
+                var res = new JsonResult(items, this);
+                return res;
+            });
+        }
+        /// <summary>
+        /// Возвращает счетчик списка тегов по ИД документа
+        /// </summary>
+        /// <param name="Id">ИД документа</param>
+        /// <returns></returns>
+        [ResponseType(typeof(int))]
+        [HttpGet]
+        [Route("{Id:int}/" + Features.Tags + "/Counter")]
+        public async Task<IHttpActionResult> GetByDocumentIdCounter(int Id)
+        {
+            return await SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var docProc = DmsResolver.Current.Get<IDocumentService>();
+                var items = docProc.GetDocumentTagsCounter(context, new FilterDocumentTag { DocumentId = new List<int> { Id } });
                 var res = new JsonResult(items, this);
                 return res;
             });

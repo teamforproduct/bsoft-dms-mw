@@ -6,6 +6,7 @@ using BL.CrossCutting.DependencyInjection;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DependencyInjection;
 using BL.Model.Constants;
+using BL.Logic.DocumentCore.Interfaces;
 
 namespace BL.Logic.Common
 {
@@ -16,7 +17,8 @@ namespace BL.Logic.Common
         protected object _param;
         protected EnumDocumentActions _action;
         protected IEnumerable<InternalActionRecord> _actionRecords;
-        protected IAdminService _admin;
+        protected IAdminService _adminProc;
+        protected IDocumentService _documentProc;
         protected ILogger _logger;
 
         public void InitializeCommand(IContext ctx, InternalDocument doc)
@@ -30,7 +32,8 @@ namespace BL.Logic.Common
             _document = doc;
             _param = param;
             _action = action?? EnumDocumentActions.Undefined;
-            _admin = DmsResolver.Current.Get<IAdminService>();
+            _adminProc = DmsResolver.Current.Get<IAdminService>();
+            _documentProc = DmsResolver.Current.Get<IDocumentService>();
             _logger = DmsResolver.Current.Get<ILogger>();
         }
 
@@ -47,7 +50,7 @@ namespace BL.Logic.Common
 
         protected bool GetIsUseInternalSign()
         {
-            var sett = DmsResolver.Current.Get<ISettings>();
+            var sett = DmsResolver.Current.Get<ISettingValues>();
             return sett.GetDigitalSignatureIsUseInternalSign(_context);
             //try
             //{
@@ -61,7 +64,7 @@ namespace BL.Logic.Common
         }
         protected bool GetIsUseCertificateSign()
         {
-            var sett = DmsResolver.Current.Get<ISettings>();
+            var sett = DmsResolver.Current.Get<ISettingValues>();
             return sett.GetDigitalSignatureIsUseCertificateSign(_context);
             //try
             //{

@@ -14,7 +14,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         private readonly IDocumentFileDbProcess _operationDb;
         private readonly IFileStore _fStore;
 
-        private InternalDocumentAttachedFile _file;
+        private InternalDocumentFile _file;
 
         public DeleteDocumentFileVersionCommand(IDocumentFileDbProcess operationDb, IFileStore fStore)
         {
@@ -81,7 +81,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _file = _document.DocumentFiles.First(x => x.Id == Model);
 
             _context.SetCurrentPosition(_file.ExecutorPositionId);
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
 
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
@@ -93,7 +93,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override object Execute()
         {
-            var docFile = new InternalDocumentAttachedFile
+            var docFile = new InternalDocumentFile
             {
                 ClientId = _document.ClientId,
                 EntityTypeId = _document.EntityTypeId,

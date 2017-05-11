@@ -21,14 +21,17 @@ namespace BL.Logic.DictionaryCore
 
             using (var transaction = Transactions.GetTransaction())
             {
-                if (string.IsNullOrEmpty(model.Code)) model.Code = GetCode();
+                var cp = GetCodePath();
+
+                model.Code = cp.Code;
+                model.Path = cp.Path;
 
                 _dictDb.UpdateDepartment(_context, model);
 
-                UpdateCodeForChildDepartment(model.Id, model.Code);
+                UpdateCodeForChildDepartment(model.Id, model.Code, model.Path + (string.IsNullOrEmpty(model.Path) ? string.Empty : "/") + model.Id.ToString());
 
                 var frontObj = _dictDb.GetDepartments(_context, new FilterDictionaryDepartment { IDs = new List<int> { model.Id } }).FirstOrDefault();
-                _logger.Information(_context, null, (int)EnumObjects.DictionaryDepartments, (int)CommandType, frontObj.Id, frontObj);
+                if (frontObj != null) _logger.Information(_context, null, (int)EnumObjects.DictionaryDepartments, (int)CommandType, frontObj.Id, frontObj);
 
                 transaction.Complete();
             }

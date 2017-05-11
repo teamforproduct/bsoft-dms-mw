@@ -52,7 +52,7 @@ namespace BL.Logic.DocumentCore.Commands
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
             _context.SetCurrentPosition(_document.ExecutorPositionId);
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
                 throw new CouldNotChangeAttributeLaunchPlan();

@@ -38,12 +38,12 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanBeDisplayed(int positionId)
         {
-            return true;
+            return false;
         }
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
             _document = _documentDb.CopyDocumentPrepare(_context, Model.DocumentId);
 
             if (_document == null)
@@ -75,13 +75,13 @@ namespace BL.Logic.DocumentCore.Commands
             _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, EnumAccessLevels.PersonallyAndIOAndReferents, Document.Events.First().Accesses);
 
             // prepare file list in Document. It will save it with document in DB
-            var toCopy = new Dictionary<InternalDocumentAttachedFile, InternalDocumentAttachedFile>();
+            var toCopy = new Dictionary<InternalDocumentFile, InternalDocumentFile>();
             _document.DocumentFiles.ToList().ForEach(x =>
             {
                 x.ExecutorPositionId = _document.ExecutorPositionId;
                 x.ExecutorPositionExecutorAgentId = _document.ExecutorPositionExecutorAgentId;
                 x.ExecutorPositionExecutorTypeId = _document.ExecutorPositionExecutorTypeId;
-                var newDoc = CommonDocumentUtilities.GetNewDocumentAttachedFile(_context,x);
+                var newDoc = CommonDocumentUtilities.GetNewDocumentFile(_context,x);
                 toCopy.Add(newDoc, x);
             });
 

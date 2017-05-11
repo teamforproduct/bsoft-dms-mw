@@ -1,8 +1,10 @@
 ﻿using BL.Database.Documents.Interfaces;
 using BL.Logic.Common;
 using BL.Model.DocumentCore.Actions;
+using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace BL.Logic.DocumentCore.Commands
@@ -39,7 +41,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType,false);
+            _adminProc.VerifyAccess(_context, CommandType,false);
             _document = _documentDb.ChangePositionDocumentPrepare(_context, Model);
             if (_document == null)
             {
@@ -51,7 +53,11 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override object Execute()
         {
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.ChangePosition, Model.EventDate, Model.Description, null, null, Model.NewPositionId, null, Model.NewPositionId);
+            var evAcceesses = (Model.TargetCopyAccessGroups?.Where(x => x.AccessType == EnumEventAccessTypes.TargetCopy) ?? new List<AccessGroup>())
+                .Concat(new List<AccessGroup> { new AccessGroup { AccessType = EnumEventAccessTypes.Source, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = Model.NewPositionId } })
+                .ToList();
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.ChangePosition, Model.EventDate, Model.Description, null, null, null, 
+                Model.NewPositionId, null, Model.NewPositionId, accessGroups: evAcceesses, isVeryfyDocumentAccess: true);
 
             _documentDb.ChangePositionDocument(_context, Model, _document);
 

@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DMS_WebAPI.Models
+namespace DMS_WebAPI.DatabaseContext
 {
     public static class ApplicationDbImportData
     {
@@ -49,6 +49,48 @@ namespace DMS_WebAPI.Models
             items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.FavoriteGame, Name = GetLabel("ControlQuestions", EnumControlQuestion.FavoriteGame.ToString()) });
 
             return items;
+        }
+
+        public static List<SystemValueTypes> GetSystemValueTypes()
+        {
+            // Синхронизировать с DmsDbImportData
+            var items = new List<SystemValueTypes>();
+
+            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Text, Code = "text", Description = "text" });
+            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Number, Code = "number", Description = "number" });
+            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Date, Code = "date", Description = "date" });
+            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Api, Code = "api", Description = "api" });
+            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Bool, Code = "bool", Description = "boolean" });
+            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Password, Code = "pass", Description = "password" });
+
+            return items;
+        }
+
+
+        public static List<SystemSettings> GetSystemSettings()
+        {
+            // Синхронизировать с DmsDbImportData
+            var items = new List<SystemSettings>();
+            items.Add(GetSystemSettings(10, EnumGeneralSettings.ServerForNewClient, string.Empty, EnumValueTypes.Text));
+
+
+
+            return items;
+        }
+
+        private static SystemSettings GetSystemSettings(int order, EnumGeneralSettings id, string value, EnumValueTypes valueTypeId)
+        {
+            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Name");
+            string description = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Description");
+            return new SystemSettings()
+            {
+                Key = id.ToString(),
+                Name = name,
+                Description = description,
+                Value = value,
+                ValueTypeId = (int)valueTypeId,
+                Order = order,
+            };
         }
 
         public static List<AspNetLicences> GetAspNetLicences()

@@ -30,7 +30,7 @@ namespace BL.Database.Documents
         private IQueryable<TemplateDocuments> GetTemplateDocumentQuery(IContext context, FilterTemplateDocument filter)
         {
             var dbContext = context.DbContext as DmsContext;
-            var qry = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == context.CurrentClientId);
+            var qry = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == context.Client.Id);
             if (filter != null)
             {
                 if (filter.IDs?.Count() > 0)
@@ -193,7 +193,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 templateDocumentId =
-                    dbContext.DocumentsSet.Where(x => x.ClientId == context.CurrentClientId).Where(x => x.Id == documentId)
+                    dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.Id == documentId)
                         .Select(x => x.TemplateDocumentId)
                         .FirstOrDefault();
 
@@ -210,7 +210,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var templateDocument =
-                    dbContext.TemplateDocumentsSet.Where(x => x.ClientId == context.CurrentClientId).Where(x => x.Id == templateDocumentId)
+                    dbContext.TemplateDocumentsSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.Id == templateDocumentId)
                         .Select(x => new FrontTemplateDocument
                         {
                             Id = x.Id,
@@ -250,7 +250,7 @@ namespace BL.Database.Documents
             {
                 var newTemplate = new TemplateDocuments()
                 {
-                    ClientId = context.CurrentClientId,
+                    ClientId = context.Client.Id,
                     Name = template.Name,
                     IsHard = template.IsHard,
                     IsForProject = template.IsForProject,
@@ -271,7 +271,7 @@ namespace BL.Database.Documents
                 if (template.Id > 0)
                 {
                     newTemplate.Id = template.Id;
-                    dbContext.TemplateDocumentsSet.Attach(newTemplate);
+                    dbContext.SafeAttach(newTemplate);
                     var entity = dbContext.Entry(newTemplate);
                     entity.State = System.Data.Entity.EntityState.Modified;
                 }
@@ -302,7 +302,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == context.CurrentClientId)
+                var doc = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == context.Client.Id)
                     .Where(x => x.Id == id)
                     .Select(x => new InternalTemplateDocument
                     {
@@ -321,19 +321,19 @@ namespace BL.Database.Documents
                         IsActive = x.IsActive,
                     }).FirstOrDefault();
                 if (doc == null) return null;
-                doc.Tasks = dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(y => y.DocumentId == id)
+                doc.Tasks = dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == context.Client.Id).Where(y => y.DocumentId == id)
                         .Select(y => new InternalTemplateDocumentTask()
                         {
                             Task = y.Task,
                             Description = y.Description,
                         }).ToList();
-                doc.RestrictedSendLists = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(y => y.DocumentId == id)
+                doc.RestrictedSendLists = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == context.Client.Id).Where(y => y.DocumentId == id)
                     .Select(y => new InternalTemplateDocumentRestrictedSendList()
                     {
                         PositionId = y.PositionId,
                         AccessLevel = (EnumAccessLevels)y.AccessLevelId
                     }).ToList();
-                doc.SendLists = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(y => y.DocumentId == id)
+                doc.SendLists = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == context.Client.Id).Where(y => y.DocumentId == id)
                     .Select(y => new InternalTemplateDocumentSendList()
                     {
                         SendType = (EnumSendTypes)y.SendTypeId,
@@ -351,24 +351,27 @@ namespace BL.Database.Documents
                         DueDay = y.DueDay,
                         AccessLevel = (EnumAccessLevels)y.AccessLevelId,
                     }).ToList();
-                doc.Files = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == id)
-                    .Select(x => new InternalTemplateAttachedFile
+                doc.Files = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.Client.Id).Where(x => x.DocumentId == id)
+                    .Select(x => new InternalTemplateDocumentFile
                     {
                         ClientId = x.Document.ClientId,
                         EntityTypeId = x.Document.EntityTypeId,
                         DocumentId = x.DocumentId,
-                        Extension = x.Extention,
-                        Name = x.Name,
-                        FileType = x.FileType,
-                        FileSize = x.FileSize,
                         OrderInDocument = x.OrderNumber,
                         Type = (EnumFileTypes)x.TypeId,
                         Hash = x.Hash,
                         Description = x.Description,
                         PdfCreated = x.IsPdfCreated ?? false,
-                        LastPdfAccess = x.LastPdfAccessDate//??DateTime.MinValue,
+                        LastPdfAccess = x.LastPdfAccessDate,
+                        File = new BaseFile
+                        {
+                            Extension = x.Extention,
+                            Name = x.Name,
+                            FileType = x.FileType,
+                            FileSize = x.FileSize,
+                        }
                     }).ToList();
-                doc.Papers = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == id)
+                doc.Papers = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.Client.Id).Where(x => x.DocumentId == id)
                     .Select(x => new InternalTemplateDocumentPaper
                     {
                         IsCopy = x.IsCopy,
@@ -390,7 +393,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == context.CurrentClientId)
+                var doc = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == context.Client.Id)
                     .Where(x => x.Id == id)
                     .Select(x => new InternalTemplateDocument
                     {
@@ -406,19 +409,19 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var ddt = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
+                var ddt = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == context.Client.Id).FirstOrDefault(x => x.Id == id);
                 if (ddt == null) return;
 
                 dbContext.TemplateDocumentSendListsSet.RemoveRange(
-                    dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == id));
+                    dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == context.Client.Id).Where(x => x.DocumentId == id));
                 dbContext.TemplateDocumentRestrictedSendListsSet.RemoveRange(
-                    dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == id));
+                    dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == context.Client.Id).Where(x => x.DocumentId == id));
                 dbContext.TemplateDocumentTasksSet.RemoveRange(
-                    dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == id));
+                    dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == context.Client.Id).Where(x => x.DocumentId == id));
                 dbContext.TemplateDocumentPapersSet.RemoveRange(
-                    dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == id));
+                    dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.Client.Id).Where(x => x.DocumentId == id));
                 dbContext.TemplateDocumentFilesSet.RemoveRange(
-                    dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.DocumentId == id));
+                    dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.Client.Id).Where(x => x.DocumentId == id));
 
                 CommonQueries.DeletePropertyValues(context, new FilterPropertyValue { Object = new List<EnumObjects> { EnumObjects.TemplateDocument }, RecordId = new List<int> { id } });
 
@@ -436,7 +439,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 //TODO: Уточнить безнес-логику, в каких случаях можно менять/удалять шаблон документа
-                var count = dbContext.DocumentsSet.Where(x => x.ClientId == context.CurrentClientId).Count(x => x.TemplateDocumentId == template.Id);
+                var count = dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id).Count(x => x.TemplateDocumentId == template.Id);
                 transaction.Complete();
                 return count == 0;
             }
@@ -447,7 +450,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var count = dbContext.TemplateDocumentsSet.Count(x => x.ClientId == context.CurrentClientId && x.Name == template.Name);
+                var count = dbContext.TemplateDocumentsSet.Count(x => x.ClientId == context.Client.Id && x.Name == template.Name);
                 transaction.Complete();
                 return count == 0;
             }
@@ -466,7 +469,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == context.CurrentClientId).AsQueryable();
+                var qry = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == context.Client.Id).AsQueryable();
                 if (filter != null)
                 {
                     if (filter.IDs?.Count > 0)
@@ -543,7 +546,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var res = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.Id == id)
+                var res = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == context.Client.Id).Where(x => x.Id == id)
                         .Select(x => new FrontTemplateDocumentSendList
                         {
                             Id = x.Id,
@@ -609,7 +612,7 @@ namespace BL.Database.Documents
                     entityState = System.Data.Entity.EntityState.Modified;
                 }
 
-                dbContext.TemplateDocumentSendListsSet.Attach(newTemplate);
+                dbContext.SafeAttach(newTemplate);
                 var entity = dbContext.Entry(newTemplate);
                 entity.State = entityState;
 
@@ -626,7 +629,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var ddt = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
+                var ddt = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == context.Client.Id).FirstOrDefault(x => x.Id == id);
                 if (ddt == null) return;
                 dbContext.TemplateDocumentSendListsSet.Remove(ddt);
                 dbContext.SaveChanges();
@@ -642,7 +645,7 @@ namespace BL.Database.Documents
         private IQueryable<TemplateDocumentRestrictedSendLists> GetTemplateDocumentRestrictedSendListsQuery(IContext context, FilterTemplateDocumentRestrictedSendList filter)
         {
             var dbContext = context.DbContext as DmsContext;
-            var qry = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == context.CurrentClientId).AsQueryable();
+            var qry = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == context.Client.Id).AsQueryable();
             if (filter != null)
             {
                 if (filter.IDs?.Count > 0)
@@ -717,13 +720,12 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var res = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.Id == id)
+                var res = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == context.Client.Id).Where(x => x.Id == id)
                         .Select(x => new FrontTemplateDocumentRestrictedSendList
                         {
                             Id = x.Id,
                             DocumentId = x.DocumentId,
                             PositionId = x.Position.Id,
-                            //AccessLevel = (EnumDocumentAccesses) x.AccessLevelId,
                             PositionName = x.Position.Name,
                             PositionExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null),
                             AccessLevelName = x.AccessLevel.Name,
@@ -754,7 +756,7 @@ namespace BL.Database.Documents
                     entityState = System.Data.Entity.EntityState.Modified;
                 }
 
-                dbContext.TemplateDocumentRestrictedSendListsSet.Attach(newTemplate);
+                dbContext.SafeAttach(newTemplate);
                 var entity = dbContext.Entry(newTemplate);
                 entity.State = entityState;
 
@@ -770,7 +772,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var ddt = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
+                var ddt = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == context.Client.Id).FirstOrDefault(x => x.Id == id);
                 if (ddt == null) return;
                 dbContext.TemplateDocumentRestrictedSendListsSet.Remove(ddt);
                 dbContext.SaveChanges();
@@ -785,7 +787,7 @@ namespace BL.Database.Documents
             {
                 var count =
                     dbContext.TemplateDocumentRestrictedSendListsSet.Count(
-                        x => x.Document.ClientId == context.CurrentClientId && x.DocumentId == list.DocumentId && x.PositionId == list.PositionId);
+                        x => x.Document.ClientId == context.Client.Id && x.DocumentId == list.DocumentId && x.PositionId == list.PositionId);
                 transaction.Complete();
                 return count == 0;
             }
@@ -797,7 +799,7 @@ namespace BL.Database.Documents
         private IQueryable<TemplateDocumentAccesses> GetTemplateDocumentAccessesQuery(IContext context, FilterTemplateDocumentAccess filter)
         {
             var dbContext = context.DbContext as DmsContext;
-            var qry = dbContext.TemplateDocumentAccessesSet.Where(x => x.Document.ClientId == context.CurrentClientId).AsQueryable();
+            var qry = dbContext.TemplateDocumentAccessesSet.Where(x => x.Document.ClientId == context.Client.Id).AsQueryable();
             if (filter != null)
             {
                 if (filter.IDs?.Count > 0)
@@ -866,7 +868,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var res = dbContext.TemplateDocumentAccessesSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.Id == id)
+                var res = dbContext.TemplateDocumentAccessesSet.Where(x => x.Document.ClientId == context.Client.Id).Where(x => x.Id == id)
                         .Select(x => new FrontTemplateDocumentAccess
                         {
                             Id = x.Id,
@@ -900,7 +902,7 @@ namespace BL.Database.Documents
                     entityState = System.Data.Entity.EntityState.Modified;
                 }
 
-                dbContext.TemplateDocumentAccessesSet.Attach(newTemplate);
+                dbContext.SafeAttach(newTemplate);
                 var entity = dbContext.Entry(newTemplate);
                 entity.State = entityState;
 
@@ -916,7 +918,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var ddt = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
+                var ddt = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == context.Client.Id).FirstOrDefault(x => x.Id == id);
                 if (ddt == null) return;
                 dbContext.TemplateDocumentRestrictedSendListsSet.Remove(ddt);
                 dbContext.SaveChanges();
@@ -931,7 +933,7 @@ namespace BL.Database.Documents
             {
                 var count =
                     dbContext.TemplateDocumentAccessesSet.Count(
-                        x => x.Document.ClientId == context.CurrentClientId && x.DocumentId == list.DocumentId && x.PositionId == list.PositionId);
+                        x => x.Document.ClientId == context.Client.Id && x.DocumentId == list.DocumentId && x.PositionId == list.PositionId);
                 transaction.Complete();
                 return count == 0;
             }
@@ -946,7 +948,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == context.CurrentClientId).AsQueryable();
+                var qry = dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == context.Client.Id).AsQueryable();
 
                 if (filter != null)
                 {
@@ -984,7 +986,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var res = dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.Id == id)
+                var res = dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == context.Client.Id).Where(x => x.Id == id)
                     .Select(x => new FrontTemplateDocumentTask
                     {
                         Id = x.Id,
@@ -1018,7 +1020,7 @@ namespace BL.Database.Documents
                     entityState = System.Data.Entity.EntityState.Modified;
                 }
 
-                dbContext.TemplateDocumentTasksSet.Attach(newTemplate);
+                dbContext.SafeAttach(newTemplate);
                 var entity = dbContext.Entry(newTemplate);
                 entity.State = entityState;
                 dbContext.SaveChanges();
@@ -1036,7 +1038,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var count = dbContext.TemplateDocumentTasksSet.Count(x =>
-                    (x.Document.ClientId == context.CurrentClientId && x.DocumentId == task.DocumentId && x.Task == task.Task)
+                    (x.Document.ClientId == context.Client.Id && x.DocumentId == task.DocumentId && x.Task == task.Task)
                     );
                 transaction.Complete();
                 return count == 0;
@@ -1048,7 +1050,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var ddt = dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == context.CurrentClientId).FirstOrDefault(x => x.Id == id);
+                var ddt = dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == context.Client.Id).FirstOrDefault(x => x.Id == id);
                 if (ddt == null) return;
                 dbContext.TemplateDocumentTasksSet.Remove(ddt);
                 dbContext.SaveChanges();
@@ -1065,7 +1067,7 @@ namespace BL.Database.Documents
         private IQueryable<TemplateDocumentPapers> GetTemplateDocumentPapersQuery(IContext context, FilterTemplateDocumentPaper filter)
         {
             var dbContext = context.DbContext as DmsContext;
-            var qry = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.CurrentClientId).AsQueryable();
+            var qry = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.Client.Id).AsQueryable();
             if (filter != null)
             {
                 if (filter.IDs?.Count > 0)
@@ -1128,7 +1130,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var res = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.Id == id)
+                var res = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.Client.Id).Where(x => x.Id == id)
                     .Select(x => new FrontTemplateDocumentPaper
                     {
                         Id = x.Id,
@@ -1175,7 +1177,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var itemDb = ModelConverter.GetDbTemplateDocumentPaper(item);
-                dbContext.TemplateDocumentPapersSet.Attach(itemDb);
+                dbContext.SafeAttach(itemDb);
                 var entry = dbContext.Entry(itemDb);
                 entry.Property(e => e.Name).IsModified = true;
                 entry.Property(e => e.Description).IsModified = true;
@@ -1197,7 +1199,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == context.CurrentClientId)
+                var doc = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == context.Client.Id)
                     .Where(x => x.Id == model.DocumentId)
                     .Select(x => new InternalTemplateDocument
                     {
@@ -1206,7 +1208,7 @@ namespace BL.Database.Documents
                 if (doc == null) return null;
                 if (id.HasValue)
                 {
-                    doc.Papers = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.CurrentClientId)
+                    doc.Papers = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.Client.Id)
                         .Where(x => (x.Id == id))//|| x.Name == model.Name) && x.DocumentId == model.DocumentId)
                         .Select(x => new InternalTemplateDocumentPaper
                         {
@@ -1232,7 +1234,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                dbContext.TemplateDocumentPapersSet.RemoveRange(dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(x => x.Id == id));
+                dbContext.TemplateDocumentPapersSet.RemoveRange(dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == context.Client.Id).Where(x => x.Id == id));
                 dbContext.SaveChanges();
                 CommonQueries.AddFullTextCacheInfo(context, id, EnumObjects.TemplateDocumentPaper, EnumOperationType.Delete);
                 transaction.Complete();
@@ -1246,7 +1248,7 @@ namespace BL.Database.Documents
         public IQueryable<TemplateDocumentFiles> GetTemplateAttachedFilesQuery(IContext context, FilterTemplateAttachedFile filter)
         {
             var dbContext = context.DbContext as DmsContext;
-            var qry = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.CurrentClientId).AsQueryable();
+            var qry = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.Client.Id).AsQueryable();
             if (filter != null)
             {
                 if (filter.IDs?.Count > 0)
@@ -1294,7 +1296,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public IEnumerable<FrontTemplateAttachedFile> GetTemplateAttachedFiles(IContext context, FilterTemplateAttachedFile filter)
+        public IEnumerable<FrontTemplateDocumentFile> GetTemplateAttachedFiles(IContext context, FilterTemplateAttachedFile filter)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
@@ -1302,24 +1304,26 @@ namespace BL.Database.Documents
                 var qry = GetTemplateAttachedFilesQuery(context, filter);
                 var res = qry.Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
                         (d, a) => new { fl = d, agName = a.Name })
-                        .Select(x => new FrontTemplateAttachedFile
+                        .Select(x => new FrontTemplateDocumentFile
                         {
                             Id = x.fl.Id,
                             DocumentId = x.fl.DocumentId,
-                            Extension = x.fl.Extention,
-                            //FileContent = x.fl.Content,
                             Type = (EnumFileTypes)x.fl.TypeId,
                             TypeName = x.fl.Type.Code,
                             Hash = x.fl.Hash,
-                            FileType = x.fl.FileType,
-                            FileSize = x.fl.FileSize,
                             LastChangeDate = x.fl.LastChangeDate,
                             LastChangeUserId = x.fl.LastChangeUserId,
                             LastChangeUserName = x.agName,
-                            Name = x.fl.Name,
+
                             OrderInDocument = x.fl.OrderNumber,
                             Description = x.fl.Description,
-
+                            File = new BaseFile
+                            {
+                                FileType = x.fl.FileType,
+                                FileSize = x.fl.FileSize,
+                                Name = x.fl.Name,
+                                Extension = x.fl.Extention,
+                            }
                         }).ToList();
                 transaction.Complete();
                 return res;
@@ -1327,34 +1331,36 @@ namespace BL.Database.Documents
         }
 
 
-        public FrontTemplateAttachedFile GetTemplateAttachedFile(IContext context, int id)
+        public FrontTemplateDocumentFile GetTemplateAttachedFile(IContext context, int id)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var res = dbContext.TemplateDocumentFilesSet
-                        .Where(x => x.Document.ClientId == context.CurrentClientId)
+                        .Where(x => x.Document.ClientId == context.Client.Id)
                         .Where(x => x.Id == id)
                         .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id, (d, a) => new { fl = d, agName = a.Name })
-                        .Select(x => new FrontTemplateAttachedFile
+                        .Select(x => new FrontTemplateDocumentFile
                         {
                             Id = x.fl.Id,
                             DocumentId = x.fl.DocumentId,
-                            Extension = x.fl.Extention,
-                            //FileContent = x.fl.Content,
                             Type = (EnumFileTypes)x.fl.TypeId,
                             TypeName = x.fl.Type.Code,
                             Hash = x.fl.Hash,
-                            FileType = x.fl.FileType,
-                            FileSize = x.fl.FileSize,
                             LastChangeDate = x.fl.LastChangeDate,
                             LastChangeUserId = x.fl.LastChangeUserId,
                             LastChangeUserName = x.agName,
-                            Name = x.fl.Name,
                             OrderInDocument = x.fl.OrderNumber,
                             Description = x.fl.Description,
                             PdfCreated = x.fl.IsPdfCreated ?? false,
-                            LastPdfAccess = x.fl.LastPdfAccessDate //?? DateTime.MinValue
+                            LastPdfAccess = x.fl.LastPdfAccessDate,
+                            File = new BaseFile
+                            {
+                                FileType = x.fl.FileType,
+                                FileSize = x.fl.FileSize,
+                                Name = x.fl.Name,
+                                Extension = x.fl.Extention,
+                            }
                         }).FirstOrDefault();
                 transaction.Complete();
                 return res;
@@ -1379,7 +1385,7 @@ namespace BL.Database.Documents
             return res;
         }
 
-        public int AddNewFile(IContext context, InternalTemplateAttachedFile docFile)
+        public int AddNewFile(IContext context, InternalTemplateDocumentFile docFile)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
@@ -1394,14 +1400,14 @@ namespace BL.Database.Documents
                 return fl.Id;
             }
         }
-        public InternalTemplateAttachedFile UpdateFilePrepare(IContext context, int id)
+        public InternalTemplateDocumentFile UpdateFilePrepare(IContext context, int id)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var file = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.CurrentClientId)
+                var file = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.Client.Id)
                         .Where(x => x.Id == id)
-                        .Select(x => new InternalTemplateAttachedFile
+                        .Select(x => new InternalTemplateDocumentFile
                         {
                             Id = x.Id,
                             ClientId = x.Document.ClientId,
@@ -1423,13 +1429,13 @@ namespace BL.Database.Documents
             }
         }
 
-        public void UpdateFile(IContext context, InternalTemplateAttachedFile docFile)
+        public void UpdateFile(IContext context, InternalTemplateDocumentFile docFile)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var fl = ModelConverter.GetDbTemplateFile(docFile);
-                dbContext.TemplateDocumentFilesSet.Attach(fl);
+                dbContext.SafeAttach(fl);
 
                 var entry = dbContext.Entry(fl);
                 entry.Property(x => x.TypeId).IsModified = true;
@@ -1443,13 +1449,13 @@ namespace BL.Database.Documents
             }
         }
 
-        public void UpdateFilePdfView(IContext context, InternalTemplateAttachedFile docFile)
+        public void UpdateFilePdfView(IContext context, InternalTemplateDocumentFile docFile)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var fl = ModelConverter.GetDbTemplateFile(docFile);
-                dbContext.TemplateDocumentFilesSet.Attach(fl);
+                dbContext.SafeAttach(fl);
                 var entry = dbContext.Entry(fl);
                 entry.Property(x => x.IsPdfCreated).IsModified = true;
                 entry.Property(x => x.LastPdfAccessDate).IsModified = true;
@@ -1460,14 +1466,14 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalTemplateAttachedFile DeleteTemplateAttachedFilePrepare(IContext context, int id)
+        public InternalTemplateDocumentFile DeleteTemplateAttachedFilePrepare(IContext context, int id)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var file = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.CurrentClientId)
+                var file = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.Client.Id)
                         .Where(x => x.Id == id)
-                        .Select(x => new InternalTemplateAttachedFile
+                        .Select(x => new InternalTemplateDocumentFile
                         {
                             Id = x.Id,
                             ClientId = x.Document.ClientId,
@@ -1485,7 +1491,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 dbContext.TemplateDocumentFilesSet.RemoveRange(
-                    dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.CurrentClientId).Where(
+                    dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.Client.Id).Where(
                         x => x.Id == id));
                 dbContext.SaveChanges();
                 CommonQueries.AddFullTextCacheInfo(context, id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.Delete);
@@ -1493,15 +1499,14 @@ namespace BL.Database.Documents
             }
         }
 
-        public bool CanAddTemplateAttachedFile(IContext context, AddTemplateAttachedFile file)
+        public bool CanAddTemplateAttachedFile(IContext context, AddTemplateAttachedFile model, BaseFile file)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var fileName = Path.GetFileNameWithoutExtension(file.FileName);
-                var fileExtention = Path.GetExtension(file.FileName).Replace(".", "");
-
-                var res = dbContext.TemplateDocumentFilesSet.Any(x => x.Document.ClientId == context.CurrentClientId && x.DocumentId == file.DocumentId && x.Extention == fileExtention && x.Name == fileName);
+                var fileName = file.Name;
+                var fileExtention = file.Extension;
+                var res = dbContext.TemplateDocumentFilesSet.Any(x => x.Document.ClientId == context.Client.Id && x.DocumentId == model.DocumentId && x.Extention == fileExtention && x.Name == fileName);
                 transaction.Complete();
                 return !res;
             }

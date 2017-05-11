@@ -1,5 +1,7 @@
-﻿using BL.Model.Extensions;
+﻿using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.Extensions;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DocumentCore.Actions
@@ -27,5 +29,9 @@ namespace BL.Model.DocumentCore.Actions
         /// </summary>
         public DateTime? EventDate { get { return _eventDate; } set { _eventDate = value.ToUTC(); } }
         private DateTime? _eventDate;
+        /// <summary>
+        /// группы получателей копии
+        /// </summary>
+        public List<AccessGroup> TargetCopyAccessGroups { get; set; }
     }
 }

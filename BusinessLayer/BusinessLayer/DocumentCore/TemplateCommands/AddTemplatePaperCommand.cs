@@ -38,7 +38,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType, false);
+            _adminProc.VerifyAccess(_context, CommandType, false);
             _document = _operationDb.ModifyTemplatePaperPrepare(_context, null, Model);
             if (_document == null)
             {

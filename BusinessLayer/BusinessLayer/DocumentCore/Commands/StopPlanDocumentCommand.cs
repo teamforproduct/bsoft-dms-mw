@@ -5,6 +5,7 @@ using BL.Model.Exception;
 using BL.Model.DocumentCore.InternalModel;
 using System.Collections.Generic;
 using System.Linq;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -59,7 +60,7 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 _context.SetCurrentPosition(_document.ExecutorPositionId);
             }
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
                 throw new CouldNotChangeAttributeLaunchPlan();
@@ -73,7 +74,8 @@ namespace BL.Logic.DocumentCore.Commands
         {
             CommonDocumentUtilities.SetLastChange(_context, _document);
             _document.IsLaunchPlan = false;
-            var ev = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _document.Id, EnumEventTypes.StopPlan, null,null,null,null,_document.ExecutorPositionId);
+            var evAcceesses = new List<AccessGroup> { new AccessGroup { AccessType = EnumEventAccessTypes.Target, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = _document.ExecutorPositionId } };
+            var ev = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _document.Id, EnumEventTypes.StopPlan, accessGroups: evAcceesses);
             _document.Events = new List<InternalDocumentEvent> { ev };
             _documentDb.ChangeIsLaunchPlanDocument(_context, _document);
             return Model;

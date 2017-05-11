@@ -2,6 +2,7 @@
 using BL.CrossCutting.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.DocumentCore.Actions;
+using BL.Model.DocumentCore.FrontModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
@@ -30,18 +31,37 @@ namespace DMS_WebAPI.ControllersV3.Documents
         }
 
         /// <summary>
-        /// Возвращает список ИД связанных документов по ИД документа TODO зачем нужно?
+        /// Возвращает список ИД связанных документов по ИД документа
         /// </summary>
         /// <param name="Id">ИД документа</param>
         /// <returns></returns>
         [HttpGet]
         [Route("{Id:int}/" + Features.Links)]
-        [ResponseType(typeof(List<int>))]
+        [ResponseType(typeof(FrontDocumentLinkShot))]
         public async Task<IHttpActionResult> Get(int Id)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 return GetById(context, Id);
+            });
+        }
+
+        /// <summary>
+        /// Возвращает список связанных документов по ИД процесса (linkId)
+        /// </summary>
+        /// <param name="Id">ИД документа</param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("{Id:int}/" + Features.Links+"/Documents")]
+        [ResponseType(typeof(FrontDocumentLinkShot))]
+        public async Task<IHttpActionResult> GetDocumentsByLinkId(int Id)
+        {
+            return await SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var docProc = DmsResolver.Current.Get<IDocumentService>();
+                var items = docProc.GetLinkedDocuments(context, Id);
+                var res = new JsonResult(items, this);
+                return res;
             });
         }
 

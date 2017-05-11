@@ -42,7 +42,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             _document = _operationDb.ChangeDocumentSendListPrepare(_context, Model.DocumentId);
 
             _context.SetCurrentPosition(_document.ExecutorPositionId);
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
 
             DocRestSendLists = _operationDb.AddByStandartSendListDocumentRestrictedSendListPrepare(_context, Model);
 

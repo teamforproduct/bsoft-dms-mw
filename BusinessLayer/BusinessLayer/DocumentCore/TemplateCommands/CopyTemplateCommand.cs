@@ -44,7 +44,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType, false);
+            _adminProc.VerifyAccess(_context, CommandType, false);
             _templateDoc = _operationDb.CopyTemplatePrepare(_context, Model);
             if (_templateDoc == null)
             {
@@ -89,7 +89,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
                 _operationDb.AddTemplateDocumentPapers(_context, _templateDoc.Papers);
                 _templateDoc.Files.ToList().ForEach(x =>
                 {
-                    var newFile = CommonDocumentUtilities.GetNewTemplateAttachedFile(_context,x);
+                    var newFile = CommonDocumentUtilities.GetNewTemplateDocumentFile(_context,x);
                     newFile.DocumentId = _templateDoc.Id;
                     _fStore.CopyFile(_context, x, newFile);
                     newFile.Id = _operationDb.AddNewFile(_context, newFile);

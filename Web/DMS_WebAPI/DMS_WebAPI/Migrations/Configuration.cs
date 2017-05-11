@@ -5,14 +5,14 @@ namespace DMS_WebAPI.Migrations
     using System.Data.Entity.Migrations;
     using System.Linq;
 
-    internal sealed class Configuration : DbMigrationsConfiguration<DMS_WebAPI.Models.ApplicationDbContext>
+    internal sealed class Configuration : DbMigrationsConfiguration<DMS_WebAPI.DatabaseContext.ApplicationDbContext>
     {
         public Configuration()
         {
             AutomaticMigrationsEnabled = true;
         }
 
-        protected override void Seed(DMS_WebAPI.Models.ApplicationDbContext context)
+        protected override void Seed(DMS_WebAPI.DatabaseContext.ApplicationDbContext context)
         {
             //  This method will be called after migrating to the latest version.
 

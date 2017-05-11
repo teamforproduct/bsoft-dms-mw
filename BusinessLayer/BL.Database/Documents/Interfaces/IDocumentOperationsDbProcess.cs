@@ -27,10 +27,11 @@ namespace BL.Database.Documents.Interfaces
         IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterBase filter, UIPaging paging);
         IEnumerable<FrontDocumentWait> GetDocumentWaits(IContext ctx, FilterBase filter, UIPaging paging);
         IEnumerable<FrontDocumentSubscription> GetDocumentSubscriptions(IContext ctx, FilterDocumentSubscription filter, UIPaging paging);
-        IEnumerable<FrontDictionaryPosition> GetDocumentWorkGroup(IContext ctx, FilterDictionaryPosition filter, UIPaging paging);
-        IEnumerable<InternalDocumentEvent> MarkDocumentEventsAsReadPrepare(IContext ctx, MarkDocumentEventAsRead model);
-        void MarkDocumentEventAsRead(IContext ctx, IEnumerable<InternalDocumentEvent> eventList);
-        void MarkDocumentEventAsReadAuto(IContext ctx);
+        IEnumerable<FrontDictionaryPosition> GetDocumentWorkGroup(IContext ctx, FilterDictionaryPosition filter);
+        int GetDocumentWorkGroupCounter(IContext ctx, FilterDictionaryPosition filter);
+        IEnumerable<InternalDocumentEventAccess> MarkDocumentEventsAsReadPrepare(IContext ctx, MarkDocumentEventAsRead model);
+        void MarkDocumentEventAsRead(IContext ctx, IEnumerable<InternalDocumentEventAccess> eventAccList);
+//        void MarkDocumentEventAsReadAuto(IContext ctx);
         void ModifyDocumentAccessesStatistics(IContext ctx, int? documentId = null, List<int> positionId = null);
         InternalDocument ChangeIsInWorkAccessPrepare(IContext context, ChangeWorkStatus Model);
         InternalDocument ChangeIsFavouriteAccessPrepare(IContext context, int documentId);

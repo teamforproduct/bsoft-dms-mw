@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.Context;
 using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.Enums;
@@ -7,7 +8,7 @@ using BL.Model.Exception;
 using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
-using DMS_WebAPI.Models;
+using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Utilities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
@@ -16,7 +17,10 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -68,9 +72,16 @@ namespace DMS_WebAPI.Providers
         /// <returns></returns>
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
-            string clientCode = context.Request.Body.GetClientCode();
+            var clientCode = context.Request.Body.GetClientCode();
+            var clientSecret = context.Request.Body.GetClientSecret();
+            var fingerprint = context.Request.Body.GetFingerprint();
+
             // код клиента - обязательный параметр
-            if (string.IsNullOrEmpty(clientCode?.Trim())) throw new ClientRequired();
+            if (string.IsNullOrEmpty(clientCode?.Trim())) throw new ClientCodeRequired();
+
+            // отпечаток - обязательный параметр (решили сделать обязательным, хотя дальше по логике он может не понадобиться)
+            // не можем передавать из соапа
+            //if (string.IsNullOrEmpty(fingerprint?.Trim())) throw new FingerprintRequired();
 
             // Если передали несуществующие код клиента. дальше не пускаю
             var webService = DmsResolver.Current.Get<WebAPIService>();
@@ -80,7 +91,7 @@ namespace DMS_WebAPI.Providers
             if (!webService.ExistsUser(context.UserName, clientCode)) throw new UserIsNotDefined();
 
             // Нахожу пользователя по логину и паролю
-            ApplicationUser user = await webService.GetUser(context.UserName, context.Password);
+            AspNetUsers user = await webService.GetUser(context.UserName, context.Password);
 
             //context.SetError("invalid_grant", new UserNameOrPasswordIsIncorrect().Message); return;
             // Эта штука возвращает в респонсе {"error":"invalid_grant","error_description":"Привет!!"} - на фронте всплывает красный тостер с error_description
@@ -100,7 +111,7 @@ namespace DMS_WebAPI.Providers
             {
                 var answer = context.Request.Body.GetControlAnswer();
                 var rememberFingerprint = context.Request.Body.GetRememberFingerprint();
-                var fingerprint = context.Request.Body.GetFingerprint();
+
 
                 if (string.IsNullOrEmpty(fingerprint?.Trim())) ThrowErrorGrantResourceOwnerCredentials(context, new FingerprintRequired());
 
@@ -188,27 +199,33 @@ namespace DMS_WebAPI.Providers
 
                 var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
 
-                ApplicationUser user = userManager.FindById(userId);
+                AspNetUsers user = userManager.FindById(userId);
 
                 var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
 
-                //var clientCode = GetClientCodeFromBody(context.Request.Body);
+                // Получаю информацию о браузере
+                var brInfo = HttpContext.Current.Request.Browser.Info();
+
+                var fingerPrint = context.Request.Body.GetFingerprint();
+
+                #region Подпорка для соапа
+                if (string.IsNullOrEmpty(fingerPrint))
+                {
+                    var scope = context.Request.Body.GetScope();
+
+                    if (scope == "fingerprint") fingerPrint = "SoapUI finger";
+
+                }
+                #endregion
 
                 var userContexts = DmsResolver.Current.Get<UserContexts>();
 
                 // Создаю пользовательский контекст
-                var ctx = userContexts.Set(token, userId, user.UserName, user.IsChangePasswordRequired, clientCode);
+                var ctx = userContexts.Set(token, userId, user.UserName, user.IsChangePasswordRequired, clientCode, server, brInfo, fingerPrint);
 
-                // Добавляю в пользовательский контекст сервер
-                userContexts.Set(token, server);
 
-                // Получаю информацию о браузере
-                var message = HttpContext.Current.Request.Browser.Info();
+                // --------------------------------------------------------------------------------
 
-                var fingerPrint = context.Request.Body.GetFingerprint();
-
-                // Добавляю в пользовательский контекст сведения о браузере
-                userContexts.Set(token, message, fingerPrint);
 
                 context.AdditionalResponseParameters.Add("ChangePasswordRequired", user.IsChangePasswordRequired);
 
@@ -268,7 +285,7 @@ namespace DMS_WebAPI.Providers
             if (user != null)
             {
                 var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(ctx, user.Id);
-                agentId = agentUser?.AgentId;
+                agentId = agentUser?.Id;
             }
 
             var exceptionText = (ex is DmsExceptions) ? "DmsExceptions:" + ex.GetType().Name : ex.Message;

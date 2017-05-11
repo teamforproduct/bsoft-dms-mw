@@ -16,6 +16,11 @@
         /// <summary>
         /// Short preview for PDF file
         /// </summary>
-        PdfPreview = 2
+        PdfPreview = 2,
+
+        /// <summary>
+        /// User profile image
+        /// </summary>
+        Avatar = 3
     }
 }

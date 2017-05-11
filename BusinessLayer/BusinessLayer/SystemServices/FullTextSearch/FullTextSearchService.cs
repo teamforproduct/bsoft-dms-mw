@@ -24,13 +24,15 @@ namespace BL.Logic.SystemServices.FullTextSearch
         private const int _MAX_ENTITY_FOR_THREAD = 500000;
         private readonly Dictionary<FullTextSettings, Timer> _timers;
         private readonly List<Timer> _stopTimersList = new List<Timer>();
+        private readonly ISettings _settings;
         readonly List<IFullTextIndexWorker> _workers;
         readonly IFullTextDbProcess _systemDb;
-        public FullTextSearchService(ISettings setting, ILogger logger, IFullTextDbProcess systemDb) : base(setting, logger)
+        public FullTextSearchService(ISettings setting, ISettingValues settingValue, ILogger logger, IFullTextDbProcess systemDb) : base(settingValue, logger)
         {
             _timers = new Dictionary<FullTextSettings, Timer>();
             _workers = new List<IFullTextIndexWorker>();
             _systemDb = systemDb;
+            _settings = setting;
         }
         private void ReindexObject(IContext ctx, IFullTextIndexWorker worker, EnumObjects dataType)
         {
@@ -111,14 +113,14 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
             try
             {
-                var systemSetting = SettingsFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED);
+                var systemSetting = SettingFactory.GetDefaultSetting(EnumSystemSettings.FULLTEXTSEARCH_WAS_INITIALIZED);
                 systemSetting.Value = false.ToString();
-                Settings.SaveSetting(ctx, systemSetting);
+                _settings.SaveSetting(ctx, systemSetting);
                 worker.StartUpdate();//initiate the update of FT
 
                 var currCashId = _systemDb.GetCurrentMaxCasheId(ctx);
                 var objToProcess = _systemDb.ObjectToReindex();
-                worker.DeleteAllDocuments(ctx.CurrentClientId);//delete all current document before reindexing
+                worker.DeleteAllDocuments(ctx.Client.Id);//delete all current document before reindexing
                 var tskList = new List<Action>();
                 foreach (var obj in objToProcess)//.Where(x=>x == EnumObjects.DictionaryAgentEmployees))
                 {
@@ -149,7 +151,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 Parallel.Invoke(new ParallelOptions() { MaxDegreeOfParallelism = 4 }, tskList.ToArray());
                 _systemDb.FullTextIndexDeleteCash(ctx, currCashId); //delete cache in case we just processed all that documents
                 systemSetting.Value = true.ToString();//set indicator that full text for the client available
-                Settings.SaveSetting(ctx, systemSetting);
+                _settings.SaveSetting(ctx, systemSetting);
                 md.IsFullTextInitialized = true;
             }
             catch (Exception ex)
@@ -240,8 +242,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
             var perm = admService.GetUserPermissions(ctx, admService.GetFilterPermissionsAccessByContext(ctx, false, null, null, moduleId))
                         .Where(x => x.AccessType == EnumAccessTypes.R.ToString()).Select(x => Features.GetId(x.Feature)).ToList();
             if (filter != null)
-                filter.RowLimit = Settings.GetFulltextRowLimit(ctx);
-            var res = GetWorker(ctx).SearchItems(out IsNotAll, text, ctx.CurrentClientId, filter, paging).Where(x => perm.Contains(x.FeatureId));
+                filter.RowLimit = SettingValues.GetFulltextRowLimit();
+            var res = GetWorker(ctx).SearchItems(out IsNotAll, text, ctx.Client.Id, filter, paging).Where(x => perm.Contains(x.FeatureId));
             return res;
         }
         private IEnumerable<FullTextSearchResult> SearchItemsByDetail(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter, UIPaging paging)
@@ -291,10 +293,10 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 {
                     var ftsSetting = new FullTextSettings
                     {
-                        TimeToUpdate = Settings.GetFulltextRefreshTimeout(keyValuePair.Value),
+                        TimeToUpdate = SettingValues.GetFulltextRefreshTimeout(),
                         DatabaseKey = keyValuePair.Key,
-                        StorePath = Settings.GetFulltextDatastorePath(keyValuePair.Value),
-                        IsFullTextInitialized = Settings.GetFulltextWasInitialized(keyValuePair.Value)
+                        StorePath = SettingValues.GetFulltextStorePath(),
+                        IsFullTextInitialized = SettingValues.GetFulltextWasInitialized(keyValuePair.Value)
                     };
                     var worker = new FullTextIndexWorker(ftsSetting.DatabaseKey, ftsSetting.StorePath);
                     _workers.Add(worker);

@@ -49,7 +49,7 @@ namespace BL.Logic.DocumentCore.ReportsCommands
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
 
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
 
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {

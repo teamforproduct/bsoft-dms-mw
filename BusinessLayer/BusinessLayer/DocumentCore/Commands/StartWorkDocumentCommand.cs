@@ -44,7 +44,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
             _document = _operationDb.ChangeIsInWorkAccessPrepare(_context, Model);
             _docAccess = _document?.Accesses.FirstOrDefault(x=>x.PositionId.HasValue);
             if (_docAccess == null
@@ -60,8 +60,7 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _docAccess.IsInWork = true;
             CommonDocumentUtilities.SetLastChange(_context, _docAccess);
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.SetInWork, Model.EventDate, 
-                                                                            Model.Description, null, null, Model.CurrentPositionId);
+            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.SetInWork, Model.EventDate, Model.Description);
             _operationDb.ChangeIsInWorkAccess(_context, _document);
             return null;
         }

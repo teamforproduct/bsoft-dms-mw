@@ -1,6 +1,7 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.SystemCore;
+using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Web.Http;
 
@@ -31,7 +32,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
 
             var tmpItem = webSeevice.AddUserEmployeeInOrg(context, model);
 
-            return null;
+            return new JsonResult(tmpItem, this); ;
         }
 
 

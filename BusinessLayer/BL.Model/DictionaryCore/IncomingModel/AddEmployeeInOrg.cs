@@ -43,6 +43,8 @@ namespace BL.Model.DictionaryCore.IncomingModel
         [Required]
         //[EmailAddress]
         public string Login { get; set; }
+        [IgnoreDataMember]
+        public string Password { get; set; }
 
         public string Phone { get; set; }
 
@@ -53,7 +55,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         public int LanguageId { get; set; }
 
         [IgnoreDataMember]
-        public Roles Role { get; set; }
+        public Roles? Role { get; set; }
 
         /// <summary>
         /// Тип исполнения
@@ -66,6 +68,14 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// </summary>
         [Required]
         public EnumAccessLevels AccessLevel { get; set; }
+
+
+        [IgnoreDataMember]
+        public bool IsChangePasswordRequired { get; set; } = true;
+        [IgnoreDataMember]
+        public bool IsEmailConfirmRequired { get; set; } = true;
+        [IgnoreDataMember]
+        public bool EmailConfirmed { get; set; }
 
     }
 }

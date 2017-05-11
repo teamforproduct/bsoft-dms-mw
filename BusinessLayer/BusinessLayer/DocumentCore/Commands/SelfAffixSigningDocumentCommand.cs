@@ -45,14 +45,13 @@ namespace BL.Logic.DocumentCore.Commands
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
 
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
             return true;
         }
 
         public override object Execute()
         {
-            _document.Events = new List<InternalDocumentEvent> { CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _document.Id, EnumEventTypes.AffixSigning, Model.EventDate, Model.Description, null, null, 
-              _context.CurrentPositionId, null, _context.CurrentPositionId) };
+            _document.Events = new List<InternalDocumentEvent> { CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _document.Id, EnumEventTypes.AffixSigning, Model.EventDate, Model.Description) };
 
             var subscription = new InternalDocumentSubscription
             {

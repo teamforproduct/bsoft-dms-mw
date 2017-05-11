@@ -11,6 +11,10 @@ using BL.Model.Exception;
 using System.Linq;
 using BL.CrossCutting.Context;
 using BL.Logic.SystemServices.QueueWorker;
+using BL.Model.Common;
+using BL.CrossCutting.DependencyInjection;
+using BL.Logic.SystemServices.TempStorage;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
@@ -19,7 +23,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         private readonly IDocumentFileDbProcess _operationDb;
         private readonly IFileStore _fStore;
         private readonly IQueueWorkerService _queueWorkerService;
-
         public AddDocumentFileCommand(IDocumentFileDbProcess operationDb, IFileStore fStore, IQueueWorkerService queueWorkerService)
         {
             _operationDb = operationDb;
@@ -27,15 +30,15 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _queueWorkerService = queueWorkerService;
         }
 
-        private AddDocumentFile Model
+        private List<AddDocumentFile> Model
         {
             get
             {
-                if (!(_param is AddDocumentFile))
+                if (!(_param is List<AddDocumentFile>))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (AddDocumentFile)_param;
+                return (List<AddDocumentFile>)_param;
             }
         }
 
@@ -64,126 +67,84 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
-            _admin.VerifyAccess(_context, CommandType);
-            _document = _operationDb.AddDocumentFilePrepare(_context, Model.DocumentId);
+            var tempStorageService = DmsResolver.Current.Get<ITempStorageService>();
+            Model.ForEach(x => x.File = tempStorageService.GetStoreObject(x.TmpFileId) as BaseFile);
+            if (Model.Any(x => x.File == null))
+                throw new CannotAccessToFile();
+            _adminProc.VerifyAccess(_context, CommandType);
+            _document = _operationDb.AddDocumentFilePrepare(_context, Model.Select(x => x.DocumentId).FirstOrDefault());
             if (_document == null)
             {
                 throw new UserHasNoAccessToDocument();
             }
-
-            if (Model.IsUseMainNameFile)
+            Model.ForEach(m =>
             {
-                var mainFile = _document.DocumentFiles.FirstOrDefault(x => x.OrderInDocument == Model.OrderInDocument);
-                if (mainFile == null)
-                {
-                    throw new CannotAccessToFile();
-                }
-
-                Model.FileName = mainFile.Name + "." + mainFile.Extension;
-                Model.FileType = mainFile.FileType;
-            }
-
-            var file = _document.DocumentFiles.FirstOrDefault(x => (x.Name + "." + x.Extension).Equals(Model.FileName));
-
-            if (file != null)
-            {
-                Model.Type = file.Type;
-                if ((file.Type == EnumFileTypes.Additional && file.ExecutorPositionId != _context.CurrentPositionId)
-                    || (!_context.IsAdmin && !new List<EnumFileTypes> { EnumFileTypes.Main, EnumFileTypes.Additional }.Contains(file.Type))
-                    )
-                {
-                    throw new CannotAccessToFile();
-                }
-            }
-            //else
-            //{
-            //    if (!Model.IsAdditional && _document.ExecutorPositionId != _context.CurrentPositionId)
-            //    {
-            //        //TODO Саше проверить.
-            //        Model.IsAdditional = true;
-            //        //throw new CouldNotPerformOperation();
-            //    }
-            //}
-
+               if (m.OrderInDocument.HasValue)
+               {
+                   var mainFile = _document.DocumentFiles.FirstOrDefault(x => x.OrderInDocument == m.OrderInDocument);
+                   if (mainFile == null || m.Type != mainFile.Type
+                       || (m.Type == EnumFileTypes.Main && (m.IsMainVersion ?? false) && _document.ExecutorPositionId != _context.CurrentPositionId)
+                       || (m.Type == EnumFileTypes.Additional && (m.IsMainVersion ?? false) && mainFile.ExecutorPositionId != _context.CurrentPositionId)
+                       )
+                   {
+                       throw new CouldNotPerformOperation();
+                   }
+                   m.File.Name = mainFile.File.Name;
+                   m.File.Extension = mainFile.File.Extension;
+                   m.File.FileType = mainFile.File.FileType;
+               }
+               else
+               {
+                   m.IsMainVersion = true;
+                   if (m.Type == EnumFileTypes.Main && _document.ExecutorPositionId != _context.CurrentPositionId)
+                   {
+                       throw new CouldNotPerformOperation();
+                   }
+               }
+            });
             return true;
         }
 
         public override object Execute()
         {
+            var res = new List<int>();
             var executorPositionExecutor = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, _context.CurrentPositionId);
             if (!executorPositionExecutor?.ExecutorAgentId.HasValue ?? true)
             {
                 throw new ExecutorAgentForPositionIsNotDefined();
             }
-            var res = new List<int>();
-            try
+            using (var transaction = Transactions.GetTransaction())
             {
-
-                var att = new InternalDocumentAttachedFile
-                {
-                    ClientId = _document.ClientId,
-                    EntityTypeId = _document.EntityTypeId,
-                    DocumentId = Model.DocumentId,
-                    Date = DateTime.UtcNow,
-                    PostedFileData = Model.PostedFileData,
-                    Type = Model.Type,
-                    IsMainVersion =
-                        Model.Type == EnumFileTypes.Additional ||
-                        (Model.Type == EnumFileTypes.Main && _document.ExecutorPositionId == _context.CurrentPositionId) ||
-                        _context.IsAdmin,
-                    FileType = Model.FileType,
-                    Name = Path.GetFileNameWithoutExtension(Model.FileName),
-                    Extension = Path.GetExtension(Model.FileName).Replace(".", ""),
-                    Description = Model.Description,
-                    IsWorkedOut =
-                        (Model.Type == EnumFileTypes.Main && _document.ExecutorPositionId != _context.CurrentPositionId)
-                            ? false
-                            : (bool?) null,
-
-                    WasChangedExternal = false,
-                    ExecutorPositionId = _context.CurrentPositionId,
-                    ExecutorPositionExecutorAgentId = executorPositionExecutor.ExecutorAgentId.Value,
-                    ExecutorPositionExecutorTypeId = executorPositionExecutor.ExecutorTypeId,
-                };
-                var ordInDoc = _operationDb.CheckFileForDocument(_context, Model.DocumentId, att.Name, att.Extension);
-                if (ordInDoc == -1)
-                {
-                    att.Version = 1;
-                    att.OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, Model.DocumentId);
-                }
-                else
-                {
-                    att.Version = _operationDb.GetFileNextVersion(_context, att.DocumentId, ordInDoc);
-                    att.OrderInDocument = ordInDoc;
-                }
-
-
-                _fStore.SaveFile(_context, att);
-                CommonDocumentUtilities.SetLastChange(_context, att);
-                if (_document.IsRegistered.HasValue)
-                {
-                    att.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, att.DocumentId,
-                        EnumEventTypes.AddDocumentFile, null, null, att.Name + "." + att.Extension, null, 
-                        att.Type != EnumFileTypes.Additional ? (int?) null : _document.ExecutorPositionId);
-                }
-                res.Add(_operationDb.AddNewFileOrVersion(_context, att));
-                // Модель фронта содержит дополнительно только одно поле - пользователя, который последний модифицировал файл. 
-                // это поле не заполняется, иначе придется после каждого добавления файла делать запрос на выборку этого файла из таблицы
-                // как вариант можно потому будет добавить получение имени текущего пользователя вначале и дописывать его к модели
-                //res.Add(new FrontDocumentAttachedFile(att));
-                var admContext = new AdminContext(_context);
-                _queueWorkerService.AddNewTask(admContext, () =>
-                {
-                    if (_fStore.CreatePdfFile(admContext, att))
-                    {
-                        _operationDb.UpdateFilePdfView(admContext, att);
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(_context, ex, "Error on adding document file");
-                throw ex;
+                Model.ForEach(m =>
+                            {
+                                var att = CommonDocumentUtilities.GetNewDocumentFile(_context, (int)EnumEntytiTypes.Document, _document.ExecutorPositionId.Value, m, executorPositionExecutor);
+                                if (m.OrderInDocument.HasValue)
+                                {
+                                    att.Version = _operationDb.GetFileNextVersion(_context, att.DocumentId, m.OrderInDocument.Value);
+                                }
+                                else
+                                {
+                                    m.File.Name = CommonDocumentUtilities.GetNextDocumentFileName(_context, att.DocumentId, m.File.Name, m.File.Extension);
+                                    att.OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, m.DocumentId);
+                                }
+                                _fStore.SaveFile(_context, att);
+                                if (_document.IsRegistered.HasValue && !att.EventId.HasValue)
+                                {
+                                    att.Event = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, att.DocumentId,
+                                        EnumEventTypes.AddDocumentFile, null, null, $"{att.File.FileName} v.{att.Version}", null, null,
+                                        att.Type != EnumFileTypes.Additional ? (int?)null : _document.ExecutorPositionId);
+                                }
+                                res.Add(_operationDb.AddNewFileOrVersion(_context, att));
+                                var admContext = new AdminContext(_context);
+                                _queueWorkerService.AddNewTask(admContext, () =>
+                                {
+                                    if (_fStore.CreatePdfFile(admContext, att))
+                                    {
+                                        _operationDb.UpdateFilePdfView(admContext, att);
+                                    }
+                                });
+                            });
+                transaction.Complete();
             }
             return res;
         }

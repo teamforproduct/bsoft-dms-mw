@@ -46,7 +46,7 @@ namespace BL.Logic.DocumentCore.PaperCommands
                 throw new CouldNotPerformOperationWithPaper();
             }
             _context.SetCurrentPosition(_paperList.Events.First().SourcePositionId.Value);
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
 
             return true;
         }

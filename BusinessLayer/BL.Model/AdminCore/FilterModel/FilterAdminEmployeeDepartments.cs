@@ -11,6 +11,8 @@ namespace BL.Model.AdminCore.FilterModel
     {
         [IgnoreDataMember]
         public List<int> DepartmentIDs { get; set; }
+        [IgnoreDataMember]
+        public List<int> EmployeeIDs { get; set; }
 
     }
 }

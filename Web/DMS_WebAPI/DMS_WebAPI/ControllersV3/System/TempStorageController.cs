@@ -36,12 +36,12 @@ namespace DMS_WebAPI.ControllersV3.System
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ITempStorageService>();
-                var img = tmpService.GetStoreObject(Id) as string;
+                var img = (tmpService.GetStoreObject(Id) as BaseFile)?.FileContent;
 
                 var tmpItem = new FrontFile
                 {
                     Id = Id,
-                    FileContent = img
+                    FileContent = Convert.ToBase64String(img),
                 };
 
                 var res = new JsonResult(tmpItem, this);
@@ -59,13 +59,14 @@ namespace DMS_WebAPI.ControllersV3.System
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var file = (HttpPostedFile)param;
-                byte[] buffer = new byte[file.ContentLength];
-                file.InputStream.Read(buffer, 0, file.ContentLength);
-                var fileContent = Convert.ToBase64String(buffer);
+                
+                var file = CommonUtilities.Convert((HttpPostedFile)param);
+                //byte[] buffer = new byte[file.ContentLength];
+                //file.InputStream.Read(buffer, 0, file.ContentLength);
+                //var fileContent = Convert.ToBase64String(buffer);
 
                 var tmpService = DmsResolver.Current.Get<ITempStorageService>();
-                var imgageId = tmpService.AddToStore(EnumObjects.DictionaryAgents, -1, 0, fileContent);
+                var imgageId = tmpService.AddToStore(file);
                 return new JsonResult(imgageId, this);
             }, HttpContext.Current.Request.Files[0]);
         }

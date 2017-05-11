@@ -28,7 +28,7 @@ namespace DMS_WebAPI.ControllersV3.System
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpService = DmsResolver.Current.Get<ISettings>();
+                var tmpService = DmsResolver.Current.Get<ISettingValues>();
                 var tmpItem = tmpService.GetSubordinationsSendAllForExecution(context);
                 var res = new JsonResult(tmpItem, this);
                 return res;
@@ -47,7 +47,7 @@ namespace DMS_WebAPI.ControllersV3.System
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpService = DmsResolver.Current.Get<ISettings>();
+                var tmpService = DmsResolver.Current.Get<ISettingValues>();
                 var tmpItem = tmpService.GetSubordinationsSendAllForInforming(context);
                 var res = new JsonResult(tmpItem, this);
                 return res;
@@ -64,7 +64,7 @@ namespace DMS_WebAPI.ControllersV3.System
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpService = DmsResolver.Current.Get<ISettings>();
+                var tmpService = DmsResolver.Current.Get<ISettingValues>();
                 var tmpItem = tmpService.GetDigitalSignatureIsUseCertificateSign(context);
                 var res = new JsonResult(tmpItem, this);
                 return res;
@@ -81,7 +81,7 @@ namespace DMS_WebAPI.ControllersV3.System
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpService = DmsResolver.Current.Get<ISettings>();
+                var tmpService = DmsResolver.Current.Get<ISettingValues>();
                 var tmpItem = tmpService.GetDigitalSignatureIsUseInternalSign(context);
                 var res = new JsonResult(tmpItem, this);
                 return res;
@@ -98,8 +98,8 @@ namespace DMS_WebAPI.ControllersV3.System
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpService = DmsResolver.Current.Get<ISettings>();
-                var tmpItem = tmpService.GetFulltextRefreshTimeout(context);
+                var tmpService = DmsResolver.Current.Get<ISettingValues>();
+                var tmpItem = tmpService.GetFulltextRefreshTimeout();
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -115,8 +115,8 @@ namespace DMS_WebAPI.ControllersV3.System
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpService = DmsResolver.Current.Get<ISettings>();
-                var tmpItem = tmpService.GetFulltextRowLimit(context);
+                var tmpService = DmsResolver.Current.Get<ISettingValues>();
+                var tmpItem = tmpService.GetFulltextRowLimit();
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -132,7 +132,7 @@ namespace DMS_WebAPI.ControllersV3.System
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpService = DmsResolver.Current.Get<ISettings>();
+                var tmpService = DmsResolver.Current.Get<ISettingValues>();
                 var tmpItem = tmpService.GetAutoplanTimeoutMinute(context);
                 var res = new JsonResult(tmpItem, this);
                 return res;
@@ -149,7 +149,7 @@ namespace DMS_WebAPI.ControllersV3.System
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpService = DmsResolver.Current.Get<ISettings>();
+                var tmpService = DmsResolver.Current.Get<ISettingValues>();
                 var tmpItem = tmpService.GetClearTrashDocumentsTimeoutMinute(context);
                 var res = new JsonResult(tmpItem, this);
                 return res;
@@ -166,7 +166,7 @@ namespace DMS_WebAPI.ControllersV3.System
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpService = DmsResolver.Current.Get<ISettings>();
+                var tmpService = DmsResolver.Current.Get<ISettingValues>();
                 var tmpItem = tmpService.GetClearTrashDocumentsTimeoutMinuteForClear(context);
                 var res = new JsonResult(tmpItem, this);
                 return res;

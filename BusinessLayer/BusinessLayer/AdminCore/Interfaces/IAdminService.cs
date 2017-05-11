@@ -3,6 +3,7 @@ using BL.Model.AdminCore;
 using BL.Model.AdminCore.FilterModel;
 using BL.Model.AdminCore.FrontModel;
 using BL.Model.Common;
+using BL.Model.Context;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.FullTextSearch;
@@ -51,8 +52,7 @@ namespace BL.Logic.AdminCore.Interfaces
 
         #region [+] PositionRoles ...
         IEnumerable<FrontAdminPositionRole> GetPositionRolesDIP(IContext context, FilterAdminPositionRoleDIP filter);
-        IEnumerable<FrontAdminPositionRole> GetPositionRoles(IContext context, FilterAdminPositionRole filter);
-        FrontAdminPositionRole GetPositionRole(IContext context, int id);
+
         #endregion
 
         #region [+] UserRoles ...
@@ -64,6 +64,7 @@ namespace BL.Logic.AdminCore.Interfaces
 
         #region [+] DepartmentAdmins ...
         IEnumerable<FrontAdminEmployeeDepartments> GetDepartmentAdmins(IContext context, int departmentId);
+        List<int> GetInternalEmployeeDepartments(IContext context, int employeeId, List<int> depertmentsIDs = null);
         #endregion
 
         #region [+] Subordinations ...

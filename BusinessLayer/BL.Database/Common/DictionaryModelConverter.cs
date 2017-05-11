@@ -22,8 +22,8 @@ namespace BL.Database.Common
                 Name = item.Name,
                 FullName = item.FullName,
                 CompanyId = item.CompanyId,
-                Code = item.Index,
-                FullPath = item.Code,
+                Index = item.Index,
+                Code = item.Code,
                 ChiefPositionId = item.ChiefPositionId
             };
         }
@@ -32,7 +32,7 @@ namespace BL.Database.Common
         {
             return item == null ? null : new DictionaryRegistrationJournals
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
 
                 Id = item.Id,
                 LastChangeDate = item.LastChangeDate,
@@ -55,7 +55,7 @@ namespace BL.Database.Common
         {
             return item == null ? null : new DictionaryDocumentTypes
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
 
                 Id = item.Id,
                 LastChangeDate = item.LastChangeDate,
@@ -83,7 +83,7 @@ namespace BL.Database.Common
         {
             return item == null ? null : new CustomDictionaryTypes
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
 
                 Id = item.Id,
                 Code = item.Code,
@@ -123,7 +123,7 @@ namespace BL.Database.Common
         {
             return item == null ? null : new DictionaryStandartSendLists
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
 
                 Id = item.Id,
                 Name = item.Name,
@@ -175,7 +175,7 @@ namespace BL.Database.Common
         {
             return item == null ? null : new DictionaryCompanies
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
 
                 Id = item.Id,
                 FullName = item.FullName,
@@ -190,7 +190,7 @@ namespace BL.Database.Common
         {
             return item == null ? null : new DictionaryTags
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
 
                 Id = item.Id,
                 Name = item.Name,
@@ -225,7 +225,7 @@ namespace BL.Database.Common
         {
             return item == null ? null : new DictionaryAgents
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
 
                 Id = item.Id,
                 Name = item.Name,
@@ -242,7 +242,7 @@ namespace BL.Database.Common
         {
             return item == null ? null : new DictionaryAgentPersons
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
 
                 Id = item.Id,
                 //FirstName = item.FirstName,
@@ -270,7 +270,7 @@ namespace BL.Database.Common
         {
             return item == null ? null : new DictionaryAgentPeople
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
 
                 Id = item.Id,
                 FirstName = item.FirstName,
@@ -297,7 +297,7 @@ namespace BL.Database.Common
         {
             return item == null ? null : new DictionaryAgentEmployees
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
 
                 Id = item.Id,
                 PersonnelNumber = item.PersonnelNumber,
@@ -313,7 +313,7 @@ namespace BL.Database.Common
         {
             return item == null ? null : new DictionaryAgentUsers
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
 
                 Id = item.Id,
                 UserId = item.UserId,
@@ -331,7 +331,7 @@ namespace BL.Database.Common
         {
             return item == null ? null : new DictionaryAgents
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
 
                 Id = item.Id,
 
@@ -365,7 +365,7 @@ namespace BL.Database.Common
         {
             return item == null ? null : new DictionaryAddressTypes
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
 
                 Id = item.Id,
                 LastChangeDate = item.LastChangeDate,
@@ -381,7 +381,7 @@ namespace BL.Database.Common
         {
             return item == null ? null : new DictionaryAgentCompanies
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
 
                 Id = item.Id,
                 FullName = item.FullName,
@@ -399,7 +399,7 @@ namespace BL.Database.Common
         {
             return item == null ? null : new DictionaryAgentBanks
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
 
                 Id = item.Id,
                 FullName = item.FullName,
@@ -433,7 +433,7 @@ namespace BL.Database.Common
         {
             return item == null ? null : new DictionaryContactTypes
             {
-                ClientId = context.CurrentClientId,
+                ClientId = context.Client.Id,
 
                 Id = item.Id,
                 InputMask = item.InputMask,

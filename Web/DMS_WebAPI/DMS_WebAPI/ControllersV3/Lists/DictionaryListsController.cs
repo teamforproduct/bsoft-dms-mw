@@ -11,7 +11,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using BL.CrossCutting.Context;
+using BL.Model.WebAPI.FrontModel;
 using DMS_WebAPI.Models;
 
 namespace DMS_WebAPI.ControllersV3.Lists
@@ -324,6 +324,34 @@ namespace DMS_WebAPI.ControllersV3.Lists
                 var tmpItems = tmpService.GetPositionsExecutorShortList(context, filter);
                 var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(context, tmpItems,currMf.ModuleName, currMf.FeatureName) };
                 var res = new JsonResult(tmpItems, metaData, this);
+                return res;
+            }, mf);
+        }
+
+        /// <summary>
+        /// Списки рассылки
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="paging"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.SendLists)]
+        [ResponseType(typeof(List<ListItem>))]
+        public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryStandartSendList filter, [FromUri]UIPaging paging)
+        {
+            var mf = new ModuleFeatureModel
+            {
+                ModuleName = ApiPrefix.CurrentModule(),
+                FeatureName = ApiPrefix.CurrentFeature()
+            };
+            return await SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var currMf = (ModuleFeatureModel)param;
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetStandartSendListsShortList(context, filter, paging);
+                var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(context, tmpItems, currMf.ModuleName, currMf.FeatureName) };
+                var res = new JsonResult(tmpItems, metaData, this);
+                res.Paging = paging;
                 return res;
             }, mf);
         }

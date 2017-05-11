@@ -25,6 +25,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public int? PositionExecutorTypeId { get; set; }
         public int? RecordId { get; set; }
         public string Name { get; set; }
+        public List<string> Details { get; set; }
         public Nullable<DateTime> SendDate { get; set; }
         public Nullable<DateTime> ReadDate { get; set; }
         public Nullable<int> ReadAgentId { get; set; }

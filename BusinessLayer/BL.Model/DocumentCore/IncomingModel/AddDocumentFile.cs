@@ -1,7 +1,7 @@
-﻿using BL.Model.Enums;
+﻿using BL.Model.Common;
+using BL.Model.Enums;
 using BL.Model.Users;
 using System.Runtime.Serialization;
-using System.Web;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
@@ -14,48 +14,36 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// Ид. документа, которому принадлежит файл
         /// </summary>
         public int DocumentId { get; set; }
-        
         /// <summary>
-        /// Порядковый номер файла в списке файлов документа
-        /// Только для добавления версии файла к файлу
+        /// ИД файла во временном хранилище
+        /// </summary>        
+        public int TmpFileId { get; set; }
+        /// <summary>
+        /// Порядковый номер файла в списке файлов документа, если указан, то файл будет добавлен как версия, если нет, то добавлен как новый файл. Если файл с таким названием есть, то будет переименован.
         /// </summary>
-        public int OrderInDocument { get; set; }
-        
+        public int? OrderInDocument { get; set; }        
         /// <summary>
         /// Является ли файл дополнительным или основным.
         /// </summary>
-        public EnumFileTypes Type { get; set; }
-
-        [IgnoreDataMember]
-        public bool IsUseMainNameFile { get; set; }
-        
+        public EnumFileTypes Type { get; set; }      
         /// <summary>
-        /// Имя файла.
+        /// Признак основная версия файла. Для нового файла будет автоматом true. Для версии можно указать, но будут проверки.
         /// </summary>
-        [IgnoreDataMember]
-        public string FileName { get; set; }
-        
-        /// <summary>
-        /// Тип файла.
-        /// </summary>
-        [IgnoreDataMember]
-        public string FileType { get; set; }
-        
+        public bool? IsMainVersion { get; set; }
         /// <summary>
         /// Описание файла
         /// </summary>
         public string Description { get; set; }
-        
         /// <summary>
-        /// Размер файла
+        /// ИД события к которому привязывать файл
         /// </summary>
         [IgnoreDataMember]
-        public long FileSize { get; set; }
+        public int? EventId { get; set; }
+        /// <summary>
+        /// Файл, который будт загружен из временного хранилища
+        /// </summary>
+        [IgnoreDataMember]
+        public BaseFile File { get; set; }
 
-        /// <summary>
-        /// Данные файла
-        /// </summary>
-        [IgnoreDataMember]
-        public HttpPostedFile PostedFileData { get; set; }
     }
 }

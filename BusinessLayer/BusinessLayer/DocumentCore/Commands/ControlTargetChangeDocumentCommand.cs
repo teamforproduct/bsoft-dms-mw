@@ -64,7 +64,7 @@ namespace BL.Logic.DocumentCore.Commands
                 throw new CouldNotPerformOperation();
             }
             _context.SetCurrentPosition(_docWait.OnEvent.TargetPositionId);
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
             return true;
         }
 
@@ -75,7 +75,8 @@ namespace BL.Logic.DocumentCore.Commands
             if (!string.IsNullOrEmpty(addDescripton))
             {
                 addDescripton = addDescripton.Remove(addDescripton.Length - 1);
-                var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, EnumEventTypes.ControlTargetChange, Model.EventDate, Model.TargetDescription, addDescripton, _docWait.OnEvent.TaskId);
+                var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, EnumEventTypes.ControlTargetChange, Model.EventDate, Model.TargetDescription, addDescripton, Model.EventId, _docWait.OnEvent.TaskId,
+                    accessGroups: Model.TargetCopyAccessGroups, isVeryfyDocumentAccess: true);
                 _docWait.TargetDescription = Model.TargetDescription;
                 _docWait.AttentionDate = Model.TargetAttentionDate;
                 CommonDocumentUtilities.SetLastChange(_context, _docWait);

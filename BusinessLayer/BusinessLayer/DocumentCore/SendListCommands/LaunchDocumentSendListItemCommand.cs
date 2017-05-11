@@ -69,7 +69,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             }
 
             _context.SetCurrentPosition(_sendList.SourcePositionId);
-            _admin.VerifyAccess(_context, CommandType);
+            _adminProc.VerifyAccess(_context, CommandType);
 
             return true;
         }

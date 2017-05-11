@@ -22,6 +22,8 @@ namespace BL.Model.DocumentCore.Actions
             Description = controlChange.Description;
             DueDate = controlChange.DueDate;
             AttentionDate = controlChange.AttentionDate;
+            TargetCopyAccessGroups = controlChange.TargetCopyAccessGroups;
+            EventDate = controlChange.EventDate;
         }
         /*
         public ControlOn(InternalDocumentSendList sendList)
