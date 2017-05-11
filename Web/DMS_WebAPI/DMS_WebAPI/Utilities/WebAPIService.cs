@@ -241,6 +241,9 @@ namespace DMS_WebAPI.Utilities
             int posId = -1;
             EmployeeCreationResult res = null;
 
+            // проверяю нет ли уже сотрудника с указанным имененм у клиента
+            if (ExistsUser(model.Login, context.Client.Id)) throw new UserNameAlreadyExists(model.Login);
+
             if (model.OrgId == null && string.IsNullOrEmpty(model.OrgName)) throw new OrgRequired();
 
             if (model.DepartmentId == null && string.IsNullOrEmpty(model.DepartmentName)) throw new DepartmentRequired();
