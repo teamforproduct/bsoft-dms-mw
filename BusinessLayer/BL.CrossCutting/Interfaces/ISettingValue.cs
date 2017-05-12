@@ -1,4 +1,5 @@
 ﻿using BL.Model.Enums;
+using System.Collections.Generic;
 
 namespace BL.CrossCutting.Interfaces
 {
@@ -13,6 +14,8 @@ namespace BL.CrossCutting.Interfaces
         string GetAuthAddress();
 
         string GetLocalHost();
+
+        List<string> GetSystemHosts();
 
         bool GetSubordinationsSendAllForExecution(IContext ctx);
         bool GetSubordinationsSendAllForInforming(IContext ctx);

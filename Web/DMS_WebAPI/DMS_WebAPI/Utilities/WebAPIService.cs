@@ -613,6 +613,13 @@ namespace DMS_WebAPI.Utilities
 
         public bool ExistsClient(FilterAspNetClients filter)
         {
+            var setVals = DmsResolver.Current.Get<ISettingValues>();
+            var banHosts = setVals.GetSystemHosts();
+
+            if (filter == null)  throw new FilterRequired();
+
+            if (banHosts.Contains(filter.Code)) return true;
+
             var f = new FilterAspNetClientRequests { CodeExact = filter.Code };
 
             // Проверка уникальности доменного имени
