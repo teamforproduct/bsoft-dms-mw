@@ -2,6 +2,7 @@
 using BL.Logic.Common;
 using BL.Model.DocumentCore.Actions;
 using BL.Model.DocumentCore.IncomingModel;
+using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using System.Collections.Generic;
@@ -56,11 +57,10 @@ namespace BL.Logic.DocumentCore.Commands
             var evAcceesses = (Model.TargetCopyAccessGroups?.Where(x => x.AccessType == EnumEventAccessTypes.TargetCopy) ?? new List<AccessGroup>())
                 .Concat(new List<AccessGroup> { new AccessGroup { AccessType = EnumEventAccessTypes.Source, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = Model.NewPositionId } })
                 .ToList();
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.ChangePosition, Model.EventDate, Model.Description, null, null, null, 
-                Model.NewPositionId, null, Model.NewPositionId, accessGroups: evAcceesses);
-
+            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.ChangePosition, Model.EventDate, Model.Description, null, null, null, evAcceesses);
+            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
+            _document.Events = new List<InternalDocumentEvent> { newEvent };
             _documentDb.ChangePositionDocument(_context, Model, _document);
-
             return Model.DocumentId;
         }
 

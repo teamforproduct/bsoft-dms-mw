@@ -81,7 +81,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         {
             _file.IsWorkedOut = true;
             CommonDocumentUtilities.SetLastChange(_context, _file);
-            _file.Event = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _file.DocumentId, EnumEventTypes.RejectDocumentFile, null, _file.File.FileName, null, null, null, _file.ExecutorPositionId);
+            //TODO ADD TARGET!!!
+            _file.Event = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _file.DocumentId, EnumEventTypes.RejectDocumentFile, null, _file.File.FileName);
             _operationDb.UpdateFileOrVersion(_context, _file);
             return _file.Id;
         }

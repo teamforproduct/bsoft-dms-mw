@@ -314,21 +314,20 @@ namespace BL.Database.Admins
         /// <returns></returns>
         public bool VerifySubordination(IContext ctx, VerifySubordination model)
         {
-            if (model.SourcePositions.Contains(model.TargetPosition))
-                return true;
-
+            var res = false;
+            if (model.SourcePositions?.Any() ?? false)
+            {
+                model.SourcePositions = new List<int> { ctx.CurrentPositionId };
+            }
             using (var transaction = Transactions.GetTransaction())
             {
-                var dictDb = DmsResolver.Current.Get<DictionariesDbProcess>();
-                var pos = dictDb.GetPositions(ctx, new FilterDictionaryPosition() { IDs = new List<int> { model.TargetPosition }, SubordinatedPositions = model.SourcePositions })
-                    .Select(x => new { MaxSubordinationTypeId = x.MaxSubordinationTypeId })
-                    .FirstOrDefault();
-                if (pos?.MaxSubordinationTypeId == null || pos.MaxSubordinationTypeId < (int)model.SubordinationType)
-                {
-                    return false;
-                }
+                var dbContext = ctx.DbContext as DmsContext;
+                var goodTargets = GetSubordinationsQuery(ctx, dbContext, new FilterAdminSubordination { TargetPositionIDs = model.TargetPosition, SourcePositionIDs = model.SourcePositions })
+                    .Where(x=>x.SubordinationTypeId >= (int)model.SubordinationType)
+                    .GroupBy(x=>x.TargetPositionId).Select(x=>x.Key).ToList();
+                res = model.TargetPosition.Any(x => !goodTargets.Contains(x));
                 transaction.Complete();
-                return true;
+                return res;
             }
         }
 

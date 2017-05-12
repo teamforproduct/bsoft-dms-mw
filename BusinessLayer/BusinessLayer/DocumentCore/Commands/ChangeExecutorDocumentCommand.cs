@@ -54,6 +54,7 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
+            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
             _context.SetCurrentPosition(_document.ExecutorPositionId);
             _adminProc.VerifyAccess(_context, CommandType);
             if (Model.PositionId == _context.CurrentPositionId)
@@ -100,11 +101,9 @@ namespace BL.Logic.DocumentCore.Commands
             var evAcceesses = (Model.TargetCopyAccessGroups?.Where(x => x.AccessType == EnumEventAccessTypes.TargetCopy) ?? new List<AccessGroup>())
                 .Concat(new List<AccessGroup> { new AccessGroup { AccessType = EnumEventAccessTypes.Target, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = Model.PositionId } })
                 .ToList();
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.ChangeExecutor, Model.EventDate, Model.Description, null, null, null, 
-                Model.PositionId, accessGroups: evAcceesses);
-
-            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.AccessLevel, _document.Events.First().Accesses);
-
+            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.ChangeExecutor, Model.EventDate, Model.Description, null, null, null, evAcceesses);
+            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses, null, true, Model.AccessLevel);
+            _document.Events = new List<InternalDocumentEvent> { newEvent };
             if (Model.PaperEvents?.Any() ?? false)
             {
                 foreach (var model in Model.PaperEvents)

@@ -10,6 +10,8 @@ using BL.CrossCutting.DependencyInjection;
 using BL.Logic.SystemServices.AutoPlan;
 using BL.Model.DocumentCore.IncomingModel;
 using System.Collections.Generic;
+using BL.Model.AdminCore;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -68,8 +70,10 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new CouldNotPerformOperation();
             }
-            _operationDb.ControlOffSendListPrepare(_context, _document);
-            _operationDb.ControlOffSubscriptionPrepare(_context, _document);
+            _operationDb.SetSendListForControlOffPrepare(_context, _document);
+            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
+            _operationDb.SetParentEventAccessesPrepare(_context, _document, Model.EventId);
+            _operationDb.SetSubscriptionForControlOffPrepare(_context, _document);
             _context.SetCurrentPosition(_docWait.OnEvent.TargetPositionId);
             _adminProc.VerifyAccess(_context, CommandType);
             return true;
@@ -81,17 +85,16 @@ namespace BL.Logic.DocumentCore.Commands
             var evAcceesses = (Model.TargetCopyAccessGroups?.Where(x => x.AccessType == EnumEventAccessTypes.TargetCopy) ?? new List<AccessGroup>())
                 .Concat(new List<AccessGroup> { new AccessGroup { AccessType = EnumEventAccessTypes.Target, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = _docWait.OnEvent.SourcePositionId } })
                 .ToList();
-            _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, null, Model.EventId, _docWait.OnEvent.TaskId,
-                _docWait.OnEvent.SourcePositionId, null, _docWait.OnEvent.TargetPositionId, null, evAcceesses); 
+            var newEvent = _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, null, Model.EventId, _docWait.OnEvent.TaskId, evAcceesses); 
+            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
             CommonDocumentUtilities.SetLastChange(_context, _document.Waits);
             CommonDocumentUtilities.SetLastChange(Context, _document.SendLists);
+
             var subscription = _document.Subscriptions.First();
             subscription.Description = Model.VisaText;
             subscription.DoneEvent = _docWait.OffEvent;
             subscription.SubscriptionStates = CommonDocumentUtilities.SubscriptionStatesForAction[CommandType];
             subscription.SigningType = Model.SigningType;
-
-
             var isUseCertificateSign = GetIsUseCertificateSign();
             if (isUseCertificateSign && subscription.SigningType == EnumSigningTypes.CertificateSign)
             {
@@ -106,10 +109,15 @@ namespace BL.Logic.DocumentCore.Commands
                 subscription.CertificatePositionExecutorAgentId = positionExecutor.ExecutorAgentId;
                 subscription.CertificatePositionExecutorTypeId = positionExecutor.ExecutorTypeId;
             }
-
             //TODO HASH!!!!
             CommonDocumentUtilities.SetLastChange(Context, _document.Subscriptions);
-            _operationDb.CloseDocumentWait(_context, _document, GetIsUseInternalSign(), isUseCertificateSign, Model.ServerPath);
+            using (var transaction = Transactions.GetTransaction())
+            {
+                _operationDb.CloseDocumentWait(_context, _document, GetIsUseInternalSign(), isUseCertificateSign, Model.ServerPath);
+                Model.AddDocumentFiles.ForEach(x => { x.DocumentId = _document.Id; x.EventId = _document.Waits.Select(y => y.OffEventId).First(); });
+                _documentProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, _context, Model.AddDocumentFiles);
+                transaction.Complete();
+            }
             if (_document.IsLaunchPlan)
                 DmsResolver.Current.Get<IAutoPlanService>().ManualRunAutoPlan(_context, null, _document.Id);
             return _document.Id;

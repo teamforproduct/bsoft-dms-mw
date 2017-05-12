@@ -7,6 +7,7 @@ using BL.Model.Exception;
 using System.Linq;
 using BL.Model.DocumentCore.InternalModel;
 using BL.CrossCutting.Helpers;
+using BL.Model.AdminCore;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -51,19 +52,21 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
+            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
+            _operationDb.SetParentEventAccessesPrepare(_context, _document, Model.ParentEventId);
             return true;
         }
 
         public override object Execute()
         {
             var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task);
-            var ev = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.SendMessage, Model.EventDate, Model.Description, null, Model.ParentEventId, taskId,
-                                                                    accessGroups: Model.TargetAccessGroups);
-            if (!ev.Accesses.Any(x => x.AccessType != EnumEventAccessTypes.Source))
-            {
-                throw new NobodyIsChosen();
-            }
-            _document.Events = new List<InternalDocumentEvent> { ev };
+            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.SendMessage, Model.EventDate, Model.Description, null, Model.ParentEventId, taskId, Model.TargetAccessGroups);
+            //if (!newEvent.Accesses.Any(x => x.AccessType != EnumEventAccessTypes.Source)) //TODO Need verify?
+            //{
+            //    throw new NobodyIsChosen();
+            //}
+            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
+            _document.Events = new List<InternalDocumentEvent> { newEvent };
             using (var transaction = Transactions.GetTransaction())
             {
                 _operationDb.AddDocumentEvents(_context, _document);

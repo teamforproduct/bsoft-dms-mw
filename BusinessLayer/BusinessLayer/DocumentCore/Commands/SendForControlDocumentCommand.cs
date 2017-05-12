@@ -79,20 +79,12 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 ex = new ControlerHasAlreadyBeenDefined();
             }
-
-            if (Model.TargetPositionId.HasValue
-                && (_document.RestrictedSendLists?.Any() ?? false)
-                && !_document.RestrictedSendLists.Select(x => x.PositionId).Contains(Model.TargetPositionId.Value)
-                )
-            {
-                ex = new DocumentSendListNotFoundInDocumentRestrictedSendList();
-            }
-
+            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
             if (Model.TargetPositionId.HasValue
                 && !_adminProc.VerifySubordination(_context, new VerifySubordination
                 {
                     SubordinationType = EnumSubordinationTypes.Execution,
-                    TargetPosition = Model.TargetPositionId.Value,
+                    TargetPosition = new List<int> { Model.TargetPositionId.Value },
                     SourcePositions = CommonDocumentUtilities.GetSourcePositionsForSubordinationVeification(_context, Model, _document),
                 }))
             {
@@ -109,7 +101,16 @@ namespace BL.Logic.DocumentCore.Commands
             _document.Subscriptions = null;
 
             var newEvent = Model.CloseEvent = Model.StartEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
-            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.AccessLevel, newEvent.Accesses);
+            var ex = CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses,
+                new VerifySubordination
+                {
+                    SubordinationType = EnumSubordinationTypes.Informing,
+                    TargetPosition = newEvent.Accesses.Where(x => x.AccessType != EnumEventAccessTypes.Source && x.PositionId.HasValue).Select(x => x.PositionId.Value).ToList(),
+                    SourcePositions = CommonDocumentUtilities.GetSourcePositionsForSubordinationVeification(_context, Model, _document),
+                },
+                true, Model.AccessLevel);
+            if (ex != null) CommonDocumentUtilities.ThrowError(_context, ex, Model);
+
             CommonDocumentUtilities.SetLastChange(_context, Model);
             _document.SendLists = new List<InternalDocumentSendList> { Model };
 

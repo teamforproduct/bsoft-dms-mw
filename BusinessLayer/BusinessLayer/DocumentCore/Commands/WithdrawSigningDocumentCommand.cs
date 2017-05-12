@@ -69,8 +69,10 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new CouldNotPerformOperation();
             }
-            _operationDb.ControlOffSendListPrepare(_context, _document);
-            _operationDb.ControlOffSubscriptionPrepare(_context, _document);
+            _operationDb.SetSendListForControlOffPrepare(_context, _document);
+            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
+            _operationDb.SetParentEventAccessesPrepare(_context, _document, Model.EventId);
+            _operationDb.SetSubscriptionForControlOffPrepare(_context, _document);
             _context.SetCurrentPosition(_docWait.OnEvent.SourcePositionId);
             _adminProc.VerifyAccess(_context, CommandType);
             return true;
@@ -82,8 +84,8 @@ namespace BL.Logic.DocumentCore.Commands
             var evAcceesses = (Model.TargetCopyAccessGroups?.Where(x => x.AccessType == EnumEventAccessTypes.TargetCopy) ?? new List<AccessGroup>())
                 .Concat(new List<AccessGroup> { new AccessGroup { AccessType = EnumEventAccessTypes.Target, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = _docWait.OnEvent.TargetPositionId } })
                 .ToList();
-            _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, null, Model.EventId, _docWait.OnEvent.TaskId, 
-                _docWait.OnEvent.TargetPositionId, null, _docWait.OnEvent.SourcePositionId, null, evAcceesses); 
+            var newEvent = _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, null, Model.EventId, _docWait.OnEvent.TaskId, evAcceesses);
+            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
             var sendList = _document.SendLists.FirstOrDefault(x => x.IsInitial);
             if (sendList != null)
@@ -98,16 +100,11 @@ namespace BL.Logic.DocumentCore.Commands
             subscription.SubscriptionStates = EnumSubscriptionStates.No;
             CommonDocumentUtilities.SetLastChange(Context, _document.Subscriptions);
 
-            //TODO null
-            //var subscription = _document.Subscriptions.First();
-            //subscription.Description = CommandType.ToString();
-            //subscription.DoneEvent = null;
-            //subscription.SubscriptionStates = EnumSubscriptionStates.No;
-            //CommonDocumentUtilities.SetLastChange(Context, _document.Subscriptions);
-
             using (var transaction = Transactions.GetTransaction())
             {
                 _operationDb.CloseDocumentWait(_context, _document, GetIsUseInternalSign(), GetIsUseCertificateSign(), Model.ServerPath);
+                Model.AddDocumentFiles.ForEach(x => { x.DocumentId = _document.Id; x.EventId = _document.Waits.Select(y => y.OffEventId).First(); });
+                _documentProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, _context, Model.AddDocumentFiles);
                 if (sendList != null)
                 {
                     var docProc = DmsResolver.Current.Get<IDocumentService>();

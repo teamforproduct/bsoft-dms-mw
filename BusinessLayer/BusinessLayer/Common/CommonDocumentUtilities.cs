@@ -3,7 +3,9 @@ using BL.CrossCutting.Interfaces;
 using BL.Database.Dictionaries;
 using BL.Database.Documents.Interfaces;
 using BL.Database.SystemDb;
+using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
+using BL.Model.AdminCore;
 using BL.Model.Common;
 using BL.Model.DictionaryCore.FilterModel;
 using BL.Model.DictionaryCore.InternalModel;
@@ -318,13 +320,13 @@ namespace BL.Logic.Common
                 GetNewDocumentAccess(context,entityTypeId,documentId,accessLevel,positionId,agentId),
             };
         }
-        public static IEnumerable<InternalDocumentAccess> GetNewDocumentAccesses(IContext context, int entityTypeId, EnumAccessLevels accessLevel, IEnumerable<InternalDocumentEventAccess> accesses)
+        public static IEnumerable<InternalDocumentAccess> GetNewDocumentAccesses(IContext context, IEnumerable<InternalDocumentEventAccess> accesses, EnumAccessLevels accessLevel = EnumAccessLevels.PersonallyAndIOAndReferents)
         {
             var res = accesses.Select(x => new InternalDocumentAccess
             {
                 DocumentId = x.DocumentId,
                 ClientId = context.Client.Id,
-                EntityTypeId = entityTypeId,
+                EntityTypeId = x.EntityTypeId,
                 AccessLevel = accessLevel,
                 IsInWork = true,
                 IsFavourite = false,
@@ -337,8 +339,6 @@ namespace BL.Logic.Common
 
         public static InternalDocumentEvent GetNewDocumentEvent(IContext context, InternalDocumentSendList model, EnumEventTypes? eventType = null)
         {
-            var sourcePositionExecutor = GetExecutorAgentIdByPositionId(context, model.SourcePositionId);
-            var targetPositionExecutor = GetExecutorAgentIdByPositionId(context, model.TargetPositionId);
             var res = new InternalDocumentEvent
             {
                 DocumentId = model.DocumentId != 0 ? model.DocumentId : 0,
@@ -347,14 +347,6 @@ namespace BL.Logic.Common
                 EventType = eventType ?? (EnumEventTypes)Enum.Parse(typeof(EnumEventTypes), model.SendType.ToString()),
                 TaskId = model.TaskId,
                 Description = model.Description,
-                SourceAgentId = model.SourceAgentId,
-                SourcePositionId = model.SourcePositionId,
-                SourcePositionExecutorAgentId = sourcePositionExecutor?.ExecutorAgentId,
-                SourcePositionExecutorTypeId = sourcePositionExecutor?.ExecutorTypeId,
-                TargetPositionId = model.TargetPositionId,
-                TargetPositionExecutorAgentId = targetPositionExecutor?.ExecutorAgentId,
-                TargetPositionExecutorTypeId = targetPositionExecutor?.ExecutorTypeId,
-                TargetAgentId = model.TargetAgentId,
                 Date = DateTime.UtcNow,
                 CreateDate = DateTime.UtcNow,
             };
@@ -371,11 +363,9 @@ namespace BL.Logic.Common
             };
         }
 
-        public static InternalDocumentEvent GetNewDocumentEvent(IContext context, int entityTypeId, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string addDescription = null, int? parentEventId = null, int? taskId = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null,
+        public static InternalDocumentEvent GetNewDocumentEvent(IContext context, int entityTypeId, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string addDescription = null, int? parentEventId = null, int? taskId = null,
                                                                 List<AccessGroup> accessGroups = null)
         {
-            var sourcePositionExecutor = GetExecutorAgentIdByPositionId(context, sourcePositionId ?? context.CurrentPositionId);
-            var targetPositionExecutor = GetExecutorAgentIdByPositionId(context, targetPositionId ?? context.CurrentPositionId);
             var res = new InternalDocumentEvent
             {
                 ClientId = context.Client.Id,
@@ -386,14 +376,6 @@ namespace BL.Logic.Common
                 ParentEventId = parentEventId,
                 Description = description,
                 AddDescription = addDescription,
-                SourceAgentId = sourceAgentId ?? context.CurrentAgentId,
-                SourcePositionId = sourcePositionId ?? context.CurrentPositionId,
-                SourcePositionExecutorAgentId = sourcePositionExecutor?.ExecutorAgentId,
-                SourcePositionExecutorTypeId = sourcePositionExecutor?.ExecutorTypeId,
-                TargetPositionId = targetPositionId ?? context.CurrentPositionId,
-                TargetPositionExecutorAgentId = targetPositionExecutor?.ExecutorAgentId,
-                TargetPositionExecutorTypeId = targetPositionExecutor?.ExecutorTypeId,
-                TargetAgentId = targetAgentId,
                 Date = eventDate ?? DateTime.UtcNow,
                 CreateDate = DateTime.UtcNow,
             };
@@ -402,11 +384,11 @@ namespace BL.Logic.Common
             return res;
         }
 
-        public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvents(IContext context, int entityTypeId, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string addDescription = null, int? parentEventId = null, int? taskId = null, int? targetPositionId = null, int? targetAgentId = null, int? sourcePositionId = null, int? sourceAgentId = null, List<AccessGroup> accessGroups = null)
+        public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvents(IContext context, int entityTypeId, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string addDescription = null, int? parentEventId = null, int? taskId = null, List<AccessGroup> accessGroups = null)
         {
             return new List<InternalDocumentEvent>
             {
-                GetNewDocumentEvent(context,entityTypeId, documentId,eventType,eventDate,description,addDescription,parentEventId,taskId,targetPositionId,targetAgentId,sourcePositionId,sourceAgentId,accessGroups),
+                GetNewDocumentEvent(context,entityTypeId, documentId,eventType,eventDate,description,addDescription,parentEventId,taskId,accessGroups),
             };
         }
 
@@ -478,10 +460,6 @@ namespace BL.Logic.Common
                                 context, sendListModel.EntityTypeId, sendListModel.DocumentId, eventType, null,
                                 ((eventType == EnumEventTypes.ControlOn && !string.IsNullOrEmpty(sendListModel.SelfDescription)) ? sendListModel.SelfDescription : sendListModel.Description),
                                 null, null, sendListModel.TaskId,
-                                eventCorrespondentType == EnumEventCorrespondentType.FromSourceToSource ? sendListModel.SourcePositionId : sendListModel.TargetPositionId, //TODO del
-                                null,
-                                eventCorrespondentType == EnumEventCorrespondentType.FromTargetToTarget ? sendListModel.TargetPositionId : sendListModel.SourcePositionId,//TODO del
-                                sendListModel.SourceAgentId,
                                 accessess
                             )
             };
@@ -513,15 +491,7 @@ namespace BL.Logic.Common
                 DocumentId = sendListModel.DocumentId,
                 SubscriptionStates = EnumSubscriptionStates.No,
                 SendEvent = eventType == null ? null :
-                            GetNewDocumentEvent
-                            (
-                                context, sendListModel.EntityTypeId, sendListModel.DocumentId, eventType.Value, null, sendListModel.Description, null, null, sendListModel.TaskId,
-                                sendListModel.TargetPositionId,
-                                null,
-                                sendListModel.SourcePositionId,
-                                sendListModel.SourceAgentId,
-                                accessess
-                            )
+                            GetNewDocumentEvent(context, sendListModel.EntityTypeId, sendListModel.DocumentId, eventType.Value, null, sendListModel.Description, null, null, sendListModel.TaskId, accessess)
             };
             SetLastChange(context, res);
             return res;
@@ -990,6 +960,31 @@ namespace BL.Logic.Common
                                         x.Code.Equals("DocumentType", StringComparison.OrdinalIgnoreCase)).ToList().ForEach(x => x.IsReadOnly = true);
             }
             return uiElements;
+        }
+
+        public static DmsExceptions VerifyAndSetDocumentAccess(IContext ctx, InternalDocument document, IEnumerable<InternalDocumentEventAccess> accesses, VerifySubordination modelVerifySubordination = null, bool isThrowException = true, EnumAccessLevels accessLevel = EnumAccessLevels.PersonallyAndIOAndReferents)
+        {
+            if (!VerifyAccessesByRestrictedSendLists(ctx, document.RestrictedSendLists, accesses, isThrowException)) return new DocumentSendListNotFoundInDocumentRestrictedSendList();
+            var targetPosition = accesses.Where(x => x.AccessType != EnumEventAccessTypes.Source && x.PositionId.HasValue).Select(x => x.PositionId.Value).ToList();
+            if (document.ParentEventAccesses?.Any(x=>x.PositionId.HasValue) ?? false)
+            {
+                targetPosition = targetPosition.Where(x => !document.ParentEventAccesses.Where(y => y.PositionId.HasValue).Any(y => y.PositionId.Value == x)).ToList();
+            }
+            if (!DmsResolver.Current.Get<IAdminService>().VerifySubordination(ctx, 
+                modelVerifySubordination ?? new VerifySubordination { SubordinationType = EnumSubordinationTypes.Informing, TargetPosition = targetPosition,},
+                isThrowException))
+                return new SubordinationHasBeenViolated();
+            document.Accesses = GetNewDocumentAccesses(ctx, accesses.Where(x=> x.PositionId.HasValue && targetPosition.Contains(x.PositionId.Value)), accessLevel);
+            return null;
+        }
+
+        public static bool VerifyAccessesByRestrictedSendLists(IContext ctx, IEnumerable<InternalDocumentRestrictedSendList> restrList, IEnumerable<InternalDocumentEventAccess> accesses, bool isThrowException = false)
+        {
+            var res = ((restrList?.Any() ?? false)
+                && accesses.Where(x => x.PositionId.HasValue).Any(x => !restrList.Where(y => y.PositionId.HasValue).Select(y => y.PositionId.Value).Contains(x.PositionId.Value)));
+            if (!res && isThrowException)
+                throw new DocumentSendListNotFoundInDocumentRestrictedSendList();
+            return res;
         }
 
         public static void VerifySendLists(InternalDocument doc)

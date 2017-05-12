@@ -1301,16 +1301,6 @@ namespace BL.Database.Documents
                         AccessLevel = (EnumAccessLevels)y.AccessLevelId,
                         IsInitial = y.IsInitial,
                     }).ToList();
-                doc.RestrictedSendLists =
-                    dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == context.Client.Id)
-                        .Where(x => x.DocumentId == documentId)
-                        .Select(y => new InternalDocumentRestrictedSendList
-                        {
-                            ClientId = y.ClientId,
-                            EntityTypeId = y.EntityTypeId,
-                            PositionId = y.PositionId,
-                            AccessLevel = (EnumAccessLevels)y.AccessLevelId,
-                        }).ToList();
                 doc.Papers = dbContext.DocumentPapersSet.Where(x => x.ClientId == context.Client.Id)
                     .Where(x => x.DocumentId == documentId)
                     .Select(y => new InternalDocumentPaper
@@ -1897,15 +1887,6 @@ namespace BL.Database.Documents
                         ClientId = x.ClientId,
                         EntityTypeId = x.EntityTypeId,
                     }).ToList();
-                doc.RestrictedSendLists =
-                    dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == context.Client.Id)
-                        .Where(x => x.DocumentId == model.DocumentId)
-                        .Select(x => new InternalDocumentRestrictedSendList
-                        {
-                            ClientId = x.ClientId,
-                            EntityTypeId = x.EntityTypeId,
-                            PositionId = x.PositionId,
-                        }).ToList();
                 transaction.Complete();
                 return doc;
             }
@@ -1974,10 +1955,7 @@ namespace BL.Database.Documents
                 //TODO При получении документа возвращаеться только один Accesses
                 if (document.Accesses != null && document.Accesses.Any())
                 {
-                    //TODO Не сохраняеться через свойства
-                    //doc.Accesses = CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, doc.Id).ToList();
-                    dbContext.DocumentAccessesSet.AddRange(
-                        CommonQueries.GetDbDocumentAccesses(context, document.Accesses, doc.Id).ToList());
+                    dbContext.DocumentAccessesSet.AddRange(CommonQueries.GetDbDocumentAccesses(context, document.Accesses, doc.Id).ToList());
                 }
                 dbContext.SaveChanges();
 

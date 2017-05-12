@@ -7,6 +7,7 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.DocumentCore.IncomingModel;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -70,6 +71,8 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new CouldNotPerformOperation();
             }
+            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
+            _operationDb.SetParentEventAccessesPrepare(_context, _document, Model.EventId);
             _context.SetCurrentPosition(_docWait.OnEvent.TargetPositionId);
             _adminProc.VerifyAccess(_context, CommandType);
             return true;
@@ -80,16 +83,19 @@ namespace BL.Logic.DocumentCore.Commands
             var evAcceesses = (Model.TargetCopyAccessGroups?.Where(x => x.AccessType == EnumEventAccessTypes.TargetCopy) ?? new List<AccessGroup>())
                 .Concat(new List<AccessGroup> { new AccessGroup { AccessType = EnumEventAccessTypes.Target, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = _docWait.OnEvent.SourcePositionId } })
                 .ToList();
-            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, EnumEventTypes.MarkExecution, Model.EventDate, Model.Description, null, Model.EventId, _docWait.OnEvent.TaskId, 
-                _docWait.OnEvent.SourcePositionId, null, _docWait.OnEvent.TargetPositionId, null, evAcceesses);
-
+            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, EnumEventTypes.MarkExecution, Model.EventDate, Model.Description, null, Model.EventId, _docWait.OnEvent.TaskId, evAcceesses);
+            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
             var newWait = CommonDocumentUtilities.GetNewDocumentWait(_context, (int)EnumEntytiTypes.Document, _document.Id, newEvent);
-
             newWait.ParentId = _docWait.Id;
-
             _document.Waits = new List<InternalDocumentWait> { newWait };
 
-            _operationDb.AddDocumentWaits(_context, _document);
+            using (var transaction = Transactions.GetTransaction())
+            {
+                _operationDb.AddDocumentWaits(_context, _document);
+                Model.AddDocumentFiles.ForEach(x => { x.DocumentId = _document.Id; x.EventId = _document.Waits.Select(y => y.OnEventId).First(); });
+                _documentProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, _context, Model.AddDocumentFiles);
+                transaction.Complete();
+            }
             return _document.Id;
         }
 

@@ -971,9 +971,12 @@ namespace BL.Logic.AdminCore
             return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
         }
 
-        public bool VerifySubordination(IContext context, VerifySubordination model)
+        public bool VerifySubordination(IContext context, VerifySubordination model, bool isThrowException = false)
         {
-            return _adminDb.VerifySubordination(context, model);
+            var res = _adminDb.VerifySubordination(context, model);
+            if (!res && isThrowException)
+                throw new SubordinationHasBeenViolated();
+            return res;
         }
 
         #endregion`

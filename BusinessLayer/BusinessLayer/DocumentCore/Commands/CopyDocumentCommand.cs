@@ -15,12 +15,14 @@ namespace BL.Logic.DocumentCore.Commands
     {
 
         private readonly IDocumentsDbProcess _documentDb;
+        private readonly IDocumentOperationsDbProcess _operationDb;
         private readonly IFileStore _fStore;
         InternalDictionaryPositionExecutorForDocument _executorPosition;
 
-        public CopyDocumentCommand(IDocumentsDbProcess documentDb, IFileStore fStore)
+        public CopyDocumentCommand(IDocumentsDbProcess documentDb, IFileStore fStore, IDocumentOperationsDbProcess operationDb)
         {
             _documentDb = documentDb;
+            _operationDb = operationDb;
             _fStore = fStore;
         }
 
@@ -45,11 +47,11 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _adminProc.VerifyAccess(_context, CommandType);
             _document = _documentDb.CopyDocumentPrepare(_context, Model.DocumentId);
-
             if (_document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
+            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
             _executorPosition = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, _context.CurrentPositionId);
             if (_executorPosition?.ExecutorAgentId.HasValue ?? false)
             {
@@ -72,7 +74,7 @@ namespace BL.Logic.DocumentCore.Commands
             CommonDocumentUtilities.SetLastChange(_context, _document.RestrictedSendLists);
 
             _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, null, EnumEventTypes.AddNewDocument);
-            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, EnumAccessLevels.PersonallyAndIOAndReferents, Document.Events.First().Accesses);
+            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Document.Events.First().Accesses);
 
             // prepare file list in Document. It will save it with document in DB
             var toCopy = new Dictionary<InternalDocumentFile, InternalDocumentFile>();

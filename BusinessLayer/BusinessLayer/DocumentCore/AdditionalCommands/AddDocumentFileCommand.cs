@@ -131,8 +131,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                                 if (_document.IsRegistered.HasValue && !att.EventId.HasValue)
                                 {
                                     att.Event = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, att.DocumentId,
-                                        EnumEventTypes.AddDocumentFile, null, null, $"{att.File.FileName} v.{att.Version}", null, null,
-                                        att.Type != EnumFileTypes.Additional ? (int?)null : _document.ExecutorPositionId);
+                                        EnumEventTypes.AddDocumentFile, null, null, $"{att.File.FileName} v.{att.Version}");
                                 }
                                 res.Add(_operationDb.AddNewFileOrVersion(_context, att));
                                 var admContext = new AdminContext(_context);

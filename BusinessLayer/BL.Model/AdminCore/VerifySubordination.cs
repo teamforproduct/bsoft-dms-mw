@@ -19,7 +19,7 @@ namespace BL.Model.AdminCore
         /// <summary>
         /// ИД должностей, которым адресовано действие
         /// </summary>
-        public int TargetPosition { get; set; }
+        public List<int> TargetPosition { get; set; }
         /// <summary>
         /// Тип субординации действия
         /// </summary>
