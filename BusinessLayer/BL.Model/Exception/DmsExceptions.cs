@@ -50,12 +50,18 @@ namespace BL.Model.Exception
         public SettingValueIsInvalid(System.Exception ex) : base(ex) { }
     }
 
+    public class FilterRequired : DmsExceptions
+    {
+        public FilterRequired() : base() { }
+        public FilterRequired(System.Exception ex) : base(ex) { }
+    }
+
     public class ClientRequestIsNotFound : DmsExceptions
     {
         public ClientRequestIsNotFound() : base() { }
         public ClientRequestIsNotFound(System.Exception ex) : base(ex) { }
     }
-    
+
 
     #region [+] LicenceError ... 
 
@@ -149,7 +155,7 @@ namespace BL.Model.Exception
         public ClientIsNotFound() : base() { }
         public ClientIsNotFound(System.Exception ex) : base(ex) { }
     }
-
+    
     public class ClientCodeRequired : DmsExceptions
     {
         public ClientCodeRequired() : base() { }
