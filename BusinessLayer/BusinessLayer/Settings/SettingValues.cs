@@ -3,6 +3,8 @@ using BL.CrossCutting.Interfaces;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BL.Logic.Settings
 {
@@ -272,6 +274,13 @@ namespace BL.Logic.Settings
             var val = genSett.GetSetting<string>(EnumGeneralSettings.LocalHost);
             if (string.IsNullOrEmpty(val)) throw new SettingValueIsNotSet(EnumGeneralSettings.LocalHost.ToString());
             return val;
+        }
+
+        public List<string> GetSystemHosts()
+        {
+            var val = genSett.GetSetting<string>(EnumGeneralSettings.SystemHosts);
+            if (string.IsNullOrEmpty(val)) throw new SettingValueIsNotSet(EnumGeneralSettings.SystemHosts.ToString());
+            return val.Split(',').ToList();
         }
 
         public string GetAuthAddress() => GetMainHostProtocol() + "://" + GetAuthDomain() + "." + GetMainHost();
