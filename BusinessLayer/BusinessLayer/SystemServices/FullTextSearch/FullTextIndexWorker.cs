@@ -62,10 +62,11 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 var writer = new IndexWriter(directory, _cfg);
                 writer.Commit();
                 writer.Dispose();
+                _cfg = null;
             }
             _directory = FSDirectory.Open(new DirectoryInfo(dir));
             _analyzer = new StandardAnalyzer(Version.LUCENE_48);//CaseInsensitiveWhitespaceAnalyzer();
-            _indexReader = IndexReader.Open(_directory); // only searching, so read-only=true
+            _indexReader = DirectoryReader.Open(_directory);
             _searcher = new IndexSearcher(_indexReader);
         }
 
@@ -95,34 +96,28 @@ namespace BL.Logic.SystemServices.FullTextSearch
         public void AddNewItem(FullTextIndexItem item)
         {
             if (_writer == null) return;
+
             var doc = new Document();
 
             var docIdFld = new Field(FIELD_PARENT_ID, item.ParentObjectId.ToString(), new FieldType { NumericTypeValue = FieldType.NumericType.INT, Tokenized = true, Indexed = true, Stored = true });
-            //docIdFld.SetIntValue(item.ParentObjectId);
             doc.Add(docIdFld);
 
-            var typeParentFld = new Field(FIELD_PARENT_TYPE, item.ParentObjectType.ToString(), new FieldType { NumericTypeValue = FieldType.NumericType.INT, Tokenized = true, Indexed = true, Stored = true });
-            //typeParentFld.SetIntValue((int)item.ParentObjectType);
+            var typeParentFld = new Field(FIELD_PARENT_TYPE, ((int)item.ParentObjectType).ToString(), new FieldType { NumericTypeValue = FieldType.NumericType.INT, Tokenized = true, Indexed = true, Stored = true });
             doc.Add(typeParentFld);
 
-            var typeIdFld = new Field(FIELD_OBJECT_TYPE, item.ObjectType.ToString(), new FieldType { NumericTypeValue = FieldType.NumericType.INT, Tokenized = true, Indexed = true, Stored = true });
-            //typeIdFld.SetIntValue((int)item.ObjectType);
+            var typeIdFld = new Field(FIELD_OBJECT_TYPE, ((int)item.ObjectType).ToString(), new FieldType { NumericTypeValue = FieldType.NumericType.INT, Tokenized = true, Indexed = true, Stored = true });
             doc.Add(typeIdFld);
 
             var objIdFld = new Field(FIELD_OBJECT_ID, item.ObjectId.ToString(), new FieldType { NumericTypeValue = FieldType.NumericType.INT, Tokenized = true, Indexed = true, Stored = true });
-            //objIdFld.SetIntValue(item.ObjectId);
             doc.Add(objIdFld);
 
             var moduleIdFld = new Field(FIELD_MODULE_ID, item.ModuleId.ToString(), new FieldType { NumericTypeValue = FieldType.NumericType.INT, Tokenized = true, Indexed = true, Stored = true });
-            //moduleIdFld.SetIntValue(item.ModuleId);
             doc.Add(moduleIdFld);
 
             var featureIdFld = new Field(FIELD_FEATURE_ID, item.FeatureId.ToString(), new FieldType { NumericTypeValue = FieldType.NumericType.INT, Tokenized = true, Indexed = true, Stored = true });
-            //featureIdFld.SetIntValue(item.FeatureId);
             doc.Add(featureIdFld);
 
             var clientIdFld = new Field(FIELD_CLIENT_ID, item.ClientId.ToString(), new FieldType { NumericTypeValue = FieldType.NumericType.INT, Tokenized = true, Indexed = true, Stored = true });
-            //clientIdFld.SetIntValue(item.ClientId);
             doc.Add(clientIdFld);
 
             var objectText = (item.ObjectText ?? "") + item.ObjectTextAddDateTime.ListToString();
@@ -136,11 +131,9 @@ namespace BL.Logic.SystemServices.FullTextSearch
             doc.Add(new StringField(FIELD_FILTERS, item.Filter ?? "", Field.Store.YES));
 
             var dateFrom = new Field(FIELD_DATE_FROM_ID, (item.DateFrom.HasValue ? (int)item.DateFrom.Value.ToOADate() : 0).ToString(), new FieldType { NumericTypeValue = FieldType.NumericType.INT, Tokenized = true, Indexed = true, Stored = false });
-            //dateFrom.SetIntValue(item.DateFrom.HasValue ? (int)item.DateFrom.Value.ToOADate() : 0);
             doc.Add(dateFrom);
 
             var dateTo = new Field(FIELD_DATE_TO_ID, (item.DateTo.HasValue ? (int)item.DateTo.Value.ToOADate() : 0).ToString(), new FieldType { NumericTypeValue = FieldType.NumericType.INT, Tokenized = true, Indexed = true, Stored = false });
-            //dateTo.SetIntValue(item.DateTo.HasValue ? (int)item.DateTo.Value.ToOADate() : int.MaxValue);
             doc.Add(dateTo);
 
             _writer.AddDocument(doc);
@@ -155,16 +148,19 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         public void StartUpdate()
         {
+            var analyzer = new StandardAnalyzer(Version.LUCENE_48);
+            _cfg = new IndexWriterConfig(Version.LUCENE_48, analyzer);
             _writer = new IndexWriter(_directory, _cfg);
         }
 
         public void CommitChanges()
         {
-            //            _writer.Optimize();
+            if (_writer == null) return;
             _writer.Commit();
             _writer.Dispose();
             _writer = null;
-            _indexReader = IndexReader.Open(_directory);
+            _cfg = null;
+            _indexReader = DirectoryReader.Open(_directory);
             _searcher = new IndexSearcher(_indexReader);
         }
 
@@ -309,7 +305,6 @@ namespace BL.Logic.SystemServices.FullTextSearch
         {
             var clientQry = NumericRangeQuery.NewIntRange(FIELD_CLIENT_ID, clientId, clientId, true, true);
             _writer.DeleteDocuments(clientQry);
-            //_writer.Optimize();
             _writer.Commit();
         }
 
