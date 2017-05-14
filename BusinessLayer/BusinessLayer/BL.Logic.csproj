@@ -452,6 +452,9 @@
     <Compile Include="SystemServices\QueueWorker\QueueTask.cs" />
     <Compile Include="SystemServices\QueueWorker\QueueWorker.cs" />
     <Compile Include="SystemServices\QueueWorker\QueueWorkerService.cs" />
+    <Compile Include="SystemServices\TaskManagerService\ITaskManager.cs" />
+    <Compile Include="SystemServices\TaskManagerService\TaskManager.cs" />
+    <Compile Include="SystemServices\TaskManagerService\TaskSettings.cs" />
     <Compile Include="SystemServices\TempStorage\ITempStorageService.cs" />
     <Compile Include="SystemServices\TempStorage\TempStorageService.cs" />
     <Compile Include="TreeBuilder\Tree.cs" />
