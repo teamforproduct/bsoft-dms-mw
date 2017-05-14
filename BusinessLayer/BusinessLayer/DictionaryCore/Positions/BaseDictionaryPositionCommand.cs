@@ -1,5 +1,6 @@
 ﻿using BL.Logic.Common;
 using BL.Model.DictionaryCore.IncomingModel;
+using BL.Model.Exception;
 using System;
 
 namespace BL.Logic.DictionaryCore
@@ -28,6 +29,15 @@ namespace BL.Logic.DictionaryCore
             //{
             //    throw new DictionaryRecordNotUnique();
             //}
+
+            // Тонкий момент, проверяю не является ли сотрудник локальным администратором.
+            // Если не локальный значит, надеюсь, что глобальный и разрешаю создавать и изменять параметры всех должностей
+            var employeeDepartments = _adminService.GetInternalEmployeeDepartments(_context, _context.Employee.Id);
+
+            if (employeeDepartments != null)
+            {
+                if (!employeeDepartments.Contains(Model.DepartmentId)) throw new AccessIsDenied();
+            }
 
             return true;
         }
