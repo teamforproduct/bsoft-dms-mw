@@ -21,6 +21,7 @@ namespace BL.Logic.DictionaryCore
 
             Model.Name?.Trim();
 
+            // Если меняют параметры сущ. отдела
             if (TypeModelIs<ModifyDepartment>())
             {
                 // отдел нельзя подчинить сасому себе и (дочерним отделам)
@@ -28,6 +29,16 @@ namespace BL.Logic.DictionaryCore
                 {
                     throw new DictionarysdDepartmentNotBeSubordinated(Model.Name);
                 }
+
+                // Тонкий момент, проверяю не является ли сотрудник локальным администратором.
+                // Если не локальный значит, надеюсь, что глобальный и разрешаю курочить все
+                var employeeDepartments = _adminService.GetInternalEmployeeDepartments(_context, _context.Employee.Id);
+
+                if (employeeDepartments != null)
+                {
+                    if (!employeeDepartments.Contains(GetModel<ModifyDepartment>().Id)) throw new AccessIsDenied();
+                }
+
             }
 
             var filter = new FilterDictionaryDepartment
