@@ -22,6 +22,22 @@ namespace BL.Logic.DictionaryCore
 
             if (Model.StartDate > Model.EndDate) throw new DictionaryPositionExecutorIsInvalidPeriod();
 
+
+            // Тонкий момент, проверяю не является ли сотрудник локальным администратором.
+            // Если не локальный значит, надеюсь, что глобальный и разрешаю назначать сотрудников и все должности
+            var employeeDepartments = _adminService.GetInternalEmployeeDepartments(_context, _context.Employee.Id);
+
+            if (employeeDepartments != null)
+            {
+                var position = _dictDb.GetInternalPositions(_context, new FilterDictionaryPosition { IDs = new List<int> { Model.PositionId } }).FirstOrDefault();
+
+                if (position != null)
+                {
+                    if (!employeeDepartments.Contains(position.DepartmentId)) throw new AccessIsDenied();
+                }
+                
+            }
+
             FrontDictionaryPositionExecutor executor = null;
 
             var filter = new FilterDictionaryPositionExecutor
