@@ -39,14 +39,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentFile>))]
         public async Task<IHttpActionResult> PostGetList([FromBody]IncomingBase model)
         {
-            var request = HttpContext.Current.Request;
-            var appUrl = HttpRuntime.AppDomainAppVirtualPath;
+            //var request = HttpContext.Current.Request;
+            //var appUrl = HttpRuntime.AppDomainAppVirtualPath;
 
-            if (appUrl != "/")
-                appUrl = "/" + appUrl;
+            //if (appUrl != "/")
+            //    appUrl = "/" + appUrl;
 
-            var baseUrl = string.Format("{0}://{1}{2}", request.Url.Scheme, request.Url.Authority, appUrl);
-            baseUrl += ApiPrefix.V3;
+            //var baseUrl = string.Format("{0}://{1}{2}", request.Url.Scheme, request.Url.Authority, appUrl);
+            var baseUrl = $"/{ApiPrefix.V3}";
 
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {

@@ -18,18 +18,15 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="clientId"></param>
         /// <param name="fileType"></param>
         /// <param name="fileId"></param>
         /// <returns></returns>
         /// <exception cref="CannotAccessToFile"></exception>
         [HttpGet]
-        [Route("files/{clientId}/{fileType}/{fileId}")]
-        public async Task<ActionResult> GetFile(int clientId, int fileType, int fileId)
+        [Route("attachments/{fileType}/{fileId}")]
+        public async Task<ActionResult> GetFile(int fileType, int fileId)
         {
             var context = DmsResolver.Current.Get<UserContexts>().Get();
-
-            if (context.Client.Id!=clientId) throw new CannotAccessToFile();
 
             var fileSrv = DmsResolver.Current.Get<IFileService>();
             var item = await fileSrv.GetFile(context, (EnumDocumentFileType)fileType, fileId);
