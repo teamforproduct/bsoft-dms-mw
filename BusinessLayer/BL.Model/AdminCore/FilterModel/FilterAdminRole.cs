@@ -36,7 +36,7 @@ namespace BL.Model.AdminCore.FilterModel
         /// Роли не содержащие пермиссий
         /// </summary>
         [IgnoreDataMember]
-        public List<int> WithoutPermissions { get; set; }
+        public List<int> WithoutFeatures { get; set; }
 
         /// <summary>
         /// Список должностей

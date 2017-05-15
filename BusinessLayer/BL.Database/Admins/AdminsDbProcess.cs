@@ -653,12 +653,12 @@ namespace BL.Database.Admins
                     qry = qry.Where(filterContains);
                 }
 
-                if (filter.WithoutPermissions?.Count > 0)
+                if (filter.WithoutFeatures?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.New<AdminRolePermissions>(true);
 
-                    filterContains = filter.WithoutPermissions.Aggregate(filterContains,
-                        (current, value) => current.And(e => e.PermissionId != value).Expand());
+                    filterContains = filter.WithoutFeatures.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Permission.FeatureId != value).Expand());
 
                     qry = qry.Where(x => x.RolePermissions.AsQueryable().Any(filterContains));
                 }
@@ -780,9 +780,9 @@ namespace BL.Database.Admins
                         roleFilter.PositionIDs = filter.PositionIDs;
                     }
 
-                    if (filter.WithoutPermissions?.Count > 0)
+                    if (filter.WithoutFeatures?.Count > 0)
                     {
-                        roleFilter.WithoutPermissions = filter.WithoutPermissions;
+                        roleFilter.WithoutFeatures = filter.WithoutFeatures;
                     }
                 }
 

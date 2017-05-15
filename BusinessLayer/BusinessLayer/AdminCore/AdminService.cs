@@ -193,7 +193,7 @@ namespace BL.Logic.AdminCore
             {
                 if (filter == null) filter = new FilterAdminPositionRoleDIP();
 
-                filter.WithoutPermissions = new List<int> {
+                filter.WithoutFeatures = new List<int> {
                         DmsDbImportData.GetFeatureId(Modules.Department,Features.Admins ), //Добавление локальных администраторов, 
                         DmsDbImportData.GetFeatureId(Modules.Auditlog,Features.Info ), //Просмотр полной истории подключений,
                         DmsDbImportData.GetFeatureId(Modules.Position,Features.DocumentAccesses ), // Управление доступом к документу 
