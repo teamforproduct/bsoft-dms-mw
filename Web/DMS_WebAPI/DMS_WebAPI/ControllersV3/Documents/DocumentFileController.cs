@@ -59,9 +59,9 @@ namespace DMS_WebAPI.ControllersV3.Documents
                 var fileService = DmsResolver.Current.Get<IFileService>();
                 items.ForEach(x =>
                 {
-                    x.FileLink = fileService.GetFileUri(baseurl, context, EnumDocumentFileType.UserFile, x.Id);
-                    x.PdfFileLink = fileService.GetFileUri(baseurl, context, EnumDocumentFileType.PdfFile, x.Id);
-                    x.PreviewFileLink = fileService.GetFileUri(baseurl, context, EnumDocumentFileType.PdfPreview, x.Id);
+                    x.FileLink = fileService.GetFileUri(EnumDocumentFileType.UserFile, x.Id);
+                    x.PdfFileLink = fileService.GetFileUri(EnumDocumentFileType.PdfFile, x.Id);
+                    x.PreviewFileLink = fileService.GetFileUri(EnumDocumentFileType.PdfPreview, x.Id);
                 });
                 var res = new JsonResult(items, this);
                 res.Paging = model.Paging;
@@ -137,7 +137,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentFile, model, model.Select(x=>x.CurrentPositionId).FirstOrDefault());
+                var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentFile, model, model.Select(x => x.CurrentPositionId).FirstOrDefault());
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });

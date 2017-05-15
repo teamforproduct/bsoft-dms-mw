@@ -11,6 +11,7 @@
         public const string Agents = "Agents";
         public const string Assignments = "Assignments";
         public const string AuthLog = "AuthLog";
+        public const string Attachments = "Attachments";
         public const string Banks = "Banks";
         public const string ChangeLogin = "ChangeLogin";
         public const string ChangePassword = "ChangePassword";

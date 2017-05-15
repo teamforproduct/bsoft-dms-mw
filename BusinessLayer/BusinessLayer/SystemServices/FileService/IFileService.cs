@@ -7,7 +7,7 @@ namespace BL.Logic.SystemServices.FileService
 {
     public interface IFileService
     {
-        string GetFileUri(string serverUrl, IContext ctx, EnumDocumentFileType fileType, int id);
+        string GetFileUri(EnumDocumentFileType fileType, int id);
         Task<FrontDocumentFile> GetFile(IContext ctx, EnumDocumentFileType fileType, int id);
         string GetMimetype(string fileExt);
     }
