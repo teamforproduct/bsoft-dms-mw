@@ -26,11 +26,11 @@ using BL.Logic.Settings;
 using BL.Logic.SystemCore;
 using BL.Logic.SystemCore.Interfaces;
 using BL.Logic.SystemServices.AutoPlan;
-using BL.Logic.SystemServices.ClearTrashDocuments;
 using BL.Logic.SystemServices.FileService;
 using BL.Logic.SystemServices.FullTextSearch;
 using BL.Logic.SystemServices.MailWorker;
 using BL.Logic.SystemServices.QueueWorker;
+using BL.Logic.SystemServices.TaskManagerService;
 using BL.Logic.SystemServices.TempStorage;
 using BL.Model.Enums;
 using Ninject.Modules;
@@ -62,14 +62,15 @@ namespace BL.Logic.DependencyInjection
             Bind<IAdminService>().To<AdminService>().InSingletonScope();
             Bind<IClientService>().To<ClientService>().InSingletonScope();
             Bind<ILanguageService>().To<LanguageService>().InSingletonScope();
-            Bind<IMailSenderWorkerService>().To<MailSenderWorkerService>().InSingletonScope();
             Bind<IFullTextSearchService>().To<FullTextSearchService>().InSingletonScope();
-            Bind<IAutoPlanService>().To<AutoPlanService>().InSingletonScope();
             Bind<IQueueWorkerService>().To<QueueWorkerService>().InSingletonScope();
-            Bind<IClearTrashDocumentsService>().To<ClearTrashDocumentsService>().InSingletonScope();
             Bind<ITempStorageService>().To<TempStorageService>().InSingletonScope();
             Bind<ISystemService>().To<SystemService>().InSingletonScope();
             Bind<IFileService>().To<FileService>().InSingletonScope();
+            Bind<ICommonTaskInitializer>().To<CommonTaskInitializer>().InSingletonScope();
+            Bind<ITaskManager>().To<TaskManager>().InSingletonScope();
+            Bind<IAutoPlanService>().To<AutoPlanService>().InSingletonScope();
+            Bind<IMailSenderWorkerService>().To<MailSenderWorkerService>().InSingletonScope();
         }
 
         private void LoadDocumentModule()

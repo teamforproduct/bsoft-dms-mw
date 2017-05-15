@@ -415,8 +415,6 @@
     <Compile Include="DocumentCore\TemplateCommands\ModifyTemplateCommand.cs" />
     <Compile Include="DocumentCore\TemplateCommands\ModifyTemplateFileCommand.cs" />
     <Compile Include="DocumentCore\TemplateDocumentService.cs" />
-    <Compile Include="SystemServices\ClearTrashDocuments\ClearTrashDocumentsService.cs" />
-    <Compile Include="SystemServices\ClearTrashDocuments\IClearTrashDocumentsService.cs" />
     <Compile Include="SystemServices\AutoPlan\AutoPlanService.cs" />
     <Compile Include="SystemServices\AutoPlan\IAutoPlanService.cs" />
     <Compile Include="SystemServices\BaseSystemWorkerService.cs" />
@@ -452,6 +450,8 @@
     <Compile Include="SystemServices\QueueWorker\QueueTask.cs" />
     <Compile Include="SystemServices\QueueWorker\QueueWorker.cs" />
     <Compile Include="SystemServices\QueueWorker\QueueWorkerService.cs" />
+    <Compile Include="SystemServices\TaskManagerService\CommonTaskInitializer.cs" />
+    <Compile Include="SystemServices\TaskManagerService\ICommonTaskInitializer.cs" />
     <Compile Include="SystemServices\TaskManagerService\ITaskManager.cs" />
     <Compile Include="SystemServices\TaskManagerService\TaskManager.cs" />
     <Compile Include="SystemServices\TaskManagerService\TaskSettings.cs" />

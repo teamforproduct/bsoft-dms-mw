@@ -1,8 +1,6 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
-using BL.Logic.SystemServices.AutoPlan;
-using BL.Logic.SystemServices.ClearTrashDocuments;
 using BL.Logic.SystemServices.FullTextSearch;
 using BL.Logic.SystemServices.QueueWorker;
 using BL.Model.Enums;
@@ -14,6 +12,7 @@ using Owin;
 using System;
 using System.Collections.Generic;
 using System.Web;
+using BL.Logic.SystemServices.TaskManagerService;
 
 [assembly: OwinStartup(typeof(DMS_WebAPI.Startup))]
 
@@ -50,7 +49,7 @@ namespace DMS_WebAPI
             var dbProc = DmsResolver.Current.Get<WebAPIDbProcess>();
 
             var dbs = dbProc.GetServersByAdminContext(new FilterAdminServers { ServerTypes = new List<EnumDatabaseType> { EnumDatabaseType.SQLServer } });
-
+            var taskInit = DmsResolver.Current.Get<ICommonTaskInitializer>(); 
 
             FileLogger.AppendTextToFile("StartWorkers " + DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC", filePath);
 //#if !DEBUG
@@ -58,15 +57,6 @@ namespace DMS_WebAPI
             var queueWorker = DmsResolver.Current.Get<IQueueWorkerService>();
             queueWorker.Initialize(dbs);
 //#endif
-
-            //foreach (var srv in DmsResolver.Current.GetAll<ISystemWorkerService>())
-            //{
-            //    srv.Initialize(dbs);
-            //}
-
-            //var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-            //mailService.Initialize(dbs);
-
 
 #if !DEBUG
             //TODO
@@ -78,26 +68,23 @@ namespace DMS_WebAPI
 
 //#if !DEBUG
             //TODO
-            var autoPlanService = DmsResolver.Current.Get<IAutoPlanService>();
-            autoPlanService.Initialize(dbs);
+            taskInit.InitializeAutoPlanTask(dbs);
 //#endif
 
 #if !DEBUG
             //TODO
-            var clearTrashDocumentsService = DmsResolver.Current.Get<IClearTrashDocumentsService>();
-            clearTrashDocumentsService.Initialize(dbs);
+            taskInit.InitializeClearTrashTask(dbs);
+#endif
+
+#if !DEBUG
+            //TODO
+            taskInit.InitializeMailWorkerTask(dbs);
 #endif
 
 #if !DEBUG
             // Очистка устаревших пользовательских контекстов
-            var userContextService = DmsResolver.Current.Get<AuthWorkerService>();
-            userContextService.Initialize();
-#endif
+            WebCommonTaskInitializer.AddAuthWorker();
 
-#if !DEBUG
-            // Проверка лицензии
-            var licencesService = DmsResolver.Current.Get<LicencesWorkerService>();
-            licencesService.Initialize();
 #endif
 
             FileLogger.AppendTextToFile("STARTUP END!!! " + DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC\r\n", filePath);
