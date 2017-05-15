@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.DocumentCore.Interfaces;
+using BL.Logic.SystemServices.FileService;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
@@ -8,14 +9,12 @@ using BL.Model.Enums;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using Microsoft.Ajax.Utilities;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
-using BL.Logic.SystemServices.FileService;
-using Microsoft.Ajax.Utilities;
-using System.Linq;
 
 namespace DMS_WebAPI.ControllersV3.Documents
 {
@@ -56,13 +55,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
                 var baseurl = param.ToString();
                 var docProc = DmsResolver.Current.Get<IDocumentFileService>();
                 var items = docProc.GetDocumentFiles(context, model.Filter, model.Paging);
-                var fileService = DmsResolver.Current.Get<IFileService>();
-                items.ForEach(x =>
-                {
-                    x.FileLink = fileService.GetFileUri(EnumDocumentFileType.UserFile, x.Id);
-                    x.PdfFileLink = fileService.GetFileUri(EnumDocumentFileType.PdfFile, x.Id);
-                    x.PreviewFileLink = fileService.GetFileUri(EnumDocumentFileType.PdfPreview, x.Id);
-                });
                 var res = new JsonResult(items, this);
                 res.Paging = model.Paging;
                 return res;
