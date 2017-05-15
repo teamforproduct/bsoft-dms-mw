@@ -1,8 +1,5 @@
 ﻿using BL.Model.Common;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Web;
 
 namespace DMS_WebAPI.Utilities

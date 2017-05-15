@@ -16,7 +16,7 @@ namespace BL.CrossCutting.Context
         private const string _USER_NAME = "DmsAdmin";
         private const string _USER_PASS = "UkrPr0100_th3B3ssTC0nTry";
 
-        public AdminContext(DatabaseModelForAdminContext dbModel)
+        public AdminContext(DatabaseModelForAdminContext dbModel, bool createDbContext)
         {
             //TODO ClientId
             CurrentDB = new DatabaseModel
@@ -50,7 +50,15 @@ namespace BL.CrossCutting.Context
                 Id = dbModel.ClientId,
                 Code = dbModel.ClientCode
             };
-            DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
+            if (createDbContext)
+            {
+                DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
+            }
+            
+        }
+
+        public AdminContext(DatabaseModelForAdminContext dbModel) : this(dbModel,true)
+        {
         }
 
         public AdminContext(IContext ctx)

@@ -194,7 +194,7 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public IEnumerable<DatabaseModelForAdminContext> GetServersByAdminContext(FilterAdminServers filter)
+        public List<DatabaseModelForAdminContext> GetServersByAdminContext(FilterAdminServers filter)
         {
             using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
