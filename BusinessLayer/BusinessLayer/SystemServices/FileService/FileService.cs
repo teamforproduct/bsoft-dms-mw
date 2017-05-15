@@ -48,9 +48,10 @@ namespace BL.Logic.SystemServices.FileService
             }
         }
 
-        public string GetFileUri(string serverUrl, IContext ctx, EnumDocumentFileType fileType, int id)
+        public string GetFileUri(EnumDocumentFileType fileType, int id)
         {
-            return $"{serverUrl}Attachments/{(int) fileType}/{id}";
+            //{serverUrl}
+            return $"/Attachments/{(int) fileType}/{id}";
         }
 
         public Task<FrontDocumentFile> GetFile(IContext ctx, EnumDocumentFileType fileType, int id)
