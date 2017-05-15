@@ -19,18 +19,36 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="FileType"></param>
-        /// <param name="FileId"></param>
+        /// <param name="Id"></param>
         /// <returns></returns>
         /// <exception cref="CannotAccessToFile"></exception>
         [HttpGet]
-        [Route(Features.Attachments + "/{FileType}/{FileId}")]
-        public async Task<ActionResult> GetFile(EnumDocumentFileType FileType, int FileId)
+        [Route(Features.Attachments + "/UserFile/{Id}")]
+        public async Task<ActionResult> GetUserFile(int Id)
+        {
+            return await GetFile(EnumDocumentFileType.UserFile, Id);
+        }
+
+        [HttpGet]
+        [Route(Features.Attachments + "/PdfFile/{Id}")]
+        public async Task<ActionResult> GetPdfFile(int Id)
+        {
+            return await GetFile(EnumDocumentFileType.PdfFile, Id);
+        }
+
+        [HttpGet]
+        [Route(Features.Attachments + "/PdfPreview/{Id}")]
+        public async Task<ActionResult> GetPdfPreview(int Id)
+        {
+            return await GetFile(EnumDocumentFileType.PdfPreview, Id);
+        }
+
+        private async Task<ActionResult> GetFile(EnumDocumentFileType type, int Id)
         {
             var context = DmsResolver.Current.Get<UserContexts>().Get();
 
             var fileSrv = DmsResolver.Current.Get<IFileService>();
-            var item = await fileSrv.GetFile(context, (EnumDocumentFileType)FileType, FileId);
+            var item = await fileSrv.GetFile(context, EnumDocumentFileType.UserFile, Id);
 
             string contentType = fileSrv.GetMimetype(item.File.Extension);
 
@@ -43,7 +61,6 @@ namespace DMS_WebAPI.ControllersV3.System
             Response.AppendHeader("Content-Disposition", cd.ToString());
 
             return File(item.File.FileContent, contentType);
-
         }
     }
 }
