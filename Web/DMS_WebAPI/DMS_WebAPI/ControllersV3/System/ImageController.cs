@@ -48,7 +48,7 @@ namespace DMS_WebAPI.ControllersV3.System
             var context = DmsResolver.Current.Get<UserContexts>().Get();
 
             var fileSrv = DmsResolver.Current.Get<IFileService>();
-            var item = await fileSrv.GetFile(context, EnumDocumentFileType.UserFile, Id);
+            var item = await fileSrv.GetFile(context, type, Id);
 
             string contentType = fileSrv.GetMimetype(item.File.Extension);
 
