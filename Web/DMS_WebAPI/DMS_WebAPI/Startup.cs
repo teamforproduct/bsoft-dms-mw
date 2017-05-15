@@ -52,11 +52,11 @@ namespace DMS_WebAPI
             var taskInit = DmsResolver.Current.Get<ICommonTaskInitializer>(); 
 
             FileLogger.AppendTextToFile("StartWorkers " + DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC", filePath);
-//#if !DEBUG
+#if !DEBUG
             // Сервис бекграундной обработки задач/экшенов/команд. 
             var queueWorker = DmsResolver.Current.Get<IQueueWorkerService>();
             queueWorker.Initialize(dbs);
-//#endif
+#endif
 
 #if !DEBUG
             //TODO
@@ -66,10 +66,10 @@ namespace DMS_WebAPI
 #endif
 
 
-//#if !DEBUG
+#if !DEBUG
             //TODO
             taskInit.InitializeAutoPlanTask(dbs);
-//#endif
+#endif
 
 #if !DEBUG
             //TODO
