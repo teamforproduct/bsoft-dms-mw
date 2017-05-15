@@ -325,7 +325,7 @@ namespace BL.Database.Admins
                 var goodTargets = GetSubordinationsQuery(ctx, dbContext, new FilterAdminSubordination { TargetPositionIDs = model.TargetPosition, SourcePositionIDs = model.SourcePositions })
                     .Where(x=>x.SubordinationTypeId >= (int)model.SubordinationType)
                     .GroupBy(x=>x.TargetPositionId).Select(x=>x.Key).ToList();
-                res = model.TargetPosition.Any(x => !goodTargets.Contains(x));
+                res = model.TargetPosition.All(x => goodTargets.Contains(x));
                 transaction.Complete();
                 return res;
             }

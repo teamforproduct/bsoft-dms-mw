@@ -1,4 +1,7 @@
-﻿using BL.Model.Users;
+﻿using BL.Model.Extensions;
+using BL.Model.Users;
+using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
@@ -7,22 +10,26 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Модель для изменения признака принятия файла
     /// </summary>
-    public class ChangeWorkOutDocumentFile
+    public class ChangeAttributesDocumentFile
     {
         /// <summary>
-        /// ИД документа
+        /// ИД файла
         /// </summary>
         [Required]
-        public int DocumentId { get; set; }
+        public int FileId { get; set; }
         /// <summary>
-        /// Номер вложения в документе
+        /// Комментарий
         /// </summary>
-        [Required]
-        public int OrderInDocument { get; set; }
+        public string Description { get; set; }
         /// <summary>
-        /// Версия вложения
+        /// Дата события
         /// </summary>
-        [Required]
-        public int Version { get; set; }
+        public DateTime? EventDate { get { return _eventDate; } set { _eventDate = value.ToUTC(); } }
+        private DateTime? _eventDate;
+        /// <summary>
+        /// группы получателей
+        /// </summary>
+        public List<AccessGroup> TargetAccessGroups { get; set; }
+
     }
 }

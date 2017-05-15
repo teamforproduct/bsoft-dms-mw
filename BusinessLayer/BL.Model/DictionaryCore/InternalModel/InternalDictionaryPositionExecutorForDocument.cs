@@ -11,7 +11,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         /// <summary>
         /// ID
         /// </summary>
-        public int Id { get; set; }        
+        public int PositionId { get; set; }        
         /// <summary>
         /// Исполняющий обязанности, значения проставляются вертушкой
         /// </summary>

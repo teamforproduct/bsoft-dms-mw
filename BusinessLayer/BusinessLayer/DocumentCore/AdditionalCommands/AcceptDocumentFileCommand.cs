@@ -6,6 +6,7 @@ using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using System.Collections.Generic;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
@@ -22,15 +23,15 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _fStore = fStore;
         }
 
-        private ChangeWorkOutDocumentFile Model
+        private ChangeAttributesDocumentFile Model
         {
             get
             {
-                if (!(_param is ChangeWorkOutDocumentFile))
+                if (!(_param is ChangeAttributesDocumentFile))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ChangeWorkOutDocumentFile)_param;
+                return (ChangeAttributesDocumentFile)_param;
             }
         }
 
@@ -67,7 +68,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override bool CanExecute()
         {
             //TODO potential two user could add same new version in same time. Probably need to implement CheckOut flag in future
-            _document = _operationDb.ModifyDocumentFilePrepare(_context, Model.DocumentId, Model.OrderInDocument, Model.Version);
+            _document = _operationDb.ModifyDocumentFilePrepare(_context, Model.FileId);
             if (_document == null)
             {
                 throw new UserHasNoAccessToDocument();
@@ -96,9 +97,10 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _file.IsWorkedOut = true;
             _file.IsMainVersion = true;
             CommonDocumentUtilities.SetLastChange(_context, _file);
-            //TODO ADD TARGET!!!
-            _file.Event = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _file.DocumentId, EnumEventTypes.AcceptDocumentFile, null, _file.File.FileName);
-            _operationDb.UpdateFileOrVersion(_context, _file);
+            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _file.DocumentId, EnumEventTypes.AcceptDocumentFile, Model.EventDate, Model.Description, null, _file.EventId, null, Model.TargetAccessGroups);
+            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
+            _file.Event = newEvent;
+            _operationDb.UpdateFileOrVersion(_context, _document);
             return _file.Id;
         }
     }

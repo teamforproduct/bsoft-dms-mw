@@ -185,7 +185,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Files + "/AcceptVersion")]
-        public async Task<IHttpActionResult> AcceptVersion([FromBody]ChangeWorkOutDocumentFile model)
+        public async Task<IHttpActionResult> AcceptVersion([FromBody]ChangeAttributesDocumentFile model)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
@@ -202,7 +202,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Files + "/AcceptMainVersion")]
-        public async Task<IHttpActionResult> AcceptMainVersion([FromBody]ChangeWorkOutDocumentFile model)
+        public async Task<IHttpActionResult> AcceptMainVersion([FromBody]ChangeAttributesDocumentFile model)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
@@ -219,7 +219,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Files + "/RejectVersion")]
-        public async Task<IHttpActionResult> RejectVersion([FromBody]ChangeWorkOutDocumentFile model)
+        public async Task<IHttpActionResult> RejectVersion([FromBody]ChangeAttributesDocumentFile model)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {

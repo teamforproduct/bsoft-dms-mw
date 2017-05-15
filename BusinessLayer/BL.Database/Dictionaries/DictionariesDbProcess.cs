@@ -4533,7 +4533,7 @@ namespace BL.Database.Dictionaries
                 res = qry.Where(x => x.Id == id)
                     .Select(x => new InternalDictionaryPositionExecutorForDocument
                     {
-                        Id = id,
+                        PositionId = id,
                         ExecutorAgentId = x.ExecutorAgentId,
                         ExecutorTypeId = x.PositionExecutorTypeId,
                         MainExecutorAgentId = x.MainExecutorAgentId

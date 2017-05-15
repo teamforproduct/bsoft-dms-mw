@@ -51,7 +51,7 @@ namespace BL.Model.DocumentCore.InternalModel
         /// Признак, изменялся ли файл в хранищие извне
         /// </summary>
         public bool WasChangedExternal { get; set; }
-
+        public int? SourcePositionId { get; set; }
         public int? ExecutorPositionId { get; set; }
         public int ExecutorPositionExecutorAgentId { get; set; }
         public int? ExecutorPositionExecutorTypeId { get; set; }

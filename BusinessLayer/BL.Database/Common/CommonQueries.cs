@@ -84,31 +84,38 @@ namespace BL.Database.Common
             var files = qry.GroupBy(x => x.EventId).Select(x => new
             {
                 EventId = x.Key,
-                Files = x.OrderByDescending(y => y.LastChangeDate).Join(dbContext.DictionaryAgentsSet, o => o.LastChangeUserId, i => i.Id, (file, agent) => new FrontDocumentFile
+                Files = x.OrderByDescending(y => y.LastChangeDate)
+                    .Join(dbContext.DictionaryAgentsSet, o => o.LastChangeUserId, i => i.Id, 
+                            (file, agent) => new { file, agent, source = file.Event.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source && file.ExecutorPositionId != y.PositionId) })
+                    .Select(y=>new FrontDocumentFile
                                 {
-                                    Id = file.Id,
-                                    Date = file.Date,
-                                    DocumentId = file.DocumentId,
-                                    Type = (EnumFileTypes)file.TypeId,
-                                    TypeName = file.Type.Code,
-                                    IsMainVersion = file.IsMainVersion,
-                                    IsDeleted = file.IsDeleted,
-                                    IsWorkedOut = file.IsWorkedOut ?? true,
-                                    Description = file.Description,
-                                    LastChangeDate = file.LastChangeDate,
-                                    LastChangeUserId = file.LastChangeUserId,
-                                    LastChangeUserName = agent.Name,
-                                    OrderInDocument = file.OrderNumber,
-                                    Version = file.Version,
-                                    ExecutorPositionName = file.ExecutorPosition.Name,
-                                    ExecutorPositionExecutorAgentName = file.ExecutorPositionExecutorAgent.Name + (file.ExecutorPositionExecutorType.Suffix != null ? " (" + file.ExecutorPositionExecutorType.Suffix + ")" : null),
-                                    EventId = file.EventId,
+                                    Id = y.file.Id,
+                                    Date = y.file.Date,
+                                    DocumentId = y.file.DocumentId,
+                                    Type = (EnumFileTypes)y.file.TypeId,
+                                    TypeName = y.file.Type.Code,
+                                    IsMainVersion = y.file.IsMainVersion,
+                                    IsDeleted = y.file.IsDeleted,
+                                    IsWorkedOut = y.file.IsWorkedOut ?? true,
+                                    Description = y.file.Description,
+                                    LastChangeDate = y.file.LastChangeDate,
+                                    LastChangeUserId = y.file.LastChangeUserId,
+                                    LastChangeUserName = y.agent.Name,
+                                    OrderInDocument = y.file.OrderNumber,
+                                    Version = y.file.Version,
+                                    SourcePositionId = y.source.PositionId,
+                                    SourcePositionName = y.source.Position.Name,
+                                    SourcePositionExecutorAgentName = y.source.Agent.Name + (y.source.PositionExecutorType.Suffix != null ? " (" + y.source.PositionExecutorType.Suffix + ")" : null),
+                                    ExecutorPositionId = y.file.ExecutorPositionId,
+                                    ExecutorPositionName = y.file.ExecutorPosition.Name,
+                                    ExecutorPositionExecutorAgentName = y.file.ExecutorPositionExecutorAgent.Name + (y.file.ExecutorPositionExecutorType.Suffix != null ? " (" + y.file.ExecutorPositionExecutorType.Suffix + ")" : null),
+                                    EventId = y.file.EventId,
                                     File = new BaseFile
                                     {
-                                        Extension = file.Extension,
-                                        FileType = file.FileType,
-                                        FileSize = file.FileSize,
-                                        Name = file.Name,
+                                        Extension = y.file.Extension,
+                                        FileType = y.file.FileType,
+                                        FileSize = y.file.FileSize,
+                                        Name = y.file.Name,
                                     }
                                 }
                 ).ToList(),

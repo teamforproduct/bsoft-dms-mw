@@ -35,6 +35,11 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// </summary>
         public string Description { get; set; }
         /// <summary>
+        /// ИД должности ответсвенного за файл
+        /// </summary>
+        [IgnoreDataMember]
+        public int? ExecutorPositionId { get; set; }        
+        /// <summary>
         /// ИД события к которому привязывать файл
         /// </summary>
         [IgnoreDataMember]

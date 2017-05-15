@@ -584,7 +584,7 @@ namespace BL.Logic.Common
             SetLastChange(context, res);
             return res;
         }
-        public static InternalDocumentFile GetNewDocumentFile(IContext context, int entityTypeId, int documentExecutorPositionId, AddDocumentFile model, InternalDictionaryPositionExecutorForDocument executorPositionExecutor)
+        public static InternalDocumentFile GetNewDocumentFile(IContext context, int entityTypeId, AddDocumentFile model, InternalDictionaryPositionExecutorForDocument executorPositionExecutor)
         {
             var res = new InternalDocumentFile
             {
@@ -601,7 +601,7 @@ namespace BL.Logic.Common
                 Description = model.Description,
                 IsWorkedOut = (model.IsMainVersion ?? false),
                 WasChangedExternal = false,
-                ExecutorPositionId = context.CurrentPositionId,
+                ExecutorPositionId = executorPositionExecutor.PositionId,
                 ExecutorPositionExecutorAgentId = executorPositionExecutor.ExecutorAgentId.Value,
                 ExecutorPositionExecutorTypeId = executorPositionExecutor.ExecutorTypeId,
             };
@@ -981,7 +981,7 @@ namespace BL.Logic.Common
         public static bool VerifyAccessesByRestrictedSendLists(IContext ctx, IEnumerable<InternalDocumentRestrictedSendList> restrList, IEnumerable<InternalDocumentEventAccess> accesses, bool isThrowException = false)
         {
             var res = ((restrList?.Any() ?? false)
-                && accesses.Where(x => x.PositionId.HasValue).Any(x => !restrList.Where(y => y.PositionId.HasValue).Select(y => y.PositionId.Value).Contains(x.PositionId.Value)));
+                && accesses.Where(x => x.PositionId.HasValue).All(x => restrList.Where(y => y.PositionId.HasValue).Select(y => y.PositionId.Value).Contains(x.PositionId.Value)));
             if (!res && isThrowException)
                 throw new DocumentSendListNotFoundInDocumentRestrictedSendList();
             return res;
