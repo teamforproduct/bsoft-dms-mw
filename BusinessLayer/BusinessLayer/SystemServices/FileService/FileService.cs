@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.DocumentCore.FrontModel;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.SystemServices.FileService
 {
@@ -51,7 +52,7 @@ namespace BL.Logic.SystemServices.FileService
         public string GetFileUri(EnumDocumentFileType fileType, int id)
         {
             //{serverUrl}
-            return $"/Attachments/{(int) fileType}/{id}";
+            return $"{Modules.Documents}/{Features.Attachments}/{(int) fileType}/{id}";
         }
 
         public Task<FrontDocumentFile> GetFile(IContext ctx, EnumDocumentFileType fileType, int id)
