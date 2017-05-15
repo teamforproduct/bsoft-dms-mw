@@ -21,6 +21,6 @@
         /// <summary>
         /// User profile image
         /// </summary>
-        Avatar = 3
+        //Avatar = 3
     }
 }

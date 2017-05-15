@@ -5,6 +5,7 @@ using BL.Logic.SystemServices.FileService;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using DMS_WebAPI.Utilities;
+using BL.Model.SystemCore;
 
 namespace DMS_WebAPI.ControllersV3.System
 {
@@ -12,7 +13,7 @@ namespace DMS_WebAPI.ControllersV3.System
     /// 
     /// </summary>
     [Authorize]
-    [RoutePrefix("api/v3")]
+    [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
     public class ImageController : Controller
     {
         /// <summary>
@@ -23,8 +24,8 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <returns></returns>
         /// <exception cref="CannotAccessToFile"></exception>
         [HttpGet]
-        [Route("Attachments/{FileType}/{FileId}")]
-        public async Task<ActionResult> GetFile(int FileType, int FileId)
+        [Route(Features.Attachments + "/{FileType}/{FileId}")]
+        public async Task<ActionResult> GetFile(EnumDocumentFileType FileType, int FileId)
         {
             var context = DmsResolver.Current.Get<UserContexts>().Get();
 
