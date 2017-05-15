@@ -323,8 +323,8 @@ namespace BL.Database.Admins
             {
                 var dbContext = ctx.DbContext as DmsContext;
                 var goodTargets = GetSubordinationsQuery(ctx, dbContext, new FilterAdminSubordination { TargetPositionIDs = model.TargetPosition, SourcePositionIDs = model.SourcePositions })
-                    .Where(x=>x.SubordinationTypeId >= (int)model.SubordinationType)
-                    .GroupBy(x=>x.TargetPositionId).Select(x=>x.Key).ToList();
+                    .Where(x => x.SubordinationTypeId >= (int)model.SubordinationType)
+                    .GroupBy(x => x.TargetPositionId).Select(x => x.Key).ToList();
                 res = model.TargetPosition.Any(x => !goodTargets.Contains(x));
                 transaction.Complete();
                 return res;
@@ -653,6 +653,16 @@ namespace BL.Database.Admins
                     qry = qry.Where(filterContains);
                 }
 
+                if (filter.WithoutPermissions?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.New<AdminRolePermissions>(true);
+
+                    filterContains = filter.WithoutPermissions.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.PermissionId != value).Expand());
+
+                    qry = qry.Where(x => x.RolePermissions.Any(filterContains));
+                }
+
             }
 
             return qry;
@@ -763,9 +773,17 @@ namespace BL.Database.Admins
             {
                 var roleFilter = new FilterAdminRole();
 
-                if (filter.IsChecked ?? false)
+                if (filter != null)
                 {
-                    roleFilter.PositionIDs = filter.PositionIDs;
+                    if (filter.IsChecked ?? false)
+                    {
+                        roleFilter.PositionIDs = filter.PositionIDs;
+                    }
+
+                    if (filter.WithoutPermissions?.Count > 0)
+                    {
+                        roleFilter.WithoutPermissions = filter.WithoutPermissions;
+                    }
                 }
 
 

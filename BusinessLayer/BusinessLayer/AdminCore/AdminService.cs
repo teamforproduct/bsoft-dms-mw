@@ -185,6 +185,22 @@ namespace BL.Logic.AdminCore
         #region [+] PositionRoles ...
         public IEnumerable<FrontAdminPositionRole> GetPositionRolesDIP(IContext context, FilterAdminPositionRoleDIP filter)
         {
+            // Тонкий момент, проверяю не является ли сотрудник локальным администратором.
+            // Если не локальный значит, надеюсь, что глобальный и разрешаю давать все роли для должности
+            var employeeDepartments = GetInternalEmployeeDepartments(context, context.Employee.Id);
+
+            if (employeeDepartments != null)
+            {
+                if (filter == null) filter = new FilterAdminPositionRoleDIP();
+
+                filter.WithoutPermissions = new List<int> {
+                        DmsDbImportData.GetFeatureId(Modules.Department,Features.Admins ), //Добавление локальных администраторов, 
+                        DmsDbImportData.GetFeatureId(Modules.Auditlog,Features.Info ), //Просмотр полной истории подключений,
+                        DmsDbImportData.GetFeatureId(Modules.Position,Features.DocumentAccesses ), // Управление доступом к документу 
+                    };
+
+            }
+
             return _adminDb.GetPositionRolesDIP(context, filter);
         }
 

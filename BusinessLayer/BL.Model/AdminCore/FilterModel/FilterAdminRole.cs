@@ -12,7 +12,7 @@ namespace BL.Model.AdminCore.FilterModel
     /// <summary>
     /// Фильтры FilterAdminRole
     /// </summary>
-    public class FilterAdminRole: BaseFilterName
+    public class FilterAdminRole : BaseFilterName
     {
 
         /// <summary>
@@ -30,6 +30,13 @@ namespace BL.Model.AdminCore.FilterModel
         /// </summary>
         [IgnoreDataMember]
         public List<int> RoleTypeIDs { get; set; }
+
+
+        /// <summary>
+        /// Роли не содержащие пермиссий
+        /// </summary>
+        [IgnoreDataMember]
+        public List<int> WithoutPermissions { get; set; }
 
         /// <summary>
         /// Список должностей
