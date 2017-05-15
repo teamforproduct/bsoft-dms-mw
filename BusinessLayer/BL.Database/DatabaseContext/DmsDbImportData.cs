@@ -20,7 +20,7 @@ namespace BL.Database.DatabaseContext
 
         private static string GetLabel(string module, string item) => "##l@" + module.Trim() + ":" + item.Trim() + "@l##";
         private static int GetConcatId(params int[] arr) => Convert.ToInt32(string.Join("", arr));
-        private static int GetFeatureId(string module, string feature) => GetConcatId(Modules.GetId(module), Features.GetId(feature));
+        public static int GetFeatureId(string module, string feature) => GetConcatId(Modules.GetId(module), Features.GetId(feature));
         public static int GetPermissionId(string module, string feature, EnumAccessTypes type) => GetConcatId(Modules.GetId(module), Features.GetId(feature), type.GetHashCode());
 
         public static List<SystemModules> GetSystemModules() => systemModules;
