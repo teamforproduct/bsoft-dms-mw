@@ -660,7 +660,7 @@ namespace BL.Database.Admins
                     filterContains = filter.WithoutFeatures.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Permission.FeatureId != value).Expand());
 
-                    qry = qry.Where(x => x.RolePermissions.AsQueryable().Any(filterContains));
+                    qry = qry.Where(x => x.RolePermissions.AsQueryable().All(filterContains));
                 }
 
             }
