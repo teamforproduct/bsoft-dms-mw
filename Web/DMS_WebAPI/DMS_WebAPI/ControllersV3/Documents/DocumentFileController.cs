@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.DocumentCore.Interfaces;
+using BL.Logic.SystemServices.FileService;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.DocumentCore.Filters;
 using BL.Model.DocumentCore.FrontModel;
@@ -8,14 +9,12 @@ using BL.Model.Enums;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using Microsoft.Ajax.Utilities;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
-using BL.Logic.SystemServices.FileService;
-using Microsoft.Ajax.Utilities;
-using System.Linq;
 
 namespace DMS_WebAPI.ControllersV3.Documents
 {
@@ -39,14 +38,14 @@ namespace DMS_WebAPI.ControllersV3.Documents
         [ResponseType(typeof(List<FrontDocumentFile>))]
         public async Task<IHttpActionResult> PostGetList([FromBody]IncomingBase model)
         {
-            var request = HttpContext.Current.Request;
-            var appUrl = HttpRuntime.AppDomainAppVirtualPath;
+            //var request = HttpContext.Current.Request;
+            //var appUrl = HttpRuntime.AppDomainAppVirtualPath;
 
-            if (appUrl != "/")
-                appUrl = "/" + appUrl;
+            //if (appUrl != "/")
+            //    appUrl = "/" + appUrl;
 
-            var baseUrl = string.Format("{0}://{1}{2}", request.Url.Scheme, request.Url.Authority, appUrl);
-            baseUrl += ApiPrefix.V3;
+            //var baseUrl = string.Format("{0}://{1}{2}", request.Url.Scheme, request.Url.Authority, appUrl);
+            var baseUrl = $"/{ApiPrefix.V3}";
 
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
@@ -56,13 +55,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
                 var baseurl = param.ToString();
                 var docProc = DmsResolver.Current.Get<IDocumentFileService>();
                 var items = docProc.GetDocumentFiles(context, model.Filter, model.Paging);
-                var fileService = DmsResolver.Current.Get<IFileService>();
-                items.ForEach(x =>
-                {
-                    x.FileLink = fileService.GetFileUri(baseurl, context, EnumDocumentFileType.UserFile, x.Id);
-                    x.PdfFileLink = fileService.GetFileUri(baseurl, context, EnumDocumentFileType.PdfFile, x.Id);
-                    x.PreviewFileLink = fileService.GetFileUri(baseurl, context, EnumDocumentFileType.PdfPreview, x.Id);
-                });
                 var res = new JsonResult(items, this);
                 res.Paging = model.Paging;
                 return res;
@@ -137,7 +129,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentFile, model, model.Select(x=>x.CurrentPositionId).FirstOrDefault());
+                var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentFile, model, model.Select(x => x.CurrentPositionId).FirstOrDefault());
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });

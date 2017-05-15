@@ -15,7 +15,7 @@ namespace DMS_WebAPI.Utilities
     /// <summary>
     /// 
     /// </summary>
-    public class WebApiController:ApiController
+    public class WebApiController : ApiController
     {
         /// <summary>
         /// 
@@ -27,9 +27,9 @@ namespace DMS_WebAPI.Utilities
         /// <returns></returns>
         public Task<IHttpActionResult> SafeExecuteAsync(ModelStateDictionary state, Func<IContext, object, IHttpActionResult> action, object addittionalParameters = null)
         {
-//            try
+            //            try
             {
-                if (state !=null && !state.IsValid)
+                if (state != null && !state.IsValid)
                 {
                     return Task.Factory.StartNew(() => PrepareResponse("Incoming model not valid. ModelState: " + state, (int)HttpStatusCode.BadRequest));
                 }

@@ -556,12 +556,21 @@ namespace BL.Logic.DictionaryCore
         #region [+] DictionaryPositions ...
         public FrontDictionaryPosition GetDictionaryPosition(IContext context, int id)
         {
-            return _dictDb.GetPositions(context, new FilterDictionaryPosition { IDs = new List<int> { id } }).FirstOrDefault();
-            //return _dictDb.GetPosition(context, id);
+            return GetDictionaryPositions(context, new FilterDictionaryPosition { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
         public IEnumerable<FrontDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter)
         {
+            // Тонкий момент, проверяю не является ли сотрудник локальным администратором.
+            // Если не локальный значит, надеюсь, что глобальный и разрешаю создавать и изменять параметры всех должностей
+            var adminService = DmsResolver.Current.Get<IAdminService>();
+            var employeeDepartments = adminService.GetInternalEmployeeDepartments(context, context.Employee.Id);
+
+            if (employeeDepartments != null)
+            {
+                if (filter == null) filter = new FilterDictionaryPosition();
+                filter.DepartmentIDs = employeeDepartments;
+            }
 
             return _dictDb.GetPositions(context, filter);
         }
