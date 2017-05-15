@@ -58,7 +58,7 @@ namespace BL.Logic.SystemServices.TaskManagerService
                     {
                         try
                         {
-                            autoPlan.AutoPlanTask(context);
+                            autoPlan.AutoPlanTask(admCtx);
                         }
                         catch (Exception ex)
                         {
@@ -66,7 +66,7 @@ namespace BL.Logic.SystemServices.TaskManagerService
                         }
                     });
 
-                    workerSrv.AddNewTask(ctx, wrkUnit);
+                    workerSrv.AddNewTask(admCtx, wrkUnit);
                 });
             }
         }
@@ -111,10 +111,10 @@ namespace BL.Logic.SystemServices.TaskManagerService
                     var docFileDb = DmsResolver.Current.Get<IDocumentFileDbProcess>();
                     var docOperDb = DmsResolver.Current.Get<IDocumentOperationsDbProcess>();
                     var fileStore = DmsResolver.Current.Get<IFileStore>();
-                    var timeForClearTrashDocuments = _settingValues.GetClearTrashDocumentsTimeoutMinuteForClear(context);
                     var logger = DmsResolver.Current.Get<ILogger>();
 
                     context.DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel",context.CurrentDB));
+                    var timeForClearTrashDocuments = _settingValues.GetClearTrashDocumentsTimeoutMinuteForClear(context);
                     try
                     {
                         docOperDb.ModifyDocumentAccessesStatistics(context);

@@ -87,7 +87,6 @@ namespace DMS_WebAPI
 
 #endif
 
-
             FileLogger.AppendTextToFile("STARTUP END!!! " + DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC\r\n", filePath);
         }
     }
