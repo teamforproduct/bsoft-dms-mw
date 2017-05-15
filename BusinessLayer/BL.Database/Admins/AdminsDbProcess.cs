@@ -797,7 +797,7 @@ namespace BL.Database.Admins
                     RoleId = x.Id,
                     RoleName = x.Name,
                     IsChecked = x.PositionRoles.Any(y => y.RoleId == x.Id && filter.PositionIDs.Contains(y.PositionId)),
-                    IsDefault = x.PositionRoles.Any(y => y.RoleId == x.Id && y.Role.RoleTypeId.HasValue),
+                    IsDefault = x.RoleTypeId.HasValue,
                 }).ToList();
 
                 transaction.Complete();
