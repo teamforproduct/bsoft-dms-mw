@@ -564,7 +564,7 @@ namespace BL.Database.Documents
                                 new FilterDocumentTag
                                 {
                                     DocumentId = docs.Select(x => x.Id).ToList(),
-                                    CurrentPositionsId = context.CurrentPositionsIdList
+                                    //CurrentPositionsId = context.CurrentPositionsIdList
                                 }),
                             d => d.Id,
                             t => t.DocumentId,
@@ -695,7 +695,7 @@ namespace BL.Database.Documents
                     (context, new FilterDictionaryPosition { DocumentIDs = docIds });
 
                 res.DocumentTags = GetDocumentTags(context,                                                //TODO DEL!!!!
-                    new FilterDocumentTag { DocumentId = docIds, CurrentPositionsId = context.CurrentPositionsIdList });
+                    new FilterDocumentTag { DocumentId = new List<int> { res.Id }/*, CurrentPositionsId = context.CurrentPositionsIdList*/ });
                 res.Properties = CommonQueries.GetPropertyValues(context,
                     new FilterPropertyValue
                     {
