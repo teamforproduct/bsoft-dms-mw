@@ -249,6 +249,34 @@ namespace DMS_WebAPI.ControllersV3.Lists
         }
 
         /// <summary>
+        /// Организации
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <param name="paging"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.Organisations)]
+        [ResponseType(typeof(List<AutocompleteItem>))]
+        public async Task<IHttpActionResult> GetList([FromUri] FilterDictionaryAgentOrg filter, [FromUri]UIPaging paging)
+        {
+            var mf = new ModuleFeatureModel
+            {
+                ModuleName = ApiPrefix.CurrentModule(),
+                FeatureName = ApiPrefix.CurrentFeature()
+            };
+            return await SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var currMf = (ModuleFeatureModel)param;
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                var tmpItems = tmpService.GetShortListAgentOrgs(context, filter, paging);
+                var metaData = new { FavouriteIDs = tmpService.GetFavouriteList(context, tmpItems, currMf.ModuleName, currMf.FeatureName) };
+                var res = new JsonResult(tmpItems, metaData, this);
+                res.Paging = paging;
+                return res;
+            }, mf);
+        }
+
+        /// <summary>
         /// Физические лица
         /// </summary>
         /// <param name="filter"></param>
