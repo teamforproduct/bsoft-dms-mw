@@ -59,9 +59,9 @@ namespace DMS_WebAPI.ControllersV3.Documents
                 var fileService = DmsResolver.Current.Get<IFileService>();
                 items.ForEach(x =>
                 {
-                    x.FileLink = fileService.GetFileUri(apipreffix, Modules.Documents, Features.Attachments, EnumDocumentFileType.UserFile.ToString(), x.Id);
-                    x.PdfFileLink = fileService.GetFileUri(apipreffix, Modules.Documents, Features.Attachments, EnumDocumentFileType.PdfFile.ToString(), x.Id);
-                    x.PreviewFileLink = fileService.GetFileUri(apipreffix, Modules.Documents, Features.Attachments, EnumDocumentFileType.PdfPreview.ToString(), x.Id);
+                    x.FileLink = fileService.GetFileUri(apipreffix, Modules.Documents, Features.Files, "File", x.Id);
+                    x.PdfFileLink = fileService.GetFileUri(apipreffix, Modules.Documents, Features.Files, "Pdf", x.Id);
+                    x.PreviewFileLink = fileService.GetFileUri(apipreffix, Modules.Documents, Features.Files, "Preview", x.Id);
                 });
 
                 var res = new JsonResult(items, this);
@@ -89,43 +89,43 @@ namespace DMS_WebAPI.ControllersV3.Documents
             });
         }
 
-        /// <summary>
-        /// Возвращает файл по ИД 
-        /// </summary>
-        /// <param name="Id">ИД файла</param>
-        /// <returns>Событие</returns>
-        [HttpGet]
-        [Route(Features.Files + "/{Id:int}/Pdf")]
-        [ResponseType(typeof(FrontDocumentFile))]
-        public async Task<IHttpActionResult> GetPdf(int Id)
-        {
-            return await SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                var docProc = DmsResolver.Current.Get<IDocumentFileService>();
-                var item = docProc.GetUserFilePdf(context, Id);
-                var res = new JsonResult(item, this);
-                return res;
-            });
-        }
+        ///// <summary>
+        ///// Возвращает файл по ИД 
+        ///// </summary>
+        ///// <param name="Id">ИД файла</param>
+        ///// <returns>Событие</returns>
+        //[HttpGet]
+        //[Route(Features.Files + "/{Id:int}/Pdf")]
+        //[ResponseType(typeof(FrontDocumentFile))]
+        //public async Task<IHttpActionResult> GetPdf(int Id)
+        //{
+        //    return await SafeExecuteAsync(ModelState, (context, param) =>
+        //    {
+        //        var docProc = DmsResolver.Current.Get<IDocumentFileService>();
+        //        var item = docProc.GetUserFilePdf(context, Id);
+        //        var res = new JsonResult(item, this);
+        //        return res;
+        //    });
+        //}
 
-        /// <summary>
-        /// Возвращает файл по ИД 
-        /// </summary>
-        /// <param name="Id">ИД файла</param>
-        /// <returns>Событие</returns>
-        [HttpGet]
-        [Route(Features.Files + "/{Id:int}/Preview")]
-        [ResponseType(typeof(FrontDocumentFile))]
-        public async Task<IHttpActionResult> GetPreview(int Id)
-        {
-            return await SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                var docProc = DmsResolver.Current.Get<IDocumentFileService>();
-                var item = docProc.GetUserFilePreview(context, Id);
-                var res = new JsonResult(item, this);
-                return res;
-            });
-        }
+        ///// <summary>
+        ///// Возвращает файл по ИД 
+        ///// </summary>
+        ///// <param name="Id">ИД файла</param>
+        ///// <returns>Событие</returns>
+        //[HttpGet]
+        //[Route(Features.Files + "/{Id:int}/Preview")]
+        //[ResponseType(typeof(FrontDocumentFile))]
+        //public async Task<IHttpActionResult> GetPreview(int Id)
+        //{
+        //    return await SafeExecuteAsync(ModelState, (context, param) =>
+        //    {
+        //        var docProc = DmsResolver.Current.Get<IDocumentFileService>();
+        //        var item = docProc.GetUserFilePreview(context, Id);
+        //        var res = new JsonResult(item, this);
+        //        return res;
+        //    });
+        //}
 
         /// <summary>
         /// Добавляет файл, в зависимости от параметров новый или версию существующего

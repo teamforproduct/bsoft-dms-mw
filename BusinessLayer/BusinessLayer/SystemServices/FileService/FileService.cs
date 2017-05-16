@@ -51,7 +51,7 @@ namespace BL.Logic.SystemServices.FileService
 
         public string GetFileUri(string apiPrefix, string module, string feature, string fileType, int id)
         {
-            return string.IsNullOrEmpty(fileType) ? $"/{apiPrefix}/{module}/{feature}/{id}" : $"/{apiPrefix}/{module}/{feature}/{fileType}/{id}";
+            return string.IsNullOrEmpty(fileType) ? $"/{apiPrefix}/{module}/{feature}/{id}" : $"/{apiPrefix}/{module}/{feature}/{id}/{fileType}";
         }
 
         // TODO Сервис получился завязан на файлы документов. Для шаблонов EnumFileTypes, аватарки пока хранятся в базе
