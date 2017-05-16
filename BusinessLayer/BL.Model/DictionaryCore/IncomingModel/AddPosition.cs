@@ -46,7 +46,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// <summary>
         /// Порядковый номер (значимость) должности в подразделении
         /// </summary>
-        [Required]
+        //[Required]
         public int Order { get; set; }
 
         [IgnoreDataMember]
