@@ -36,7 +36,7 @@ namespace BL.Logic.DictionaryCore
 
                 if (cd != null)
                 {
-                    throw new DictionaryCostomDictionaryNotUnique();
+                    throw new DictionaryCustomDictionaryNotUnique(Model.Code);
                 }
             }
 

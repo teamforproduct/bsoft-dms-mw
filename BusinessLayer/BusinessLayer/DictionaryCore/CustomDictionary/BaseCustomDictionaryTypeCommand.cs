@@ -33,7 +33,7 @@ namespace BL.Logic.DictionaryCore
 
                 var cdt = _dictDb.GetInternalCustomDictionaryTypes(_context, filter).FirstOrDefault();
 
-                if (cdt != null) throw new DictionaryCostomDictionaryTypeNotUnique(Model.Code);
+                if (cdt != null) throw new DictionaryCustomDictionaryTypeNotUnique(Model.Code);
             }
             return true;
         }

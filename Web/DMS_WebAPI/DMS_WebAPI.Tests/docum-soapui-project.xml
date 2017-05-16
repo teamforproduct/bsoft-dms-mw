@@ -2222,17 +2222,8 @@
             <con:default/>
             <con:description xsi:nil="true"/>
           </con:parameter>
-          <con:parameter>
-            <con:name>Code</con:name>
-            <con:value/>
-            <con:style>QUERY</con:style>
-            <con:default/>
-            <con:description xsi:nil="true"/>
-          </con:parameter>
-          <con:parameter>
-            <con:name>CompanyIDs</con:name>
-            <con:style>QUERY</con:style>
-          </con:parameter>
+          
+          
         </con:parameters>
         <con:resource name="AddressTypes" path="AddressTypes" id="7547e94e-f7eb-4f7a-9ec5-b62a6b63e3bc">
           <con:settings/>
@@ -2266,13 +2257,7 @@
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
               <con:jmsPropertyConfig/>
               <con:parameters/>
-              <con:parameterOrder>
-                <con:entry>IDs</con:entry>
-                <con:entry>Name</con:entry>
-                <con:entry>IsActive</con:entry>
-                <con:entry>Code</con:entry>
-                <con:entry>CompanyIDs</con:entry>
-              </con:parameterOrder>
+              <con:parameterOrder><con:entry>IDs</con:entry><con:entry>Name</con:entry><con:entry>IsActive</con:entry></con:parameterOrder>
             </con:request>
           </con:method>
         </con:resource>
@@ -2314,13 +2299,7 @@
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
               <con:jmsPropertyConfig/>
               <con:parameters/>
-              <con:parameterOrder>
-                <con:entry>IDs</con:entry>
-                <con:entry>Name</con:entry>
-                <con:entry>IsActive</con:entry>
-                <con:entry>Code</con:entry>
-                <con:entry>CompanyIDs</con:entry>
-              </con:parameterOrder>
+              <con:parameterOrder><con:entry>IDs</con:entry><con:entry>Name</con:entry><con:entry>IsActive</con:entry></con:parameterOrder>
             </con:request>
           </con:method>
         </con:resource>
@@ -2391,20 +2370,10 @@
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
               <con:jmsPropertyConfig/>
               <con:parameters>
-                <con:entry key="PageSize" value="${#Project#PageSize}"/>
-                <con:entry key="CurrentPage" value="1"/>
-              </con:parameters>
-              <con:parameterOrder>
-                <con:entry>CurrentPage</con:entry>
-                <con:entry>PageSize</con:entry>
-                <con:entry>IsOnlyCounter</con:entry>
-                <con:entry>IsAll</con:entry>
-                <con:entry>IDs</con:entry>
-                <con:entry>Name</con:entry>
-                <con:entry>IsActive</con:entry>
-                <con:entry>Code</con:entry>
-                <con:entry>CompanyIDs</con:entry>
-              </con:parameterOrder>
+  <con:entry key="PageSize" value="${#Project#PageSize}"/>
+  <con:entry key="CurrentPage" value="1"/>
+</con:parameters>
+              <con:parameterOrder><con:entry>CurrentPage</con:entry><con:entry>PageSize</con:entry><con:entry>IsOnlyCounter</con:entry><con:entry>IsAll</con:entry><con:entry>IDs</con:entry><con:entry>Name</con:entry><con:entry>IsActive</con:entry></con:parameterOrder>
             </con:request>
           </con:method>
         </con:resource>
@@ -2475,20 +2444,10 @@
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
               <con:jmsPropertyConfig/>
               <con:parameters>
-                <con:entry key="PageSize" value="${#Project#PageSize}"/>
-                <con:entry key="CurrentPage" value="1"/>
-              </con:parameters>
-              <con:parameterOrder>
-                <con:entry>CurrentPage</con:entry>
-                <con:entry>PageSize</con:entry>
-                <con:entry>IsOnlyCounter</con:entry>
-                <con:entry>IsAll</con:entry>
-                <con:entry>IDs</con:entry>
-                <con:entry>Name</con:entry>
-                <con:entry>IsActive</con:entry>
-                <con:entry>Code</con:entry>
-                <con:entry>CompanyIDs</con:entry>
-              </con:parameterOrder>
+  <con:entry key="PageSize" value="${#Project#PageSize}"/>
+  <con:entry key="CurrentPage" value="1"/>
+</con:parameters>
+              <con:parameterOrder><con:entry>CurrentPage</con:entry><con:entry>PageSize</con:entry><con:entry>IsOnlyCounter</con:entry><con:entry>IsAll</con:entry><con:entry>IDs</con:entry><con:entry>Name</con:entry><con:entry>IsActive</con:entry></con:parameterOrder>
             </con:request>
           </con:method>
         </con:resource>
@@ -2559,20 +2518,10 @@
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
               <con:jmsPropertyConfig/>
               <con:parameters>
-                <con:entry key="PageSize" value="${#Project#PageSize}"/>
-                <con:entry key="CurrentPage" value="1"/>
-              </con:parameters>
-              <con:parameterOrder>
-                <con:entry>CurrentPage</con:entry>
-                <con:entry>PageSize</con:entry>
-                <con:entry>IsOnlyCounter</con:entry>
-                <con:entry>IsAll</con:entry>
-                <con:entry>IDs</con:entry>
-                <con:entry>Name</con:entry>
-                <con:entry>IsActive</con:entry>
-                <con:entry>Code</con:entry>
-                <con:entry>CompanyIDs</con:entry>
-              </con:parameterOrder>
+  <con:entry key="PageSize" value="${#Project#PageSize}"/>
+  <con:entry key="CurrentPage" value="1"/>
+</con:parameters>
+              <con:parameterOrder><con:entry>CurrentPage</con:entry><con:entry>PageSize</con:entry><con:entry>IsOnlyCounter</con:entry><con:entry>IsAll</con:entry><con:entry>IDs</con:entry><con:entry>Name</con:entry><con:entry>IsActive</con:entry></con:parameterOrder>
             </con:request>
           </con:method>
         </con:resource>
@@ -2643,20 +2592,10 @@
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
               <con:jmsPropertyConfig/>
               <con:parameters>
-                <con:entry key="PageSize" value="${#Project#PageSize}"/>
-                <con:entry key="CurrentPage" value="1"/>
-              </con:parameters>
-              <con:parameterOrder>
-                <con:entry>CurrentPage</con:entry>
-                <con:entry>PageSize</con:entry>
-                <con:entry>IsOnlyCounter</con:entry>
-                <con:entry>IsAll</con:entry>
-                <con:entry>IDs</con:entry>
-                <con:entry>Name</con:entry>
-                <con:entry>IsActive</con:entry>
-                <con:entry>Code</con:entry>
-                <con:entry>CompanyIDs</con:entry>
-              </con:parameterOrder>
+  <con:entry key="PageSize" value="${#Project#PageSize}"/>
+  <con:entry key="CurrentPage" value="1"/>
+</con:parameters>
+              <con:parameterOrder><con:entry>CurrentPage</con:entry><con:entry>PageSize</con:entry><con:entry>IsOnlyCounter</con:entry><con:entry>IsAll</con:entry><con:entry>IDs</con:entry><con:entry>Name</con:entry><con:entry>IsActive</con:entry></con:parameterOrder>
             </con:request>
           </con:method>
         </con:resource>
@@ -2727,20 +2666,10 @@
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
               <con:jmsPropertyConfig/>
               <con:parameters>
-                <con:entry key="PageSize" value="${#Project#PageSize}"/>
-                <con:entry key="CurrentPage" value="1"/>
-              </con:parameters>
-              <con:parameterOrder>
-                <con:entry>CurrentPage</con:entry>
-                <con:entry>PageSize</con:entry>
-                <con:entry>IsOnlyCounter</con:entry>
-                <con:entry>IsAll</con:entry>
-                <con:entry>IDs</con:entry>
-                <con:entry>Name</con:entry>
-                <con:entry>IsActive</con:entry>
-                <con:entry>Code</con:entry>
-                <con:entry>CompanyIDs</con:entry>
-              </con:parameterOrder>
+  <con:entry key="PageSize" value="${#Project#PageSize}"/>
+  <con:entry key="CurrentPage" value="1"/>
+</con:parameters>
+              <con:parameterOrder><con:entry>CurrentPage</con:entry><con:entry>PageSize</con:entry><con:entry>IsOnlyCounter</con:entry><con:entry>IsAll</con:entry><con:entry>IDs</con:entry><con:entry>Name</con:entry><con:entry>IsActive</con:entry></con:parameterOrder>
             </con:request>
           </con:method>
         </con:resource>
@@ -2825,22 +2754,10 @@
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
               <con:jmsPropertyConfig/>
               <con:parameters>
-                <con:entry key="PageSize" value="${#Project#PageSize}"/>
-                <con:entry key="CurrentPage" value="1"/>
-              </con:parameters>
-              <con:parameterOrder>
-                <con:entry>CurrentPage</con:entry>
-                <con:entry>PageSize</con:entry>
-                <con:entry>IsOnlyCounter</con:entry>
-                <con:entry>IsAll</con:entry>
-                <con:entry>IDs</con:entry>
-                <con:entry>Name</con:entry>
-                <con:entry>IsActive</con:entry>
-                <con:entry>Code</con:entry>
-                <con:entry>CompanyIDs</con:entry>
-                <con:entry>DepartmentIDs</con:entry>
-                <con:entry>DocumentDirection</con:entry>
-              </con:parameterOrder>
+  <con:entry key="PageSize" value="${#Project#PageSize}"/>
+  <con:entry key="CurrentPage" value="1"/>
+</con:parameters>
+              <con:parameterOrder><con:entry>CurrentPage</con:entry><con:entry>PageSize</con:entry><con:entry>IsOnlyCounter</con:entry><con:entry>IsAll</con:entry><con:entry>IDs</con:entry><con:entry>Name</con:entry><con:entry>IsActive</con:entry><con:entry>DepartmentIDs</con:entry><con:entry>DocumentDirection</con:entry></con:parameterOrder>
             </con:request>
           </con:method>
         </con:resource>
@@ -2925,22 +2842,10 @@
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
               <con:jmsPropertyConfig/>
               <con:parameters>
-                <con:entry key="PageSize" value="${#Project#PageSize}"/>
-                <con:entry key="CurrentPage" value="1"/>
-              </con:parameters>
-              <con:parameterOrder>
-                <con:entry>CurrentPage</con:entry>
-                <con:entry>PageSize</con:entry>
-                <con:entry>IsOnlyCounter</con:entry>
-                <con:entry>IsAll</con:entry>
-                <con:entry>IDs</con:entry>
-                <con:entry>Name</con:entry>
-                <con:entry>IsActive</con:entry>
-                <con:entry>Code</con:entry>
-                <con:entry>CompanyIDs</con:entry>
-                <con:entry>DepartmentIDs</con:entry>
-                <con:entry>DocumentDirection</con:entry>
-              </con:parameterOrder>
+  <con:entry key="PageSize" value="${#Project#PageSize}"/>
+  <con:entry key="CurrentPage" value="1"/>
+</con:parameters>
+              <con:parameterOrder><con:entry>CurrentPage</con:entry><con:entry>PageSize</con:entry><con:entry>IsOnlyCounter</con:entry><con:entry>IsAll</con:entry><con:entry>IDs</con:entry><con:entry>Name</con:entry><con:entry>IsActive</con:entry><con:entry>DepartmentIDs</con:entry><con:entry>DocumentDirection</con:entry></con:parameterOrder>
             </con:request>
           </con:method>
         </con:resource>
@@ -3025,22 +2930,10 @@
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
               <con:jmsPropertyConfig/>
               <con:parameters>
-                <con:entry key="PageSize" value="${#Project#PageSize}"/>
-                <con:entry key="CurrentPage" value="1"/>
-              </con:parameters>
-              <con:parameterOrder>
-                <con:entry>CurrentPage</con:entry>
-                <con:entry>PageSize</con:entry>
-                <con:entry>IsOnlyCounter</con:entry>
-                <con:entry>IsAll</con:entry>
-                <con:entry>IDs</con:entry>
-                <con:entry>Name</con:entry>
-                <con:entry>IsActive</con:entry>
-                <con:entry>Code</con:entry>
-                <con:entry>CompanyIDs</con:entry>
-                <con:entry>DepartmentIDs</con:entry>
-                <con:entry>DocumentDirection</con:entry>
-              </con:parameterOrder>
+  <con:entry key="PageSize" value="${#Project#PageSize}"/>
+  <con:entry key="CurrentPage" value="1"/>
+</con:parameters>
+              <con:parameterOrder><con:entry>CurrentPage</con:entry><con:entry>PageSize</con:entry><con:entry>IsOnlyCounter</con:entry><con:entry>IsAll</con:entry><con:entry>IDs</con:entry><con:entry>Name</con:entry><con:entry>IsActive</con:entry><con:entry>DepartmentIDs</con:entry><con:entry>DocumentDirection</con:entry></con:parameterOrder>
             </con:request>
           </con:method>
         </con:resource>
@@ -3125,22 +3018,10 @@
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
               <con:jmsPropertyConfig/>
               <con:parameters>
-                <con:entry key="PageSize" value="${#Project#PageSize}"/>
-                <con:entry key="CurrentPage" value="1"/>
-              </con:parameters>
-              <con:parameterOrder>
-                <con:entry>CurrentPage</con:entry>
-                <con:entry>PageSize</con:entry>
-                <con:entry>IsOnlyCounter</con:entry>
-                <con:entry>IsAll</con:entry>
-                <con:entry>IDs</con:entry>
-                <con:entry>Name</con:entry>
-                <con:entry>IsActive</con:entry>
-                <con:entry>Code</con:entry>
-                <con:entry>CompanyIDs</con:entry>
-                <con:entry>DepartmentIDs</con:entry>
-                <con:entry>DocumentDirection</con:entry>
-              </con:parameterOrder>
+  <con:entry key="PageSize" value="${#Project#PageSize}"/>
+  <con:entry key="CurrentPage" value="1"/>
+</con:parameters>
+              <con:parameterOrder><con:entry>CurrentPage</con:entry><con:entry>PageSize</con:entry><con:entry>IsOnlyCounter</con:entry><con:entry>IsAll</con:entry><con:entry>IDs</con:entry><con:entry>Name</con:entry><con:entry>IsActive</con:entry><con:entry>DepartmentIDs</con:entry><con:entry>DocumentDirection</con:entry></con:parameterOrder>
             </con:request>
           </con:method>
         </con:resource>
@@ -3225,22 +3106,10 @@
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
               <con:jmsPropertyConfig/>
               <con:parameters>
-                <con:entry key="PageSize" value="${#Project#PageSize}"/>
-                <con:entry key="CurrentPage" value="1"/>
-              </con:parameters>
-              <con:parameterOrder>
-                <con:entry>CurrentPage</con:entry>
-                <con:entry>PageSize</con:entry>
-                <con:entry>IsOnlyCounter</con:entry>
-                <con:entry>IsAll</con:entry>
-                <con:entry>IDs</con:entry>
-                <con:entry>Name</con:entry>
-                <con:entry>IsActive</con:entry>
-                <con:entry>Code</con:entry>
-                <con:entry>CompanyIDs</con:entry>
-                <con:entry>DepartmentIDs</con:entry>
-                <con:entry>DocumentDirection</con:entry>
-              </con:parameterOrder>
+  <con:entry key="PageSize" value="${#Project#PageSize}"/>
+  <con:entry key="CurrentPage" value="1"/>
+</con:parameters>
+              <con:parameterOrder><con:entry>CurrentPage</con:entry><con:entry>PageSize</con:entry><con:entry>IsOnlyCounter</con:entry><con:entry>IsAll</con:entry><con:entry>IDs</con:entry><con:entry>Name</con:entry><con:entry>IsActive</con:entry><con:entry>DepartmentIDs</con:entry><con:entry>DocumentDirection</con:entry></con:parameterOrder>
             </con:request>
           </con:method>
         </con:resource>
@@ -3308,10 +3177,10 @@
                 <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
                 <con:jmsPropertyConfig/>
                 <con:parameters>
-                  <con:entry key="PageSize" value="${#Project#PageSize}"/>
-                  <con:entry key="CurrentPage" value="1"/>
-                </con:parameters>
-              </con:request>
+  <con:entry key="PageSize" value="${#Project#PageSize}"/>
+  <con:entry key="CurrentPage" value="1"/>
+</con:parameters>
+              <con:parameterOrder><con:entry>IDs</con:entry><con:entry>Name</con:entry><con:entry>IsActive</con:entry><con:entry>CurrentPage</con:entry><con:entry>PageSize</con:entry><con:entry>IsOnlyCounter</con:entry><con:entry>IsAll</con:entry><con:entry>DepartmentIDs</con:entry><con:entry>DocumentDirection</con:entry></con:parameterOrder></con:request>
             </con:method>
           </con:resource>
         </con:resource>
@@ -3396,22 +3265,10 @@
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
               <con:jmsPropertyConfig/>
               <con:parameters>
-                <con:entry key="PageSize" value="${#Project#PageSize}"/>
-                <con:entry key="CurrentPage" value="1"/>
-              </con:parameters>
-              <con:parameterOrder>
-                <con:entry>CurrentPage</con:entry>
-                <con:entry>PageSize</con:entry>
-                <con:entry>IsOnlyCounter</con:entry>
-                <con:entry>IsAll</con:entry>
-                <con:entry>IDs</con:entry>
-                <con:entry>Name</con:entry>
-                <con:entry>IsActive</con:entry>
-                <con:entry>Code</con:entry>
-                <con:entry>CompanyIDs</con:entry>
-                <con:entry>DepartmentIDs</con:entry>
-                <con:entry>DocumentDirection</con:entry>
-              </con:parameterOrder>
+  <con:entry key="PageSize" value="${#Project#PageSize}"/>
+  <con:entry key="CurrentPage" value="1"/>
+</con:parameters>
+              <con:parameterOrder><con:entry>CurrentPage</con:entry><con:entry>PageSize</con:entry><con:entry>IsOnlyCounter</con:entry><con:entry>IsAll</con:entry><con:entry>IDs</con:entry><con:entry>Name</con:entry><con:entry>IsActive</con:entry><con:entry>DepartmentIDs</con:entry><con:entry>DocumentDirection</con:entry></con:parameterOrder>
             </con:request>
           </con:method>
         </con:resource>
@@ -3502,26 +3359,89 @@
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
               <con:jmsPropertyConfig/>
               <con:parameters>
-                <con:entry key="PageSize" value="${#Project#PageSize}"/>
-                <con:entry key="CurrentPage" value="1"/>
-              </con:parameters>
-              <con:parameterOrder>
-                <con:entry>CurrentPage</con:entry>
-                <con:entry>PageSize</con:entry>
-                <con:entry>IsOnlyCounter</con:entry>
-                <con:entry>IsAll</con:entry>
-                <con:entry>IDs</con:entry>
-                <con:entry>Name</con:entry>
-                <con:entry>IsActive</con:entry>
-                <con:entry>Code</con:entry>
-                <con:entry>CompanyIDs</con:entry>
-                <con:entry>DepartmentIDs</con:entry>
-                <con:entry>DocumentDirection</con:entry>
-              </con:parameterOrder>
+  <con:entry key="PageSize" value="${#Project#PageSize}"/>
+  <con:entry key="CurrentPage" value="1"/>
+</con:parameters>
+              <con:parameterOrder><con:entry>CurrentPage</con:entry><con:entry>PageSize</con:entry><con:entry>IsOnlyCounter</con:entry><con:entry>IsAll</con:entry><con:entry>IDs</con:entry><con:entry>Name</con:entry><con:entry>IsActive</con:entry><con:entry>DepartmentIDs</con:entry><con:entry>DocumentDirection</con:entry></con:parameterOrder>
             </con:request>
           </con:method>
         </con:resource>
-      </con:resource>
+      <con:resource name="Organisations" path="Organisations" id="7547e94e-f7eb-4f7a-9ec5-b62a6b63e3bc">
+          <con:settings/>
+          <con:parameters>
+            <con:parameter>
+              <con:name>CurrentPage</con:name>
+              <con:value/>
+              <con:style>QUERY</con:style>
+              <con:default/>
+              <con:description xsi:nil="true"/>
+            </con:parameter>
+            <con:parameter>
+              <con:name>PageSize</con:name>
+              <con:value/>
+              <con:style>QUERY</con:style>
+              <con:default/>
+              <con:description xsi:nil="true"/>
+            </con:parameter>
+            <con:parameter>
+              <con:name>IsOnlyCounter</con:name>
+              <con:value/>
+              <con:style>QUERY</con:style>
+              <con:default/>
+              <con:description xsi:nil="true"/>
+            </con:parameter>
+            <con:parameter>
+              <con:name>IsAll</con:name>
+              <con:value/>
+              <con:style>QUERY</con:style>
+              <con:default/>
+              <con:description xsi:nil="true"/>
+            </con:parameter>
+            
+            
+          </con:parameters>
+          <con:method name="List/Organisations" id="4e9f2492-7a4c-494f-8772-729a04aaa487" method="GET">
+            <con:settings/>
+            <con:parameters/>
+            <con:representation type="FAULT">
+              <con:mediaType>application/json; charset=utf-8</con:mediaType>
+              <con:status>401</con:status>
+              <con:params/>
+              <con:element xmlns:add="http://10.88.12.22/api/v3/List/AddressTypes">add:Fault</con:element>
+            </con:representation>
+            <con:representation type="RESPONSE">
+              <con:mediaType>application/json; charset=utf-8</con:mediaType>
+              <con:status>200</con:status>
+              <con:params/>
+              <con:element xmlns:add="http://10.88.12.22/api/v3/List/AddressTypes">add:Response</con:element>
+            </con:representation>
+            <con:representation type="RESPONSE">
+              <con:mediaType xsi:nil="true"/>
+              <con:status>0</con:status>
+              <con:params/>
+              <con:element>data</con:element>
+            </con:representation>
+            <con:request name="Get List/Organisations" id="c475681f-f0bf-498d-a994-341f5db0ad41" mediaType="application/json">
+              <con:settings>
+                <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+              </con:settings>
+              <con:endpoint>http://10.88.12.22:80/</con:endpoint>
+              <con:request/>
+              <con:originalUri>http://10.88.12.22/api/v3/List/AddressTypes</con:originalUri>
+              <con:credentials>
+                <con:selectedAuthProfile>pr docum t@t.t</con:selectedAuthProfile>
+                <con:authType>OAuth 2.0</con:authType>
+              </con:credentials>
+              <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+              <con:jmsPropertyConfig/>
+              <con:parameters>
+  <con:entry key="PageSize" value="${#Project#PageSize}"/>
+  <con:entry key="CurrentPage" value="1"/>
+</con:parameters>
+              <con:parameterOrder><con:entry>CurrentPage</con:entry><con:entry>PageSize</con:entry><con:entry>IsOnlyCounter</con:entry><con:entry>IsAll</con:entry><con:entry>IDs</con:entry><con:entry>Name</con:entry><con:entry>IsActive</con:entry></con:parameterOrder>
+            </con:request>
+          </con:method>
+        </con:resource></con:resource>
       <con:resource name="System" path="System" id="fb50f7d2-99c3-49a2-8607-94c3bf9aa7b0">
         <con:settings/>
         <con:parameters/>
@@ -9524,7 +9444,7 @@
                 <con:description xsi:nil="true"/>
               </con:parameter>
             </con:parameters>
-            <con:method name="Position/{Id}/Roles" id="0e59cbe1-121a-417c-96a4-c7574ba9d5a3" method="GET">
+            <con:resource name="Edit" path="Edit" id="e44bf47d-2673-42c9-a995-14d4b90adece"><con:settings/><con:parameters/><con:method name="Method 1" id="a4786cfb-9ff1-4a61-be69-de983c4d6d43" method="GET"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType>text/html</con:mediaType><con:status>404</con:status><con:params/><con:element xmlns:xht="http://www.w3.org/1999/xhtml">xht:html</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>401</con:status><con:params/><con:element xmlns:edit="http://10.88.12.22/api/v3/Position/Id/Roles/Edit">edit:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:edit="http://10.88.12.22/api/v3/Position/Id/Roles/Edit">edit:Response</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="1b449f17-81b5-4c1c-989c-eb9a5751412d" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182/</con:endpoint><con:request/><con:originalUri>http://10.88.12.22/api/v3/Position/Id/Roles/Edit</con:originalUri><con:credentials><con:selectedAuthProfile>lh docum sergey_pauls@mail.ru</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="Id" value="${#Project#PositionId}" xmlns="http://eviware.com/soapui/config"/></con:parameters></con:request></con:method></con:resource><con:method name="Position/{Id}/Roles" id="0e59cbe1-121a-417c-96a4-c7574ba9d5a3" method="GET">
               <con:settings/>
               <con:parameters/>
               <con:representation type="FAULT">
@@ -9539,7 +9459,7 @@
                 <con:params/>
                 <con:element xmlns:add="http://10.88.12.22/api/v3/Org/1/Addresses">add:Response</con:element>
               </con:representation>
-              <con:request name="Get Positions/{Id}/Roles" id="5fa6bcf9-0c7d-4385-8d9d-9b333968fdf6" mediaType="application/json">
+              <con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Get Positions/{Id}/Roles" id="5fa6bcf9-0c7d-4385-8d9d-9b333968fdf6" mediaType="application/json">
                 <con:settings>
                   <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Accept-Language" value="ru,en-US;q=0.8,en;q=0.6" xmlns="http://eviware.com/soapui/config"/></con:setting>
                 </con:settings>
@@ -11997,7 +11917,7 @@
       <con:oAuth2Flow>RESOURCE_OWNER_PASSWORD_CREDENTIALS</con:oAuth2Flow>
       <con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod>
       <con:scope>fingerprint</con:scope>
-      <con:accessTokenStatus>UNKNOWN</con:accessTokenStatus>
+      <con:accessTokenStatus>RETRIEVED_FROM_SERVER</con:accessTokenStatus>
       <con:accessTokenStartingStatus>RETRIEVED_FROM_SERVER</con:accessTokenStartingStatus>
       <con:accessTokenExpirationTime>1209599</con:accessTokenExpirationTime>
       <con:accessTokenIssuedTime>1493810241</con:accessTokenIssuedTime>

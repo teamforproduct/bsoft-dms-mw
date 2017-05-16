@@ -887,16 +887,16 @@ namespace BL.Model.Exception
         public DictionaryTagNotFoundOrUserHasNoAccess() : base() { }
         public DictionaryTagNotFoundOrUserHasNoAccess(System.Exception ex) : base(ex) { }
     }
-    public class DictionaryCostomDictionaryNotUnique : DmsExceptions
+    public class DictionaryCustomDictionaryNotUnique : DmsExceptions
     {
-        public DictionaryCostomDictionaryNotUnique() : base() { }
-        public DictionaryCostomDictionaryNotUnique(System.Exception ex) : base(ex) { }
+        public DictionaryCustomDictionaryNotUnique(string Code) : base() { Parameters = new List<string> { Code }; }
+        public DictionaryCustomDictionaryNotUnique(System.Exception ex) : base(ex) { }
     }
 
-    public class DictionaryCostomDictionaryTypeNotUnique : DmsExceptions
+    public class DictionaryCustomDictionaryTypeNotUnique : DmsExceptions
     {
-        public DictionaryCostomDictionaryTypeNotUnique(string Code) : base() { Parameters = new List<string> { Code }; }
-        public DictionaryCostomDictionaryTypeNotUnique(System.Exception ex) : base(ex) { }
+        public DictionaryCustomDictionaryTypeNotUnique(string Code) : base() { Parameters = new List<string> { Code }; }
+        public DictionaryCustomDictionaryTypeNotUnique(System.Exception ex) : base(ex) { }
     }
 
     public class DictionarysdDepartmentNotBeSubordinated : DmsExceptions
