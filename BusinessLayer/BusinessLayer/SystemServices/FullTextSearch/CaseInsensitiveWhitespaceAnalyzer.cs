@@ -1,24 +1,26 @@
 ﻿using Lucene.Net.Analysis;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Lucene.Net.Analysis.Core;
+using Version = Lucene.Net.Util.LuceneVersion;
 
 namespace BL.Logic.SystemServices.FullTextSearch
 {
-    //public class CaseInsensitiveWhitespaceAnalyzer : Analyzer
-    //{
-    //    /// <summary>
-    //    /// </summary>
-    //    public override TokenStream TokenStream(string fieldName, TextReader reader)
-    //    {
-    //        TokenStream t = null;
-    //        t = new WhitespaceTokenizer(reader);
-    //        t = new LowerCaseFilter(t);
+    public class CaseInsensitiveWhitespaceAnalyzer : Analyzer
+    {
+        /// <summary>
+        /// </summary>
+        public new TokenStream GetTokenStream(string fieldName, TextReader reader)
+        {
+            TokenStream t = new WhitespaceTokenizer(Version.LUCENE_48, reader);
+            t = new LowerCaseFilter(Version.LUCENE_48, t);
 
-    //        return t;
-    //    }
-    //}
+            return t;
+        }
+
+        protected override TokenStreamComponents CreateComponents(string fieldName, TextReader reader)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

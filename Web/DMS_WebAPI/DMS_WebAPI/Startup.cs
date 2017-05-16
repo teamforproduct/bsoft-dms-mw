@@ -58,12 +58,12 @@ namespace DMS_WebAPI
             queueWorker.Initialize(dbs);
 #endif
 
-#if !DEBUG
+//#if !DEBUG
             //TODO
             // Полнотекстовый поиск
            var indexService = DmsResolver.Current.Get<IFullTextSearchService>();
            indexService.Initialize(dbs);
-#endif
+//#endif
 
 
 #if !DEBUG
