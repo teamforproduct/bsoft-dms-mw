@@ -56,7 +56,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
             if (!_operationDb.CanAddTemplateAttachedFile(_context, Model, _file))
             {
-                throw new CouldNotModifyTemplateDocument();
+                throw new CouldNotAddTemplateFile();
             }
             if (_operationDb.ExistsTemplateAttachedFiles(_context, new FilterTemplateAttachedFile
                 { TemplateId = Model.DocumentId, NameExactly = _file.Name, ExtentionExactly = _file.Extension }))

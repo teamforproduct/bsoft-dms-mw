@@ -155,7 +155,7 @@ namespace BL.Model.Exception
         public ClientIsNotFound() : base() { }
         public ClientIsNotFound(System.Exception ex) : base(ex) { }
     }
-    
+
     public class ClientCodeRequired : DmsExceptions
     {
         public ClientCodeRequired() : base() { }
@@ -502,11 +502,31 @@ namespace BL.Model.Exception
         public TemplateDocumentNotFoundOrUserHasNoAccess() : base() { }
         public TemplateDocumentNotFoundOrUserHasNoAccess(System.Exception ex) : base(ex) { }
     }
-    public class CouldNotModifyTemplateDocument : DmsExceptions
+    public class CouldNotAddTemplate : DmsExceptions
     {
-        public CouldNotModifyTemplateDocument() : base() { }
-        public CouldNotModifyTemplateDocument(System.Exception ex) : base(ex) { }
+        public CouldNotAddTemplate() : base() { }
+        public CouldNotAddTemplate(System.Exception ex) : base(ex) { }
     }
+
+    public class CouldNotDeleteTemplate : DmsExceptions
+    {
+        public CouldNotDeleteTemplate() : base() { }
+        public CouldNotDeleteTemplate(System.Exception ex) : base(ex) { }
+    }
+
+    public class CouldNotAddTemplateFile : DmsExceptions
+    {
+        public CouldNotAddTemplateFile() : base() { }
+        public CouldNotAddTemplateFile(System.Exception ex) : base(ex) { }
+    }
+
+    public class CouldNotAddTemplateTask : DmsExceptions
+    {
+        public CouldNotAddTemplateTask() : base() { }
+        public CouldNotAddTemplateTask(System.Exception ex) : base(ex) { }
+    }
+
+
     public class TemplateDocumentIsNotValid : DmsExceptions
     {
         public TemplateDocumentIsNotValid() : base() { }

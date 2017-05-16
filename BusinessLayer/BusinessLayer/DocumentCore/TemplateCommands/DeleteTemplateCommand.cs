@@ -49,7 +49,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
             if (!_operationDb.CanModifyTemplate(_context, Model))
             {
-                throw new CouldNotModifyTemplateDocument();
+                throw new CouldNotDeleteTemplate();
             }
             return true;
         }
