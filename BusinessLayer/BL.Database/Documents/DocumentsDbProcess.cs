@@ -1572,6 +1572,9 @@ namespace BL.Database.Documents
                 dbContext.DocumentRestrictedSendListsSet.RemoveRange(
                     dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == context.Client.Id)
                         .Where(x => x.DocumentId == id));
+                dbContext.DocumentSendListAccessGroupsSet.RemoveRange(
+                    dbContext.DocumentSendListAccessGroupsSet.Where(x => x.ClientId == context.Client.Id)
+                        .Where(x => x.DocumentId == id));
                 dbContext.DocumentSendListsSet.RemoveRange(
                     dbContext.DocumentSendListsSet.Where(x => x.ClientId == context.Client.Id)
                         .Where(x => x.DocumentId == id));
