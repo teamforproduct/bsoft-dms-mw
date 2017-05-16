@@ -17,7 +17,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
     public class DocumentFileBinController : Controller
     {
         /// <summary>
-        /// 
+        /// Возвращает сам файл
         /// </summary>
         /// <param name="Id"></param>
         /// <returns></returns>
@@ -29,6 +29,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await GetFile(EnumDocumentFileType.UserFile, Id);
         }
 
+        /// <summary>
+        /// Возвращает pdf 
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        /// <exception cref="CannotAccessToFile"></exception>
         [HttpGet]
         [Route(Features.Files + "/{Id:int}/Pdf")]
         public async Task<ActionResult> GetPdfFile(int Id)
@@ -36,6 +42,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await GetFile(EnumDocumentFileType.PdfFile, Id);
         }
 
+        /// <summary>
+        /// Возвращает миниатюру
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        /// <exception cref="CannotAccessToFile"></exception>
         [HttpGet]
         [Route(Features.Files + "/{Id:int}/Preview")]
         public async Task<ActionResult> GetPdfPreview(int Id)
