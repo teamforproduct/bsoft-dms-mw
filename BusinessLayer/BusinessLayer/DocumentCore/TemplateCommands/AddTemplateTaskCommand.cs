@@ -42,7 +42,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
             if (!_operationDb.CanAddTemplateTask(_context, Model))
             {
-                throw new CouldNotModifyTemplateDocument();
+                throw new CouldNotAddTemplateTask();
             }
             return true;
         }

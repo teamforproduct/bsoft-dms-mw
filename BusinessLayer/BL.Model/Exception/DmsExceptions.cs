@@ -155,7 +155,7 @@ namespace BL.Model.Exception
         public ClientIsNotFound() : base() { }
         public ClientIsNotFound(System.Exception ex) : base(ex) { }
     }
-    
+
     public class ClientCodeRequired : DmsExceptions
     {
         public ClientCodeRequired() : base() { }
@@ -502,11 +502,31 @@ namespace BL.Model.Exception
         public TemplateDocumentNotFoundOrUserHasNoAccess() : base() { }
         public TemplateDocumentNotFoundOrUserHasNoAccess(System.Exception ex) : base(ex) { }
     }
-    public class CouldNotModifyTemplateDocument : DmsExceptions
+    public class CouldNotAddTemplate : DmsExceptions
     {
-        public CouldNotModifyTemplateDocument() : base() { }
-        public CouldNotModifyTemplateDocument(System.Exception ex) : base(ex) { }
+        public CouldNotAddTemplate() : base() { }
+        public CouldNotAddTemplate(System.Exception ex) : base(ex) { }
     }
+
+    public class CouldNotDeleteTemplate : DmsExceptions
+    {
+        public CouldNotDeleteTemplate() : base() { }
+        public CouldNotDeleteTemplate(System.Exception ex) : base(ex) { }
+    }
+
+    public class CouldNotAddTemplateFile : DmsExceptions
+    {
+        public CouldNotAddTemplateFile() : base() { }
+        public CouldNotAddTemplateFile(System.Exception ex) : base(ex) { }
+    }
+
+    public class CouldNotAddTemplateTask : DmsExceptions
+    {
+        public CouldNotAddTemplateTask() : base() { }
+        public CouldNotAddTemplateTask(System.Exception ex) : base(ex) { }
+    }
+
+
     public class TemplateDocumentIsNotValid : DmsExceptions
     {
         public TemplateDocumentIsNotValid() : base() { }
@@ -887,16 +907,16 @@ namespace BL.Model.Exception
         public DictionaryTagNotFoundOrUserHasNoAccess() : base() { }
         public DictionaryTagNotFoundOrUserHasNoAccess(System.Exception ex) : base(ex) { }
     }
-    public class DictionaryCostomDictionaryNotUnique : DmsExceptions
+    public class DictionaryCustomDictionaryNotUnique : DmsExceptions
     {
-        public DictionaryCostomDictionaryNotUnique() : base() { }
-        public DictionaryCostomDictionaryNotUnique(System.Exception ex) : base(ex) { }
+        public DictionaryCustomDictionaryNotUnique(string Code) : base() { Parameters = new List<string> { Code }; }
+        public DictionaryCustomDictionaryNotUnique(System.Exception ex) : base(ex) { }
     }
 
-    public class DictionaryCostomDictionaryTypeNotUnique : DmsExceptions
+    public class DictionaryCustomDictionaryTypeNotUnique : DmsExceptions
     {
-        public DictionaryCostomDictionaryTypeNotUnique(string Code) : base() { Parameters = new List<string> { Code }; }
-        public DictionaryCostomDictionaryTypeNotUnique(System.Exception ex) : base(ex) { }
+        public DictionaryCustomDictionaryTypeNotUnique(string Code) : base() { Parameters = new List<string> { Code }; }
+        public DictionaryCustomDictionaryTypeNotUnique(System.Exception ex) : base(ex) { }
     }
 
     public class DictionarysdDepartmentNotBeSubordinated : DmsExceptions
