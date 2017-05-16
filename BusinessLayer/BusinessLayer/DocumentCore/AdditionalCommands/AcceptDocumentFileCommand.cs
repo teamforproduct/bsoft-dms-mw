@@ -97,7 +97,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _file.IsWorkedOut = true;
             _file.IsMainVersion = true;
             CommonDocumentUtilities.SetLastChange(_context, _file);
-            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _file.DocumentId, EnumEventTypes.AcceptDocumentFile, Model.EventDate, Model.Description, null, _file.EventId, null, Model.TargetAccessGroups);
+            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _file.DocumentId, EnumEventTypes.AcceptDocumentFile, Model.EventDate, 
+                Model.Description, $"{_file.File.FileName} v.{_file.Version}", _file.EventId, null, Model.TargetAccessGroups);
             CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
             _file.Event = newEvent;
             _operationDb.UpdateFileOrVersion(_context, _document);

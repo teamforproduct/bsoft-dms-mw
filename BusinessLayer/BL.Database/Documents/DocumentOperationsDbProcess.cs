@@ -165,14 +165,24 @@ namespace BL.Database.Documents
                             PositionId = x.PositionId,
                         }
                         ).ToList();
-
+                    res.Document.DocumentFiles = dbContext.DocumentFilesSet.Where(x => x.DocumentId == documentId)
+                        .Select(x => new InternalDocumentFile
+                    {
+                        Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
+                        ExecutorPositionId = x.ExecutorPositionId,
+                        Type = (EnumFileTypes)x.TypeId,
+                        IsWorkedOut = x.IsWorkedOut,
+                        IsMainVersion = x.IsMainVersion,
+                        IsDeleted = x.IsDeleted,
+                    }).ToList();
                     var positionAccesses = res.Document?.Accesses.Where(y => y.PositionId.HasValue).Select(y => y.PositionId.Value).ToList();
 
                     if (positionAccesses.Any())
                     {
                         res.PositionWithActions = GetBlankPositionWithActions(context, positionAccesses);
-                        res.ActionsList = GetActionsListForCurrentPositionsList(context, new List<EnumObjects> { EnumObjects.Documents, EnumObjects.DocumentEvents, EnumObjects.DocumentWaits, EnumObjects.DocumentSubscriptions }, positionAccesses);
-
+                        res.ActionsList = GetActionsListForCurrentPositionsList(context, new List<EnumObjects> { EnumObjects.Documents, EnumObjects.DocumentEvents, EnumObjects.DocumentWaits, EnumObjects.DocumentSubscriptions, EnumObjects.DocumentFiles }, positionAccesses, true);
                     }
                 }
                 transaction.Complete();
@@ -382,7 +392,6 @@ namespace BL.Database.Documents
                 return res;
             }
         }
-
         private List<InternalDictionaryPositionWithActions> GetBlankPositionWithActions(IContext context, List<int> positionAccesses)
         {
             var dbContext = context.DbContext as DmsContext;
@@ -407,8 +416,7 @@ namespace BL.Database.Documents
                     ExecutorAgentName = x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : null),
                 }).ToList();
         }
-
-        private Dictionary<int, List<InternalSystemActionForDocument>> GetActionsListForCurrentPositionsList(IContext context, IEnumerable<EnumObjects> objects, List<int> positionAccesses)
+        private Dictionary<int, List<InternalSystemActionForDocument>> GetActionsListForCurrentPositionsList(IContext context, IEnumerable<EnumObjects> objects, List<int> positionAccesses, bool IsNotEmptyCategory = false)
         {
             var dbContext = context.DbContext as DmsContext;
             var filterObjectsContains = PredicateBuilder.New<SystemActions>(false);
@@ -420,18 +428,11 @@ namespace BL.Database.Documents
             {
                 if (positionAccesses.Contains(posId))
                 {
-                    var qry = dbContext.SystemActionsSet
-                        .Where(filterObjectsContains)
-                        .Where(x => (//x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
-                                        x.Permission.RolePermissions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
-                                        y.Role.UserRoles.Any(z => z.PositionExecutor.AgentId == context.CurrentAgentId)))
-                        //.Where(x => x.IsVisibleInMenu &&
-                        //            (!x.IsGrantable ||
-                        //                //x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
-                        //                x.Permission.RolePermissions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
-                        //                y.Role.UserRoles.Any(z => z.PositionExecutor.AgentId == context.CurrentAgentId)))
-                        );
-
+                    var qry = dbContext.SystemActionsSet.Where(filterObjectsContains);
+                    if (IsNotEmptyCategory)
+                        qry = qry.Where(x => !string.IsNullOrEmpty(x.Category));
+                    qry = qry.Where(x => (x.Permission.RolePermissions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
+                                        y.Role.UserRoles.Any(z => z.PositionExecutor.AgentId == context.CurrentAgentId))) );
                     var qryActLst = qry.Select(a => new InternalSystemActionForDocument
                     {
                         DocumentAction = (EnumDocumentActions)a.Id,

@@ -271,17 +271,17 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpDelete]
-        [Route(Features.Files + "/DeleteFileVersionRecord")]
-        public async Task<IHttpActionResult> DeleteFileVersionRecord([FromUri]FilterDocumentFileIdentity model)
-        {
-            return await SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                Action.Execute(context, EnumDocumentActions.DeleteDocumentFileVersionRecord, model);
-                var res = new JsonResult(null, this);
-                return res;
-            });
-        }
+        //[HttpDelete]
+        //[Route(Features.Files + "/DeleteFileVersionRecord")]
+        //public async Task<IHttpActionResult> DeleteFileVersionRecord([FromUri]FilterDocumentFileIdentity model)
+        //{
+        //    return await SafeExecuteAsync(ModelState, (context, param) =>
+        //    {
+        //        Action.Execute(context, EnumDocumentActions.DeleteDocumentFileVersionRecord, model);
+        //        var res = new JsonResult(null, this);
+        //        return res;
+        //    });
+        //}
 
         /// <summary>
         /// Возвращает меню по ИД документа для работы с файлами 

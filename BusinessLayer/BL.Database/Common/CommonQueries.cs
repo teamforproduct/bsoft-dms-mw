@@ -97,7 +97,7 @@ namespace BL.Database.Common
                                     IsMainVersion = y.file.IsMainVersion,
                                     IsDeleted = y.file.IsDeleted,
                                     IsWorkedOut = y.file.IsWorkedOut ?? true,
-                                    Description = y.file.Description,
+                                    Description = y.file.IsDeleted ? null : y.file.Description,
                                     LastChangeDate = y.file.LastChangeDate,
                                     LastChangeUserId = y.file.LastChangeUserId,
                                     LastChangeUserName = y.agent.Name,
@@ -110,7 +110,7 @@ namespace BL.Database.Common
                                     ExecutorPositionName = y.file.ExecutorPosition.Name,
                                     ExecutorPositionExecutorAgentName = y.file.ExecutorPositionExecutorAgent.Name + (y.file.ExecutorPositionExecutorType.Suffix != null ? " (" + y.file.ExecutorPositionExecutorType.Suffix + ")" : null),
                                     EventId = y.file.EventId,
-                                    File = new BaseFile
+                                    File = y.file.IsDeleted ? new BaseFile { Name = "##l@General:FileHasBeenDeleted@l##"} : new BaseFile
                                     {
                                         Extension = y.file.Extension,
                                         FileType = y.file.FileType,

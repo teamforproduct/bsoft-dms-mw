@@ -39,16 +39,17 @@ namespace BL.Logic.DocumentCore
             {
                 throw new UnknownDocumentFile();
             }
-            if (fileType == EnumDocumentFileType.UserFile)
-            {
-                _fStore.GetFile(ctx, fl, fileType);
-            }
-            else
-            {
-                _fStore.GetFile(ctx, fl, fileType);
-                var internalFile = new InternalDocumentFile { Id = fl.Id, LastPdfAccess = DateTime.Now, PdfCreated = true, File = fl.File };
-                _dbProcess.UpdateFilePdfView(ctx, internalFile);
-            }
+            if (!fl.IsDeleted)
+                if (fileType == EnumDocumentFileType.UserFile)
+                {
+                    _fStore.GetFile(ctx, fl, fileType);
+                }
+                else
+                {
+                    _fStore.GetFile(ctx, fl, fileType);
+                    var internalFile = new InternalDocumentFile { Id = fl.Id, LastPdfAccess = DateTime.Now, PdfCreated = true, File = fl.File };
+                    _dbProcess.UpdateFilePdfView(ctx, internalFile);
+                }
 
             return fl;
         }

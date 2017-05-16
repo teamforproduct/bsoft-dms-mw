@@ -94,15 +94,13 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 DocumentId = _file.DocumentId,
                 OrderInDocument = _file.OrderInDocument
             };
-
-            try
-            {
-                //_fStore.DeleteFile(_context, docFile);
-            }
-            catch (CannotAccessToFile ex)
-            {
-
-            }
+            //try
+            //{
+            //    //_fStore.DeleteFile(_context, docFile);
+            //}
+            //catch (CannotAccessToFile ex)
+            //{
+            //}
             if (_document.IsRegistered.HasValue)
             {
                 docFile.Event = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, docFile.DocumentId, EnumEventTypes.DeleteDocumentFile, null, null, _file.File.FileName);

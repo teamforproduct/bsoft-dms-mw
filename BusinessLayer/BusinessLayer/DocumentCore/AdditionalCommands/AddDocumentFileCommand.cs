@@ -44,25 +44,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
-            if (CommandType == EnumDocumentActions.AddDocumentFileUseMainNameFile)
-            {
-                _actionRecords =
-                  _document.DocumentFiles.Where(x => x.IsMainVersion && !x.IsDeleted)
-                            .Where(
-                      x =>
-                          x.Type == EnumFileTypes.Additional && x.ExecutorPositionId == positionId
-                          || x.Type == EnumFileTypes.Main)
-                                                  .Select(x => new InternalActionRecord
-                                                  {
-                                                      FileId = x.Id,
-                                                  });
-                if (!_actionRecords.Any())
-                {
-                    return false;
-                }
-                return true;
-            }
-            return true;
+            return false;
         }
 
         public override bool CanExecute()

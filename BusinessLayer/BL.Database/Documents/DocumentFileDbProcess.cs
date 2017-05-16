@@ -126,18 +126,18 @@ namespace BL.Database.Documents
                                     IsMainVersion = y.file.IsMainVersion,
                                     IsDeleted = y.file.IsDeleted,
                                     IsWorkedOut = y.file.IsWorkedOut ?? true,
-                                    Description = y.file.Description,
+                                    Description = y.file.IsDeleted ? null : y.file.Description,
                                     LastChangeDate = y.file.LastChangeDate,
                                     LastChangeUserId = y.file.LastChangeUserId,
                                     LastChangeUserName = y.agent.Name,
                                     OrderInDocument = y.file.OrderNumber,
                                     Version = y.file.Version,
                                     WasChangedExternal = false,
-                        SourcePositionId = y.source.PositionId,
-                        SourcePositionName = y.source.Position.Name,
-                        SourcePositionExecutorAgentName = y.source.Agent.Name + (y.source.PositionExecutorType.Suffix != null ? " (" + y.source.PositionExecutorType.Suffix + ")" : null),
+                                    SourcePositionId = y.source.PositionId,
+                                    SourcePositionName = y.source.Position.Name,
+                                    SourcePositionExecutorAgentName = y.source.Agent.Name + (y.source.PositionExecutorType.Suffix != null ? " (" + y.source.PositionExecutorType.Suffix + ")" : null),
 
-                        ExecutorPositionId = y.file.ExecutorPositionId,
+                                    ExecutorPositionId = y.file.ExecutorPositionId,
                                     ExecutorPositionName = y.file.ExecutorPosition.Name,
                                     ExecutorPositionExecutorAgentName = y.file.ExecutorPositionExecutorAgent.Name
                                         + (y.file.ExecutorPositionExecutorType.Suffix != null ? " (" + y.file.ExecutorPositionExecutorType.Suffix + ")" : null),
@@ -147,7 +147,7 @@ namespace BL.Database.Documents
                                     RegistrationNumberSuffix = y.file.Document.RegistrationNumberSuffix,
                                     RegistrationFullNumber = "#" + y.file.Document.Id,
                                     EventId = y.file.EventId,
-                                    File = new BaseFile
+                                    File = y.file.IsDeleted ? new BaseFile { Name = "##l@General:FileHasBeenDeleted@l##" } : new BaseFile
                                     {
                                         Extension = y.file.Extension,
                                         FileType = y.file.FileType,
@@ -221,15 +221,16 @@ namespace BL.Database.Documents
                             OrderInDocument = y.file.OrderNumber,
                             Version = y.file.Version,
                             WasChangedExternal = false,
-                        SourcePositionId = y.source.PositionId,
-                        SourcePositionName = y.source.Position.Name,
-                        SourcePositionExecutorAgentName = y.source.Agent.Name + (y.source.PositionExecutorType.Suffix != null ? " (" + y.source.PositionExecutorType.Suffix + ")" : null),
+                            SourcePositionId = y.source.PositionId,
+                            SourcePositionName = y.source.Position.Name,
+                            SourcePositionExecutorAgentName = y.source.Agent.Name + (y.source.PositionExecutorType.Suffix != null ? " (" + y.source.PositionExecutorType.Suffix + ")" : null),
 
-                        ExecutorPositionId = y.file.ExecutorPositionId,
+                            ExecutorPositionId = y.file.ExecutorPositionId,
                             ExecutorPositionName = y.file.ExecutorPosition.Name,
                             ExecutorPositionExecutorAgentName = y.file.ExecutorPositionExecutorAgent.Name + (y.file.ExecutorPositionExecutorType.Suffix != null ? " (" + y.file.ExecutorPositionExecutorType.Suffix + ")" : null),
                             EventId = y.file.EventId,
-                            File = new BaseFile
+                            Description = y.file.IsDeleted ? null : y.file.Description,
+                            File = y.file.IsDeleted ? new BaseFile { Name = "##l@General:FileHasBeenDeleted@l##" } : new BaseFile
                             {
                                 Extension = y.file.Extension,
                                 FileType = y.file.FileType,
