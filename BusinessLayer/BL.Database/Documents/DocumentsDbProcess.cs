@@ -1548,6 +1548,15 @@ namespace BL.Database.Documents
                     {
                         x.LastPaperEventId = null;
                     });
+                dbContext.DocumentFilesSet.RemoveRange(
+                    dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id)
+                        .Where(x => x.DocumentId == id));
+                dbContext.DocumentEventAccessesSet.RemoveRange(
+                    dbContext.DocumentEventAccessesSet.Where(x => x.ClientId == context.Client.Id)
+                        .Where(x => x.DocumentId == id));
+                dbContext.DocumentEventAccessGroupsSet.RemoveRange(
+                    dbContext.DocumentEventAccessGroupsSet.Where(x => x.ClientId == context.Client.Id)
+                        .Where(x => x.DocumentId == id));
                 //TODO придумать с удалением для полнотекста
                 dbContext.DocumentEventsSet.RemoveRange(
                     dbContext.DocumentEventsSet.Where(x => x.ClientId == context.Client.Id)
@@ -1559,9 +1568,7 @@ namespace BL.Database.Documents
                 dbContext.DocumentAccessesSet.RemoveRange(
                     dbContext.DocumentAccessesSet.Where(x => x.ClientId == context.Client.Id)
                         .Where(x => x.DocumentId == id));
-                dbContext.DocumentFilesSet.RemoveRange(
-                    dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id)
-                        .Where(x => x.DocumentId == id));
+
                 dbContext.DocumentRestrictedSendListsSet.RemoveRange(
                     dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == context.Client.Id)
                         .Where(x => x.DocumentId == id));
