@@ -200,9 +200,11 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         // Компании
         #region DictionaryAgentClientCompanies
-        FrontDictionaryAgentClientCompany GetDictionaryAgentClientCompany(IContext context, int id);
+        FrontDictionaryAgentClientCompany GetDictionaryAgentOrgs(IContext context, int id);
 
-        IEnumerable<FrontDictionaryAgentClientCompany> GetDictionaryAgentClientCompanies(IContext context, FilterDictionaryAgentOrg filter);
+        IEnumerable<FrontDictionaryAgentClientCompany> GetDictionaryAgentOrgs(IContext context, FilterDictionaryAgentOrg filter);
+
+        IEnumerable<AutocompleteItem> GetShortListAgentOrgs(IContext context, FilterDictionaryAgentOrg filter, UIPaging paging);
         #endregion DictionaryCompanies
 
 
