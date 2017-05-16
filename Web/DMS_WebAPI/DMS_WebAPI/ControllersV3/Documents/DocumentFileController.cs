@@ -45,20 +45,29 @@ namespace DMS_WebAPI.ControllersV3.Documents
             //    appUrl = "/" + appUrl;
 
             //var baseUrl = string.Format("{0}://{1}{2}", request.Url.Scheme, request.Url.Authority, appUrl);
-            var baseUrl = $"/{ApiPrefix.V3}";
+            var apiPreffix = ApiPrefix.V3;
 
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 if (model == null) model = new IncomingBase();
                 if (model.Filter == null) model.Filter = new FilterBase();
                 if (model.Paging == null) model.Paging = new UIPaging();
-                var baseurl = param.ToString();
+                var apipreffix = param.ToString();
                 var docProc = DmsResolver.Current.Get<IDocumentFileService>();
                 var items = docProc.GetDocumentFiles(context, model.Filter, model.Paging);
+
+                var fileService = DmsResolver.Current.Get<IFileService>();
+                items.ForEach(x =>
+                {
+                    x.FileLink = fileService.GetFileUri(apipreffix, Modules.Documents, Features.Attachments, EnumDocumentFileType.UserFile.ToString(), x.Id);
+                    x.PdfFileLink = fileService.GetFileUri(apipreffix, Modules.Documents, Features.Attachments, EnumDocumentFileType.PdfFile.ToString(), x.Id);
+                    x.PreviewFileLink = fileService.GetFileUri(apipreffix, Modules.Documents, Features.Attachments, EnumDocumentFileType.PdfPreview.ToString(), x.Id);
+                });
+
                 var res = new JsonResult(items, this);
                 res.Paging = model.Paging;
                 return res;
-            }, baseUrl);
+            }, apiPreffix);
         }
 
         /// <summary>

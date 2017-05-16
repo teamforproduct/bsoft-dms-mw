@@ -78,7 +78,7 @@ namespace DMS_WebAPI
 
 #if !DEBUG
             //TODO
-            taskInit.InitializeMailWorkerTask(dbs);
+            //taskInit.InitializeMailWorkerTask(dbs);
 #endif
 
 #if !DEBUG
