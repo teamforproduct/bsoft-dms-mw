@@ -87,8 +87,13 @@ namespace BL.Model.DocumentCore.FrontModel
         /// Дата последнего изменения записи
         /// </summary>
         public DateTime LastChangeDate { get { return _LastChangeDate; } set { _LastChangeDate=value.ToUTC(); } }
-        private DateTime  _LastChangeDate; 
-		
+        private DateTime  _LastChangeDate;
+
+        public int? SourcePositionId { get; set; }
+        public string SourcePositionName { get; set; }
+        public string SourcePositionExecutorAgentName { get; set; }
+
+        public int? ExecutorPositionId { get; set; }
         public string ExecutorPositionName { get; set; }
         public string ExecutorPositionExecutorAgentName { get; set; }
 

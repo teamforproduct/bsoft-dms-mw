@@ -58,7 +58,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _adminProc.VerifyAccess(_context, CommandType);
 
             //TODO potential two user could add same new version in same time. Probably need to implement CheckOut flag in future
-            _document = _operationDb.RenameDocumentFilePrepare(_context, Model.DocumentId, Model.OrderInDocument);
+            //_document = _operationDb.RenameDocumentFilePrepare(_context, Model.DocumentId, Model.OrderInDocument);
             if (_document == null)
             {
                 throw new UserHasNoAccessToDocument();
@@ -90,9 +90,9 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 CommonDocumentUtilities.SetLastChange(_context, file);
             }
 
-            var events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.RanameDocumentFile, null, oldName + "." + extension, Model.FileName + "." + extension);
+            //var events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.RanameDocumentFile, null, oldName + "." + extension, Model.FileName + "." + extension);
 
-            _operationDb.RenameFile(_context, _document.DocumentFiles, events);
+            //_operationDb.RenameFile(_context, _document.DocumentFiles, events);
 
             return null;
         }

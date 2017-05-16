@@ -44,25 +44,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
-            if (CommandType == EnumDocumentActions.AddDocumentFileUseMainNameFile)
-            {
-                _actionRecords =
-                  _document.DocumentFiles.Where(x => x.IsMainVersion && !x.IsDeleted)
-                            .Where(
-                      x =>
-                          x.Type == EnumFileTypes.Additional && x.ExecutorPositionId == positionId
-                          || x.Type == EnumFileTypes.Main)
-                                                  .Select(x => new InternalActionRecord
-                                                  {
-                                                      FileId = x.Id,
-                                                  });
-                if (!_actionRecords.Any())
-                {
-                    return false;
-                }
-                return true;
-            }
-            return true;
+            return false;
         }
 
         public override bool CanExecute()
@@ -79,28 +61,29 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             }
             Model.ForEach(m =>
             {
-               if (m.OrderInDocument.HasValue)
-               {
-                   var mainFile = _document.DocumentFiles.FirstOrDefault(x => x.OrderInDocument == m.OrderInDocument);
-                   if (mainFile == null || m.Type != mainFile.Type
-                       || (m.Type == EnumFileTypes.Main && (m.IsMainVersion ?? false) && _document.ExecutorPositionId != _context.CurrentPositionId)
-                       || (m.Type == EnumFileTypes.Additional && (m.IsMainVersion ?? false) && mainFile.ExecutorPositionId != _context.CurrentPositionId)
-                       )
-                   {
-                       throw new CouldNotPerformOperation();
-                   }
-                   m.File.Name = mainFile.File.Name;
-                   m.File.Extension = mainFile.File.Extension;
-                   m.File.FileType = mainFile.File.FileType;
-               }
-               else
-               {
-                   m.IsMainVersion = true;
-                   if (m.Type == EnumFileTypes.Main && _document.ExecutorPositionId != _context.CurrentPositionId)
-                   {
-                       throw new CouldNotPerformOperation();
-                   }
-               }
+                if (m.OrderInDocument.HasValue)
+                {
+                    var mainFile = _document.DocumentFiles.FirstOrDefault(x => x.OrderInDocument == m.OrderInDocument);
+                    if (mainFile == null || m.Type != mainFile.Type
+                        || (m.Type == EnumFileTypes.Main && (m.IsMainVersion ?? false) && _document.ExecutorPositionId != _context.CurrentPositionId)
+                        || (m.Type == EnumFileTypes.Additional && (m.IsMainVersion ?? false) && mainFile.ExecutorPositionId != _context.CurrentPositionId)
+                        )
+                    {
+                        throw new CouldNotPerformOperation();
+                    }
+                    m.File.Name = mainFile.File.Name;
+                    m.File.Extension = mainFile.File.Extension;
+                    m.File.FileType = mainFile.File.FileType;
+                    m.ExecutorPositionId = mainFile.ExecutorPositionId;
+                }
+                else
+                {
+                    m.IsMainVersion = true;
+                    if (m.Type == EnumFileTypes.Main && _document.ExecutorPositionId != _context.CurrentPositionId)
+                    {
+                        throw new CouldNotPerformOperation();
+                    }
+                }
             });
             return true;
         }
@@ -108,16 +91,18 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override object Execute()
         {
             var res = new List<int>();
-            var executorPositionExecutor = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, _context.CurrentPositionId);
-            if (!executorPositionExecutor?.ExecutorAgentId.HasValue ?? true)
-            {
-                throw new ExecutorAgentForPositionIsNotDefined();
-            }
+
             using (var transaction = Transactions.GetTransaction())
             {
                 Model.ForEach(m =>
                             {
-                                var att = CommonDocumentUtilities.GetNewDocumentFile(_context, (int)EnumEntytiTypes.Document, _document.ExecutorPositionId.Value, m, executorPositionExecutor);
+                                var executorPositionId = m.Type == EnumFileTypes.Main ? _document.ExecutorPositionId : (m.OrderInDocument.HasValue ? m.ExecutorPositionId : _context.CurrentPositionId);
+                                var executorPositionExecutor = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, executorPositionId);
+                                if (!executorPositionExecutor?.ExecutorAgentId.HasValue ?? true)
+                                {
+                                    throw new ExecutorAgentForPositionIsNotDefined();
+                                }
+                                var att = CommonDocumentUtilities.GetNewDocumentFile(_context, (int)EnumEntytiTypes.Document, m, executorPositionExecutor);
                                 if (m.OrderInDocument.HasValue)
                                 {
                                     att.Version = _operationDb.GetFileNextVersion(_context, att.DocumentId, m.OrderInDocument.Value);
@@ -131,8 +116,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                                 if (_document.IsRegistered.HasValue && !att.EventId.HasValue)
                                 {
                                     att.Event = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, att.DocumentId,
-                                        EnumEventTypes.AddDocumentFile, null, null, $"{att.File.FileName} v.{att.Version}", null, null,
-                                        att.Type != EnumFileTypes.Additional ? (int?)null : _document.ExecutorPositionId);
+                                        EnumEventTypes.AddDocumentFile, null, null, $"{att.File.FileName} v.{att.Version}");
                                 }
                                 res.Add(_operationDb.AddNewFileOrVersion(_context, att));
                                 var admContext = new AdminContext(_context);

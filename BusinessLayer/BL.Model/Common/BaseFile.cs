@@ -25,6 +25,6 @@
         /// <summary>
         /// Размер файла
         /// </summary>
-        public long FileSize { get; set; }
+        public long? FileSize { get; set; }
     }
 }

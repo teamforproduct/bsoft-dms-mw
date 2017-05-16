@@ -21,5 +21,11 @@ namespace BL.Model.AdminCore.FilterModel
         [IgnoreDataMember]
         public bool? IsChecked { get; set; }
 
+        /// <summary>
+        /// Роли не содержащие пермиссий
+        /// </summary>
+        [IgnoreDataMember]
+        public List<int> WithoutFeatures { get; set; }
+
     }
 }

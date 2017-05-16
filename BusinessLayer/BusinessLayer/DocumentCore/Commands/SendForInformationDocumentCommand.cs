@@ -59,56 +59,34 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 ex = new PlanPointHasAlredyBeenLaunched();
             }
-            //else if (!Model.TargetPositionId.HasValue && !Model.TargetAgentId.HasValue)   //TODO Change verification
-            //{
-            //    ex = new TaskIsNotDefined();
-            //}
+            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
 
-            if (Model.TargetPositionId.HasValue
-                && (_document.RestrictedSendLists?.Any() ?? false)
-                && !_document.RestrictedSendLists.Select(x => x.PositionId).Contains(Model.TargetPositionId.Value)
-                )
-            {
-                ex = new DocumentSendListNotFoundInDocumentRestrictedSendList();
-            }
-
-            if (Model.TargetPositionId.HasValue
-                && !_adminProc.VerifySubordination(_context, new VerifySubordination
-                {
-                    SubordinationType = EnumSubordinationTypes.Informing,
-                    TargetPosition = Model.TargetPositionId.Value,
-                    SourcePositions = CommonDocumentUtilities.GetSourcePositionsForSubordinationVeification(_context, Model, _document),
-                }))
-            {
-                ex = new SubordinationHasBeenViolated();
-            }
-
-            if (ex != null)
-            {
-                CommonDocumentUtilities.ThrowError(_context, ex, Model);
-            }
+            if (ex != null) CommonDocumentUtilities.ThrowError(_context, ex, Model);
             CommonDocumentUtilities.PlanDocumentPaperFromSendList(_context, _document, Model);
             return true;
         }
         public override object Execute()
         {
             _document.Subscriptions = null;
-
             var newEvent = Model.CloseEvent = Model.StartEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
-            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.AccessLevel, newEvent.Accesses);
+            var ex = CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses,
+                new VerifySubordination
+                {
+                    SubordinationType = EnumSubordinationTypes.Informing,
+                    TargetPosition = newEvent.Accesses.Where(x => x.AccessType != EnumEventAccessTypes.Source && x.PositionId.HasValue).Select(x => x.PositionId.Value).ToList(),
+                    SourcePositions = CommonDocumentUtilities.GetSourcePositionsForSubordinationVeification(_context, Model, _document),
+                },
+                true, Model.AccessLevel);
+            if (ex != null) CommonDocumentUtilities.ThrowError(_context, ex, Model);
             CommonDocumentUtilities.SetLastChange(_context, Model);
             _document.SendLists = new List<InternalDocumentSendList> { Model };
 
             if (Model.IsAddControl)
             {
-                _document.Waits = CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromSourceToSource,false);
+                _document.Waits = CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromSourceToSource, false);
             }
 
             _operationDb.SendBySendList(_context, _document);
-
-            //if (_document.IsLaunchPlan)
-            //    DmsResolver.Current.Get<IAutoPlanService>().ManualRunAutoPlan(_context, null, _document.Id);
-
 
             return null;
         }

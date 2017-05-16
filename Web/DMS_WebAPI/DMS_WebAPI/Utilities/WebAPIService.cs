@@ -40,14 +40,11 @@ namespace DMS_WebAPI.Utilities
     internal class WebAPIService
     {
         private readonly WebAPIDbProcess _webDb;
-        private AddAgentEmployeeUser employee;
 
         public WebAPIService(WebAPIDbProcess webDb)
         {
             _webDb = webDb;
         }
-
-        private string FormRoleNameAdmin(string clientCode) => FormRoleName("Admin", clientCode);
 
         private string FormRoleName(string roleName, string clientCode) => $"{clientCode.Trim()}_{roleName.Trim()}";
 
@@ -233,7 +230,6 @@ namespace DMS_WebAPI.Utilities
         public int AddUserEmployeeInOrg(IContext context, AddEmployeeInOrg model, AddJournalsInOrg jmodel = null, bool sendEmail = true)
         {
             var dicService = DmsResolver.Current.Get<IDictionaryService>();
-            var admService = DmsResolver.Current.Get<IAdminService>();
             var employee = new AddAgentEmployeeUser();
             int assignmentId = -1;
             int orgId = -1;
@@ -338,12 +334,14 @@ namespace DMS_WebAPI.Utilities
 
                     if (model.PositionId == null && !string.IsNullOrEmpty(model.PositionName))
                     {
-                        var pos = new AddPosition();
-                        pos.DepartmentId = depId;
-                        pos.FullName = model.PositionName;
-                        pos.Name = model.PositionName;
-                        pos.IsActive = true;
-                        pos.Role = model.Role;
+                        var pos = new AddPosition
+                        {
+                            DepartmentId = depId,
+                            FullName = model.PositionName,
+                            Name = model.PositionName,
+                            IsActive = true,
+                            Role = model.Role
+                        };
 
                         // Создается должность. + доступы к журналам, рассылка и роль
                         posId = (int)dicService.ExecuteAction(EnumDictionaryActions.AddPosition, context, pos);
@@ -472,7 +470,7 @@ namespace DMS_WebAPI.Utilities
         {
             var user = GetUser(context, agentId);
 
-            if (user == null) throw new UserIsNotDefined(); ;
+            if (user == null) throw new UserIsNotDefined(); 
 
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             tmpService.ExecuteAction(EnumDictionaryActions.DeleteAgentEmployee, context, agentId);
@@ -556,7 +554,7 @@ namespace DMS_WebAPI.Utilities
             {
                 // запоминаю пользователей клиента, которых потенциально нужно удалить
                 userIDs = _webDb.GetUserClientServerList(new FilterAspNetUserClientServer { ClientIDs = new List<int> { clientId } }).Select(x => x.UserId).ToList();
-            };
+            }
 
             if (userIDs.Count() == 0) return;
 
@@ -572,9 +570,9 @@ namespace DMS_WebAPI.Utilities
                 // пользователи, которые завязаны на других клиентов удалять нельзя, но они в списке для удаления
                 var safeList = _webDb.GetUserClientServerList(new FilterAspNetUserClientServer { UserIDs = userIDs }).Select(x => x.UserId).ToList();
 
-                if (safeList?.Count() > 0) userIDs.RemoveAll(x => safeList.Contains(x));
+                if (safeList.Any()) userIDs.RemoveAll(x => safeList.Contains(x));
 
-                if (userIDs?.Count() > 0)
+                if (userIDs.Any())
                 {
                     _webDb.DeleteUserContexts(new FilterAspNetUserContext { UserIDs = userIDs });
                     _webDb.DeleteUserFingerprints(new FilterAspNetUserFingerprint { UserIDs = userIDs });
@@ -613,6 +611,13 @@ namespace DMS_WebAPI.Utilities
 
         public bool ExistsClient(FilterAspNetClients filter)
         {
+            var setVals = DmsResolver.Current.Get<ISettingValues>();
+            var banHosts = setVals.GetSystemHosts();
+
+            if (filter == null)  throw new FilterRequired();
+
+            if (banHosts.Contains(filter.Code)) return true;
+
             var f = new FilterAspNetClientRequests { CodeExact = filter.Code };
 
             // Проверка уникальности доменного имени
@@ -652,7 +657,7 @@ namespace DMS_WebAPI.Utilities
                 // isNew можно вычислить только на текущий момент времени (пользователь может сделать несколько компаний)
                 var isNew = !ExistsUser(model.Email);
 
-                callbackurl += String.Format("?hash={0}&login={1}&code={2}&isNew={3}&language={4}", model.HashCode, model.Email, model.ClientCode, isNew, model.Language);
+                callbackurl +=$"?hash={model.HashCode}&login={model.Email}&code={model.ClientCode}&isNew={isNew}&language={model.Language}";
 
                 var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.RestorePasswordAgentUserVerificationEmail);
                 var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
@@ -767,7 +772,6 @@ namespace DMS_WebAPI.Utilities
             if (_webDb.ExistsClients(new FilterAspNetClients { Code = model.ClientCode })) throw new ClientCodeAlreadyExists(model.ClientCode);
 
             var httpClient = DmsResolver.Current.Get<HttpClient>();
-            var hostCreated = false;
 
             var tmpService = DmsResolver.Current.Get<ISettingValues>();
             var mHost = tmpService.GetMainHost();
@@ -782,7 +786,6 @@ namespace DMS_WebAPI.Utilities
             switch (responseString)
             {
                 case "Created":
-                    hostCreated = true;//- успешное выполнение
                     break;
                 case "BadRequest":
                     throw new ClientCodeRequired(); //- не указан параметр fqdn
@@ -853,14 +856,9 @@ namespace DMS_WebAPI.Utilities
             var languages = DmsResolver.Current.Get<ILanguages>();
 
             // Если не указан язык, беру язык по умолчанию 
-            if (string.IsNullOrEmpty(model.Language))
-            {
-                ctx.Employee.LanguageId = languages.GetLanguageIdByHttpContext();
-            }
-            else
-            {
-                ctx.Employee.LanguageId = languages.GetLanguageIdByCode(model.Language);
-            }
+            ctx.Employee.LanguageId = string.IsNullOrEmpty(model.Language) 
+                ? languages.GetLanguageIdByHttpContext() 
+                : languages.GetLanguageIdByCode(model.Language);
 
             var clientService = DmsResolver.Current.Get<IClientService>();
 

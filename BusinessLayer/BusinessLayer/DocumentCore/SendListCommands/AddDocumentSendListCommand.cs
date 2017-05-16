@@ -99,7 +99,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
                 && !_adminProc.VerifySubordination(_context, new VerifySubordination
                 {
                     SubordinationType = EnumSubordinationTypes.Execution,
-                    TargetPosition = Model.TargetPositionId.Value,
+                    TargetPosition = new List<int> { Model.TargetPositionId.Value },    //TODO test
                     SourcePositions = CommonDocumentUtilities.GetSourcePositionsForSubordinationVeification(_context, _sendList, _document, true),
                 }))
             {

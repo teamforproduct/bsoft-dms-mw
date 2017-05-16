@@ -61,7 +61,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _adminProc.VerifyAccess(_context, CommandType);
 
             //TODO potential two user could add same new version in same time. Probably need to implement CheckOut flag in future
-            _document = _operationDb.ModifyDocumentFilePrepare(_context, Model.DocumentId, Model.OrderInDocument, Model.Version);
+            //TODO REDISIGN!!!!!!!!!
+            _document = _operationDb.ModifyDocumentFilePrepare(_context, Model.FileId);
             if (_document == null)
             {
                 throw new UserHasNoAccessToDocument();
@@ -85,7 +86,11 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _file.Description = Model.Description;
 
             CommonDocumentUtilities.SetLastChange(_context, _file);
-            _operationDb.UpdateFileOrVersion(_context, _file);
+            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _file.DocumentId, EnumEventTypes.ModifyDocumentFile, Model.EventDate, Model.Description, null, _file.EventId, null, Model.TargetAccessGroups);
+            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
+            _file.Event = newEvent;
+
+            _operationDb.UpdateFileOrVersion(_context, _document);
             return _file.Id;
         }
     }

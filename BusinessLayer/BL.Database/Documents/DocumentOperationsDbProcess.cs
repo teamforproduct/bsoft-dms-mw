@@ -165,14 +165,24 @@ namespace BL.Database.Documents
                             PositionId = x.PositionId,
                         }
                         ).ToList();
-
+                    res.Document.DocumentFiles = dbContext.DocumentFilesSet.Where(x => x.DocumentId == documentId)
+                        .Select(x => new InternalDocumentFile
+                    {
+                        Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
+                        ExecutorPositionId = x.ExecutorPositionId,
+                        Type = (EnumFileTypes)x.TypeId,
+                        IsWorkedOut = x.IsWorkedOut,
+                        IsMainVersion = x.IsMainVersion,
+                        IsDeleted = x.IsDeleted,
+                    }).ToList();
                     var positionAccesses = res.Document?.Accesses.Where(y => y.PositionId.HasValue).Select(y => y.PositionId.Value).ToList();
 
                     if (positionAccesses.Any())
                     {
                         res.PositionWithActions = GetBlankPositionWithActions(context, positionAccesses);
-                        res.ActionsList = GetActionsListForCurrentPositionsList(context, new List<EnumObjects> { EnumObjects.Documents, EnumObjects.DocumentEvents, EnumObjects.DocumentWaits, EnumObjects.DocumentSubscriptions }, positionAccesses);
-
+                        res.ActionsList = GetActionsListForCurrentPositionsList(context, new List<EnumObjects> { EnumObjects.Documents, EnumObjects.DocumentEvents, EnumObjects.DocumentWaits, EnumObjects.DocumentSubscriptions, EnumObjects.DocumentFiles }, positionAccesses, true);
                     }
                 }
                 transaction.Complete();
@@ -382,7 +392,6 @@ namespace BL.Database.Documents
                 return res;
             }
         }
-
         private List<InternalDictionaryPositionWithActions> GetBlankPositionWithActions(IContext context, List<int> positionAccesses)
         {
             var dbContext = context.DbContext as DmsContext;
@@ -407,8 +416,7 @@ namespace BL.Database.Documents
                     ExecutorAgentName = x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : null),
                 }).ToList();
         }
-
-        private Dictionary<int, List<InternalSystemActionForDocument>> GetActionsListForCurrentPositionsList(IContext context, IEnumerable<EnumObjects> objects, List<int> positionAccesses)
+        private Dictionary<int, List<InternalSystemActionForDocument>> GetActionsListForCurrentPositionsList(IContext context, IEnumerable<EnumObjects> objects, List<int> positionAccesses, bool IsNotEmptyCategory = false)
         {
             var dbContext = context.DbContext as DmsContext;
             var filterObjectsContains = PredicateBuilder.New<SystemActions>(false);
@@ -420,18 +428,11 @@ namespace BL.Database.Documents
             {
                 if (positionAccesses.Contains(posId))
                 {
-                    var qry = dbContext.SystemActionsSet
-                        .Where(filterObjectsContains)
-                        .Where(x => (//x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
-                                        x.Permission.RolePermissions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
-                                        y.Role.UserRoles.Any(z => z.PositionExecutor.AgentId == context.CurrentAgentId)))
-                        //.Where(x => x.IsVisibleInMenu &&
-                        //            (!x.IsGrantable ||
-                        //                //x.RoleActions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
-                        //                x.Permission.RolePermissions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
-                        //                y.Role.UserRoles.Any(z => z.PositionExecutor.AgentId == context.CurrentAgentId)))
-                        );
-
+                    var qry = dbContext.SystemActionsSet.Where(filterObjectsContains);
+                    if (IsNotEmptyCategory)
+                        qry = qry.Where(x => !string.IsNullOrEmpty(x.Category));
+                    qry = qry.Where(x => (x.Permission.RolePermissions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
+                                        y.Role.UserRoles.Any(z => z.PositionExecutor.AgentId == context.CurrentAgentId))) );
                     var qryActLst = qry.Select(a => new InternalSystemActionForDocument
                     {
                         DocumentAction = (EnumDocumentActions)a.Id,
@@ -1017,7 +1018,11 @@ namespace BL.Database.Documents
                     dbContext.SaveChanges();
                     ((List<InternalDocumentWait>)document.Waits).ForEach(x => x.OnEvent.TaskId = taskDb.Id);
                 }
-
+                if (document.Accesses?.Any() ?? false)
+                {
+                    dbContext.DocumentAccessesSet.AddRange(CommonQueries.GetDbDocumentAccesses(context, document.Accesses, document.Id).ToList());
+                    dbContext.SaveChanges();
+                }
                 if (document.Waits?.Any() ?? false)
                 {
                     var waitDb = ModelConverter.GetDbDocumentWaits(document.Waits).ToList();
@@ -1045,9 +1050,11 @@ namespace BL.Database.Documents
                 var waitParentDb = ModelConverter.GetDbDocumentWait(wait.ParentWait);
                 dbContext.DocumentWaitsSet.Add(waitParentDb);
                 dbContext.SaveChanges();
+                dbContext.DocumentFilesSet.Where(x => x.EventId == wait.OnEvent.Id).Update(x=> new DocumentFiles { EventId = waitParentDb.OnEventId }); //перекидываем файлы на новый ИД
 
                 var eventDb = ModelConverter.GetDbDocumentEvent(wait.OnEvent);
                 eventDb.Id = wait.OnEvent.Id;
+                eventDb.ParentEventId = waitParentDb.OnEventId;
                 dbContext.SafeAttach(eventDb);
                 dbContext.Entry(eventDb).State = EntityState.Modified;
                 dbContext.SaveChanges();
@@ -1084,16 +1091,23 @@ namespace BL.Database.Documents
             }
         }
 
-        public void ChangeTargetDocumentWait(IContext context, InternalDocumentWait wait, InternalDocumentEvent newEvent)
+        public void ChangeTargetDocumentWait(IContext context, InternalDocument document)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var eventDb = ModelConverter.GetDbDocumentEvent(newEvent);
-                dbContext.DocumentEventsSet.Add(eventDb);
+                if (document.Accesses?.Any() ?? false)
+                {
+                    dbContext.DocumentAccessesSet.AddRange(CommonQueries.GetDbDocumentAccesses(context, document.Accesses, document.Id).ToList());
+                    dbContext.SaveChanges();
+                }
+                var eventsDb = ModelConverter.GetDbDocumentEvents(document.Events).ToList();
+                dbContext.DocumentEventsSet.AddRange(eventsDb);
                 dbContext.SaveChanges();
+                var events = document.Events.ToList();
+                for (var i = 0; i < eventsDb.Count(); i++) events[i].Id = eventsDb[i].Id;
 
-                var waitDb = ModelConverter.GetDbDocumentWait(wait);
+                var waitDb = ModelConverter.GetDbDocumentWait(document.Waits.First());
                 dbContext.SafeAttach(waitDb);
                 var entry = dbContext.Entry(waitDb);
                 entry.Property(x => x.LastChangeDate).IsModified = true;
@@ -1101,10 +1115,8 @@ namespace BL.Database.Documents
                 entry.Property(x => x.TargetDescription).IsModified = true;
                 entry.Property(x => x.AttentionDate).IsModified = true;
                 dbContext.SaveChanges();
-                CommonQueries.AddFullTextCacheInfo(context, wait.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
-
+                CommonQueries.AddFullTextCacheInfo(context, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
-
             }
         }
 
@@ -1113,104 +1125,109 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
+                if (document.Accesses?.Any() ?? false)
                 {
-                    var offEvent = ModelConverter.GetDbDocumentEvent(document.Waits.First().OffEvent);
-                    foreach (var docWait in document.Waits)
-                    {
-                        var wait = ModelConverter.GetDbDocumentWait(docWait);
-                        wait.OffEvent = null;
-                        dbContext.SafeAttach(wait);
-                        wait.OffEvent = offEvent;
-                        var entry = dbContext.Entry(wait);
-                        entry.Property(x => x.Id).IsModified = true;
-                        entry.Property(x => x.ResultTypeId).IsModified = true;
-                        entry.Property(x => x.LastChangeDate).IsModified = true;
-                        entry.Property(x => x.LastChangeUserId).IsModified = true;
-                    }
-                    var sendList = document.SendLists?.FirstOrDefault();
-                    if (sendList != null)
-                    {
-
-                        var sendListDb = new DocumentSendLists
-                        {
-                            Id = sendList.Id,
-                            LastChangeDate = sendList.LastChangeDate,
-                            LastChangeUserId = sendList.LastChangeUserId
-                        };
-                        dbContext.SafeAttach(sendListDb);
-                        var entry = dbContext.Entry(sendListDb);
-                        entry.Property(x => x.LastChangeDate).IsModified = true;
-                        entry.Property(x => x.LastChangeUserId).IsModified = true;
-                        if (sendList.StartEventId != null)
-                        {
-                            sendListDb.CloseEvent = offEvent;
-                        }
-                        else
-                        {
-                            sendListDb.StartEventId = null;
-                            entry.Property(x => x.StartEventId).IsModified = true;
-                        }
-                    }
-                    var subscription = document.Subscriptions?.FirstOrDefault();
-                    if (subscription != null)
-                    {
-                        var docHash = CommonQueries.GetDocumentHash(context, document.Id,
-                                                                    isUseInternalSign, isUseCertificateSign, subscription, serverMapPath,
-                                                                     subscription.SubscriptionStates == EnumSubscriptionStates.Sign ||
-                                                                     subscription.SubscriptionStates == EnumSubscriptionStates.Visa ||
-                                                                     subscription.SubscriptionStates == EnumSubscriptionStates.Аgreement ||
-                                                                     subscription.SubscriptionStates == EnumSubscriptionStates.Аpproval,
-                                                                     true);
-                        var subscriptionDb = new DocumentSubscriptions
-                        {
-                            Id = subscription.Id,
-                            Description = subscription.Description,
-                            SubscriptionStateId = (int)subscription.SubscriptionStates,
-                            Hash = docHash?.Hash,
-                            FullHash = docHash?.FullHash,
-
-                            SigningTypeId = (int)subscription.SigningType,
-
-                            InternalSign = docHash?.InternalSign,
-                            CertificateSign = docHash?.CertificateSign,
-                            CertificateId = subscription.CertificateId,
-                            CertificateSignCreateDate = subscription.SigningType == EnumSigningTypes.CertificateSign ? DateTime.UtcNow : (DateTime?)null,
-                            CertificatePositionId = subscription.CertificatePositionId,
-                            CertificatePositionExecutorAgentId = subscription.CertificatePositionExecutorAgentId,
-                            CertificatePositionExecutorTypeId = subscription.CertificatePositionExecutorTypeId,
-                            LastChangeDate = subscription.LastChangeDate,
-                            LastChangeUserId = subscription.LastChangeUserId
-                        };
-                        dbContext.SafeAttach(subscriptionDb);
-                        if (subscription.DoneEvent != null)
-                        {
-                            subscriptionDb.DoneEvent = offEvent;
-                        }
-                        var entry = dbContext.Entry(subscriptionDb);
-                        entry.Property(x => x.Id).IsModified = true;
-                        entry.Property(x => x.Description).IsModified = true;
-                        entry.Property(x => x.SubscriptionStateId).IsModified = true;
-                        entry.Property(x => x.Hash).IsModified = true;
-                        entry.Property(x => x.FullHash).IsModified = true;
-                        entry.Property(x => x.LastChangeDate).IsModified = true;
-                        entry.Property(x => x.LastChangeUserId).IsModified = true;
-
-                        entry.Property(x => x.SigningTypeId).IsModified = true;
-
-                        entry.Property(x => x.InternalSign).IsModified = true;
-                        entry.Property(x => x.CertificateSign).IsModified = true;
-                        entry.Property(x => x.CertificateId).IsModified = true;
-                        entry.Property(x => x.CertificateSignCreateDate).IsModified = true;
-                        entry.Property(x => x.CertificatePositionId).IsModified = true;
-                        entry.Property(x => x.CertificatePositionExecutorAgentId).IsModified = true;
-                        entry.Property(x => x.CertificatePositionExecutorTypeId).IsModified = true;
-                    }
+                    dbContext.DocumentAccessesSet.AddRange(CommonQueries.GetDbDocumentAccesses(context, document.Accesses, document.Id).ToList());
                     dbContext.SaveChanges();
-                    var positions = document.Waits.SelectMany(x => x.OffEvent.Accesses).Where(x => x.PositionId.HasValue).Select(x => x.PositionId.Value).ToList();
-                    CommonQueries.ModifyDocumentAccessesStatistics(context, document.Id, positions);
-                    CommonQueries.AddFullTextCacheInfo(context, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
-                    transaction.Complete();
                 }
+                var offEventDb = ModelConverter.GetDbDocumentEvent(document.Waits.First().OffEvent);
+                foreach (var docWait in document.Waits)
+                {
+                    var wait = ModelConverter.GetDbDocumentWait(docWait);
+                    wait.OffEvent = null;
+                    dbContext.SafeAttach(wait);
+                    wait.OffEvent = offEventDb;
+                    var entry = dbContext.Entry(wait);
+                    entry.Property(x => x.Id).IsModified = true;
+                    entry.Property(x => x.ResultTypeId).IsModified = true;
+                    entry.Property(x => x.LastChangeDate).IsModified = true;
+                    entry.Property(x => x.LastChangeUserId).IsModified = true;
+                }
+                var sendList = document.SendLists?.FirstOrDefault();
+                if (sendList != null)
+                {
+
+                    var sendListDb = new DocumentSendLists
+                    {
+                        Id = sendList.Id,
+                        LastChangeDate = sendList.LastChangeDate,
+                        LastChangeUserId = sendList.LastChangeUserId
+                    };
+                    dbContext.SafeAttach(sendListDb);
+                    var entry = dbContext.Entry(sendListDb);
+                    entry.Property(x => x.LastChangeDate).IsModified = true;
+                    entry.Property(x => x.LastChangeUserId).IsModified = true;
+                    if (sendList.StartEventId != null)
+                    {
+                        sendListDb.CloseEvent = offEventDb;
+                    }
+                    else
+                    {
+                        sendListDb.StartEventId = null;
+                        entry.Property(x => x.StartEventId).IsModified = true;
+                    }
+                }
+                var subscription = document.Subscriptions?.FirstOrDefault();
+                if (subscription != null)
+                {
+                    var docHash = CommonQueries.GetDocumentHash(context, document.Id,
+                                                                isUseInternalSign, isUseCertificateSign, subscription, serverMapPath,
+                                                                 subscription.SubscriptionStates == EnumSubscriptionStates.Sign ||
+                                                                 subscription.SubscriptionStates == EnumSubscriptionStates.Visa ||
+                                                                 subscription.SubscriptionStates == EnumSubscriptionStates.Аgreement ||
+                                                                 subscription.SubscriptionStates == EnumSubscriptionStates.Аpproval,
+                                                                 true);
+                    var subscriptionDb = new DocumentSubscriptions
+                    {
+                        Id = subscription.Id,
+                        Description = subscription.Description,
+                        SubscriptionStateId = (int)subscription.SubscriptionStates,
+                        Hash = docHash?.Hash,
+                        FullHash = docHash?.FullHash,
+
+                        SigningTypeId = (int)subscription.SigningType,
+
+                        InternalSign = docHash?.InternalSign,
+                        CertificateSign = docHash?.CertificateSign,
+                        CertificateId = subscription.CertificateId,
+                        CertificateSignCreateDate = subscription.SigningType == EnumSigningTypes.CertificateSign ? DateTime.UtcNow : (DateTime?)null,
+                        CertificatePositionId = subscription.CertificatePositionId,
+                        CertificatePositionExecutorAgentId = subscription.CertificatePositionExecutorAgentId,
+                        CertificatePositionExecutorTypeId = subscription.CertificatePositionExecutorTypeId,
+                        LastChangeDate = subscription.LastChangeDate,
+                        LastChangeUserId = subscription.LastChangeUserId
+                    };
+                    dbContext.SafeAttach(subscriptionDb);
+                    if (subscription.DoneEvent != null)
+                    {
+                        subscriptionDb.DoneEvent = offEventDb;
+                    }
+                    var entry = dbContext.Entry(subscriptionDb);
+                    entry.Property(x => x.Id).IsModified = true;
+                    entry.Property(x => x.Description).IsModified = true;
+                    entry.Property(x => x.SubscriptionStateId).IsModified = true;
+                    entry.Property(x => x.Hash).IsModified = true;
+                    entry.Property(x => x.FullHash).IsModified = true;
+                    entry.Property(x => x.LastChangeDate).IsModified = true;
+                    entry.Property(x => x.LastChangeUserId).IsModified = true;
+
+                    entry.Property(x => x.SigningTypeId).IsModified = true;
+
+                    entry.Property(x => x.InternalSign).IsModified = true;
+                    entry.Property(x => x.CertificateSign).IsModified = true;
+                    entry.Property(x => x.CertificateId).IsModified = true;
+                    entry.Property(x => x.CertificateSignCreateDate).IsModified = true;
+                    entry.Property(x => x.CertificatePositionId).IsModified = true;
+                    entry.Property(x => x.CertificatePositionExecutorAgentId).IsModified = true;
+                    entry.Property(x => x.CertificatePositionExecutorTypeId).IsModified = true;
+                }
+                dbContext.SaveChanges();
+                var waits = document.Waits.ToList();
+                for (var i = 0; i < waits.Count(); i++) waits[i].OffEventId = offEventDb.Id;
+                var positions = document.Waits.SelectMany(x => x.OffEvent.Accesses).Where(x => x.PositionId.HasValue).Select(x => x.PositionId.Value).ToList();
+                CommonQueries.ModifyDocumentAccessesStatistics(context, document.Id, positions);
+                CommonQueries.AddFullTextCacheInfo(context, document.Id, EnumObjects.Documents, EnumOperationType.UpdateFull);
+                transaction.Complete();
             }
         }
 
@@ -1464,7 +1481,7 @@ namespace BL.Database.Documents
                 return doc;
             }
         }
-        public void ControlOffSendListPrepare(IContext context, InternalDocument document)
+        public void SetSendListForControlOffPrepare(IContext context, InternalDocument document)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
@@ -1564,7 +1581,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public void ControlOffSubscriptionPrepare(IContext context, InternalDocument document)
+        public void SetSubscriptionForControlOffPrepare(IContext context, InternalDocument document)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
@@ -1600,7 +1617,11 @@ namespace BL.Database.Documents
                     dbContext.SaveChanges();
                     ((List<InternalDocumentEvent>)document.Events).ForEach(x => x.TaskId = taskDb.Id);
                 }
-
+                if (document.Accesses?.Any() ?? false)
+                {
+                    dbContext.DocumentAccessesSet.AddRange(CommonQueries.GetDbDocumentAccesses(context, document.Accesses, document.Id).ToList());
+                    dbContext.SaveChanges();
+                }
                 if (document.Events?.Any() ?? false)
                 {
                     var eventsDb = ModelConverter.GetDbDocumentEvents(document.Events).ToList();
@@ -1842,8 +1863,7 @@ namespace BL.Database.Documents
                 }
                 if (document.Accesses?.Any() ?? false)
                 {
-                    dbContext.DocumentAccessesSet.AddRange(
-                        CommonQueries.GetDbDocumentAccesses(context, document.Accesses, document.Id).ToList());
+                    dbContext.DocumentAccessesSet.AddRange(CommonQueries.GetDbDocumentAccesses(context, document.Accesses, document.Id).ToList());
                     dbContext.SaveChanges();
                 }
 
@@ -2159,14 +2179,6 @@ namespace BL.Database.Documents
                             }
                         }).ToList();
                 }
-                doc.RestrictedSendLists = dbContext.DocumentRestrictedSendListsSet
-                    .Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == sendList.DocumentId)
-                    .Select(x => new InternalDocumentRestrictedSendList
-                    {
-                        ClientId = doc.ClientId,
-                        EntityTypeId = doc.EntityTypeId,
-                        PositionId = x.PositionId
-                    }).ToList();
                 transaction.Complete();
                 return doc;
             }
@@ -2204,19 +2216,51 @@ namespace BL.Database.Documents
                             }
                         }).ToList();
                 }
-                doc.RestrictedSendLists = dbContext.DocumentRestrictedSendListsSet
-                    .Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == sendList.DocumentId)
-                    .Select(x => new InternalDocumentRestrictedSendList
-                    {
-                        ClientId = x.ClientId,
-                        EntityTypeId = x.EntityTypeId,
-                        PositionId = x.PositionId,
-                    }).ToList();
                 transaction.Complete();
                 return doc;
             }
         }
 
+        public void SetRestrictedSendListsPrepare(IContext context, InternalDocument document)
+        {
+            if (document == null) return;
+            var dbContext = context.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
+            {
+                document.RestrictedSendLists = dbContext.DocumentRestrictedSendListsSet
+                    .Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == document.Id)
+                    .Select(x => new InternalDocumentRestrictedSendList
+                    {
+                        Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
+                        PositionId = x.PositionId,
+                        DocumentId = x.DocumentId,
+                        AccessLevel = (EnumAccessLevels)x.AccessLevelId,
+                    }).ToList();
+                transaction.Complete();
+            }
+        }
+        public void SetParentEventAccessesPrepare(IContext context, InternalDocument document, int? eventId)
+        {
+            if (document == null || !eventId.HasValue) return;
+            var dbContext = context.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
+            {
+                document.ParentEventAccesses = dbContext.DocumentEventAccessesSet
+                    .Where(x => x.ClientId == context.Client.Id).Where(x => x.EventId == eventId)
+                    .Select(x => new InternalDocumentEventAccess
+                    {
+                        Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
+                        DocumentId = x.DocumentId,
+                        EventId = x.EventId,
+                        PositionId = x.PositionId,
+                    }).ToList();
+                transaction.Complete();
+            }
+        }
         #endregion DocumentMainLogic 
 
         #region DocumentLink    
@@ -2422,17 +2466,7 @@ namespace BL.Database.Documents
                                                                     EntityTypeId = x.EntityTypeId,
                                                             }
                         }).FirstOrDefault();
-                docRes.RestrictedSendLists = dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == docRes.Id)
-                    .Select(x => new InternalDocumentRestrictedSendList
-                    {
-                        Id = x.Id,
-                        ClientId = x.ClientId,
-                        EntityTypeId = x.EntityTypeId,
-                        DocumentId = x.DocumentId,
-                        PositionId = x.PositionId
-                    }).ToList();
-
-
+                SetRestrictedSendListsPrepare(context, docRes);
                 docRes.SendLists = dbContext.DocumentSendListsSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == docRes.Id)
                     .Select(x => new InternalDocumentSendList
                     {

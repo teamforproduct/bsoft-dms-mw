@@ -185,6 +185,22 @@ namespace BL.Logic.AdminCore
         #region [+] PositionRoles ...
         public IEnumerable<FrontAdminPositionRole> GetPositionRolesDIP(IContext context, FilterAdminPositionRoleDIP filter)
         {
+            // Тонкий момент, проверяю не является ли сотрудник локальным администратором.
+            // Если не локальный значит, надеюсь, что глобальный и разрешаю давать все роли для должности
+            var employeeDepartments = GetInternalEmployeeDepartments(context, context.Employee.Id);
+
+            if (employeeDepartments != null)
+            {
+                if (filter == null) filter = new FilterAdminPositionRoleDIP();
+
+                filter.WithoutFeatures = new List<int> {
+                        DmsDbImportData.GetFeatureId(Modules.Department,Features.Admins ), //Добавление локальных администраторов, 
+                        DmsDbImportData.GetFeatureId(Modules.Auditlog,Features.Info ), //Просмотр полной истории подключений,
+                        DmsDbImportData.GetFeatureId(Modules.Position,Features.DocumentAccesses ), // Управление доступом к документу 
+                    };
+
+            }
+
             return _adminDb.GetPositionRolesDIP(context, filter);
         }
 
@@ -971,9 +987,12 @@ namespace BL.Logic.AdminCore
             return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
         }
 
-        public bool VerifySubordination(IContext context, VerifySubordination model)
+        public bool VerifySubordination(IContext context, VerifySubordination model, bool isThrowException = false)
         {
-            return _adminDb.VerifySubordination(context, model);
+            var res = _adminDb.VerifySubordination(context, model);
+            if (!res && isThrowException)
+                throw new SubordinationHasBeenViolated();
+            return res;
         }
 
         #endregion`

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Documents.Interfaces;
 using BL.Database.FileWorker;
@@ -10,6 +11,8 @@ using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
+using BL.Logic.SystemServices.FileService;
+using BL.CrossCutting.DependencyInjection;
 
 namespace BL.Logic.DocumentCore
 {
@@ -36,16 +39,17 @@ namespace BL.Logic.DocumentCore
             {
                 throw new UnknownDocumentFile();
             }
-            if (fileType == EnumDocumentFileType.UserFile)
-            {
-                _fStore.GetFile(ctx, fl, fileType);
-            }
-            else
-            {
-                _fStore.GetFile(ctx, fl, fileType);
-                var internalFile = new InternalDocumentFile { Id = fl.Id, LastPdfAccess = DateTime.Now, PdfCreated = true, File = fl.File};
-                _dbProcess.UpdateFilePdfView(ctx, internalFile);
-            }
+            if (!fl.IsDeleted)
+                if (fileType == EnumDocumentFileType.UserFile)
+                {
+                    _fStore.GetFile(ctx, fl, fileType);
+                }
+                else
+                {
+                    _fStore.GetFile(ctx, fl, fileType);
+                    var internalFile = new InternalDocumentFile { Id = fl.Id, LastPdfAccess = DateTime.Now, PdfCreated = true, File = fl.File };
+                    _dbProcess.UpdateFilePdfView(ctx, internalFile);
+                }
 
             return fl;
         }

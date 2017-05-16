@@ -54,6 +54,8 @@ namespace BL.Database.Documents.Interfaces
 
         InternalDocumentRestrictedSendList DeleteDocumentRestrictedSendListPrepare(IContext context, int restSendListId);
         InternalDocument SendForInformationDocumentPrepare(IContext context, InternalDocumentSendList model);
+        void SetRestrictedSendListsPrepare(IContext context, InternalDocument document);
+        void SetParentEventAccessesPrepare(IContext context, InternalDocument document, int? eventId);
         void CloseDocumentWait(IContext context, InternalDocument document, bool isUseInternalSign, bool isUseCertificateSign, string serverMapPath);
 
         void VerifySigningDocument(IContext ctx, int documentId, bool isUseInternalSign, bool isUseCertificateSign, string serverMapPath);
@@ -81,7 +83,7 @@ namespace BL.Database.Documents.Interfaces
 
         void ModifyDocumentTags(IContext context, InternalDocumentTag model);
         void ChangeDocumentWait(IContext context, InternalDocumentWait wait);
-        void ChangeTargetDocumentWait(IContext ctx, InternalDocumentWait wait, InternalDocumentEvent newEvent);
+        void ChangeTargetDocumentWait(IContext ctx, InternalDocument document);
         void SendBySendList(IContext context, InternalDocument document);
 
         List<int> AddSavedFilter(IContext context, IEnumerable<InternalDocumentSavedFilter> model);
@@ -93,8 +95,8 @@ namespace BL.Database.Documents.Interfaces
         DocumentActionsModel GetDocumentFileActionsModelPrepare(IContext context, int? documentId, int? id = null);
         DocumentActionsModel GetDocumentPaperActionsModelPrepare(IContext context, int documentId);
 
-        void ControlOffSendListPrepare(IContext context, InternalDocument document);
-        void ControlOffSubscriptionPrepare(IContext context, InternalDocument document);
+        void SetSendListForControlOffPrepare(IContext context, InternalDocument document);
+        void SetSubscriptionForControlOffPrepare(IContext context, InternalDocument document);
         void ControlOffMarkExecutionWaitPrepare(IContext context, InternalDocument document);
         void ControlOffAskPostponeDueDateWaitPrepare(IContext context, InternalDocument document);
 

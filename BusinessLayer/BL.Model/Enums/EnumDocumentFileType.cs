@@ -18,9 +18,5 @@
         /// </summary>
         PdfPreview = 2,
 
-        /// <summary>
-        /// User profile image
-        /// </summary>
-        Avatar = 3
     }
 }

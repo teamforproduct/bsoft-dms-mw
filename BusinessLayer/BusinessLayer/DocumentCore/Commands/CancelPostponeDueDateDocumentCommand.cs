@@ -7,6 +7,7 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using System.Collections.Generic;
 using BL.Model.DocumentCore.IncomingModel;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -82,6 +83,8 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new CouldNotPerformOperation();
             }
+            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
+            _operationDb.SetParentEventAccessesPrepare(_context, _document, Model.EventId);
             _context.SetCurrentPosition(_docWait.OnEvent.TargetPositionId);
             _adminProc.VerifyAccess(_context, CommandType);
             return true;
@@ -93,11 +96,17 @@ namespace BL.Logic.DocumentCore.Commands
             var evAcceesses = (Model.TargetCopyAccessGroups?.Where(x => x.AccessType == EnumEventAccessTypes.TargetCopy) ?? new List<AccessGroup>())
                 .Concat(new List<AccessGroup> { new AccessGroup { AccessType = EnumEventAccessTypes.Target, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = _docWait.OnEvent.SourcePositionId } })
                 .ToList();
-            _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, EnumEventTypes.CancelPostponeDueDate, Model.EventDate, Model.Description, null, Model.EventId, _docWait.OnEvent.TaskId,
-                _docWait.OnEvent.SourcePositionId, null, _docWait.OnEvent.TargetPositionId, null, evAcceesses, true);
+            var newEvent = _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, EnumEventTypes.CancelPostponeDueDate, Model.EventDate, Model.Description, null, Model.EventId, _docWait.OnEvent.TaskId, evAcceesses);
+            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
             _document.Waits = new List<InternalDocumentWait> { _docWait };
-            _operationDb.CloseDocumentWait(_context, _document, GetIsUseInternalSign(), GetIsUseCertificateSign(), Model.ServerPath);
+            using (var transaction = Transactions.GetTransaction())
+            {
+                _operationDb.CloseDocumentWait(_context, _document, GetIsUseInternalSign(), GetIsUseCertificateSign(), Model.ServerPath);
+                Model.AddDocumentFiles.ForEach(x => { x.DocumentId = _document.Id; x.EventId = _document.Waits.Select(y => y.OffEventId).First(); });
+                _documentProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, _context, Model.AddDocumentFiles);
+                transaction.Complete();
+            }
             return _document.Id;
         }
 

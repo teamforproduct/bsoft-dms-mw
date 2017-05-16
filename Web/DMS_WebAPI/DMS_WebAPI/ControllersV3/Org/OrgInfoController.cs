@@ -30,7 +30,7 @@ namespace DMS_WebAPI.ControllersV3.Org
         private IHttpActionResult GetById(IContext context, int Id)
         {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = tmpService.GetDictionaryAgentClientCompany(context, Id);
+            var tmpItem = tmpService.GetDictionaryAgentOrgs(context, Id);
             var res = new JsonResult(tmpItem, this);
             return res;
         }
@@ -68,7 +68,7 @@ namespace DMS_WebAPI.ControllersV3.Org
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-                var tmpItem = tmpService.GetDictionaryAgentClientCompanies(context, filter);
+                var tmpItem = tmpService.GetDictionaryAgentOrgs(context, filter);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });

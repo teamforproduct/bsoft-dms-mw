@@ -11,6 +11,7 @@
         public const string Agents = "Agents";
         public const string Assignments = "Assignments";
         public const string AuthLog = "AuthLog";
+        public const string Attachments = "Attachments";
         public const string Banks = "Banks";
         public const string ChangeLogin = "ChangeLogin";
         public const string ChangePassword = "ChangePassword";
@@ -32,6 +33,7 @@
         public const string Info = "Info";
         public const string Journals = "Journals";
         public const string Notifications = "Notifications";
+        public const string Organisations = "Organisations";
         public const string Papers = "Papers";
         public const string Parameters = "Parameters";
         public const string Passport = "Passport";
@@ -158,6 +160,7 @@
                 case Banks:                 res = 1640; break;
                 case SendLists:             res = 1650; break;
                 case AddInOrg:              res = 1660; break;
+                case Organisations:         res = 1670; break;
 
                 default: throw new System.Exception();
             }

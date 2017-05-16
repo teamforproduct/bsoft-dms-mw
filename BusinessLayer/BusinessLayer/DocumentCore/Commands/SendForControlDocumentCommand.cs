@@ -79,20 +79,12 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 ex = new ControlerHasAlreadyBeenDefined();
             }
-
-            if (Model.TargetPositionId.HasValue
-                && (_document.RestrictedSendLists?.Any() ?? false)
-                && !_document.RestrictedSendLists.Select(x => x.PositionId).Contains(Model.TargetPositionId.Value)
-                )
-            {
-                ex = new DocumentSendListNotFoundInDocumentRestrictedSendList();
-            }
-
+            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
             if (Model.TargetPositionId.HasValue
                 && !_adminProc.VerifySubordination(_context, new VerifySubordination
                 {
                     SubordinationType = EnumSubordinationTypes.Execution,
-                    TargetPosition = Model.TargetPositionId.Value,
+                    TargetPosition = new List<int> { Model.TargetPositionId.Value },
                     SourcePositions = CommonDocumentUtilities.GetSourcePositionsForSubordinationVeification(_context, Model, _document),
                 }))
             {
@@ -106,21 +98,20 @@ namespace BL.Logic.DocumentCore.Commands
         }
         public override object Execute()
         {
-            //_document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, Model.AccessLevel, Model.TargetPositionId.Value);
-            //var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, _eventType, EnumEventCorrespondentType.FromTargetToTarget);
-            //_document.Waits = new List<InternalDocumentWait> { waitTarget };
-
-            //if (Model.SourcePositionId != Model.TargetPositionId)
-            //{
-            //    _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model);
-            //}
-            //Model.CloseEvent = Model.StartEvent = waitTarget.OnEvent;
-
             _document.Subscriptions = null;
 
             var newEvent = Model.CloseEvent = Model.StartEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
+            var ex = CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses,
+                new VerifySubordination
+                {
+                    SubordinationType = EnumSubordinationTypes.Informing,
+                    TargetPosition = newEvent.Accesses.Where(x => x.AccessType != EnumEventAccessTypes.Source && x.PositionId.HasValue).Select(x => x.PositionId.Value).ToList(),
+                    SourcePositions = CommonDocumentUtilities.GetSourcePositionsForSubordinationVeification(_context, Model, _document),
+                },
+                true, Model.AccessLevel);
+            if (ex != null) CommonDocumentUtilities.ThrowError(_context, ex, Model);
+
             CommonDocumentUtilities.SetLastChange(_context, Model);
-            _document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, (int)EnumEntytiTypes.Document, Model.AccessLevel, newEvent.Accesses);
             _document.SendLists = new List<InternalDocumentSendList> { Model };
 
             var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromTargetToTarget, true, true); //TODO ? Can present copy
@@ -131,9 +122,6 @@ namespace BL.Logic.DocumentCore.Commands
                 _document.Waits = _document.Waits.Concat(CommonDocumentUtilities.GetNewDocumentWaits(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromSourceToSource, false));
             }
             _operationDb.SendBySendList(_context, _document);
-
-            //if (_document.IsLaunchPlan)
-            //    DmsResolver.Current.Get<IAutoPlanService>().ManualRunAutoPlan(_context, null, _document.Id);
 
             _documentServ.CheckIsInWorkForControls(_context, new FilterDocumentAccess { DocumentId = new List<int> { _document.Id } });
 

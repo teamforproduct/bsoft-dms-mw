@@ -33,5 +33,9 @@ namespace BL.Model.DocumentCore.Actions
         /// группы получателей копии
         /// </summary>
         public List<AccessGroup> TargetCopyAccessGroups { get; set; }
+        /// <summary>
+        /// Массив файлов
+        /// </summary>
+        public List<AddDocumentFile> AddDocumentFiles { get; set; }
     }
 }

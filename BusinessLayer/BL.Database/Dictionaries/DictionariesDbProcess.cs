@@ -1991,7 +1991,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public IEnumerable<TreeItem> GetShortListAgentOrgs(IContext ctx, FilterDictionaryAgentOrg filter)
+        public IEnumerable<AutocompleteItem> GetShortListAgentOrgs(IContext ctx, FilterDictionaryAgentOrg filter, UIPaging paging)
         {
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
@@ -2000,18 +2000,12 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.OrderBy(x => x.Agent.Name);
 
-                var objId = ((int)EnumObjects.DictionaryAgentClientCompanies).ToString();
 
-                var res = qry.Select(x => new TreeItem
+                var res = qry.Select(x => new AutocompleteItem
                 {
                     Id = x.Id,
                     Name = x.Agent.Name,
-                    SearchText = x.Agent.Name,
-                    ObjectId = (int)EnumObjects.DictionaryAgentClientCompanies,
-                    TreeId = string.Concat(x.Id.ToString(), "_", objId),
-                    TreeParentId = string.Empty,
-                    IsActive = x.IsActive,
-                    IsLeaf = !(x.Departments.Where(y => y.IsActive == (filter.IsActive ?? x.IsActive)).Any())
+                    //Details = new List<string> { },
                 }).ToList();
 
                 transaction.Complete();
@@ -3440,7 +3434,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetDepartmentsQuery(ctx, filter);
 
-                qry.Update(x => new DictionaryDepartments { Code = codePreffix + "/" + x.Index, Path = pathPrefix});
+                qry.Update(x => new DictionaryDepartments { Code = codePreffix + "/" + x.Index, Path = pathPrefix });
 
                 CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryDepartments, EnumOperationType.UpdateFull);
                 transaction.Complete();
@@ -4533,7 +4527,7 @@ namespace BL.Database.Dictionaries
                 res = qry.Where(x => x.Id == id)
                     .Select(x => new InternalDictionaryPositionExecutorForDocument
                     {
-                        Id = id,
+                        PositionId = id,
                         ExecutorAgentId = x.ExecutorAgentId,
                         ExecutorTypeId = x.PositionExecutorTypeId,
                         MainExecutorAgentId = x.MainExecutorAgentId
@@ -5669,7 +5663,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetRegistrationJournalsQuery(ctx, filter as FilterDictionaryRegistrationJournal);
 
-                qry = qry.OrderBy(x => x.Name);
+                qry = qry.OrderBy(x => x.Index).ThenBy(x => x.Name);
 
                 if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontDictionaryRegistrationJournal>();
 

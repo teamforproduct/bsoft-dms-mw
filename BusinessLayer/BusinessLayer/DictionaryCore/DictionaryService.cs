@@ -412,34 +412,6 @@ namespace BL.Logic.DictionaryCore
 
             filter.IsActive = true;
             return _dictDb.GetShortListDepartments(context, filter);
-
-            //IEnumerable<TreeItem> departments = null;
-            //IEnumerable<TreeItem> companies = null;
-
-            //// отделы
-            //departments = _dictDb.GetDepartmentsShortList(context, new FilterDictionaryDepartment()
-            //{
-            //    IsActive = true,
-            //    ExcludeDepartmentsWithoutJournals = true,
-            //});
-
-            //companies = _dictDb.GetAgentOrgsShortList(context, new FilterDictionaryAgentOrg()
-            //{
-            //    IsActive = true,
-            //    DepartmentIDs = departments.Select(x => x.Id).ToList(),
-            //});
-
-
-            //List<TreeItem> flatList = new List<TreeItem>();
-
-            //if (companies != null) flatList.AddRange(companies);
-            //if (departments != null) flatList.AddRange(departments);
-
-            //var fTree = new FilterTree() { Name = ftSearch?.FullTextSearchString };
-
-            //var res = Tree.GetList(Tree.Get(flatList, fTree));
-
-            //return res;
         }
 
 
@@ -556,12 +528,21 @@ namespace BL.Logic.DictionaryCore
         #region [+] DictionaryPositions ...
         public FrontDictionaryPosition GetDictionaryPosition(IContext context, int id)
         {
-            return _dictDb.GetPositions(context, new FilterDictionaryPosition { IDs = new List<int> { id } }).FirstOrDefault();
-            //return _dictDb.GetPosition(context, id);
+            return GetDictionaryPositions(context, new FilterDictionaryPosition { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
         public IEnumerable<FrontDictionaryPosition> GetDictionaryPositions(IContext context, FilterDictionaryPosition filter)
         {
+            // Тонкий момент, проверяю не является ли сотрудник локальным администратором.
+            // Если не локальный значит, надеюсь, что глобальный и разрешаю создавать и изменять параметры всех должностей
+            var adminService = DmsResolver.Current.Get<IAdminService>();
+            var employeeDepartments = adminService.GetInternalEmployeeDepartments(context, context.Employee.Id);
+
+            if (employeeDepartments != null)
+            {
+                if (filter == null) filter = new FilterDictionaryPosition();
+                filter.DepartmentIDs = employeeDepartments;
+            }
 
             return _dictDb.GetPositions(context, filter);
         }
@@ -591,44 +572,6 @@ namespace BL.Logic.DictionaryCore
             filter.IsActive = true;
 
             return _dictDb.GetShortListPositions(context, filter);
-            //IEnumerable<TreeItem> positions = null;
-            //IEnumerable<TreeItem> departments = null;
-            //IEnumerable<TreeItem> companies = null;
-
-            //// должности
-            //var f = new FilterDictionaryPosition
-            //{
-            //    IsActive = true
-            //};
-
-            //positions = _dictDb.GetPositionsShortList(context, f);
-
-
-            //// отделы
-            //departments = _dictDb.GetDepartmentsShortList(context, new FilterDictionaryDepartment()
-            //{
-            //    IsActive = true,
-            //    ExcludeDepartmentsWithoutPositions = true,
-            //});
-
-            //companies = _dictDb.GetAgentOrgsShortList(context, new FilterDictionaryAgentOrg()
-            //{
-            //    IsActive = true,
-            //    DepartmentIDs = departments.Select(x => x.Id).Distinct().ToList(),
-            //});
-
-
-            //List<TreeItem> flatList = new List<TreeItem>();
-
-            //if (companies != null) flatList.AddRange(companies);
-            //if (positions != null) flatList.AddRange(positions);
-            //if (departments != null) flatList.AddRange(departments);
-
-            //var fTree = new FilterTree() { Name = ftSearch?.FullTextSearchString };
-
-            //var res = Tree.GetList(Tree.Get(flatList, fTree));
-
-            //return res;
         }
 
         /// <summary>
@@ -1059,62 +1002,32 @@ namespace BL.Logic.DictionaryCore
             filter.IsActive = true;
 
             return _dictDb.GetShortListRegistrationJournals(context, filter);
-
-            //IEnumerable<TreeItem> journals = null;
-            //IEnumerable<TreeItem> departments = null;
-            //IEnumerable<TreeItem> companies = null;
-
-            //// журналы
-            //var f = new FilterDictionaryRegistrationJournal
-            //{
-            //    IsActive = true
-            //};
-
-            //journals = _dictDb.GetRegistrationJournalsShortList(context, f);
-
-
-            //// отделы
-            //departments = _dictDb.GetDepartmentsShortList(context, new FilterDictionaryDepartment()
-            //{
-            //    IsActive = true,
-            //    ExcludeDepartmentsWithoutJournals = true,
-            //});
-
-            //companies = _dictDb.GetAgentOrgsShortList(context, new FilterDictionaryAgentOrg()
-            //{
-            //    IsActive = true,
-            //    DepartmentIDs = departments.Select(x => x.Id).ToList(),
-            //});
-
-
-            //List<TreeItem> flatList = new List<TreeItem>();
-
-            //if (companies != null) flatList.AddRange(companies);
-            //if (journals != null) flatList.AddRange(journals);
-            //if (departments != null) flatList.AddRange(departments);
-
-            //var fTree = new FilterTree() { Name = ftSearch?.FullTextSearchString };
-
-            //var res = Tree.GetList(Tree.Get(flatList, fTree));
-
-            //return res;
         }
 
 
         #endregion DictionaryRegistrationJournals
 
-        // Компании
+        // Организации
         #region DictionaryAgentClientCompanies
-        public FrontDictionaryAgentClientCompany GetDictionaryAgentClientCompany(IContext context, int id)
+        public FrontDictionaryAgentClientCompany GetDictionaryAgentOrgs(IContext context, int id)
         {
 
             return _dictDb.GetAgentOrgs(context, new FilterDictionaryAgentOrg { IDs = new List<int> { id } }).FirstOrDefault();
         }
 
-        public IEnumerable<FrontDictionaryAgentClientCompany> GetDictionaryAgentClientCompanies(IContext context, FilterDictionaryAgentOrg filter)
+        public IEnumerable<FrontDictionaryAgentClientCompany> GetDictionaryAgentOrgs(IContext context, FilterDictionaryAgentOrg filter)
         {
 
             return _dictDb.GetAgentOrgs(context, filter);
+        }
+
+        public IEnumerable<AutocompleteItem> GetShortListAgentOrgs(IContext context, FilterDictionaryAgentOrg filter, UIPaging paging)
+        {
+            if (filter == null) filter = new FilterDictionaryAgentOrg();
+
+            filter.IsActive = true;
+
+            return _dictDb.GetShortListAgentOrgs(context, filter, paging);
         }
         #endregion DictionaryCompanies
 

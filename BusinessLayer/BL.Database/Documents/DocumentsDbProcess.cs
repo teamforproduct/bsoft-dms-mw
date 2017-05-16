@@ -564,7 +564,7 @@ namespace BL.Database.Documents
                                 new FilterDocumentTag
                                 {
                                     DocumentId = docs.Select(x => x.Id).ToList(),
-                                    CurrentPositionsId = context.CurrentPositionsIdList
+                                    //CurrentPositionsId = context.CurrentPositionsIdList
                                 }),
                             d => d.Id,
                             t => t.DocumentId,
@@ -695,7 +695,7 @@ namespace BL.Database.Documents
                     (context, new FilterDictionaryPosition { DocumentIDs = docIds });
 
                 res.DocumentTags = GetDocumentTags(context,                                                //TODO DEL!!!!
-                    new FilterDocumentTag { DocumentId = docIds, CurrentPositionsId = context.CurrentPositionsIdList });
+                    new FilterDocumentTag { DocumentId = new List<int> { res.Id }/*, CurrentPositionsId = context.CurrentPositionsIdList*/ });
                 res.Properties = CommonQueries.GetPropertyValues(context,
                     new FilterPropertyValue
                     {
@@ -1301,16 +1301,6 @@ namespace BL.Database.Documents
                         AccessLevel = (EnumAccessLevels)y.AccessLevelId,
                         IsInitial = y.IsInitial,
                     }).ToList();
-                doc.RestrictedSendLists =
-                    dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == context.Client.Id)
-                        .Where(x => x.DocumentId == documentId)
-                        .Select(y => new InternalDocumentRestrictedSendList
-                        {
-                            ClientId = y.ClientId,
-                            EntityTypeId = y.EntityTypeId,
-                            PositionId = y.PositionId,
-                            AccessLevel = (EnumAccessLevels)y.AccessLevelId,
-                        }).ToList();
                 doc.Papers = dbContext.DocumentPapersSet.Where(x => x.ClientId == context.Client.Id)
                     .Where(x => x.DocumentId == documentId)
                     .Select(y => new InternalDocumentPaper
@@ -1558,6 +1548,15 @@ namespace BL.Database.Documents
                     {
                         x.LastPaperEventId = null;
                     });
+                dbContext.DocumentFilesSet.RemoveRange(
+                    dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id)
+                        .Where(x => x.DocumentId == id));
+                dbContext.DocumentEventAccessesSet.RemoveRange(
+                    dbContext.DocumentEventAccessesSet.Where(x => x.ClientId == context.Client.Id)
+                        .Where(x => x.DocumentId == id));
+                dbContext.DocumentEventAccessGroupsSet.RemoveRange(
+                    dbContext.DocumentEventAccessGroupsSet.Where(x => x.ClientId == context.Client.Id)
+                        .Where(x => x.DocumentId == id));
                 //TODO придумать с удалением для полнотекста
                 dbContext.DocumentEventsSet.RemoveRange(
                     dbContext.DocumentEventsSet.Where(x => x.ClientId == context.Client.Id)
@@ -1569,11 +1568,12 @@ namespace BL.Database.Documents
                 dbContext.DocumentAccessesSet.RemoveRange(
                     dbContext.DocumentAccessesSet.Where(x => x.ClientId == context.Client.Id)
                         .Where(x => x.DocumentId == id));
-                dbContext.DocumentFilesSet.RemoveRange(
-                    dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id)
-                        .Where(x => x.DocumentId == id));
+
                 dbContext.DocumentRestrictedSendListsSet.RemoveRange(
                     dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == context.Client.Id)
+                        .Where(x => x.DocumentId == id));
+                dbContext.DocumentSendListAccessGroupsSet.RemoveRange(
+                    dbContext.DocumentSendListAccessGroupsSet.Where(x => x.ClientId == context.Client.Id)
                         .Where(x => x.DocumentId == id));
                 dbContext.DocumentSendListsSet.RemoveRange(
                     dbContext.DocumentSendListsSet.Where(x => x.ClientId == context.Client.Id)
@@ -1897,15 +1897,6 @@ namespace BL.Database.Documents
                         ClientId = x.ClientId,
                         EntityTypeId = x.EntityTypeId,
                     }).ToList();
-                doc.RestrictedSendLists =
-                    dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == context.Client.Id)
-                        .Where(x => x.DocumentId == model.DocumentId)
-                        .Select(x => new InternalDocumentRestrictedSendList
-                        {
-                            ClientId = x.ClientId,
-                            EntityTypeId = x.EntityTypeId,
-                            PositionId = x.PositionId,
-                        }).ToList();
                 transaction.Complete();
                 return doc;
             }
@@ -1974,10 +1965,7 @@ namespace BL.Database.Documents
                 //TODO При получении документа возвращаеться только один Accesses
                 if (document.Accesses != null && document.Accesses.Any())
                 {
-                    //TODO Не сохраняеться через свойства
-                    //doc.Accesses = CommonQueries.GetDbDocumentAccesses(dbContext, document.Accesses, doc.Id).ToList();
-                    dbContext.DocumentAccessesSet.AddRange(
-                        CommonQueries.GetDbDocumentAccesses(context, document.Accesses, doc.Id).ToList());
+                    dbContext.DocumentAccessesSet.AddRange(CommonQueries.GetDbDocumentAccesses(context, document.Accesses, doc.Id).ToList());
                 }
                 dbContext.SaveChanges();
 

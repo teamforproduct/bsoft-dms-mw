@@ -6,6 +6,9 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.Enums;
 using System;
+using BL.CrossCutting.Helpers;
+using BL.Model.DocumentCore.IncomingModel;
+using System.Collections.Generic;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -69,6 +72,8 @@ namespace BL.Logic.DocumentCore.Commands
             }
             if (_docWait.IsHasAskPostponeDueDate)
                 _operationDb.ControlOffAskPostponeDueDateWaitPrepare(_context, _document);
+            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
+            _operationDb.SetParentEventAccessesPrepare(_context, _document, Model.EventId);
             _context.SetCurrentPosition(_docWait.OnEvent.SourcePositionId);
             _adminProc.VerifyAccess(_context, CommandType);
             return true;
@@ -88,10 +93,14 @@ namespace BL.Logic.DocumentCore.Commands
             newWait.Id = _docWait.Id;
             newWait.TargetDescription = _docWait.TargetDescription;
             newWait.AttentionDate = _eventType == EnumEventTypes.ControlChange ? Model.AttentionDate : _docWait.AttentionDate;
-
+            var evAcceesses = (Model.TargetCopyAccessGroups?.Where(x => x.AccessType == EnumEventAccessTypes.TargetCopy) ?? new List<AccessGroup>())
+                .Concat(new List<AccessGroup> { new AccessGroup { AccessType = EnumEventAccessTypes.Target, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = _docWait.OnEvent.TargetPositionId } })
+                .ToList();
             var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, addDescripton,
-                null, //TODO SET PARENT ????!!!!
-                _docWait.OnEvent.TaskId, _docWait.OnEvent.TargetPositionId);
+                null, //TODO SET PARENT EVENT ON DBLEVEL!!!
+                _docWait.OnEvent.TaskId, evAcceesses);
+            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
+
             var oldEvent = _docWait.OnEvent;
 
             newEvent.Id = newWait.OnEventId = oldEvent.Id;
@@ -118,9 +127,13 @@ namespace BL.Logic.DocumentCore.Commands
                 CommonDocumentUtilities.SetLastChange(_context, newWait.AskPostponeDueDateWait);
             }
             //var waits = new List<InternalDocumentWait> { newWait };
-
-            _operationDb.ChangeDocumentWait(_context, newWait);
-
+            using (var transaction = Transactions.GetTransaction())
+            {
+                _operationDb.ChangeDocumentWait(_context, newWait);
+                Model.AddDocumentFiles.ForEach(x => { x.DocumentId = _document.Id; x.EventId = newEvent.Id; });
+                _documentProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, _context, Model.AddDocumentFiles);
+                transaction.Complete();
+            }
             return _docWait.DocumentId;
         }
 

@@ -8,6 +8,7 @@ using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.CrossCutting.Helpers;
+using BL.Model.AdminCore;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -45,18 +46,20 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _adminProc.VerifyAccess(_context, CommandType);
             _document = _operationDb.AddNoteDocumentPrepare(_context, Model);
-
             if (_document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
+            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
+            _operationDb.SetParentEventAccessesPrepare(_context, _document, Model.ParentEventId);
             return true;
         }
         public override object Execute()
         {
             var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task);
-            _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.AddNote, Model.EventDate, Model.Description, null, Model.ParentEventId, taskId,
-                accessGroups: Model.TargetCopyAccessGroups, isVeryfyDocumentAccess: true);
+            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.AddNote, Model.EventDate, Model.Description, null, Model.ParentEventId, taskId, Model.TargetCopyAccessGroups);
+            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);            
+            _document.Events = new List<InternalDocumentEvent> { newEvent };
             using (var transaction = Transactions.GetTransaction())
             {
                 _operationDb.AddDocumentEvents(_context, _document);

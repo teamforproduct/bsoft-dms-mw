@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.DocumentCore.FrontModel;
+using BL.Model.SystemCore;
 
 namespace BL.Logic.SystemServices.FileService
 {
@@ -48,11 +49,12 @@ namespace BL.Logic.SystemServices.FileService
             }
         }
 
-        public string GetFileUri(string serverUrl, IContext ctx, EnumDocumentFileType fileType, int id)
+        public string GetFileUri(string apiPrefix, string module, string feature, string fileType, int id)
         {
-            return $"{serverUrl}files/{ctx.Client.Id}/{(int) fileType}/{id}";
+            return string.IsNullOrEmpty(fileType) ? $"/{apiPrefix}/{module}/{feature}/{id}" : $"/{apiPrefix}/{module}/{feature}/{id}/{fileType}";
         }
 
+        // TODO Сервис получился завязан на файлы документов. Для шаблонов EnumFileTypes, аватарки пока хранятся в базе
         public Task<FrontDocumentFile> GetFile(IContext ctx, EnumDocumentFileType fileType, int id)
         {
             return Task.Factory.StartNew(() =>

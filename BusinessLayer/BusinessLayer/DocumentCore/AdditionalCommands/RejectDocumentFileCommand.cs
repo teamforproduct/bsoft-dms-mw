@@ -22,15 +22,15 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _fStore = fStore;
         }
 
-        private ChangeWorkOutDocumentFile Model
+        private ChangeAttributesDocumentFile Model
         {
             get
             {
-                if (!(_param is ChangeWorkOutDocumentFile))
+                if (!(_param is ChangeAttributesDocumentFile))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ChangeWorkOutDocumentFile)_param;
+                return (ChangeAttributesDocumentFile)_param;
             }
         }
 
@@ -53,7 +53,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override bool CanExecute()
         {
             //TODO potential two user could add same new version in same time. Probably need to implement CheckOut flag in future
-            _document = _operationDb.ModifyDocumentFilePrepare(_context, Model.DocumentId, Model.OrderInDocument, Model.Version);
+            _document = _operationDb.ModifyDocumentFilePrepare(_context, Model.FileId);
             if (_document == null)
             {
                 throw new UserHasNoAccessToDocument();
@@ -81,8 +81,11 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         {
             _file.IsWorkedOut = true;
             CommonDocumentUtilities.SetLastChange(_context, _file);
-            _file.Event = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _file.DocumentId, EnumEventTypes.RejectDocumentFile, null, _file.File.FileName, null, null, null, _file.ExecutorPositionId);
-            _operationDb.UpdateFileOrVersion(_context, _file);
+            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _file.DocumentId, EnumEventTypes.RejectDocumentFile, Model.EventDate, 
+                Model.Description, $"{_file.File.FileName} v.{_file.Version}", _file.EventId, null, Model.TargetAccessGroups);
+            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
+            _file.Event = newEvent;
+            _operationDb.UpdateFileOrVersion(_context, _document);
             return _file.Id;
         }
     }
