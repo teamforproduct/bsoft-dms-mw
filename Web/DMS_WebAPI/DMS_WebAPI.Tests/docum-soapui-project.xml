@@ -196,12 +196,12 @@
             <con:method name="User/Assignments/Current" id="c4894c0b-8f48-4366-81cd-adb2af79a6f1" method="GET">
               <con:settings/>
               <con:parameters/>
-              <con:request name="Get User/Assignments/Current" id="784c4770-5f4b-45c5-89a9-a08d528f599b" mediaType="application/json">
-                <con:settings/>
-                <con:endpoint>http://10.88.12.22:80/</con:endpoint>
+              <con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>401</con:status><con:params/><con:element xmlns:cur="http://10.88.12.22/api/v3/User/Assignments/Current">cur:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:cur="http://10.88.12.22/api/v3/User/Assignments/Current">cur:Response</con:element></con:representation><con:request name="Get User/Assignments/Current" id="784c4770-5f4b-45c5-89a9-a08d528f599b" mediaType="application/json">
+                <con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings>
+                <con:endpoint>http://localhost:21182/</con:endpoint>
                 <con:request/>
-                <con:credentials>
-                  <con:authType>No Authorization</con:authType>
+                <con:originalUri>http://10.88.12.22/api/v3/User/Assignments/Current</con:originalUri><con:credentials>
+                  <con:selectedAuthProfile>lh docum sergey_pauls@mail.ru</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType>
                 </con:credentials>
                 <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
                 <con:jmsPropertyConfig/>
@@ -231,14 +231,14 @@
           <con:method name="User/Assignments" id="a00e49a4-0117-46c4-a0c5-adf353ecc14b" method="GET">
             <con:settings/>
             <con:parameters/>
-            <con:request name="Get User/Assignments" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json">
+            <con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>401</con:status><con:params/><con:element xmlns:ass="http://localhost/api/v3/User/Assignments">ass:Fault</con:element></con:representation><con:request name="Get User/Assignments" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
-              <con:endpoint>http://10.88.12.22:80/</con:endpoint>
+              <con:endpoint>http://localhost:21182/</con:endpoint>
               <con:request/>
-              <con:credentials>
-                <con:authType>No Authorization</con:authType>
+              <con:originalUri>http://localhost/api/v3/User/Assignments</con:originalUri><con:credentials>
+                <con:selectedAuthProfile>lh docum sergey_pauls@mail.ru</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType>
               </con:credentials>
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
               <con:jmsPropertyConfig/>
@@ -258,7 +258,7 @@
               <con:mediaType>application/json</con:mediaType>
               <con:params/>
             </con:representation>
-            <con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>401</con:status><con:params/><con:element xmlns:ass="http://10.88.12.22/api/v3/User/Assignments">ass:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="SetPos docum t@t.t" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
+            <con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>401 500</con:status><con:params/><con:element xmlns:ass="http://10.88.12.22/api/v3/User/Assignments">ass:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="SetPos docum t@t.t" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -282,6 +282,20 @@
               <con:originalUri>http://10.88.12.22/api/v3/User/Assignments</con:originalUri>
               <con:credentials>
                 <con:selectedAuthProfile>lh hav andrey.khaetskiy@yahoo.com</con:selectedAuthProfile>
+                <con:authType>OAuth 2.0</con:authType>
+              </con:credentials>
+              <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+              <con:jmsPropertyConfig/>
+              <con:parameters/>
+            </con:request><con:request name="SetPos docum sergey_pauls@mail.ru" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json" postQueryString="false">
+              <con:settings>
+                <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+              </con:settings>
+              <con:endpoint>http://localhost:21182/</con:endpoint>
+              <con:request>[201373929, 201373842]</con:request>
+              <con:originalUri>http://10.88.12.22/api/v3/User/Assignments</con:originalUri>
+              <con:credentials>
+                <con:selectedAuthProfile>lh docum sergey_pauls@mail.ru</con:selectedAuthProfile>
                 <con:authType>OAuth 2.0</con:authType>
               </con:credentials>
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
@@ -9363,7 +9377,7 @@
                 <con:description xsi:nil="true"/>
               </con:parameter>
             </con:parameters>
-            <con:method name="Org/{Id}/Addresses" id="0e59cbe1-121a-417c-96a4-c7574ba9d5a3" method="GET">
+            <con:method name="Positions/{Id}/Addresses" id="0e59cbe1-121a-417c-96a4-c7574ba9d5a3" method="GET">
               <con:settings/>
               <con:parameters/>
               <con:representation type="FAULT">
@@ -9378,7 +9392,7 @@
                 <con:params/>
                 <con:element xmlns:add="http://10.88.12.22/api/v3/Org/1/Addresses">add:Response</con:element>
               </con:representation>
-              <con:request name="Get Org/{Id}/Addresses" id="5fa6bcf9-0c7d-4385-8d9d-9b333968fdf6" mediaType="application/json">
+              <con:request name="Get Positions/{Id}/Addresses" id="5fa6bcf9-0c7d-4385-8d9d-9b333968fdf6" mediaType="application/json">
                 <con:settings>
                   <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Accept-Language" value="ru,en-US;q=0.8,en;q=0.6" xmlns="http://eviware.com/soapui/config"/></con:setting>
                 </con:settings>
@@ -9437,7 +9451,7 @@
                 <con:description xsi:nil="true"/>
               </con:parameter>
             </con:parameters>
-            <con:method name="Org/{Id}/Contacts" id="0e59cbe1-121a-417c-96a4-c7574ba9d5a3" method="GET">
+            <con:method name="Positions/{Id}/Contacts" id="0e59cbe1-121a-417c-96a4-c7574ba9d5a3" method="GET">
               <con:settings/>
               <con:parameters/>
               <con:representation type="FAULT">
@@ -9452,7 +9466,7 @@
                 <con:params/>
                 <con:element xmlns:add="http://10.88.12.22/api/v3/Org/1/Addresses">add:Response</con:element>
               </con:representation>
-              <con:request name="Get Org/{Id}/Contacts" id="5fa6bcf9-0c7d-4385-8d9d-9b333968fdf6" mediaType="application/json">
+              <con:request name="Get Positions/{Id}/Contacts" id="5fa6bcf9-0c7d-4385-8d9d-9b333968fdf6" mediaType="application/json">
                 <con:settings>
                   <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Accept-Language" value="ru,en-US;q=0.8,en;q=0.6" xmlns="http://eviware.com/soapui/config"/></con:setting>
                 </con:settings>
@@ -9478,7 +9492,77 @@
               </con:request>
             </con:method>
           </con:resource>
-        </con:resource>
+        <con:resource name="Roles" path="Roles" id="cc536585-dcb6-413f-9831-1bc3c7abb1ee">
+            <con:settings/>
+            <con:parameters>
+              <con:parameter>
+                <con:name>IDs</con:name>
+                <con:value/>
+                <con:style>QUERY</con:style>
+                <con:default/>
+                <con:description xsi:nil="true"/>
+              </con:parameter>
+              <con:parameter>
+                <con:name>AgentIDs</con:name>
+                <con:value/>
+                <con:style>QUERY</con:style>
+                <con:default/>
+                <con:description xsi:nil="true"/>
+              </con:parameter>
+              <con:parameter>
+                <con:name>Name</con:name>
+                <con:value/>
+                <con:style>QUERY</con:style>
+                <con:default/>
+                <con:description xsi:nil="true"/>
+              </con:parameter>
+              <con:parameter>
+                <con:name>IsActive</con:name>
+                <con:value/>
+                <con:style>QUERY</con:style>
+                <con:default/>
+                <con:description xsi:nil="true"/>
+              </con:parameter>
+            </con:parameters>
+            <con:method name="Position/{Id}/Roles" id="0e59cbe1-121a-417c-96a4-c7574ba9d5a3" method="GET">
+              <con:settings/>
+              <con:parameters/>
+              <con:representation type="FAULT">
+                <con:mediaType>text/html</con:mediaType>
+                <con:status>404</con:status>
+                <con:params/>
+                <con:element>html</con:element>
+              </con:representation>
+              <con:representation type="RESPONSE">
+                <con:mediaType>application/json; charset=utf-8</con:mediaType>
+                <con:status>200</con:status>
+                <con:params/>
+                <con:element xmlns:add="http://10.88.12.22/api/v3/Org/1/Addresses">add:Response</con:element>
+              </con:representation>
+              <con:request name="Get Positions/{Id}/Roles" id="5fa6bcf9-0c7d-4385-8d9d-9b333968fdf6" mediaType="application/json">
+                <con:settings>
+                  <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;entry key="Accept-Language" value="ru,en-US;q=0.8,en;q=0.6" xmlns="http://eviware.com/soapui/config"/></con:setting>
+                </con:settings>
+                <con:endpoint>http://localhost:21182/</con:endpoint>
+                <con:request/>
+                <con:originalUri>http://10.88.12.22/api/v3/Org/1/Addresses</con:originalUri>
+                <con:credentials>
+                  <con:selectedAuthProfile>lh docum sergey_pauls@mail.ru</con:selectedAuthProfile>
+                  <con:authType>OAuth 2.0</con:authType>
+                </con:credentials>
+                <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+                <con:jmsPropertyConfig/>
+                <con:parameters><entry key="Id" value="${#Project#PositionId}" xmlns="http://eviware.com/soapui/config"/></con:parameters>
+                <con:parameterOrder>
+                  <con:entry>Id</con:entry>
+                  <con:entry>IDs</con:entry>
+                  <con:entry>AgentIDs</con:entry>
+                  <con:entry>Name</con:entry>
+                  <con:entry>IsActive</con:entry>
+                </con:parameterOrder>
+              </con:request>
+            </con:method>
+          </con:resource></con:resource>
         <con:resource name="Info" path="Info" id="053a2c24-7b3a-4254-9dda-4c51e3d5472d">
           <con:settings/>
           <con:parameters/>
@@ -11879,7 +11963,7 @@
     </con:property>
     <con:property>
       <con:name>PositionId</con:name>
-    </con:property>
+    <con:value>1053</con:value></con:property>
     <con:property>
       <con:name>PersonId</con:name>
     </con:property>
@@ -11896,7 +11980,7 @@
       <con:oAuth2Flow>RESOURCE_OWNER_PASSWORD_CREDENTIALS</con:oAuth2Flow>
       <con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod>
       <con:scope>fingerprint</con:scope>
-      <con:accessTokenStatus>RETRIEVED_FROM_SERVER</con:accessTokenStatus>
+      <con:accessTokenStatus>UNKNOWN</con:accessTokenStatus>
       <con:accessTokenStartingStatus>RETRIEVED_FROM_SERVER</con:accessTokenStartingStatus>
       <con:accessTokenExpirationTime>1209599</con:accessTokenExpirationTime>
       <con:accessTokenIssuedTime>1494364846</con:accessTokenIssuedTime>
@@ -11913,7 +11997,7 @@
       <con:oAuth2Flow>RESOURCE_OWNER_PASSWORD_CREDENTIALS</con:oAuth2Flow>
       <con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod>
       <con:scope>fingerprint</con:scope>
-      <con:accessTokenStatus>RETRIEVED_FROM_SERVER</con:accessTokenStatus>
+      <con:accessTokenStatus>UNKNOWN</con:accessTokenStatus>
       <con:accessTokenStartingStatus>RETRIEVED_FROM_SERVER</con:accessTokenStartingStatus>
       <con:accessTokenExpirationTime>1209599</con:accessTokenExpirationTime>
       <con:accessTokenIssuedTime>1493810241</con:accessTokenIssuedTime>
@@ -11944,7 +12028,7 @@
       <con:resourceOwnerName>sergey_pauls@mail.ru</con:resourceOwnerName>
       <con:resourceOwnerPassword>P@ssw0rd</con:resourceOwnerPassword>
     </con:oAuth2Profile>
-  <con:oAuth2Profile><con:name>lh hav andrey.khaetskiy@yahoo.com</con:name><con:clientID>hav</con:clientID><con:clientSecret>-</con:clientSecret><con:accessTokenURI>http://localhost:21182/api/v3/token</con:accessTokenURI><con:accessToken>zxkNk-ynPB5B9xR0vAmNgdpS4gX-K_cMgN0sBT2XrCyt1D8C7Gn8gErRvlOgMk5dkUf8S9o9nKogehCCUNfSMQ2FrsrDTLSfBd7b-3Z3ZGu6mrY5FWobHiJBYOU2NS7BWYhA3ZpUjXi_65u-aPwp_scW2_lQjCvNrs8ev_09mX4s7zSyAyNwvFECrtIbfi0BqA1EG9dInGBaA1LQLcgRSpHJ9k8KWN6UTnxPDqaqh0bMhJOPosagAfAJfEaziGP7rmMa87hV1xny1e4D9V6KKgEyboaIdnnBWwySaRR6TuduxAi_TENCj5Ym6XWW2KW2Dqglmw_cShW9J5M1hjj61RvEWe90f5nVLAOj5Fx8e9eDH6hTnMqjDp9S-GQvfKZ_rcE1ah1KjtGea3fiu86iE-18Clscv2P6yAcZizIIzbzgs0cpunczoQ06yJ6YggApHWfIVQ5L4akI-HvZdC2Gblf9JDH8FYu4YtLpeJwQIAouYX4XVCVAMZavWATA0pEG</con:accessToken><con:accessTokenPosition>HEADER</con:accessTokenPosition><con:oAuth2Flow>RESOURCE_OWNER_PASSWORD_CREDENTIALS</con:oAuth2Flow><con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod><con:scope>fingerprint</con:scope><con:accessTokenStatus>RETRIEVED_FROM_SERVER</con:accessTokenStatus><con:accessTokenStartingStatus>RETRIEVED_FROM_SERVER</con:accessTokenStartingStatus><con:accessTokenExpirationTime>1209599</con:accessTokenExpirationTime><con:accessTokenIssuedTime>1494483379</con:accessTokenIssuedTime><con:resourceOwnerName>andrey.khaetskiy@yahoo.com</con:resourceOwnerName><con:resourceOwnerPassword>P@ssw0rd</con:resourceOwnerPassword></con:oAuth2Profile></con:oAuth2ProfileContainer>
+  <con:oAuth2Profile><con:name>lh hav andrey.khaetskiy@yahoo.com</con:name><con:clientID>hav</con:clientID><con:clientSecret>-</con:clientSecret><con:accessTokenURI>http://localhost:21182/api/v3/token</con:accessTokenURI><con:accessToken>zxkNk-ynPB5B9xR0vAmNgdpS4gX-K_cMgN0sBT2XrCyt1D8C7Gn8gErRvlOgMk5dkUf8S9o9nKogehCCUNfSMQ2FrsrDTLSfBd7b-3Z3ZGu6mrY5FWobHiJBYOU2NS7BWYhA3ZpUjXi_65u-aPwp_scW2_lQjCvNrs8ev_09mX4s7zSyAyNwvFECrtIbfi0BqA1EG9dInGBaA1LQLcgRSpHJ9k8KWN6UTnxPDqaqh0bMhJOPosagAfAJfEaziGP7rmMa87hV1xny1e4D9V6KKgEyboaIdnnBWwySaRR6TuduxAi_TENCj5Ym6XWW2KW2Dqglmw_cShW9J5M1hjj61RvEWe90f5nVLAOj5Fx8e9eDH6hTnMqjDp9S-GQvfKZ_rcE1ah1KjtGea3fiu86iE-18Clscv2P6yAcZizIIzbzgs0cpunczoQ06yJ6YggApHWfIVQ5L4akI-HvZdC2Gblf9JDH8FYu4YtLpeJwQIAouYX4XVCVAMZavWATA0pEG</con:accessToken><con:accessTokenPosition>HEADER</con:accessTokenPosition><con:oAuth2Flow>RESOURCE_OWNER_PASSWORD_CREDENTIALS</con:oAuth2Flow><con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod><con:scope>fingerprint</con:scope><con:accessTokenStatus>RETRIEVED_FROM_SERVER</con:accessTokenStatus><con:accessTokenStartingStatus>RETRIEVED_FROM_SERVER</con:accessTokenStartingStatus><con:accessTokenExpirationTime>1209599</con:accessTokenExpirationTime><con:accessTokenIssuedTime>1494483379</con:accessTokenIssuedTime><con:resourceOwnerName>andrey.khaetskiy@yahoo.com</con:resourceOwnerName><con:resourceOwnerPassword>P@ssw0rd</con:resourceOwnerPassword></con:oAuth2Profile><con:oAuth2Profile><con:name>lh docum sergey_pauls@mail.ru</con:name><con:clientID>docum</con:clientID><con:clientSecret>-</con:clientSecret><con:accessTokenURI>http://localhost:21182/api/v3/token</con:accessTokenURI><con:accessToken>6C3b_kshwSOeY2RfUvRjFyaH_-zPCnGJVFbjCQDBaaJof0zPYD2tpZDLT29IKuJiR44-262V6e7G41Qunj-hMqe2kSFxtElnSovTWB4ZfmXauCW5PPbV6alMgEtuJ4gJrNCWyhrZbpv2jvMQjnrKykWWJuZMT9rqpJ0G5R17wZWh5U8LScULTUGxz1QI_53ww3u1-KMBqfQ-bPY9PxUvpNPJQ0h16x5MeVjRBVTUFiiyZW3bNeE83xg6JJ4U5yGirl72nnOlCOznLkkjWJOZOQycZIx7t1aGyw16-9qvlMfuv_OVeGVGxCy1VsVyv--OpX6Rcnzd6CNTNfjDpegjR-EFP9SHQxnKSFY0NGl4nk4yGnVIVI2WArp61aW5pjk2WE0UthXF_XoZCAkp23iLr5_RzJmVPFEKWHt2WkrRQERDp3LUOjDtmvwO0uq3YtIh1Hc49vxvitqI5Q6Rw2IRljFp1OMU0NxOlECm6yOyJlQuqK3ByHveJqNi6KJzqGeG</con:accessToken><con:accessTokenPosition>HEADER</con:accessTokenPosition><con:oAuth2Flow>RESOURCE_OWNER_PASSWORD_CREDENTIALS</con:oAuth2Flow><con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod><con:scope>fingerprint</con:scope><con:accessTokenStatus>RETRIEVED_FROM_SERVER</con:accessTokenStatus><con:accessTokenStartingStatus>RETRIEVED_FROM_SERVER</con:accessTokenStartingStatus><con:accessTokenExpirationTime>1209599</con:accessTokenExpirationTime><con:accessTokenIssuedTime>1494877526</con:accessTokenIssuedTime><con:resourceOwnerName>sergey_pauls@mail.ru</con:resourceOwnerName><con:resourceOwnerPassword>P@ssw0rd</con:resourceOwnerPassword></con:oAuth2Profile></con:oAuth2ProfileContainer>
   <con:oAuth1ProfileContainer/>
   <con:sensitiveInformation/>
 </con:soapui-project>

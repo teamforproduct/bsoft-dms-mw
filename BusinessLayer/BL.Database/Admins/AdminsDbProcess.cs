@@ -323,8 +323,8 @@ namespace BL.Database.Admins
             {
                 var dbContext = ctx.DbContext as DmsContext;
                 var goodTargets = GetSubordinationsQuery(ctx, dbContext, new FilterAdminSubordination { TargetPositionIDs = model.TargetPosition, SourcePositionIDs = model.SourcePositions })
-                    .Where(x=>x.SubordinationTypeId >= (int)model.SubordinationType)
-                    .GroupBy(x=>x.TargetPositionId).Select(x=>x.Key).ToList();
+                    .Where(x => x.SubordinationTypeId >= (int)model.SubordinationType)
+                    .GroupBy(x => x.TargetPositionId).Select(x => x.Key).ToList();
                 res = model.TargetPosition.All(x => goodTargets.Contains(x));
                 transaction.Complete();
                 return res;
@@ -653,6 +653,16 @@ namespace BL.Database.Admins
                     qry = qry.Where(filterContains);
                 }
 
+                if (filter.WithoutFeatures?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.New<AdminRolePermissions>(true);
+
+                    filterContains = filter.WithoutFeatures.Aggregate(filterContains,
+                        (current, value) => current.And(e => e.Permission.FeatureId != value).Expand());
+
+                    qry = qry.Where(x => x.RolePermissions.AsQueryable().All(filterContains));
+                }
+
             }
 
             return qry;
@@ -763,9 +773,17 @@ namespace BL.Database.Admins
             {
                 var roleFilter = new FilterAdminRole();
 
-                if (filter.IsChecked ?? false)
+                if (filter != null)
                 {
-                    roleFilter.PositionIDs = filter.PositionIDs;
+                    if (filter.IsChecked ?? false)
+                    {
+                        roleFilter.PositionIDs = filter.PositionIDs;
+                    }
+
+                    if (filter.WithoutFeatures?.Count > 0)
+                    {
+                        roleFilter.WithoutFeatures = filter.WithoutFeatures;
+                    }
                 }
 
 
@@ -779,7 +797,7 @@ namespace BL.Database.Admins
                     RoleId = x.Id,
                     RoleName = x.Name,
                     IsChecked = x.PositionRoles.Any(y => y.RoleId == x.Id && filter.PositionIDs.Contains(y.PositionId)),
-                    IsDefault = x.PositionRoles.Any(y => y.RoleId == x.Id && y.Role.RoleTypeId.HasValue),
+                    IsDefault = x.RoleTypeId.HasValue,
                 }).ToList();
 
                 transaction.Complete();

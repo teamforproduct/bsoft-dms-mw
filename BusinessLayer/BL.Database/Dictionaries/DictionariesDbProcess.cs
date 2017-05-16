@@ -3440,7 +3440,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetDepartmentsQuery(ctx, filter);
 
-                qry.Update(x => new DictionaryDepartments { Code = codePreffix + "/" + x.Index, Path = pathPrefix});
+                qry.Update(x => new DictionaryDepartments { Code = codePreffix + "/" + x.Index, Path = pathPrefix });
 
                 CommonQueries.AddFullTextCacheInfo(ctx, qry.Select(x => x.Id).ToList(), EnumObjects.DictionaryDepartments, EnumOperationType.UpdateFull);
                 transaction.Complete();
@@ -5669,7 +5669,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetRegistrationJournalsQuery(ctx, filter as FilterDictionaryRegistrationJournal);
 
-                qry = qry.OrderBy(x => x.Name);
+                qry = qry.OrderBy(x => x.Index).ThenBy(x => x.Name);
 
                 if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontDictionaryRegistrationJournal>();
 

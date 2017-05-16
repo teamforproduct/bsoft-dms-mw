@@ -29,18 +29,7 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<FrontDocumentFile> GetDocumentFiles(IContext ctx, FilterBase filter, UIPaging paging = null)
         {
-            var items = (List<FrontDocumentFile>)_dbProcess.GetDocumentFiles(ctx, filter, paging);
-
-            var fileService = DmsResolver.Current.Get<IFileService>();
-
-            items.ForEach(x =>
-            {
-                x.FileLink = fileService.GetFileUri(EnumDocumentFileType.UserFile, x.Id);
-                x.PdfFileLink = fileService.GetFileUri(EnumDocumentFileType.PdfFile, x.Id);
-                x.PreviewFileLink = fileService.GetFileUri(EnumDocumentFileType.PdfPreview, x.Id);
-            });
-
-            return items;
+            return _dbProcess.GetDocumentFiles(ctx, filter, paging);
         }
 
         private FrontDocumentFile GetUserFile(IContext ctx, int id, EnumDocumentFileType fileType)

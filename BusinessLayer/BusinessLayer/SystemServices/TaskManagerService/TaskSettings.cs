@@ -11,7 +11,8 @@ namespace BL.Logic.SystemServices.TaskManagerService
         public int PeriodInMinute { get; set; }
         public int Id { get; set; }
         public Timer TaskTimer { get; set; }
-        public Action<IContext> TaskAction { get; set; }
+        public Action<IContext, object> TaskAction { get; set; }
         public IContext Context { get; set; }
+        public object Parameter { get; set; }
     }
 }

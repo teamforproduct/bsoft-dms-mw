@@ -7,14 +7,14 @@ using BL.Model.Exception;
 using DMS_WebAPI.Utilities;
 using BL.Model.SystemCore;
 
-namespace DMS_WebAPI.ControllersV3.System
+namespace DMS_WebAPI.ControllersV3.Documents
 {
     /// <summary>
     /// 
     /// </summary>
     [Authorize]
     [RoutePrefix(ApiPrefix.V3 + Modules.Documents)]
-    public class ImageController : Controller
+    public class DocumentFileBinController : Controller
     {
         /// <summary>
         /// 
@@ -23,21 +23,21 @@ namespace DMS_WebAPI.ControllersV3.System
         /// <returns></returns>
         /// <exception cref="CannotAccessToFile"></exception>
         [HttpGet]
-        [Route(Features.Attachments + "/UserFile/{Id}")]
+        [Route(Features.Files + "/{Id:int}/File")]
         public async Task<ActionResult> GetUserFile(int Id)
         {
             return await GetFile(EnumDocumentFileType.UserFile, Id);
         }
 
         [HttpGet]
-        [Route(Features.Attachments + "/PdfFile/{Id}")]
+        [Route(Features.Files + "/{Id:int}/Pdf")]
         public async Task<ActionResult> GetPdfFile(int Id)
         {
             return await GetFile(EnumDocumentFileType.PdfFile, Id);
         }
 
         [HttpGet]
-        [Route(Features.Attachments + "/PdfPreview/{Id}")]
+        [Route(Features.Files + "/{Id:int}/Preview")]
         public async Task<ActionResult> GetPdfPreview(int Id)
         {
             return await GetFile(EnumDocumentFileType.PdfPreview, Id);

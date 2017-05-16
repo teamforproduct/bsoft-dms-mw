@@ -1,11 +1,10 @@
-using System;
 using BL.CrossCutting.Interfaces;
-using BL.Logic.SystemServices.MailWorker;
 
 namespace BL.Logic.SystemServices.AutoPlan
 {
-    public interface IAutoPlanService : ISystemWorkerService, IDisposable
+    public interface IAutoPlanService
     {
+        bool AutoPlanTask(IContext admCtx, int? sendListId = null, int? documentId = null);
         bool ManualRunAutoPlan(IContext userContext, int? sendListId = null, int? documentId = null);
     }
 }

@@ -45,20 +45,29 @@ namespace DMS_WebAPI.ControllersV3.Documents
             //    appUrl = "/" + appUrl;
 
             //var baseUrl = string.Format("{0}://{1}{2}", request.Url.Scheme, request.Url.Authority, appUrl);
-            var baseUrl = $"/{ApiPrefix.V3}";
+            var apiPreffix = ApiPrefix.V3;
 
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 if (model == null) model = new IncomingBase();
                 if (model.Filter == null) model.Filter = new FilterBase();
                 if (model.Paging == null) model.Paging = new UIPaging();
-                var baseurl = param.ToString();
+                var apipreffix = param.ToString();
                 var docProc = DmsResolver.Current.Get<IDocumentFileService>();
                 var items = docProc.GetDocumentFiles(context, model.Filter, model.Paging);
+
+                var fileService = DmsResolver.Current.Get<IFileService>();
+                items.ForEach(x =>
+                {
+                    x.FileLink = fileService.GetFileUri(apipreffix, Modules.Documents, Features.Files, "File", x.Id);
+                    x.PdfFileLink = fileService.GetFileUri(apipreffix, Modules.Documents, Features.Files, "Pdf", x.Id);
+                    x.PreviewFileLink = fileService.GetFileUri(apipreffix, Modules.Documents, Features.Files, "Preview", x.Id);
+                });
+
                 var res = new JsonResult(items, this);
                 res.Paging = model.Paging;
                 return res;
-            }, baseUrl);
+            }, apiPreffix);
         }
 
         /// <summary>
@@ -80,43 +89,43 @@ namespace DMS_WebAPI.ControllersV3.Documents
             });
         }
 
-        /// <summary>
-        /// Возвращает файл по ИД 
-        /// </summary>
-        /// <param name="Id">ИД файла</param>
-        /// <returns>Событие</returns>
-        [HttpGet]
-        [Route(Features.Files + "/{Id:int}/Pdf")]
-        [ResponseType(typeof(FrontDocumentFile))]
-        public async Task<IHttpActionResult> GetPdf(int Id)
-        {
-            return await SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                var docProc = DmsResolver.Current.Get<IDocumentFileService>();
-                var item = docProc.GetUserFilePdf(context, Id);
-                var res = new JsonResult(item, this);
-                return res;
-            });
-        }
+        ///// <summary>
+        ///// Возвращает файл по ИД 
+        ///// </summary>
+        ///// <param name="Id">ИД файла</param>
+        ///// <returns>Событие</returns>
+        //[HttpGet]
+        //[Route(Features.Files + "/{Id:int}/Pdf")]
+        //[ResponseType(typeof(FrontDocumentFile))]
+        //public async Task<IHttpActionResult> GetPdf(int Id)
+        //{
+        //    return await SafeExecuteAsync(ModelState, (context, param) =>
+        //    {
+        //        var docProc = DmsResolver.Current.Get<IDocumentFileService>();
+        //        var item = docProc.GetUserFilePdf(context, Id);
+        //        var res = new JsonResult(item, this);
+        //        return res;
+        //    });
+        //}
 
-        /// <summary>
-        /// Возвращает файл по ИД 
-        /// </summary>
-        /// <param name="Id">ИД файла</param>
-        /// <returns>Событие</returns>
-        [HttpGet]
-        [Route(Features.Files + "/{Id:int}/Preview")]
-        [ResponseType(typeof(FrontDocumentFile))]
-        public async Task<IHttpActionResult> GetPreview(int Id)
-        {
-            return await SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                var docProc = DmsResolver.Current.Get<IDocumentFileService>();
-                var item = docProc.GetUserFilePreview(context, Id);
-                var res = new JsonResult(item, this);
-                return res;
-            });
-        }
+        ///// <summary>
+        ///// Возвращает файл по ИД 
+        ///// </summary>
+        ///// <param name="Id">ИД файла</param>
+        ///// <returns>Событие</returns>
+        //[HttpGet]
+        //[Route(Features.Files + "/{Id:int}/Preview")]
+        //[ResponseType(typeof(FrontDocumentFile))]
+        //public async Task<IHttpActionResult> GetPreview(int Id)
+        //{
+        //    return await SafeExecuteAsync(ModelState, (context, param) =>
+        //    {
+        //        var docProc = DmsResolver.Current.Get<IDocumentFileService>();
+        //        var item = docProc.GetUserFilePreview(context, Id);
+        //        var res = new JsonResult(item, this);
+        //        return res;
+        //    });
+        //}
 
         /// <summary>
         /// Добавляет файл, в зависимости от параметров новый или версию существующего
