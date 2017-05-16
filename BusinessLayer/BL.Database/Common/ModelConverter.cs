@@ -394,7 +394,7 @@ namespace BL.Database.Common
                 EventId = docFile.EventId,
                 Event = GetDbDocumentEvent(docFile.Event),
                 FileType = docFile.File.FileType,
-                FileSize = docFile.File.FileSize,
+                FileSize = docFile.File.FileSize??0,
                 Name = docFile.File.Name,
                 Extension = docFile.File.Extension,
 
@@ -505,7 +505,7 @@ namespace BL.Database.Common
                 Name = docFile.File.Name,
                 Extention = docFile.File.Extension,
                 FileType = docFile.File.FileType,
-                FileSize = docFile.File.FileSize,
+                FileSize = docFile.File.FileSize??0,
             };
         }
 

@@ -147,12 +147,12 @@ namespace BL.Database.Documents
                                     RegistrationNumberSuffix = y.file.Document.RegistrationNumberSuffix,
                                     RegistrationFullNumber = "#" + y.file.Document.Id,
                                     EventId = y.file.EventId,
-                                    File = y.file.IsDeleted ? new BaseFile { Name = "##l@General:FileHasBeenDeleted@l##" } : new BaseFile
+                                    File = new BaseFile
                                     {
-                                        Extension = y.file.Extension,
-                                        FileType = y.file.FileType,
-                                        FileSize = y.file.FileSize,
-                                        Name = y.file.Name,
+                                        Extension = y.file.IsDeleted ? null : y.file.Extension,
+                                        FileType = y.file.IsDeleted ? null : y.file.FileType,
+                                        FileSize = y.file.IsDeleted ? (long?)null : y.file.FileSize,
+                                        Name = y.file.IsDeleted ? "##l@General:FileHasBeenDeleted@l##" : y.file.Name,
                                     },
                                     //Event = new FrontDocumentEvent
                                     //{
@@ -230,14 +230,14 @@ namespace BL.Database.Documents
                             ExecutorPositionExecutorAgentName = y.file.ExecutorPositionExecutorAgent.Name + (y.file.ExecutorPositionExecutorType.Suffix != null ? " (" + y.file.ExecutorPositionExecutorType.Suffix + ")" : null),
                             EventId = y.file.EventId,
                             Description = y.file.IsDeleted ? null : y.file.Description,
-                            File = y.file.IsDeleted ? new BaseFile { Name = "##l@General:FileHasBeenDeleted@l##" } : new BaseFile
+                            File = new BaseFile
                             {
-                                Extension = y.file.Extension,
-                                FileType = y.file.FileType,
-                                FileSize = y.file.FileSize,
-                                Name = y.file.Name,
-                            }
-                        }).FirstOrDefault();
+                                Extension = y.file.IsDeleted ? null : y.file.Extension,
+                                FileType = y.file.IsDeleted ? null : y.file.FileType,
+                                FileSize = y.file.IsDeleted ? (long?)null : y.file.FileSize,
+                                Name = y.file.IsDeleted ? "##l@General:FileHasBeenDeleted@l##" : y.file.Name,
+                            },
+                    }).FirstOrDefault();
                 transaction.Complete();
                 return res;
             }

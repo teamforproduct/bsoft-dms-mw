@@ -110,12 +110,12 @@ namespace BL.Database.Common
                                     ExecutorPositionName = y.file.ExecutorPosition.Name,
                                     ExecutorPositionExecutorAgentName = y.file.ExecutorPositionExecutorAgent.Name + (y.file.ExecutorPositionExecutorType.Suffix != null ? " (" + y.file.ExecutorPositionExecutorType.Suffix + ")" : null),
                                     EventId = y.file.EventId,
-                                    File = y.file.IsDeleted ? new BaseFile { Name = "##l@General:FileHasBeenDeleted@l##"} : new BaseFile
+                                    File = new BaseFile
                                     {
-                                        Extension = y.file.Extension,
-                                        FileType = y.file.FileType,
-                                        FileSize = y.file.FileSize,
-                                        Name = y.file.Name,
+                                        Extension = y.file.IsDeleted ? null : y.file.Extension,
+                                        FileType = y.file.IsDeleted ? null : y.file.FileType,
+                                        FileSize = y.file.IsDeleted ? (long?)null : y.file.FileSize,
+                                        Name = y.file.IsDeleted ? "##l@General:FileHasBeenDeleted@l##": y.file.Name,
                                     }
                                 }
                 ).ToList(),
