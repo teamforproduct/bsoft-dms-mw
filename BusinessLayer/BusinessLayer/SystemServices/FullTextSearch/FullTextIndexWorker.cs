@@ -55,9 +55,9 @@ namespace BL.Logic.SystemServices.FullTextSearch
             {
                 var di = System.IO.Directory.CreateDirectory(dir);
                 Directory directory = FSDirectory.Open(di);
-                //Analyzer analyzer = new CaseInsensitiveWhitespaceAnalyzer();
+                var analyzer = new CaseInsensitiveWhitespaceAnalyzer();
                 //IndexWriter writer = new IndexWriter(directory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
-                var analyzer = new StandardAnalyzer(Version.LUCENE_48);
+                //var analyzer = new StandardAnalyzer(Version.LUCENE_48);
                 _cfg = new IndexWriterConfig(Version.LUCENE_48, analyzer);
                 var writer = new IndexWriter(directory, _cfg);
                 writer.Commit();
@@ -65,7 +65,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 _cfg = null;
             }
             _directory = FSDirectory.Open(new DirectoryInfo(dir));
-            _analyzer = new StandardAnalyzer(Version.LUCENE_48);//CaseInsensitiveWhitespaceAnalyzer();
+            _analyzer = new CaseInsensitiveWhitespaceAnalyzer();  //new StandardAnalyzer(Version.LUCENE_48);
             _indexReader = DirectoryReader.Open(_directory);
             _searcher = new IndexSearcher(_indexReader);
         }
@@ -148,7 +148,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         public void StartUpdate()
         {
-            var analyzer = new StandardAnalyzer(Version.LUCENE_48);
+            var analyzer = new CaseInsensitiveWhitespaceAnalyzer();  //new StandardAnalyzer(Version.LUCENE_48);
             _cfg = new IndexWriterConfig(Version.LUCENE_48, analyzer);
             _writer = new IndexWriter(_directory, _cfg);
         }
@@ -259,7 +259,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
         private List<FullTextSearchResult> GetQueryResult(out bool IsNotAll, int rowLimit, string text, BooleanQuery boolQry, BooleanFilter boolFilter, UIPaging paging)
         {
 
-            var sort = new Sort(/*SortField.FIELD_SCORE,*/ new SortField(FIELD_PARENT_ID, SortFieldType.INT32, true));
+            var sort = new Sort(/*SortField.FIELD_SCORE,*/ new SortField(FIELD_PARENT_ID, SortFieldType.SCORE, true));
             var qryRes = _searcher.Search(boolQry, boolFilter, rowLimit, sort);
             FileLogger.AppendTextToFile($"{DateTime.Now} '{text}' TotalHits: {qryRes.TotalHits} rows SearchInLucena  Query: '{boolQry}'", @"C:\TEMPLOGS\fulltext.log");
 
