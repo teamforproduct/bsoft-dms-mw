@@ -266,7 +266,7 @@ namespace BL.Database.DatabaseContext
                 );
 
             AddPermission(860, Modules.Employee, Features.AddInOrg, r: false, u: false, d: false,
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementEmployees }
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementEmployees, Roles.ManagementDepartments, Roles.ManagementOrg }
                 );
 
             AddPermission(900, Modules.Company, Features.Info,

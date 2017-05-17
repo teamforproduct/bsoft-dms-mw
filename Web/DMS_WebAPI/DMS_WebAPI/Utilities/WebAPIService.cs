@@ -1199,7 +1199,7 @@ namespace DMS_WebAPI.Utilities
                 userContexts.RemoveByAgentId(model.Id);
         }
 
-        public async Task ConfirmEmailAgentUser(string userId, string code)
+        public async Task<AspNetUsers> ConfirmEmailAgentUser(string userId, string code)
         {
             var result = await UserManager.ConfirmEmailAsync(userId, code);
 
@@ -1216,6 +1216,7 @@ namespace DMS_WebAPI.Utilities
 
             if (!result.Succeeded) throw new DatabaseError(result.Errors);
 
+            return user;
         }
 
         public async Task<string> ConfirmRestorePasswordAgentUser(ConfirmRestorePasswordAgentUser model)
