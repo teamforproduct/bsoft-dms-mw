@@ -182,15 +182,8 @@ namespace BL.Database.Common
                     Name = y.Position.Name ?? y.Agent.Name,
                     Details = new List<string> { y.PositionId.HasValue ? ( y.Agent.Name + (y.PositionExecutorType.Suffix != null ? " (" + y.PositionExecutorType.Suffix + ")" : null) ) : null},
                     ReadDate = y.ReadDate,
+                    ReadAgentName = y.ReadAgent.Name,
                 }).ToList();
-        }
-        public static void SetReadInfo(IContext context, List<FrontDocumentEvent> events)
-        {
-            foreach (var item in events)
-            {
-                //item.IsRead = !item.TargetPositionId.HasValue || item.TargetPositionId == item.SourcePositionId || !context.CurrentPositionsIdList.Contains(item.TargetPositionId ?? 0)
-                //    ? null : (bool?)item.ReadDate.HasValue;
-            }
         }
         public static void SetWaitInfo(IContext context, List<FrontDocumentEvent> events)
         {

@@ -29,6 +29,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public Nullable<DateTime> SendDate { get; set; }
         public Nullable<DateTime> ReadDate { get; set; }
         public Nullable<int> ReadAgentId { get; set; }
+        public string ReadAgentName { get; set; }
         public bool? IsFavourite { get; set; }
         public bool? IsAddLater { get; set; }
         public bool? IsActive { get; set; }
