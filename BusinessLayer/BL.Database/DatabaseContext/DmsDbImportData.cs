@@ -557,10 +557,13 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSystemObjects(EnumObjects.DocumentAccesses));
             items.Add(GetSystemObjects(EnumObjects.DocumentRestrictedSendLists));
             items.Add(GetSystemObjects(EnumObjects.DocumentSendLists));
+            items.Add(GetSystemObjects(EnumObjects.DocumentSendListAccessGroups));
             items.Add(GetSystemObjects(EnumObjects.DocumentFiles));
             items.Add(GetSystemObjects(EnumObjects.DocumentLinks));
             items.Add(GetSystemObjects(EnumObjects.DocumentSendListStages));
             items.Add(GetSystemObjects(EnumObjects.DocumentEvents));
+            items.Add(GetSystemObjects(EnumObjects.DocumentEventAccessGroups));
+            items.Add(GetSystemObjects(EnumObjects.DocumentEventAccesses));
             items.Add(GetSystemObjects(EnumObjects.DocumentWaits));
             items.Add(GetSystemObjects(EnumObjects.DocumentSubscriptions));
             items.Add(GetSystemObjects(EnumObjects.DocumentTasks));

@@ -980,8 +980,8 @@ namespace BL.Logic.Common
 
         public static bool VerifyAccessesByRestrictedSendLists(IContext ctx, IEnumerable<InternalDocumentRestrictedSendList> restrList, IEnumerable<InternalDocumentEventAccess> accesses, bool isThrowException = false)
         {
-            var res = ((restrList?.Any() ?? false)
-                && accesses.Where(x => x.PositionId.HasValue).All(x => restrList.Where(y => y.PositionId.HasValue).Select(y => y.PositionId.Value).Contains(x.PositionId.Value)));
+            var res = (!(restrList?.Any() ?? false)
+                || accesses.Where(x => x.PositionId.HasValue).All(x => restrList.Where(y => y.PositionId.HasValue).Select(y => y.PositionId.Value).Contains(x.PositionId.Value)));
             if (!res && isThrowException)
                 throw new DocumentSendListNotFoundInDocumentRestrictedSendList();
             return res;

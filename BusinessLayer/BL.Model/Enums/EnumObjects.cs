@@ -17,9 +17,15 @@
         DocumentWaits = 112, // Документы - ожидания
         DocumentSubscriptions = 113, // Документы - подписи
         DocumentTasks = 115, // Документы - задачи
+
+        DocumentSendListAccessGroups = 117, // Документы - план группы получателей
+        DocumentEventAccessGroups = 118, // Документы - события группы получателей
+        DocumentEventAccesses = 119, // Документы - события получатели
+
         DocumentPapers = 121, // Документы - бумажные носители
         DocumentPaperEvents = 122, // Документы - события по бумажным носителям
         DocumentPaperLists = 123, // Документы - реестры передачи бумажных носителей
+
         DocumentSavedFilters = 191, // Документы - сохраненные фильтры
         DocumentTags = 192, // Документы - тэги
         DictionaryDocumentType = 201, // Типы документов

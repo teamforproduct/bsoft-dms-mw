@@ -56,23 +56,27 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 foreach (var acc in accesses)
                 {
                     var dataItemAcc = (FullTextIndexItem)doc.Main.Clone();
-                    var details = doc.Detail.Where(x => x.Access == null || !x.Access.Any() || x.Access.Select(y => y.Key).Contains(acc.ObjectId))
-                        .Select(x => x.ObjectText + x.ObjectTextAddDateTime.ListToString()).ToList();
+                    var details = doc.Detail.Where(x => x.Access == null || !x.Access.Any() || x.Access.Where(y=>string.IsNullOrEmpty(y.Info)).Select(y => y.Key).Contains(acc.ObjectId))
+                        .Select(x => x.ObjectText + " " + x.ObjectTextAddDateTime.ListToString()).ToList();
+                    var eventDetails = doc.Detail.Where(x => x.Access != null 
+                        && x.Access.Any(y => y?.Info != null && y.Info.Equals(EnumObjects.DocumentEvents.ToString()))
+                        && doc.Detail.Where(y=>y.ObjectType == EnumObjects.DocumentEventAccesses && y.Access.Select(z=>z.Key).FirstOrDefault() == x.Access.Select(z => z.Key).FirstOrDefault())
+                        .Select(y => y.ObjectId).Contains(acc.ObjectId))
+                        .Select(x => x.ObjectText + " " + x.ObjectTextAddDateTime.ListToString()).ToList();
                     dataItemAcc.Access = new List<FullTextIndexItemAccessInfo> { new FullTextIndexItemAccessInfo { Key = acc.ObjectId, Info = acc.Filter } };
-                    dataItemAcc.ObjectText = doc.Main.ObjectText + doc.Main.ObjectTextAddDateTime.ListToString() + string.Join(" ", details);
-                    dataItemAcc.ObjectText = string.Join(" ", dataItemAcc.ObjectText.Split(' ').Where(x => x.Length > 1).Distinct().OrderBy(x => x));
+                    dataItemAcc.ObjectText = doc.Main.ObjectText + " " + doc.Main.ObjectTextAddDateTime.ListToString() + " " + string.Join(" ", details) + " " + string.Join(" ", details);           //form searchtext
+                    dataItemAcc.ObjectText = string.Join(" ", dataItemAcc.ObjectText.Split(' ').Where(x => x.Length > 1).Distinct().OrderBy(x => x));   //compress searchtext
                     dataItemAcc.ObjectTextAddDateTime = null;
                     dataItem.Add(dataItemAcc);
                 }
                 var dataItemGroups = dataItem.GroupBy(x => x.ObjectText).Select(x => new { doc = x.First(), acc = x.Select(y => y.Access).SelectMany(y => y).ToList() }).ToList();
                 dataItemGroups.ForEach(x => { x.doc.Access = x.acc; x.doc.Filter = filterWorkGroup + " " + filterTags; });
                 dataItem = dataItemGroups.Select(x => x.doc).ToList();
-                if (operType == EnumOperationType.Update)
+                if (operType == EnumOperationType.Update)   //Delete old record from Lucena
                     dataItem.Select(x => x.ParentObjectId).Distinct().ToList()
                         .ForEach(x => worker.DeleteItem(new FullTextIndexItem { ObjectId = x, ObjectType = EnumObjects.Documents }));
                 foreach (var itm in dataItem)
                 {
-
                     worker.AddNewItem(itm);
                 }
             }
@@ -122,7 +126,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 var objToProcess = _systemDb.ObjectToReindex();
                 worker.DeleteAllDocuments(ctx.Client.Id);//delete all current document before reindexing
                 var tskList = new List<Action>();
-                foreach (var obj in objToProcess)//.Where(x=>x == EnumObjects.DictionaryAgentEmployees))
+                foreach (var obj in objToProcess)//.Where(x=>x == EnumObjects.Documents))
                 {
                     var itmsCount = _systemDb.GetItemsToUpdateCount(ctx, obj, false);
                     if (!itmsCount.Any() || itmsCount.All(x => x == 0)) continue;
