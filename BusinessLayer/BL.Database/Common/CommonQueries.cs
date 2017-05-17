@@ -85,39 +85,39 @@ namespace BL.Database.Common
             {
                 EventId = x.Key,
                 Files = x.OrderByDescending(y => y.LastChangeDate)
-                    .Join(dbContext.DictionaryAgentsSet, o => o.LastChangeUserId, i => i.Id, 
+                    .Join(dbContext.DictionaryAgentsSet, o => o.LastChangeUserId, i => i.Id,
                             (file, agent) => new { file, agent, source = file.Event.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source && file.ExecutorPositionId != y.PositionId) })
-                    .Select(y=>new FrontDocumentFile
-                                {
-                                    Id = y.file.Id,
-                                    Date = y.file.Date,
-                                    DocumentId = y.file.DocumentId,
-                                    Type = (EnumFileTypes)y.file.TypeId,
-                                    TypeName = y.file.Type.Code,
-                                    IsMainVersion = y.file.IsMainVersion,
-                                    IsDeleted = y.file.IsDeleted,
-                                    IsWorkedOut = y.file.IsWorkedOut ?? true,
-                                    Description = y.file.IsDeleted ? null : y.file.Description,
-                                    LastChangeDate = y.file.LastChangeDate,
-                                    LastChangeUserId = y.file.LastChangeUserId,
-                                    LastChangeUserName = y.agent.Name,
-                                    OrderInDocument = y.file.OrderNumber,
-                                    Version = y.file.Version,
-                                    SourcePositionId = y.source.PositionId,
-                                    SourcePositionName = y.source.Position.Name,
-                                    SourcePositionExecutorAgentName = y.source.Agent.Name + (y.source.PositionExecutorType.Suffix != null ? " (" + y.source.PositionExecutorType.Suffix + ")" : null),
-                                    ExecutorPositionId = y.file.ExecutorPositionId,
-                                    ExecutorPositionName = y.file.ExecutorPosition.Name,
-                                    ExecutorPositionExecutorAgentName = y.file.ExecutorPositionExecutorAgent.Name + (y.file.ExecutorPositionExecutorType.Suffix != null ? " (" + y.file.ExecutorPositionExecutorType.Suffix + ")" : null),
-                                    EventId = y.file.EventId,
-                                    File = new BaseFile
-                                    {
-                                        Extension = y.file.IsDeleted ? null : y.file.Extension,
-                                        FileType = y.file.IsDeleted ? null : y.file.FileType,
-                                        FileSize = y.file.IsDeleted ? (long?)null : y.file.FileSize,
-                                        Name = y.file.IsDeleted ? "##l@General:FileHasBeenDeleted@l##": y.file.Name,
-                                    }
-                                }
+                    .Select(y => new FrontDocumentFile
+                    {
+                        Id = y.file.Id,
+                        Date = y.file.Date,
+                        DocumentId = y.file.DocumentId,
+                        Type = (EnumFileTypes)y.file.TypeId,
+                        TypeName = y.file.Type.Code,
+                        IsMainVersion = y.file.IsMainVersion,
+                        IsDeleted = y.file.IsDeleted,
+                        IsWorkedOut = y.file.IsWorkedOut ?? true,
+                        Description = y.file.IsDeleted ? null : y.file.Description,
+                        LastChangeDate = y.file.LastChangeDate,
+                        LastChangeUserId = y.file.LastChangeUserId,
+                        LastChangeUserName = y.agent.Name,
+                        OrderInDocument = y.file.OrderNumber,
+                        Version = y.file.Version,
+                        SourcePositionId = y.source.PositionId,
+                        SourcePositionName = y.source.Position.Name,
+                        SourcePositionExecutorAgentName = y.source.Agent.Name + (y.source.PositionExecutorType.Suffix != null ? " (" + y.source.PositionExecutorType.Suffix + ")" : null),
+                        ExecutorPositionId = y.file.ExecutorPositionId,
+                        ExecutorPositionName = y.file.ExecutorPosition.Name,
+                        ExecutorPositionExecutorAgentName = y.file.ExecutorPositionExecutorAgent.Name + (y.file.ExecutorPositionExecutorType.Suffix != null ? " (" + y.file.ExecutorPositionExecutorType.Suffix + ")" : null),
+                        EventId = y.file.EventId,
+                        File = new BaseFile
+                        {
+                            Extension = y.file.IsDeleted ? null : y.file.Extension,
+                            FileType = y.file.IsDeleted ? null : y.file.FileType,
+                            FileSize = y.file.IsDeleted ? (long?)null : y.file.FileSize,
+                            Name = y.file.IsDeleted ? "##l@General:FileHasBeenDeleted@l##" : y.file.Name,
+                        }
+                    }
                 ).ToList(),
             }).ToList();
             items.ForEach(x => x.Files = files.Where(y => y.EventId == x.Id).Select(y => y.Files).FirstOrDefault());
@@ -180,9 +180,9 @@ namespace BL.Database.Common
                     AccessType = (EnumEventAccessTypes)y.AccessTypeId,
                     RecordId = y.PositionId ?? y.AgentId,
                     Name = y.Position.Name ?? y.Agent.Name,
-                    Details = new List<string> { y.PositionId.HasValue ? ( y.Agent.Name + (y.PositionExecutorType.Suffix != null ? " (" + y.PositionExecutorType.Suffix + ")" : null) ) : null},
+                    Details = new List<string> { y.PositionId.HasValue ? (y.Agent.Name + (y.PositionExecutorType.Suffix != null ? " (" + y.PositionExecutorType.Suffix + ")" : null)) : null },
                     ReadDate = y.ReadDate,
-                    ReadAgentName = y.ReadAgent.Name,
+                    ReadAgentName = y.ReadAgentId <= 0 || y.ReadAgentId == y.AgentId? null : y.ReadAgent.Name,
                 }).ToList();
         }
         public static void SetWaitInfo(IContext context, List<FrontDocumentEvent> events)
@@ -2970,44 +2970,44 @@ namespace BL.Database.Common
         #region TaskAccesses
         //public static void ModifyDocumentTaskAccesses(IContext context, int documentId, int? taskId = null)
         //{
-            //var dbContext = context.DbContext as DmsContext;
-            //var qry0 = dbContext.DocumentEventsSet.Where(x => x.ClientId == context.CurrentClientId)
-            //    .Where(x => x.DocumentId == documentId);
-            //if (taskId.HasValue)
-            //    qry0 = qry0.Where(x => x.TaskId == taskId);
-            //else
-            //    qry0 = qry0.Where(x => x.TaskId.HasValue);
-            //var qry1 = qry0.GroupBy(x => new { x.TaskId, x.SourcePositionId, x.TargetPositionId })
-            //    .Select(x => new { x.Key.TaskId, x.Key.SourcePositionId, x.Key.TargetPositionId }).ToList();
-            //var qry2 = qry1.GroupBy(x => new { x.TaskId, x.SourcePositionId }).Where(x => x.Key.SourcePositionId.HasValue)
-            //    .Select(x => new { x.Key.TaskId, PositionId = x.Key.SourcePositionId }).ToList();
-            //var qry3 = qry1.GroupBy(x => new { x.TaskId, x.TargetPositionId }).Where(x => x.Key.TargetPositionId.HasValue)
-            //    .Select(x => new { x.Key.TaskId, PositionId = x.Key.TargetPositionId }).ToList();
-            //var taNew = qry2.Union(qry3).GroupBy(x => new { x.TaskId, x.PositionId })
-            //    .Select(x => new InternalDocumentTaskAccess { TaskId = x.Key.TaskId.Value, PositionId = x.Key.PositionId.Value }).ToList();
+        //var dbContext = context.DbContext as DmsContext;
+        //var qry0 = dbContext.DocumentEventsSet.Where(x => x.ClientId == context.CurrentClientId)
+        //    .Where(x => x.DocumentId == documentId);
+        //if (taskId.HasValue)
+        //    qry0 = qry0.Where(x => x.TaskId == taskId);
+        //else
+        //    qry0 = qry0.Where(x => x.TaskId.HasValue);
+        //var qry1 = qry0.GroupBy(x => new { x.TaskId, x.SourcePositionId, x.TargetPositionId })
+        //    .Select(x => new { x.Key.TaskId, x.Key.SourcePositionId, x.Key.TargetPositionId }).ToList();
+        //var qry2 = qry1.GroupBy(x => new { x.TaskId, x.SourcePositionId }).Where(x => x.Key.SourcePositionId.HasValue)
+        //    .Select(x => new { x.Key.TaskId, PositionId = x.Key.SourcePositionId }).ToList();
+        //var qry3 = qry1.GroupBy(x => new { x.TaskId, x.TargetPositionId }).Where(x => x.Key.TargetPositionId.HasValue)
+        //    .Select(x => new { x.Key.TaskId, PositionId = x.Key.TargetPositionId }).ToList();
+        //var taNew = qry2.Union(qry3).GroupBy(x => new { x.TaskId, x.PositionId })
+        //    .Select(x => new InternalDocumentTaskAccess { TaskId = x.Key.TaskId.Value, PositionId = x.Key.PositionId.Value }).ToList();
 
-            //var taOld = dbContext.DocumentTaskAccessesSet.Where(x => x.ClientId == context.CurrentClientId).Where(x => x.Task.DocumentId == documentId)
-            //    .Select(x => new InternalDocumentTaskAccess { Id = x.Id, TaskId = x.TaskId, PositionId = x.PositionId }).ToList();
+        //var taOld = dbContext.DocumentTaskAccessesSet.Where(x => x.ClientId == context.CurrentClientId).Where(x => x.Task.DocumentId == documentId)
+        //    .Select(x => new InternalDocumentTaskAccess { Id = x.Id, TaskId = x.TaskId, PositionId = x.PositionId }).ToList();
 
-            //var delId = taOld.GroupJoin(taNew
-            //    , ta1 => new { ta1.TaskId, ta1.PositionId }
-            //    , ta2 => new { ta2.TaskId, ta2.PositionId }
-            //    , (ta1, ta2) => new { ta1.Id, ta2 }).Where(x => x.ta2.Count() == 0).Select(x => x.Id).ToList();
+        //var delId = taOld.GroupJoin(taNew
+        //    , ta1 => new { ta1.TaskId, ta1.PositionId }
+        //    , ta2 => new { ta2.TaskId, ta2.PositionId }
+        //    , (ta1, ta2) => new { ta1.Id, ta2 }).Where(x => x.ta2.Count() == 0).Select(x => x.Id).ToList();
 
-            //var insTA = taNew.GroupJoin(taOld
-            //    , ta1 => new { ta1.TaskId, ta1.PositionId }
-            //    , ta2 => new { ta2.TaskId, ta2.PositionId }
-            //    , (ta1, ta2) => new { ta1, ta2 }).Where(x => x.ta2.Count() == 0).Select(x => x.ta1).ToList();
+        //var insTA = taNew.GroupJoin(taOld
+        //    , ta1 => new { ta1.TaskId, ta1.PositionId }
+        //    , ta2 => new { ta2.TaskId, ta2.PositionId }
+        //    , (ta1, ta2) => new { ta1, ta2 }).Where(x => x.ta2.Count() == 0).Select(x => x.ta1).ToList();
 
-            //{
-            //    var filterContains = PredicateBuilder.New<DocumentTaskAccesses>(false);
-            //    filterContains = delId.Aggregate(filterContains,
-            //        (current, value) => current.Or(e => e.Id == value).Expand());
+        //{
+        //    var filterContains = PredicateBuilder.New<DocumentTaskAccesses>(false);
+        //    filterContains = delId.Aggregate(filterContains,
+        //        (current, value) => current.Or(e => e.Id == value).Expand());
 
-            //    dbContext.DocumentTaskAccessesSet.RemoveRange(dbContext.DocumentTaskAccessesSet.Where(x => x.ClientId == context.CurrentClientId).Where(filterContains));
-            //}
-            ////TODO DELETE or CLIENT
-            //dbContext.DocumentTaskAccessesSet.AddRange(insTA.Select(x => new DocumentTaskAccesses { TaskId = x.TaskId, PositionId = x.PositionId }));
+        //    dbContext.DocumentTaskAccessesSet.RemoveRange(dbContext.DocumentTaskAccessesSet.Where(x => x.ClientId == context.CurrentClientId).Where(filterContains));
+        //}
+        ////TODO DELETE or CLIENT
+        //dbContext.DocumentTaskAccessesSet.AddRange(insTA.Select(x => new DocumentTaskAccesses { TaskId = x.TaskId, PositionId = x.PositionId }));
 
         //}
 

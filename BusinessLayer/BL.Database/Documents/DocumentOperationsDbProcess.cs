@@ -636,7 +636,6 @@ namespace BL.Database.Documents
                 CommonQueries.SetAccessGroups(context, res);
                 CommonQueries.SetFiles(context, res);
                 CommonQueries.SetWaitInfo(context, res);
-                CommonQueries.SetReadInfo(context, res);
 
                 #endregion filling
 
