@@ -42,9 +42,9 @@ namespace DMS_WebAPI.ControllersV3.Auth
             if (!stopWatch.IsRunning) stopWatch.Restart();
 
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            await webService.ConfirmEmailAgentUser(model.userId, model.code);
+            var user = await webService.ConfirmEmailAgentUser(model.userId, model.code);
 
-            var res = new JsonResult(null, this);
+            var res = new JsonResult(new BL.Model.Context.User { Id = user.Id, Name = user.UserName, IsChangePasswordRequired = user.IsChangePasswordRequired }, this);
             res.SpentTime = stopWatch;
             return res;
         }
@@ -61,7 +61,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
         {
             var webService = DmsResolver.Current.Get<WebAPIService>();
             var tmpService = DmsResolver.Current.Get<ISettingValues>();
-            var addr = tmpService.GetAuthAddress();
+            var addr = tmpService.GetClientAddress(model.ClientCode);
             await webService.RestorePasswordAgentUserAsync(model, new Uri(new Uri(addr), "restore-password").ToString(), null, "Restore Password");
             return new JsonResult(null, this);
         }

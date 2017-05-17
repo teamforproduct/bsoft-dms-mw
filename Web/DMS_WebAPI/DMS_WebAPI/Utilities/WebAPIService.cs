@@ -385,7 +385,7 @@ namespace DMS_WebAPI.Utilities
 
 
                         var tmpService = DmsResolver.Current.Get<ISettingValues>();
-                        var addr = tmpService.GetAuthAddress();
+                        var addr = tmpService.GetClientAddress(context.Client.Code);
                         // http://docum.ostrean.com/restore-password
                         var uri = new Uri(new Uri(addr), "restore-password").ToString();
 
@@ -479,7 +479,7 @@ namespace DMS_WebAPI.Utilities
         }
 
         private AspNetUsers AddUser(string userName, string userPassword, string userEmail, string userPhone = "",
-            bool isChangePasswordRequired = true, bool isEmailConfirmRequired = true, bool emailConfirmed = false)
+            bool isChangePasswordRequired = true, bool isEmailConfirmRequired = true, bool emailConfirmed = false, bool isLockout = false)
         {
             var now = DateTime.UtcNow;
 
@@ -488,6 +488,7 @@ namespace DMS_WebAPI.Utilities
                 UserName = userName?.Trim(),
                 Email = userEmail?.Trim(),
                 PhoneNumber = userPhone?.Trim(),
+                IsLockout = isLockout,
                 IsChangePasswordRequired = isChangePasswordRequired,
                 IsEmailConfirmRequired = isEmailConfirmRequired,
                 EmailConfirmed = emailConfirmed,
@@ -1052,7 +1053,7 @@ namespace DMS_WebAPI.Utilities
                 var emailConfirmationCode = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
 
                 var tmpService = DmsResolver.Current.Get<ISettingValues>();
-                var addr = tmpService.GetAuthAddress();
+                var addr = tmpService.GetClientAddress(context.Client.Code);
                 var callbackurl = new Uri(new Uri(addr), "email-confirmation").AbsoluteUri;
 
                 callbackurl += String.Format("?userId={0}&code={1}", user.Id, HttpUtility.UrlEncode(emailConfirmationCode));
@@ -1199,7 +1200,7 @@ namespace DMS_WebAPI.Utilities
                 userContexts.RemoveByAgentId(model.Id);
         }
 
-        public async Task ConfirmEmailAgentUser(string userId, string code)
+        public async Task<AspNetUsers> ConfirmEmailAgentUser(string userId, string code)
         {
             var result = await UserManager.ConfirmEmailAsync(userId, code);
 
@@ -1216,6 +1217,7 @@ namespace DMS_WebAPI.Utilities
 
             if (!result.Succeeded) throw new DatabaseError(result.Errors);
 
+            return user;
         }
 
         public async Task<string> ConfirmRestorePasswordAgentUser(ConfirmRestorePasswordAgentUser model)
