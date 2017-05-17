@@ -70,8 +70,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   var tmpItem = Action.Execute(context, EnumDocumentActions.ModifyDocumentTags, model, model.CurrentPositionId);
-                   var res = new JsonResult(tmpItem, this);
+                   Action.Execute(context, EnumDocumentActions.ModifyDocumentTags, model, model.CurrentPositionId);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }
