@@ -53,7 +53,7 @@ namespace BL.Logic.DocumentCore
             return null;
         }
 
-        private static void MenuFormation(IContext ctx, DocumentActionsModel model, bool isOnlyIdActions = false)
+        private static void MenuFormation(IContext ctx, DocumentActionsModel model, bool isOnlyIdActions = false, List<EnumObjects> mаndatoryObject = null)
         {
             // total list of type for possible actions we could process
             var totalCommandListType = new List<EnumDocumentActions>();
@@ -88,7 +88,7 @@ namespace BL.Logic.DocumentCore
                             if (cmd.CanBeDisplayed(pos.Id))
                             {
                                 act.ActionRecords = cmd.ActionRecords;
-                                if (!isOnlyIdActions || (act.ActionRecords?.Any()??false))
+                                if ( ((mаndatoryObject?.Any()??false) && mаndatoryObject.Contains(act.Object)) || !isOnlyIdActions || (act.ActionRecords?.Any()??false))
                                 {
                                     resultActions.Add(act);
                                 }
@@ -104,7 +104,7 @@ namespace BL.Logic.DocumentCore
         {
             var model = _operationDb.GetDocumentActionsModelPrepare(ctx, documentId, id);
 
-            MenuFormation(ctx, model, id.HasValue);
+            MenuFormation(ctx, model, id.HasValue, new List<EnumObjects> { { EnumObjects.DocumentEvents} });
 
             return model.PositionWithActions?.Where(x => x.Actions != null && x.Actions.Any()).ToList();
         }

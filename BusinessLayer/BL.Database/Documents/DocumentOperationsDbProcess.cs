@@ -86,16 +86,12 @@ namespace BL.Database.Documents
                         ).ToList();
                     res.Document.IsInWork = res.Document.Accesses.Any(x => x.IsInWork);
                     res.Document.IsFavourite = res.Document.Accesses.Any(x => x.IsFavourite);
+
                     var qryEvents = dbContext.DocumentEventsSet.Where(x => x.ClientId == context.Client.Id);
                     if (id.HasValue)
-                    {
                         qryEvents = qryEvents.Where(x => x.Id == id);
-                    }
                     else
-                    {
                         qryEvents = qryEvents.Where(x => x.DocumentId == documentId);
-                    }
-
                     res.Document.Events = qryEvents.Select(x => new InternalDocumentEvent
                     {
                         Id = x.Id,
@@ -106,13 +102,9 @@ namespace BL.Database.Documents
 
                     var qryWaits = dbContext.DocumentWaitsSet.Where(x => x.ClientId == context.Client.Id);
                     if (id.HasValue)
-                    {
                         qryWaits = qryWaits.Where(x => x.OnEventId == id);
-                    }
                     else
-                    {
                         qryWaits = qryWaits.Where(x => x.DocumentId == documentId);
-                    }
                     res.Document.Waits = qryWaits.Select(x => new InternalDocumentWait
                     {
                         Id = x.Id,
@@ -165,8 +157,13 @@ namespace BL.Database.Documents
                             PositionId = x.PositionId,
                         }
                         ).ToList();
-                    res.Document.DocumentFiles = dbContext.DocumentFilesSet.Where(x => x.DocumentId == documentId)
-                        .Select(x => new InternalDocumentFile
+
+                    var qryFiles = dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id);
+                    if (id.HasValue)
+                        qryFiles = qryFiles.Where(x => x.EventId == id);
+                    else
+                        qryFiles = qryFiles.Where(x => x.DocumentId == documentId);
+                    res.Document.DocumentFiles = qryFiles.Select(x => new InternalDocumentFile
                     {
                         Id = x.Id,
                         ClientId = x.ClientId,
@@ -177,6 +174,7 @@ namespace BL.Database.Documents
                         IsMainVersion = x.IsMainVersion,
                         IsDeleted = x.IsDeleted,
                     }).ToList();
+
                     var positionAccesses = res.Document?.Accesses.Where(y => y.PositionId.HasValue).Select(y => y.PositionId.Value).ToList();
 
                     if (positionAccesses.Any())

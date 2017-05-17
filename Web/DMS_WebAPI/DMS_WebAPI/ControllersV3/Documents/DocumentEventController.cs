@@ -82,7 +82,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var docProc = DmsResolver.Current.Get<ICommandService>();
-                var items = docProc.GetDocumentActions(context, Id, Id);
+                var items = docProc.GetDocumentActions(context, null, Id);
                 var res = new JsonResult(items, this);
                 return res;
             });
