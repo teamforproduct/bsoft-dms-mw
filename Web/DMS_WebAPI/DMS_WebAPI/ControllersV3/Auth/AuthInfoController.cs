@@ -78,12 +78,35 @@ namespace DMS_WebAPI.ControllersV3.Auth
             if (!stopWatch.IsRunning) stopWatch.Restart();
 
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            webService.ChangeLoginAgentUser(model);
+            await webService.ChangeLoginAgentUser(model);
 
             var res = new JsonResult(null, this);
             res.SpentTime = stopWatch;
             return res;
         }
+
+        /// <summary>
+        /// Высылает письмо для подтверждения email
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route(Features.Info + "/ConfirmEmail")]
+        public async Task<IHttpActionResult> ConfirmEmail([FromBody]Item model)
+        {
+            if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
+
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            await webService.ConfirmEmailAgentUser(model.Id);
+
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+
 
         /// <summary>
         /// Измененяет пароль

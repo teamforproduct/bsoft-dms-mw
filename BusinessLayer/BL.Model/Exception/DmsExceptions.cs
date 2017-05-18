@@ -210,6 +210,12 @@ namespace BL.Model.Exception
         public UserLoginCouldNotBeChanged(System.Exception ex) : base(ex) { }
     }
 
+    public class UserEmailConfirmedCouldNotBeChanged : DmsExceptions
+    {
+        public UserEmailConfirmedCouldNotBeChanged(string userName, IEnumerable<string> Errors) : base() { Parameters = new List<string> { userName }; base.Errors = Errors; }
+        public UserEmailConfirmedCouldNotBeChanged(System.Exception ex) : base(ex) { }
+    }
+
     public class UserPositionExecutorIsIncorrect : DmsExceptions
     {
         public UserPositionExecutorIsIncorrect() : base() { }
