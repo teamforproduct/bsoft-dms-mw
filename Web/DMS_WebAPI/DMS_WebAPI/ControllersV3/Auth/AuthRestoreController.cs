@@ -1,11 +1,8 @@
 ﻿using BL.CrossCutting.DependencyInjection;
-using BL.CrossCutting.Interfaces;
 using BL.Model.SystemCore;
 using BL.Model.Users;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using System;
-using System.Configuration;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Web.Http;

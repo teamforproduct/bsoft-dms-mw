@@ -149,7 +149,7 @@ namespace DMS_WebAPI.Utilities
 
         public async Task CheckUserLockedOutAsync(AspNetUsers user)
         {
-            
+
 
 
 
@@ -441,6 +441,8 @@ namespace DMS_WebAPI.Utilities
                 assignmentId = (int)dicService.ExecuteAction(EnumDictionaryActions.AddExecutor, context, ass);
 
 
+                var languages = DmsResolver.Current.Get<ILanguages>();
+
                 // Отправка приглашения
                 // Если пользователь уже был в базе, то ему нужно выслать только ссылку на нового клиента, а если нет то ссылку на смену пароля
                 if (sendEmail)
@@ -451,11 +453,12 @@ namespace DMS_WebAPI.Utilities
                         {
                             ClientCode = _webDb.GetClientCode(context.Client.Id),
                             Email = res.Email,
-                            FirstEntry = "true"
+                            FirstEntry = "true",
+                            LanguageCode = languages.GetLanguageCodeById(model.LanguageId)
                         };
 
                         // Это временная залипуха, нужно разбираться почему password-restore
-                        RestorePasswordAgentUserAsync(tmp);
+                        Task.Factory.StartNew(() => RestorePasswordAgentUserAsync(tmp));
                     }
                     else
                     {
@@ -473,7 +476,7 @@ namespace DMS_WebAPI.Utilities
 
                         var htmlContent = we.RenderPartialViewToString(RenderPartialView.WelcomeEmail);
                         var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-                        var languages = DmsResolver.Current.Get<ILanguages>();
+
                         mailService.SendMessage(null, MailServers.Noreply, res.Email, languages.GetTranslation(model.LanguageId, "##l@Mail.Welcome.Subject@l##"), htmlContent);
                     }
                 }
@@ -744,7 +747,7 @@ namespace DMS_WebAPI.Utilities
 
                 var htmlContent = m.RenderPartialViewToString(RenderPartialView.WelcomeEmail);
                 var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-                
+
 
                 mailService.SendMessage(null, MailServers.Docum, model.Email, languages.GetTranslation("##l@Mail.Welcome.Subject@l##"), htmlContent);
             }
@@ -1224,10 +1227,10 @@ namespace DMS_WebAPI.Utilities
             //newQuery.Add(query);
 
             builder.Query = newQuery.ToString();// string.Join("&", nvc.AllKeys.Select(key => string.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(nvc[key]))));
-            
+
             // сылка на восстановление пароля
             string callbackurl = builder.ToString();
-            
+
 
             // html с подставленной моделью
             var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.RestorePassword);
@@ -1235,7 +1238,7 @@ namespace DMS_WebAPI.Utilities
 
             var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
             var languages = DmsResolver.Current.Get<ILanguages>();
-            mailService.SendMessage(null, MailServers.Noreply, model.Email, languages.GetTranslation("##l@Mail.RestorePassword.Subject@l##"), htmlContent);
+            mailService.SendMessage(null, MailServers.Noreply, model.Email, languages.GetTranslation(model.LanguageCode, "##l@Mail.RestorePassword.Subject@l##"), htmlContent);
         }
 
 

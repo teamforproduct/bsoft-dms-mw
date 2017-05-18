@@ -186,6 +186,30 @@ namespace DMS_WebAPI.Utilities
             return GetTranslation(GetLanguageIdByCode(languageCode), text);
         }
 
+        public string GetLanguageCodeById(int languageId)
+        {
+            // запрашиваю из кэша переводы
+            var languageInfo = GetLanguageInfo();
+
+
+            // languageCode может быть ru или ru_RU в зависимости от настроек браузера
+            // нахожу локаль по имени 
+            //var language = languageInfo.Languages.FirstOrDefault(x => languageCode.Equals(x.Code, StringComparison.OrdinalIgnoreCase));
+
+            var language = languageInfo.Languages.FirstOrDefault(x => x.Id == languageId);
+
+            // если локаль не определена, беру локаль по умолчанию
+            if (language == null)
+            {
+                language = languageInfo.Languages.FirstOrDefault(x => x.IsDefault);
+            }
+
+            if (language == null) throw new DefaultLanguageIsNotSet();
+
+            return language.Code;
+
+        }
+
         public int GetLanguageIdByCode(string languageCode)
         {
             // запрашиваю из кэша переводы

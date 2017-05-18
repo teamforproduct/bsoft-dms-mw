@@ -16,7 +16,13 @@ namespace BL.Model.Users
         /// </summary>   
         [Required]
         public string ClientCode { get; set; }
-        
+
+        /// <summary>
+        /// Код языка ru_Ru
+        /// </summary>
+        [Required]
+        public string LanguageCode { get; set; }
+
         public string FirstEntry { get; set; }
 
     }
