@@ -104,5 +104,19 @@ namespace DMS_WebAPI.ControllersV3.Clients
             return new JsonResult(res, this);
         }
 
+
+        /// <summary>
+        /// Определяет существует ли уже заявка на создание клиента
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("ExistsRequest")]
+        public IHttpActionResult Exists([FromUri] FilterAspNetClientRequests filter)
+        {
+            var tmpService = DmsResolver.Current.Get<WebAPIService>();
+            var res = tmpService.ExistsClientRequest(filter);
+            return new JsonResult(res, this);
+        }
     }
 }
