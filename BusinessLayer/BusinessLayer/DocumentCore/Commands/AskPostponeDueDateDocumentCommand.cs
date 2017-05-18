@@ -92,8 +92,11 @@ namespace BL.Logic.DocumentCore.Commands
             using (var transaction = Transactions.GetTransaction())
             {
                 _operationDb.AddDocumentWaits(_context, _document);
-                Model.AddDocumentFiles.ForEach(x => { x.DocumentId = _document.Id; x.EventId = _document.Waits.Select(y => y.OnEventId).First(); });
-                _documentProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, _context, Model.AddDocumentFiles);
+                if (Model.AddDocumentFiles?.Any() ?? false)
+                {
+                    Model.AddDocumentFiles.ForEach(x => { x.DocumentId = _document.Id; x.EventId = _document.Waits.Select(y => y.OnEventId).First(); });
+                    _documentProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, _context, Model.AddDocumentFiles);
+                }
                 transaction.Complete();
             }
             return _document.Id;

@@ -102,8 +102,11 @@ namespace BL.Logic.DocumentCore.Commands
             using (var transaction = Transactions.GetTransaction())
             {
                 _operationDb.CloseDocumentWait(_context, _document, GetIsUseInternalSign(), GetIsUseCertificateSign(), Model.ServerPath);
-                Model.AddDocumentFiles.ForEach(x => { x.DocumentId = _document.Id; x.EventId = _document.Waits.Select(y => y.OffEventId).First(); });
-                _documentProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, _context, Model.AddDocumentFiles);
+                if (Model.AddDocumentFiles?.Any() ?? false)
+                {
+                    Model.AddDocumentFiles.ForEach(x => { x.DocumentId = _document.Id; x.EventId = _document.Waits.Select(y => y.OffEventId).First(); });
+                    _documentProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, _context, Model.AddDocumentFiles);
+                }
                 if (sendList != null)
                 {
                     var docProc = DmsResolver.Current.Get<IDocumentService>();
