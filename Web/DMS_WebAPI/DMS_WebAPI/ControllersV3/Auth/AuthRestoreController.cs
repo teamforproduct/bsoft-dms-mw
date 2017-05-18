@@ -60,9 +60,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
         public async Task<IHttpActionResult> RestorePassword(RestorePasswordAgentUser model)
         {
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            var tmpService = DmsResolver.Current.Get<ISettingValues>();
-            var addr = tmpService.GetClientAddress(model.ClientCode);
-            await webService.RestorePasswordAgentUserAsync(model, new Uri(new Uri(addr), "restore-password").ToString(), null, "Restore Password");
+            await webService.RestorePasswordAgentUserAsync(model);
             return new JsonResult(null, this);
         }
 

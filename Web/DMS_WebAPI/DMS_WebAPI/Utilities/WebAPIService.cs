@@ -454,13 +454,8 @@ namespace DMS_WebAPI.Utilities
                             FirstEntry = "true"
                         };
 
-
-                        var tmpService = DmsResolver.Current.Get<ISettingValues>();
-                        var addr = tmpService.GetClientAddress(context.Client.Code);
-                        // http://docum.ostrean.com/restore-password
-                        var uri = new Uri(new Uri(addr), "restore-password").ToString();
-
-                        RestorePasswordAgentUserAsync(tmp, uri, null, "Ostrean. Приглашение");
+                        // Это временная залипуха, нужно разбираться почему password-restore
+                        Task.Factory.StartNew(() => RestorePasswordAgentUserAsync(tmp));
                     }
                     else
                     {
@@ -738,7 +733,7 @@ namespace DMS_WebAPI.Utilities
 
                 callbackurl += $"?hash={model.HashCode}&login={model.Email}&code={model.ClientCode}&isNew={isNew}&language={model.Language}";
 
-                var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.RestorePasswordAgentUserVerificationEmail);
+                var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.RestorePassword);
                 var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
                 mailService.SendMessage(null, MailServers.Docum, model.Email, "Ostrean. Создание клиента", htmlContent);
             }
@@ -1192,9 +1187,12 @@ namespace DMS_WebAPI.Utilities
 
         }
 
-        public async Task RestorePasswordAgentUserAsync(RestorePasswordAgentUser model, string baseUrl, NameValueCollection query, string emailSubject)
+        public async Task RestorePasswordAgentUserAsync(RestorePasswordAgentUser model)
         {
-            if (query == null) query = new NameValueCollection();
+            //, NameValueCollection query, string emailSubject
+
+            var settVal = DmsResolver.Current.Get<ISettingValues>();
+            string baseUrl = new Uri(new Uri(settVal.GetClientAddress(model.ClientCode)), "restore-password").ToString();
 
             var user = await GetUserAsync(model.Email);
 
@@ -1209,34 +1207,24 @@ namespace DMS_WebAPI.Utilities
             newQuery.Add("UserId", user.Id);
             newQuery.Add("Code", passwordResetToken);
 
-            if (!string.IsNullOrEmpty(model.FirstEntry))
-            {
-                newQuery.Add("FirstEntry", model.FirstEntry);
-            }
+            if (!string.IsNullOrEmpty(model.FirstEntry)) newQuery.Add("FirstEntry", model.FirstEntry);
 
-            newQuery.Add(query);
+            //var query = new NameValueCollection();
+            //newQuery.Add(query);
 
             builder.Query = newQuery.ToString();// string.Join("&", nvc.AllKeys.Select(key => string.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(nvc[key]))));
+            
             // сылка на восстановление пароля
             string callbackurl = builder.ToString();
-            var settVal = DmsResolver.Current.Get<ISettingValues>();
-
-            var m = new WelcomeEmailModel()
-            {
-                UserName = user.UserName,
-                UserEmail = user.Email,
-                ClientUrl = callbackurl,
-                CabinetUrl = settVal.GetClientAddress(model.ClientCode) + "/cabinet/",
-                OstreanEmail = settVal.GetMailDocumEmail(),
-                SpamUrl = settVal.GetMailNoreplyEmail(),
-            };
+            
 
             // html с подставленной моделью
-            var htmlContent = m.RenderPartialViewToString(RenderPartialView.WelcomeEmail);
+            var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.RestorePassword);
 
 
             var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-            mailService.SendMessage(null, MailServers.Noreply, model.Email, emailSubject, htmlContent);
+            var languages = DmsResolver.Current.Get<ILanguages>();
+            mailService.SendMessage(null, MailServers.Noreply, model.Email, languages.GetTranslation("##l@Mail.RestorePassword.Subject@l##"), htmlContent);
         }
 
 
