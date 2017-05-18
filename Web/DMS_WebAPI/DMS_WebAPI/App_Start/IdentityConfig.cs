@@ -1,4 +1,6 @@
-﻿using DMS_WebAPI.DatabaseContext;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
+using DMS_WebAPI.DatabaseContext;
 using DMS_WebAPI.DBModel;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -20,26 +22,30 @@ namespace DMS_WebAPI
         public static ApplicationUserManager Create(IdentityFactoryOptions<ApplicationUserManager> options, IOwinContext context)
         {
             var manager = new ApplicationUserManager(new UserStore<AspNetUsers>(context.Get<ApplicationDbContext>()));
+            var setVal = DmsResolver.Current.Get<ISettingValues>();
+            
             // Configure validation logic for usernames
             manager.UserValidator = new UserValidator<AspNetUsers>(manager)
             {
                 AllowOnlyAlphanumericUserNames = false,
                 RequireUniqueEmail = true
             };
+
+
             // Configure validation logic for passwords
             manager.PasswordValidator = new PasswordValidator
             {
-                RequiredLength = 6,
-                RequireNonLetterOrDigit = true,
-                RequireDigit = true,
-                RequireLowercase = true,
-                RequireUppercase = true,
+                RequiredLength = setVal.GetPasswordRequiredLength(),
+                RequireNonLetterOrDigit = setVal.GetPasswordRequireNonLetterOrDigit(),
+                RequireDigit = setVal.GetPasswordRequireDigit(),
+                RequireLowercase = setVal.GetPasswordRequireLowercase(),
+                RequireUppercase = setVal.GetPasswordRequireUppercase(),
             };
 
             // Configure user lockout
-            manager.UserLockoutEnabledByDefault = true;
-            manager.DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(5); 
-            manager.MaxFailedAccessAttemptsBeforeLockout = 1;
+            manager.UserLockoutEnabledByDefault = setVal.GetUserLockoutEnabledByDefault();
+            manager.DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(setVal.GetDefaultAccountLockoutMinute()); 
+            manager.MaxFailedAccessAttemptsBeforeLockout = setVal.GetMaxFailedAccessAttemptsBeforeLockout();
 
             var dataProtectionProvider = options.DataProtectionProvider;
             if (dataProtectionProvider != null)

@@ -27,9 +27,6 @@ namespace DMS_WebAPI
             // Проверка доступности центральной базы
             ApplicationDbContext.CreateDatabaseIfNotExists();
 
-            // configuring authentication
-            ConfigureAuth(app);
-
             // Проверка на целостность Actions в процедуре импорта 
             //var systemService = DmsResolver.Current.Get<ISystemService>();
             Properties.Settings.Default["ServerPath"] = HttpContext.Current.Server.MapPath("~/");
@@ -41,6 +38,9 @@ namespace DMS_WebAPI
             // Столкнулись с проблемой вычитки настроек из центральной базы в транзакции (Нельзя использовть два дб. контекста под одной транзакцией). 
             var genSett = DmsResolver.Current.Get<IGeneralSettings>();
             genSett.ReadAll();
+
+            // configuring authentication
+            ConfigureAuth(app);
 
             //Database.SetInitializer(new CreateDatabaseIfNotExists<ApplicationDbContext>());
             //var tt = Database.Exists("DefaultConnection");

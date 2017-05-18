@@ -18,10 +18,10 @@ namespace BL.Logic.DictionaryCore
         public override bool CanExecute()
         {
             // делегатами могут быть толь ио или референты
-            if (Model.PositionExecutorTypeId == EnumPositionExecutionTypes.Personal) throw new UserPositionExecutorIsIncorrect();
+            if (Model.PositionExecutorTypeId == EnumPositionExecutionTypes.Personal) throw new EmployeePositionExecutorIsIncorrect();
 
             // назначать самого себя нельзя
-            if (Model.AgentId == _context.CurrentAgentId) throw new UserPositionExecutorIsIncorrect();
+            if (Model.AgentId == _context.CurrentAgentId) throw new EmployeePositionExecutorIsIncorrect();
 
             // делегировать можно только ту должность на которой назначен штатно
             var positionExecutor = _dictDb.GetInternalPositionExecutors(_context, new FilterDictionaryPositionExecutor
@@ -34,7 +34,7 @@ namespace BL.Logic.DictionaryCore
                 PositionExecutorTypeIDs = new List<EnumPositionExecutionTypes> { EnumPositionExecutionTypes.Personal }
             }).FirstOrDefault();
 
-            if (positionExecutor == null) throw new UserPositionExecutorIsIncorrect();
+            if (positionExecutor == null) throw new EmployeePositionExecutorIsIncorrect();
 
             return true;
         }

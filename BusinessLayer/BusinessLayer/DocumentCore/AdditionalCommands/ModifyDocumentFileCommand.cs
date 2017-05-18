@@ -65,7 +65,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _document = _operationDb.ModifyDocumentFilePrepare(_context, Model.FileId);
             if (_document == null)
             {
-                throw new UserHasNoAccessToDocument();
+                throw new EmployeeHasNoAccessToDocument();
             }
             if (_document.DocumentFiles == null || !_document.DocumentFiles.Any())
             {
