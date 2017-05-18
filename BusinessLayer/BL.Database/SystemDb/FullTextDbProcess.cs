@@ -82,8 +82,7 @@ namespace BL.Database.SystemDb
             { EnumObjects.Documents, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
-                var qry = dbContext.DocumentsSet
-                            .Where(x => x.ClientId == ctx.Client.Id)
+                var qry = dbContext.DocumentsSet.Where(x => x.ClientId == ctx.Client.Id) //Without security restrictions
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -130,8 +129,7 @@ namespace BL.Database.SystemDb
             { EnumObjects.DocumentAccesses, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
-                var qry = dbContext.DocumentAccessesSet
-                            .Where(x => x.ClientId == ctx.Client.Id)
+                var qry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -170,8 +168,7 @@ namespace BL.Database.SystemDb
             { EnumObjects.DocumentEvents, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
-                var qry = dbContext.DocumentEventsSet
-                            .Where(x => x.ClientId == ctx.Client.Id)
+                var qry = dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -192,10 +189,7 @@ namespace BL.Database.SystemDb
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DocumentEvents,
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
                     Access = new List<int> { x.Main.Id}.Select(y=>new FullTextIndexItemAccessInfo {Key = y, Info = EnumObjects.DocumentEvents.ToString() }).ToList(),
-                    ObjectText = x.Main.Description + " " + x.Main.Task.Task + " "
-                    //+ x.Main.SourcePositionExecutorAgent.Name + " "+ x.Main.SourceAgent.Name + " "
-                    //+ x.Main.TargetPositionExecutorAgent.Name + " "+ x.Main.TargetAgent.Name + " "
-
+                    ObjectText = x.Main.Description + " " + x.Main.Task.Task
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
                 return res;
@@ -203,8 +197,7 @@ namespace BL.Database.SystemDb
             { EnumObjects.DocumentEventAccesses, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
-                var qry = dbContext.DocumentEventAccessesSet
-                            .Where(x => x.ClientId == ctx.Client.Id)
+                var qry = dbContext.DocumentEventAccessesSet.Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -233,8 +226,7 @@ namespace BL.Database.SystemDb
             { EnumObjects.DocumentEventAccessGroups, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
-                var qry = dbContext.DocumentEventAccessGroupsSet
-                            .Where(x => x.ClientId == ctx.Client.Id)
+                var qry = dbContext.DocumentEventAccessGroupsSet.Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -263,8 +255,7 @@ namespace BL.Database.SystemDb
             { EnumObjects.DocumentSendLists, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
-                var qry = dbContext.DocumentSendListsSet
-                            .Where(x => x.ClientId == ctx.Client.Id)
+                var qry = dbContext.DocumentSendListsSet.Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -286,9 +277,7 @@ namespace BL.Database.SystemDb
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
                     Access = new List<int> { x.Main.AccessGroups.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId ?? 0 }.Where(y=>!x.Main.IsInitial).Distinct()
                         .Select(y=>new FullTextIndexItemAccessInfo {Key = y }).ToList(),
-                    ObjectText = x.Main.Description + " " + x.Main.Task.Task + " "
-                    //+ x.Main.SourcePosition.Name + " "+ x.Main.SourcePosition.ExecutorAgent.Name + " "+ x.Main.SourceAgent.Name + " "
-                    //+ x.Main.TargetPosition.Name + " "+ x.Main.TargetPosition.ExecutorAgent.Name + " "+ x.Main.TargetAgent.Name + " "
+                    ObjectText = x.Main.Description + " " + x.Main.Task.Task
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
                 return res;
@@ -296,8 +285,7 @@ namespace BL.Database.SystemDb
             { EnumObjects.DocumentSendListAccessGroups, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
-                var qry = dbContext.DocumentSendListAccessGroupsSet
-                            .Where(x => x.ClientId == ctx.Client.Id)
+                var qry = dbContext.DocumentSendListAccessGroupsSet.Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -327,8 +315,7 @@ namespace BL.Database.SystemDb
             { EnumObjects.DocumentFiles, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
-                var qry = dbContext.DocumentFilesSet
-                            .Where(x => x.ClientId == ctx.Client.Id)
+                var qry = dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.Client.Id)
                             .Where(x=>!x.IsDeleted).Where(x=>x.TypeId == (int)EnumFileTypes.Main || x.TypeId == (int)EnumFileTypes.Additional)
                             .Select(x=>new { Main = x, FilterId = 0});
 
@@ -359,8 +346,7 @@ namespace BL.Database.SystemDb
             { EnumObjects.DocumentSubscriptions, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
-                var qry = dbContext.DocumentSubscriptionsSet
-                            .Where(x => x.ClientId == ctx.Client.Id)
+                var qry = dbContext.DocumentSubscriptionsSet.Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -388,8 +374,7 @@ namespace BL.Database.SystemDb
             { EnumObjects.DocumentTags, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
-                var qry = dbContext.DocumentTagsSet
-                            .Where(x => x.ClientId == ctx.Client.Id)
+                var qry = dbContext.DocumentTagsSet.Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -421,8 +406,7 @@ namespace BL.Database.SystemDb
             { EnumObjects.DocumentPapers, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
-                var qry = dbContext.DocumentPapersSet
-                            .Where(x => x.ClientId == ctx.Client.Id)
+                var qry = dbContext.DocumentPapersSet.Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -453,8 +437,7 @@ namespace BL.Database.SystemDb
             { EnumObjects.TemplateDocument, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
-                var qry = dbContext.TemplateDocumentsSet
-                            .Where(x => x.ClientId == ctx.Client.Id)
+                var qry = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -497,8 +480,7 @@ namespace BL.Database.SystemDb
             { EnumObjects.TemplateDocumentAttachedFiles, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
-                var qry = dbContext.TemplateDocumentFilesSet
-                            .Where(x => x.Document.ClientId == ctx.Client.Id)
+                var qry = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -525,8 +507,7 @@ namespace BL.Database.SystemDb
             { EnumObjects.TemplateDocumentTask, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
-                var qry = dbContext.TemplateDocumentTasksSet
-                            .Where(x => x.Document.ClientId == ctx.Client.Id)
+                var qry = dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -553,8 +534,7 @@ namespace BL.Database.SystemDb
             { EnumObjects.TemplateDocumentSendList, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
-                var qry = dbContext.TemplateDocumentSendListsSet
-                            .Where(x => x.Document.ClientId == ctx.Client.Id)
+                var qry = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
@@ -582,8 +562,7 @@ namespace BL.Database.SystemDb
             { EnumObjects.TemplateDocumentPaper, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
-                var qry = dbContext.TemplateDocumentPapersSet
-                            .Where(x => x.Document.ClientId == ctx.Client.Id)
+                var qry = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == ctx.Client.Id)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)

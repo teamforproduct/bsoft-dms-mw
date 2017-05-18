@@ -1721,7 +1721,7 @@ namespace BL.Database.SystemDb
             using (var transaction = Transactions.GetTransaction())
             {
                 var date = DateTime.UtcNow.AddMinutes(-timeMinForClearTrashDocuments);
-                var qry = dbContext.DocumentsSet.Where(x => x.ClientId == ctx.Client.Id)
+                var qry = dbContext.DocumentsSet.Where(x => x.ClientId == ctx.Client.Id) //Without security restrictions
                     .Where(
                         x =>
                             !x.IsRegistered.HasValue && !x.Waits.Any() && !x.Subscriptions.Any() &&

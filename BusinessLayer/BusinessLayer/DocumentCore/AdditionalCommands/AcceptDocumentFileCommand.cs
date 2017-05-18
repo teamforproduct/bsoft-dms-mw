@@ -100,7 +100,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _file.DocumentId, EnumEventTypes.AcceptDocumentFile, Model.EventDate, 
                 Model.Description, $"{_file.File.FileName} v.{_file.Version}", _file.EventId, null, Model.TargetAccessGroups);
             CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
-            _file.Event = newEvent;
+            _document.Events = new List<InternalDocumentEvent> { newEvent };
             _operationDb.UpdateFileOrVersion(_context, _document);
             return _file.Id;
         }

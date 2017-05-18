@@ -192,12 +192,8 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                templateDocumentId =
-                    dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.Id == documentId)
-                        .Select(x => x.TemplateDocumentId)
-                        .FirstOrDefault();
-
-
+                templateDocumentId = CommonQueries.GetDocumentQuery(context, null, false, true, true)
+                    .Where(x => x.Id == documentId).Select(x => x.TemplateDocumentId) .FirstOrDefault();
                 var res = GetTemplateDocument(context, templateDocumentId);
                 transaction.Complete();
                 return res;
@@ -439,7 +435,8 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 //TODO: Уточнить безнес-логику, в каких случаях можно менять/удалять шаблон документа
-                var count = dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id).Count(x => x.TemplateDocumentId == template.Id);
+                var count = dbContext.DocumentsSet //Without security restrictions
+                    .Where(x => x.ClientId == context.Client.Id).Count(x => x.TemplateDocumentId == template.Id);
                 transaction.Complete();
                 return count == 0;
             }

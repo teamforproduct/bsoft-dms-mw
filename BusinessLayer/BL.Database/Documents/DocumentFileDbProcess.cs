@@ -439,10 +439,10 @@ namespace BL.Database.Documents
                 entry.Property(x => x.IsMainVersion).IsModified = true;
                 //entry.Property(x => x.Date).IsModified = true;//we do not update that
                 dbContext.SaveChanges();
-                if (docFile.Event != null)
+                if (doc.Events?.Any() ?? false)
                 {
-                    var dbEvent = ModelConverter.GetDbDocumentEvent(docFile.Event);
-                    dbContext.DocumentEventsSet.Add(dbEvent);
+                    var dbEvents = ModelConverter.GetDbDocumentEvents(doc.Events);
+                    dbContext.DocumentEventsSet.AddRange(dbEvents);
                     dbContext.SaveChanges();
                 }
                 if (doc.Accesses?.Any() ?? false)

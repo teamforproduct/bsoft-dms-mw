@@ -2014,11 +2014,7 @@ namespace BL.Database.Documents
                     .Update(x => new DocumentFiles { ExecutorPositionId = model.NewPositionId });
                 dbContext.DocumentTasksSet.Where(x => x.ClientId == context.Client.Id)
                     .Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId)
-                    .ToList()
-                    .ForEach(x =>
-                    {
-                        x.PositionId = model.NewPositionId;
-                    });
+                    .Update(x => new DocumentTasks { PositionId = model.NewPositionId });
                 //TODO Update EventAccess? key! Source-Target Up to logics
                 //dbContext.DocumentEventsSet.Where(x => x.ClientId == context.CurrentClientId)
                 //    .Where(x => x.DocumentId == model.DocumentId && x.SourcePositionId == model.OldPositionId)
@@ -2050,27 +2046,17 @@ namespace BL.Database.Documents
                 //    });
                 dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == context.Client.Id)  //TODO KEY!!!
                     .Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId)
-                    .ToList()
-                    .ForEach(x =>
-                    {
-                        x.PositionId = model.NewPositionId;
-                    });
+                    .Update(x => new DocumentRestrictedSendLists { PositionId = model.NewPositionId });
                 dbContext.DocumentAccessesSet.RemoveRange(
                     dbContext.DocumentAccessesSet.Where(x => x.ClientId == context.Client.Id)
                         .Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.NewPositionId));
                 dbContext.DocumentAccessesSet.Where(x => x.ClientId == context.Client.Id)
                     .Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId)
-                    .ToList()
-                    .ForEach(x =>
-                    {
-                        x.PositionId = model.NewPositionId;
-                    });
-
+                    .Update(x => new DocumentAccesses { PositionId = model.NewPositionId });
                 if (document.Events != null && document.Events.Any(x => x.Id == 0))
                 {
                     dbContext.DocumentEventsSet.AddRange(ModelConverter.GetDbDocumentEvents(document.Events.Where(x => x.Id == 0)).ToList());
                 }
-
                 dbContext.SaveChanges();
                 CommonQueries.ModifyDocumentAccessesStatistics(context, document.Id);
                 transaction.Complete();

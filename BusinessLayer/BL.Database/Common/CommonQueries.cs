@@ -202,7 +202,7 @@ namespace BL.Database.Common
         public static IQueryable<DBModel.Document.Documents> GetDocumentQuery(IContext context, IQueryable<DocumentAccesses> userAccesses = null, bool? isVerifyExecutorPosition = null, bool isVerifyAccessLevel = true, bool isVerifyIsInWork = false)
         {
             var dbContext = context.DbContext as DmsContext;
-            var qry = dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id).AsQueryable();
+            var qry = dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id).AsQueryable(); //Without security restrictions
             if (!context.IsAdmin)
             {
                 if (userAccesses == null)
@@ -237,13 +237,13 @@ namespace BL.Database.Common
                         .Where(filterPositionsIdList).Where(x => x.RegJournalAccessTypeId == (int)EnumRegistrationJournalAccessTypes.View)
                         .Select(x => x.RegJournalId).Any())
                     {
-                        var qryRJA = dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id).AsQueryable()
+                        var qryRJA = dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id).AsQueryable() //Without security restrictions
                             .Where(x => x.RegistrationJournalId.HasValue
                                         && dbContext.AdminRegistrationJournalPositionsSet
                                             .Where(filterPositionsIdList).Where(y => y.RegJournalAccessTypeId == (int)EnumRegistrationJournalAccessTypes.View)
                                             .Select(y => y.RegJournalId).Contains(x.RegistrationJournalId.Value));
                         var qryCont = qry.Concat(qryRJA);
-                        var qry1 = dbContext.DocumentsSet.AsQueryable();
+                        var qry1 = dbContext.DocumentsSet.AsQueryable(); //Without security restrictions
                         qry = qry1.Where(x => qryCont.Select(y => y.Id).Contains(x.Id));
                     }
                 }
