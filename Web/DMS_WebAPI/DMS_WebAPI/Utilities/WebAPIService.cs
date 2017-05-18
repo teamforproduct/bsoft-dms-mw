@@ -473,7 +473,8 @@ namespace DMS_WebAPI.Utilities
 
                         var htmlContent = we.RenderPartialViewToString(RenderPartialView.WelcomeEmail);
                         var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-                        mailService.SendMessage(null, MailServers.Noreply, res.Email, "Ostrean. Приглашение", htmlContent);
+                        var languages = DmsResolver.Current.Get<ILanguages>();
+                        mailService.SendMessage(null, MailServers.Noreply, res.Email, languages.GetTranslation(model.LanguageId, "##l@Mail.Welcome.Subject@l##"), htmlContent);
                     }
                 }
 
