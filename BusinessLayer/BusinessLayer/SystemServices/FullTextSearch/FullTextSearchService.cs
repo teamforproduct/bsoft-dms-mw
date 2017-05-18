@@ -64,7 +64,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                         .Select(y => y.ObjectId).Contains(acc.ObjectId))
                         .Select(x => x.ObjectText + " " + x.ObjectTextAddDateTime.ListToString()).ToList();
                     dataItemAcc.Access = new List<FullTextIndexItemAccessInfo> { new FullTextIndexItemAccessInfo { Key = acc.ObjectId, Info = acc.Filter } };
-                    dataItemAcc.ObjectText = doc.Main.ObjectText + " " + doc.Main.ObjectTextAddDateTime.ListToString() + " " + string.Join(" ", details) + " " + string.Join(" ", details);           //form searchtext
+                    dataItemAcc.ObjectText = doc.Main.ObjectText + " " + doc.Main.ObjectTextAddDateTime.ListToString() + " " + string.Join(" ", details) + " " + string.Join(" ", eventDetails);           //form searchtext
                     dataItemAcc.ObjectText = string.Join(" ", dataItemAcc.ObjectText.Split(' ').Where(x => x.Length > 1).Distinct().OrderBy(x => x));   //compress searchtext
                     dataItemAcc.ObjectTextAddDateTime = null;
                     dataItem.Add(dataItemAcc);

@@ -329,7 +329,7 @@ namespace BL.Database.SystemDb
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.DocumentFilesSet
                             .Where(x => x.ClientId == ctx.Client.Id)
-                            .Where(x=>x.TypeId == (int)EnumFileTypes.Main || x.TypeId == (int)EnumFileTypes.Additional)
+                            .Where(x=>!x.IsDeleted).Where(x=>x.TypeId == (int)EnumFileTypes.Main || x.TypeId == (int)EnumFileTypes.Additional)
                             .Select(x=>new { Main = x, FilterId = 0});
 
                 switch (filterType)
