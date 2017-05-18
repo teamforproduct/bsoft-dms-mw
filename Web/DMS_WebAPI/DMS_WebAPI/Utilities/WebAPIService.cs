@@ -455,7 +455,7 @@ namespace DMS_WebAPI.Utilities
                         };
 
                         // Это временная залипуха, нужно разбираться почему password-restore
-                        Task.Factory.StartNew(() => RestorePasswordAgentUserAsync(tmp));
+                        RestorePasswordAgentUserAsync(tmp);
                     }
                     else
                     {
