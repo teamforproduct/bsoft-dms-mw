@@ -6,9 +6,14 @@ namespace BL.Model.WebAPI.Filters
 {
     public class FilterAspNetClientRequests
     {
+        [IgnoreDataMember]
         public List<int> IDs { get; set; }
+
+        [IgnoreDataMember]
         public string CodeExact { get; set; }
+
         public string HashCodeExact { get; set; }
+
         public string SMSCodeExact { get; set; }
 
 
