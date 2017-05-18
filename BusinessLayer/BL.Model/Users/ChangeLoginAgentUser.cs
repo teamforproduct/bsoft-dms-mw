@@ -10,10 +10,5 @@ namespace BL.Model.Users
         [Required]
         public int Id { get; set; }
 
-        /// <summary>
-        /// EmailConfirmRequired
-        /// </summary>
-        public bool IsVerificationRequired { get; set; }
-
     }
 }
