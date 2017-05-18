@@ -428,17 +428,18 @@ namespace BL.Database.Documents
                 {
                     var qry = dbContext.SystemActionsSet.Where(filterObjectsContains);
                     if (IsNotEmptyCategory)
-                        qry = qry.Where(x => !string.IsNullOrEmpty(x.Category));
+                        qry = qry.Where(x => x.CategoryId.HasValue);
                     qry = qry.Where(x => (x.Permission.RolePermissions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
                                         y.Role.UserRoles.Any(z => z.PositionExecutor.AgentId == context.CurrentAgentId))) );
-                    var qryActLst = qry.Select(a => new InternalSystemActionForDocument
+                    var qryActLst = qry.OrderBy(x=>x.CategoryId).ThenBy(x=>x.Id).Select(a => new InternalSystemActionForDocument
                     {
                         DocumentAction = (EnumDocumentActions)a.Id,
                         Object = (EnumObjects)a.ObjectId,
                         ActionCode = a.Code,
                         ObjectCode = a.Object.Code,
                         Description = a.Description,
-                        Category = a.Category
+                        Category = (EnumActionCategories)a.CategoryId,
+                        CategoryName = "##l@EnumActionCategories:" + ((EnumActionCategories)a.CategoryId).ToString()+ "@l##"
                     });
                     var actLst = qryActLst.ToList();
                     res.Add(posId, actLst);

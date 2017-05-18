@@ -189,7 +189,7 @@ namespace BL.Logic.SystemCore
             if (intAction.Id != dbAction.Id) throw new Exception("EqualsAction");
 
             return (
-              intAction.Category == dbAction.Category
+              (int?)intAction.Category == dbAction.CategoryId
               & intAction.Code == dbAction.Code
               & intAction.Description == dbAction.Description
               & (int)intAction.PermissionId == dbAction.PermissionId

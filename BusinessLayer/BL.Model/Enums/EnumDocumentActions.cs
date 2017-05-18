@@ -7,10 +7,6 @@
     {
         Undefined = 0,
         /// <summary>
-        /// Просмотр документов
-        /// </summary>
-        ViewDocument = 100000,
-        /// <summary>
         /// Создать документ по шаблону
         /// </summary>
         AddDocument = 100001,
@@ -38,11 +34,6 @@
         /// Запустить выполнение плана
         /// </summary>
         LaunchPlan = 100005,
-
-        /// <summary>
-        /// Добавить пункт плана
-        /// </summary>
-        AddDocumentSendListItem = 100006,
 
         /// <summary>
         /// Остановить выполнение плана

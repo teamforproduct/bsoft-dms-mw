@@ -176,6 +176,7 @@
     <Compile Include="DocumentCore\InternalModel\InternalDocumentEventAccess.cs" />
     <Compile Include="EncryptionCore\InternalModel\VerifyPdfCertificate.cs" />
     <Compile Include="EncryptionCore\InternalModel\VerifySignCertificate.cs" />
+    <Compile Include="Enums\EnumActionCategories.cs" />
     <Compile Include="Enums\EnumEventAccessGroupsTypes.cs" />
     <Compile Include="Enums\EnumEventAccessTypes.cs" />
     <Compile Include="Enums\EnumEntityTypes.cs" />

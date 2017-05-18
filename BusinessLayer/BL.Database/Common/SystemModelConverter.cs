@@ -13,7 +13,7 @@ namespace BL.Database.Common
             return item == null ? null : new SystemActions
             {
                 Id = item.Id,
-                Category = item.Category,
+                CategoryId = (int?) item.Category,
                 Code = item.Code,
                 Description = item.Description,
                 ObjectId = (int)item.ObjectId,

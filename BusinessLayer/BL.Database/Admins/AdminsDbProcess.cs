@@ -1756,7 +1756,7 @@ namespace BL.Database.Admins
                         Description = x.Description,
                         PermissionId = x.PermissionId,
                         Code = x.Code,
-                        Category = x.Category,
+                        Category = (EnumActionCategories?)x.CategoryId,
                         ObjectId = (EnumObjects)x.ObjectId
                     }).ToList();
                 });
