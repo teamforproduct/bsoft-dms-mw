@@ -622,11 +622,18 @@ namespace DMS_WebAPI.Utilities
             var f = new FilterAspNetClientRequests { CodeExact = filter.Code };
 
             // Проверка уникальности доменного имени
-            var exists = _webDb.ExistsClientRequests(f);
+            var exists = ExistsClientRequest(f);
 
             if (exists) return true;
 
             return _webDb.ExistsClients(filter);
+        }
+
+        public bool ExistsClientRequest(FilterAspNetClientRequests filter)
+        {
+            if (filter == null) throw new FilterRequired();
+
+            return _webDb.ExistsClientRequests(filter);
         }
 
         public int AddClientSaaSRequest(AddClientSaaS model)
