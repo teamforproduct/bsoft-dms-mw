@@ -470,7 +470,7 @@ namespace DMS_WebAPI.Utilities
         {
             var user = GetUser(context, agentId);
 
-            if (user == null) throw new UserIsNotDefined(); 
+            if (user == null) throw new UserIsNotDefined();
 
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             tmpService.ExecuteAction(EnumDictionaryActions.DeleteAgentEmployee, context, agentId);
@@ -615,7 +615,7 @@ namespace DMS_WebAPI.Utilities
             var setVals = DmsResolver.Current.Get<ISettingValues>();
             var banHosts = setVals.GetSystemHosts();
 
-            if (filter == null)  throw new FilterRequired();
+            if (filter == null) throw new FilterRequired();
 
             if (banHosts.Contains(filter.Code)) return true;
 
@@ -665,7 +665,7 @@ namespace DMS_WebAPI.Utilities
                 // isNew можно вычислить только на текущий момент времени (пользователь может сделать несколько компаний)
                 var isNew = !ExistsUser(model.Email);
 
-                callbackurl +=$"?hash={model.HashCode}&login={model.Email}&code={model.ClientCode}&isNew={isNew}&language={model.Language}";
+                callbackurl += $"?hash={model.HashCode}&login={model.Email}&code={model.ClientCode}&isNew={isNew}&language={model.Language}";
 
                 var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.RestorePasswordAgentUserVerificationEmail);
                 var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
@@ -864,8 +864,8 @@ namespace DMS_WebAPI.Utilities
             var languages = DmsResolver.Current.Get<ILanguages>();
 
             // Если не указан язык, беру язык по умолчанию 
-            ctx.Employee.LanguageId = string.IsNullOrEmpty(model.Language) 
-                ? languages.GetLanguageIdByHttpContext() 
+            ctx.Employee.LanguageId = string.IsNullOrEmpty(model.Language)
+                ? languages.GetLanguageIdByHttpContext()
                 : languages.GetLanguageIdByCode(model.Language);
 
             var clientService = DmsResolver.Current.Get<IClientService>();
@@ -905,7 +905,7 @@ namespace DMS_WebAPI.Utilities
                     EmailConfirmed = true,
                     IsChangePasswordRequired = false,
                     IsEmailConfirmRequired = false,
-                }, 
+                },
                 new AddJournalsInOrg
                 {
                     IncomingJournalIndex = "01",
@@ -1028,52 +1028,66 @@ namespace DMS_WebAPI.Utilities
 
         #region UserAgent
 
-        public async void ChangeLoginAgentUser(ChangeLoginAgentUser model)
+        public async Task ChangeLoginAgentUser(ChangeLoginAgentUser model)
         {
             var userContexts = DmsResolver.Current.Get<UserContexts>();
 
             var context = userContexts.Get();
 
-            // VerifyAccessCommand
-            var admService = DmsResolver.Current.Get<IAdminService>();
-            admService.ChangeLoginAgentUser(context, model);
-
             var user = GetUser(context, model.Id);
+            if (user == null) throw new UserIsNotDefined();
+
+            if (user.UserName == model.NewEmail) return;
 
             user.UserName = model.NewEmail;
             user.Email = model.NewEmail;
-            user.IsEmailConfirmRequired = model.IsVerificationRequired;
-            user.LastChangeDate = DateTime.UtcNow;
-
-            if (user.IsEmailConfirmRequired)
-                user.EmailConfirmed = false;
 
             var result = await UserManager.UpdateAsync(user);
 
-            if (!result.Succeeded) throw new UserLoginCouldNotBeChanged(model.NewEmail, result.Errors);
+            if (result.Succeeded)
+            {
+                //TODO тут нужно пробежаться по всем клиентским базам и заменить логин
+                var admService = DmsResolver.Current.Get<IAdminService>();
+                admService.ChangeLoginAgentUser(context, model);
+            }
+            else throw new UserLoginCouldNotBeChanged(model.NewEmail, result.Errors);
 
             // выкидываю пользователя из системы
             userContexts.RemoveByAgentId(model.Id);
 
-            if (model.IsVerificationRequired)
-            {
-                var emailConfirmationCode = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+            await ConfirmEmailAgentUser(model.Id);
 
-                var tmpService = DmsResolver.Current.Get<ISettingValues>();
-                var addr = tmpService.GetClientAddress(context.Client.Code);
-                var callbackurl = new Uri(new Uri(addr), "email-confirmation").AbsoluteUri;
+        }
 
-                callbackurl += String.Format("?userId={0}&code={1}", user.Id, HttpUtility.UrlEncode(emailConfirmationCode));
+        public async Task ConfirmEmailAgentUser(int agentId)
+        {
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
 
-                var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.PartialViewNameChangeLoginAgentUserVerificationEmail);
+            var user = GetUser(context, agentId);
+            if (user == null) throw new UserIsNotDefined();
+            user.IsEmailConfirmRequired = true;
+            user.EmailConfirmed = false;
+            user.LastChangeDate = DateTime.UtcNow;
 
-                var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
+            var result = await UserManager.UpdateAsync(user);
 
-                var languages = DmsResolver.Current.Get<ILanguages>();
+            if (!result.Succeeded) throw new UserEmailConfirmedCouldNotBeChanged(user.Email, result.Errors);
 
-                mailService.SendMessage(context, MailServers.Noreply, model.NewEmail, languages.GetTranslation("##l@EmailSubject:EmailConfirmation@l##"), htmlContent);
-            }
+            var emailConfirmationCode = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
 
+            var tmpService = DmsResolver.Current.Get<ISettingValues>();
+            var addr = tmpService.GetClientAddress(context.Client.Code);
+            var callbackurl = new Uri(new Uri(addr), "email-confirmation").AbsoluteUri;
+
+            callbackurl += String.Format("?userId={0}&code={1}", user.Id, HttpUtility.UrlEncode(emailConfirmationCode));
+
+            var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.PartialViewNameChangeLoginAgentUserVerificationEmail);
+
+            var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
+
+            var languages = DmsResolver.Current.Get<ILanguages>();
+
+            mailService.SendMessage(context, MailServers.Noreply, user.Email, languages.GetTranslation("##l@EmailSubject:EmailConfirmation@l##"), htmlContent);
         }
 
         public async Task ChangeFingerprintEnabled(bool parm)
