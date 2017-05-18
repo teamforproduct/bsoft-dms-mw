@@ -255,7 +255,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="Id"></param>
         /// <returns></returns>
         [HttpDelete]
-        [Route(Features.Files + "/DeleteFileVersion")]
+        [Route(Features.Files + "/{Id:int}" + "/DeleteFileVersion")]
         public async Task<IHttpActionResult> DeleteFileVersion([FromUri]int Id)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
