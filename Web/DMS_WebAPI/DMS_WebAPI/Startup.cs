@@ -1,6 +1,8 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
+using BL.Logic.SystemServices.FullTextSearch;
+using BL.Logic.SystemServices.QueueWorker;
 using BL.Logic.SystemServices.TaskManagerService;
 using BL.Model.Enums;
 using BL.Model.WebAPI.Filters;
