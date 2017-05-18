@@ -26,6 +26,7 @@ using BL.CrossCutting.Helpers;
 using BL.CrossCutting.DependencyInjection;
 using System.Text.RegularExpressions;
 using BL.Model.Common;
+using EntityFramework.Extensions;
 
 namespace BL.Database.Documents
 {
@@ -45,7 +46,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id).AsQueryable();
+                var qry = dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id).AsQueryable(); //Without security restrictions
 
                 var count = qry.Count();
 
@@ -159,11 +160,11 @@ namespace BL.Database.Documents
                             filterContains = docIds.Aggregate(filterContains,
                                 (current, value) => current.Or(e => e.Id == value).Expand());
 
-                            qry = dbContext.DocumentsSet.Where(filterContains);
+                            qry = dbContext.DocumentsSet.Where(filterContains); //Without security restrictions
                         }
                         else
                         {
-                            qry = dbContext.DocumentsSet.Where(x => false);
+                            qry = dbContext.DocumentsSet.Where(x => false);//Without security restrictions
                         }
                     }
 
@@ -301,12 +302,12 @@ namespace BL.Database.Documents
                                 filterContains = docIds.Aggregate(filterContains,
                                     (current, value) => current.Or(e => e.Id == value).Expand());
 
-                                qry = dbContext.DocumentsSet.Where(filterContains)
+                                qry = dbContext.DocumentsSet.Where(filterContains) //Without security restrictions
                                     .OrderByDescending(x => x.CreateDate).ThenByDescending(x => x.Id);
                             }
                             else
                             {
-                                qry = dbContext.DocumentsSet.Where(x => false);
+                                qry = dbContext.DocumentsSet.Where(x => false); //Without security restrictions
                             }
                         }
                     }
@@ -1543,48 +1544,33 @@ namespace BL.Database.Documents
                 //ADD OTHER TABLES!!!!
                 dbContext.DocumentPapersSet.Where(x => x.ClientId == context.Client.Id)
                     .Where(x => x.DocumentId == id)
-                    .ToList() //TODO OPTIMIZE
-                    .ForEach(x =>
-                    {
-                        x.LastPaperEventId = null;
-                    });
+                    .Update(x => new DocumentPapers { LastPaperEventId = null });
                 dbContext.DocumentFilesSet.RemoveRange(
-                    dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id)
-                        .Where(x => x.DocumentId == id));
+                    dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == id));
                 dbContext.DocumentEventAccessesSet.RemoveRange(
                     dbContext.DocumentEventAccessesSet.Where(x => x.ClientId == context.Client.Id)
                         .Where(x => x.DocumentId == id));
                 dbContext.DocumentEventAccessGroupsSet.RemoveRange(
-                    dbContext.DocumentEventAccessGroupsSet.Where(x => x.ClientId == context.Client.Id)
-                        .Where(x => x.DocumentId == id));
+                    dbContext.DocumentEventAccessGroupsSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == id));
                 //TODO придумать с удалением для полнотекста
                 dbContext.DocumentEventsSet.RemoveRange(
-                    dbContext.DocumentEventsSet.Where(x => x.ClientId == context.Client.Id)
-                        .Where(x => x.DocumentId == id));
+                    dbContext.DocumentEventsSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == id));
                 dbContext.SaveChanges();
+
                 dbContext.DocumentTagsSet.RemoveRange(
-                    dbContext.DocumentTagsSet.Where(x => x.ClientId == context.Client.Id)
-                        .Where(x => x.DocumentId == id));
+                    dbContext.DocumentTagsSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == id));
                 dbContext.DocumentAccessesSet.RemoveRange(
-                    dbContext.DocumentAccessesSet.Where(x => x.ClientId == context.Client.Id)
-                        .Where(x => x.DocumentId == id));
-
+                    dbContext.DocumentAccessesSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == id));
                 dbContext.DocumentRestrictedSendListsSet.RemoveRange(
-                    dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == context.Client.Id)
-                        .Where(x => x.DocumentId == id));
+                    dbContext.DocumentRestrictedSendListsSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == id));
                 dbContext.DocumentSendListAccessGroupsSet.RemoveRange(
-                    dbContext.DocumentSendListAccessGroupsSet.Where(x => x.ClientId == context.Client.Id)
-                        .Where(x => x.DocumentId == id));
+                    dbContext.DocumentSendListAccessGroupsSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == id));
                 dbContext.DocumentSendListsSet.RemoveRange(
-                    dbContext.DocumentSendListsSet.Where(x => x.ClientId == context.Client.Id)
-                        .Where(x => x.DocumentId == id));
+                    dbContext.DocumentSendListsSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == id));
                 dbContext.DocumentTasksSet.RemoveRange(
-                    dbContext.DocumentTasksSet.Where(x => x.ClientId == context.Client.Id)
-                        .Where(x => x.DocumentId == id));
-
+                    dbContext.DocumentTasksSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == id));
                 dbContext.DocumentPapersSet.RemoveRange(
-                    dbContext.DocumentPapersSet.Where(x => x.ClientId == context.Client.Id)
-                        .Where(x => x.DocumentId == id));
+                    dbContext.DocumentPapersSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == id));
 
                 CommonQueries.DeletePropertyValues(context,
                     new FilterPropertyValue
@@ -1594,7 +1580,7 @@ namespace BL.Database.Documents
                     });
 
                 dbContext.DocumentsSet.RemoveRange(
-                    dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.Id == id));
+                    dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.Id == id)); //Without security restrictions
 
                 dbContext.SaveChanges();
 
@@ -1686,7 +1672,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id)
+                var doc = CommonQueries.GetDocumentQuery(context, null, false, true, true)
                     .Where(x => x.Id == model.DocumentId)
                     .Select(x => new
                     {
@@ -1704,44 +1690,36 @@ namespace BL.Database.Documents
                             .Select(y => y.AccessGroups.FirstOrDefault(z => z.AccessTypeId == (int)EnumEventAccessTypes.Target).Agent.Name).FirstOrDefault()
                     }).FirstOrDefault();
 
-                if (doc == null)
-                {
-                    return null;
-                }
+                if (doc == null) return null;
 
                 var res = new InternalDocumnRegistration
                 {
                     ExecutorPositionDepartmentCode = doc.ExecutorPositionDepartmentCode,
                     RegistrationDate = model.RegistrationDate,
                     SubscriptionsPositionDepartmentCode = doc.SubscriptionsPositionDepartmentCode,
-                    DocumentSendListLastAgentExternalFirstSymbolName =
-                        doc.DocumentSendListLastAgentExternalFirstSymbolName
+                    DocumentSendListLastAgentExternalFirstSymbolName = doc.DocumentSendListLastAgentExternalFirstSymbolName
                 };
 
                 if (!string.IsNullOrEmpty(res.DocumentSendListLastAgentExternalFirstSymbolName))
-                    res.DocumentSendListLastAgentExternalFirstSymbolName =
-                        res.DocumentSendListLastAgentExternalFirstSymbolName.Substring(0, 1);
+                    res.DocumentSendListLastAgentExternalFirstSymbolName = res.DocumentSendListLastAgentExternalFirstSymbolName.Substring(0, 1);
 
                 //TODO ??? если doc.LinkId==null || doc.SenderAgentId ==null
-                res.OrdinalNumberDocumentLinkForCorrespondent = dbContext.DocumentsSet.Where(
-                    x => x.ClientId == context.Client.Id)
+                res.OrdinalNumberDocumentLinkForCorrespondent = dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id) //Without security restrictions
                     .Where(x => x.LinkId == doc.LinkId && x.SenderAgentId == doc.SenderAgentId && x.IsRegistered == true)
                     .Count() + 1;
 
                 var regJournal =
                     dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == context.Client.Id)
                         .Where(x => x.Id == model.RegistrationJournalId)
-                        .Select(
-                            x =>
-                                new
-                                {
-                                    x.Id,
-                                    x.NumerationPrefixFormula,
-                                    x.PrefixFormula,
-                                    x.SuffixFormula,
-                                    x.Index,
-                                    RegistrationJournalDepartmentCode = x.Department.Index
-                                }).FirstOrDefault();
+                        .Select(x => new
+                        {
+                            x.Id,
+                            x.NumerationPrefixFormula,
+                            x.PrefixFormula,
+                            x.SuffixFormula,
+                            x.Index,
+                            RegistrationJournalDepartmentCode = x.Department.Index
+                        }).FirstOrDefault();
 
                 if (regJournal != null)
                 {
@@ -1836,12 +1814,11 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                //get next number
-                var maxNumber = (from docreg in dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id)
-                                 where docreg.RegistrationJournalId == document.RegistrationJournalId
-                                       && docreg.NumerationPrefixFormula == document.NumerationPrefixFormula
-                                       && docreg.Id != document.Id
-                                 select docreg.RegistrationNumber).Max();
+                var maxNumber = dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id) //Without security restrictions
+                                 .Where(x => x.RegistrationJournalId == document.RegistrationJournalId
+                                       && x.NumerationPrefixFormula == document.NumerationPrefixFormula
+                                       && x.Id != document.Id)
+                                 .Select(x => x.RegistrationNumber).Max();
                 document.RegistrationNumber = (maxNumber ?? 0) + 1;
                 transaction.Complete();
             }
@@ -1852,7 +1829,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var res = !dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id)
+                var res = !dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id) //Without security restrictions
                     .Any(x => x.RegistrationJournalId == document.RegistrationJournalId
                               && x.NumerationPrefixFormula == document.NumerationPrefixFormula
                               && x.RegistrationNumber == document.RegistrationNumber
@@ -2029,21 +2006,12 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id)
+                dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id) //Without security restrictions
                     .Where(x => x.Id == model.DocumentId && x.ExecutorPositionId == model.OldPositionId)
-                    .ToList()
-                    .ForEach(x =>
-                    {
-                        x.ExecutorPositionId = model.NewPositionId;
-                        //TODO исполнители по должности!!!
-                    });
+                    .Update(x => new DBModel.Document.Documents { ExecutorPositionId = model.NewPositionId, });//TODO исполнители по должности!!!
                 dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id)
                     .Where(x => x.DocumentId == model.DocumentId && x.ExecutorPositionId == model.OldPositionId)
-                    .ToList()
-                    .ForEach(x =>
-                    {
-                        x.ExecutorPositionId = model.NewPositionId;
-                    });
+                    .Update(x => new DocumentFiles { ExecutorPositionId = model.NewPositionId });
                 dbContext.DocumentTasksSet.Where(x => x.ClientId == context.Client.Id)
                     .Where(x => x.DocumentId == model.DocumentId && x.PositionId == model.OldPositionId)
                     .ToList()
