@@ -1028,7 +1028,7 @@ namespace BL.Database.SystemDb
                     Id = x.Id,
                     Code = x.Code,
                     Description = x.Description,
-                    Category = x.Category,
+                    Category = (EnumActionCategories)x.CategoryId,
                     ObjectId = (EnumObjects)x.ObjectId
                 }).ToList();
 
