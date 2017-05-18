@@ -4,6 +4,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
+using System;
 
 namespace DMS_WebAPI
 {
@@ -34,6 +35,12 @@ namespace DMS_WebAPI
                 RequireLowercase = true,
                 RequireUppercase = true,
             };
+
+            // Configure user lockout
+            manager.UserLockoutEnabledByDefault = true;
+            manager.DefaultAccountLockoutTimeSpan = TimeSpan.FromMinutes(5); 
+            manager.MaxFailedAccessAttemptsBeforeLockout = 1;
+
             var dataProtectionProvider = options.DataProtectionProvider;
             if (dataProtectionProvider != null)
             {

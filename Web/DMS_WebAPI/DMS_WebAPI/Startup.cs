@@ -1,8 +1,7 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
-using BL.Logic.SystemServices.FullTextSearch;
-using BL.Logic.SystemServices.QueueWorker;
+using BL.Logic.SystemServices.TaskManagerService;
 using BL.Model.Enums;
 using BL.Model.WebAPI.Filters;
 using DMS_WebAPI.DatabaseContext;
@@ -12,7 +11,6 @@ using Owin;
 using System;
 using System.Collections.Generic;
 using System.Web;
-using BL.Logic.SystemServices.TaskManagerService;
 
 [assembly: OwinStartup(typeof(DMS_WebAPI.Startup))]
 
@@ -26,6 +24,7 @@ namespace DMS_WebAPI
 
             FileLogger.AppendTextToFile("STARTUP BEGIN!!! " + DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC", filePath);
 
+            // Проверка доступности центральной базы
             ApplicationDbContext.CreateDatabaseIfNotExists();
 
             // configuring authentication
