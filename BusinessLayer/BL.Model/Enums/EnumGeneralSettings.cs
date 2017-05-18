@@ -63,5 +63,17 @@
         FulltextRefreshTimeout,
         FulltextRowLimit,
 
+
+
+        PasswordRequiredLength,
+        PasswordRequireNonLetterOrDigit,
+        PasswordRequireDigit,
+        PasswordRequireLowercase,
+        PasswordRequireUppercase,
+
+        UserLockoutEnabledByDefault,
+        DefaultAccountLockoutMinute,
+        MaxFailedAccessAttemptsBeforeLockout,
+
     }
 }

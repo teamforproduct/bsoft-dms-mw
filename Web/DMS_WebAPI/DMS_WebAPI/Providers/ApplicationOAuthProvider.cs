@@ -1,12 +1,6 @@
-﻿using BL.CrossCutting.Context;
-using BL.CrossCutting.DependencyInjection;
-using BL.CrossCutting.Helpers;
-using BL.CrossCutting.Interfaces;
-using BL.Logic.AdminCore.Interfaces;
-using BL.Model.Enums;
+﻿using BL.CrossCutting.DependencyInjection;
 using BL.Model.Exception;
 using BL.Model.WebAPI.Filters;
-using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
 using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Utilities;
@@ -17,10 +11,7 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.OAuth;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -72,9 +63,9 @@ namespace DMS_WebAPI.Providers
         /// <returns></returns>
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
-            var clientCode = context.Request.Body.GetClientCode();
-            var clientSecret = context.Request.Body.GetClientSecret();
-            var fingerprint = context.Request.Body.GetFingerprint();
+            var clientCode = await context.Request.Body.GetClientCodeAsync();
+            var clientSecret = await context.Request.Body.GetClientSecretAsync();
+            var fingerprint = await context.Request.Body.GetFingerprintAsync();
 
             // код клиента - обязательный параметр
             if (string.IsNullOrEmpty(clientCode?.Trim())) throw new ClientCodeRequired();
@@ -87,39 +78,78 @@ namespace DMS_WebAPI.Providers
             var webService = DmsResolver.Current.Get<WebAPIService>();
             if (!webService.ExistsClients(new FilterAspNetClients { Code = clientCode })) throw new ClientIsNotFound(); // TODO может тут нужен ThrowErrorGrantResourceOwnerCredentials - не знаю - и зачем не понимаю
 
-            // проверить принадлежность пользователя к клиенту
+            // Проверяю принадлежность пользователя к клиенту
             if (!webService.ExistsUser(context.UserName, clientCode)) throw new UserIsNotDefined();
 
-            // Нахожу пользователя по логину и паролю
-            AspNetUsers user = await webService.GetUser(context.UserName, context.Password);
+            // To enable password failures to trigger account lockout, change to shouldLockout: true
+            //var result = await SignInManager.PasswordSignInAsync(vm.Email, vm.Password, vm.RememberMe, shouldLockout: true);
 
-            //context.SetError("invalid_grant", new UserNameOrPasswordIsIncorrect().Message); return;
-            // Эта штука возвращает в респонсе {"error":"invalid_grant","error_description":"Привет!!"} - на фронте всплывает красный тостер с error_description
-            // Эта штука доступна только в OAuthGrantResourceOwnerCredentialsContext в OAuthTokenEndpointResponseContext я ее уже не обнаружил
-            // Эта штука НЕ отлавливается нашим обработчиком ошибок и не фиксируется в файл лог
+            // Нахожу пользователя по логину
+            AspNetUsers user = await webService.GetUserAsync(context.UserName);
 
-            // Эти исключения отлавливает Application_Error в Global.asax
-            if (user == null) ThrowErrorGrantResourceOwnerCredentials(context, new UserNameOrPasswordIsIncorrect());
+            if (user == null) throw new UserIsNotDefined();
 
-            if (user.IsLockout) ThrowErrorGrantResourceOwnerCredentials(context, new UserIsDeactivated(user.UserName));
+            // Пользователь может быть заблокирован по двум причинам:
+            // - администратор заблокировал пользователя
+            // - пользователь сам себя заблокировал при очередной попытке ввода неправильного пароля (или взломщик)
+
+            if (user.IsLockout) await webService.ThrowErrorGrantResourceOwnerCredentials(context, new UserIsLockoutByAdmin(user.UserName));
+
+            var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
+
+            // Если для пользователя включена возможность самоблокировки
+            if (userManager.SupportsUserLockout && await userManager.GetLockoutEnabledAsync(user.Id) && await userManager.IsLockedOutAsync(user.Id))
+            {
+                await webService.ThrowErrorGrantResourceOwnerCredentials(context, new UserIsLockout(user.UserName));
+            }
+
+            var passwordIsValid = userManager.CheckPassword(user, context.Password);
+
+            // Если для пользователя включена возможность самоблокировки
+            if (userManager.SupportsUserLockout && await userManager.GetLockoutEnabledAsync(user.Id))
+            {
+                if (passwordIsValid)
+                {
+                    // Если пароль введен верно, то сбрасываю попытки
+                    if (await userManager.GetAccessFailedCountAsync(user.Id) > 0)
+                    {
+                        IdentityResult result = await userManager.ResetAccessFailedCountAsync(user.Id);
+                        if (!result.Succeeded) throw new UserParmsCouldNotBeChanged(result.Errors);
+                    }
+                }
+                else
+                {
+                    // Фиксирую еще одну неверную попытку
+                    IdentityResult result = await userManager.AccessFailedAsync(user.Id);
+                    if (!result.Succeeded) throw new UserParmsCouldNotBeChanged(result.Errors);
+                }
+            }
+
+            if (!passwordIsValid) await webService.ThrowErrorGrantResourceOwnerCredentials(context, new UserNameOrPasswordIsIncorrect());
+
+            /////////////////////////////
+            // Лигин и пароль верные!!!
+            ////////////////////////////
+
+
 
             // Проверка подтверждения адреса
-            if (!user.EmailConfirmed && user.IsEmailConfirmRequired) ThrowErrorGrantResourceOwnerCredentials(context, new UserMustConfirmEmail());
+            if (!user.EmailConfirmed && user.IsEmailConfirmRequired) await webService.ThrowErrorGrantResourceOwnerCredentials(context, new UserMustConfirmEmail());
 
             // Проверка Fingerprint: Если пользователь включил Fingerprint
             if (user.IsFingerprintEnabled)
             {
-                var answer = context.Request.Body.GetControlAnswer();
-                var rememberFingerprint = context.Request.Body.GetRememberFingerprint();
+                var answer = await context.Request.Body.GetControlAnswerAsync();
+                var rememberFingerprint = await context.Request.Body.GetRememberFingerprintAsync();
 
 
-                if (string.IsNullOrEmpty(fingerprint?.Trim())) ThrowErrorGrantResourceOwnerCredentials(context, new FingerprintRequired());
+                if (string.IsNullOrEmpty(fingerprint?.Trim())) await webService.ThrowErrorGrantResourceOwnerCredentials(context, new FingerprintRequired());
 
                 if (!string.IsNullOrEmpty(answer))  // переданы расширенные параметры получения токена с ответом на секретный вопрос
                 {
                     // Проверка ответа на секретный вопрос
                     if (!(user.ControlAnswer == answer))
-                        ThrowErrorGrantResourceOwnerCredentials(context, new UserAnswerIsIncorrect());
+                        await webService.ThrowErrorGrantResourceOwnerCredentials(context, new UserAnswerIsIncorrect());
 
                     // Добавление текущего отпечатка в доверенные
                     if (rememberFingerprint)
@@ -138,11 +168,15 @@ namespace DMS_WebAPI.Providers
                         UserIDs = new List<string> { user.Id },
                         FingerprintExact = fingerprint,
                         IsActive = true,
-                    })) ThrowErrorGrantResourceOwnerCredentials(context, new UserFingerprintIsIncorrect());
+                    })) await webService.ThrowErrorGrantResourceOwnerCredentials(context, new UserFingerprintIsIncorrect());
                 }
             }
 
-            var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
+            //////////////////////////////
+            // Проверки закончились - можно выдавать token
+            //////////////////////////////
+
+
 
             ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager,
                OAuthDefaults.AuthenticationType);
@@ -183,14 +217,14 @@ namespace DMS_WebAPI.Providers
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public override Task TokenEndpointResponse(OAuthTokenEndpointResponseContext context)
+        public override async Task TokenEndpointResponse(OAuthTokenEndpointResponseContext context)
         {
             if (context.Identity.IsAuthenticated)
             {
                 // Получаю ID WEb-пользователя
                 var userId = context.Identity.GetUserId();
 
-                var clientCode = context.Request.Body.GetClientCode();
+                var clientCode = await context.Request.Body.GetClientCodeAsync();
 
                 var webService = DmsResolver.Current.Get<WebAPIService>();
 
@@ -206,12 +240,12 @@ namespace DMS_WebAPI.Providers
                 // Получаю информацию о браузере
                 var brInfo = HttpContext.Current.Request.Browser.Info();
 
-                var fingerPrint = context.Request.Body.GetFingerprint();
+                var fingerPrint = await context.Request.Body.GetFingerprintAsync();
 
                 #region Подпорка для соапа
                 if (string.IsNullOrEmpty(fingerPrint))
                 {
-                    var scope = context.Request.Body.GetScope();
+                    var scope = await context.Request.Body.GetScopeAsync();
 
                     if (scope == "fingerprint") fingerPrint = "SoapUI finger";
 
@@ -231,7 +265,8 @@ namespace DMS_WebAPI.Providers
 
             }
 
-            return Task.FromResult<object>(null);
+            //return Task.FromResult<object>(null);
+
         }
 
         public override Task ValidateClientRedirectUri(OAuthValidateClientRedirectUriContext context)
@@ -264,35 +299,7 @@ namespace DMS_WebAPI.Providers
             return new AuthenticationProperties(data);
         }
 
-        private void ThrowErrorGrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context, Exception ex)
-        {
-            string message = HttpContext.Current.Request.Browser.Info();
-            var clientCode = context.Request.Body.GetClientCode();
-            var webService = DmsResolver.Current.Get<WebAPIService>();
-            var server = webService.GetClientServer(clientCode);
 
-            var ctx = new AdminContext(server);
-            var logger = DmsResolver.Current.Get<ILogger>();
-            var errorInfo = new AuthError
-            {
-                ClientCode = clientCode,
-                EMail = context.UserName,
-                FingerPrint = context.Request.Body.GetFingerprint()
-            };
-            int? agentId = null;
-            var dbService = DmsResolver.Current.Get<WebAPIService>();
-            var user = dbService.GetUser(errorInfo.EMail);
-            if (user != null)
-            {
-                var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(ctx, user.Id);
-                agentId = agentUser?.Id;
-            }
-
-            var exceptionText = (ex is DmsExceptions) ? "DmsExceptions:" + ex.GetType().Name : ex.Message;
-            var loginLogId = logger.Error(ctx, message, exceptionText, objectId: (int)EnumObjects.System, actionId: (int)EnumSystemActions.Login, logObject: errorInfo, agentId: agentId);
-
-            throw ex;
-        }
 
 
     }

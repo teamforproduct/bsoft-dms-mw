@@ -23,10 +23,13 @@ using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
 using DMS_WebAPI.DatabaseContext;
 using DMS_WebAPI.DBModel;
+using DMS_WebAPI.Infrastructure;
 using DMS_WebAPI.Models;
+using DMS_WebAPI.Providers;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
+using Microsoft.Owin.Security.OAuth;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -126,6 +129,74 @@ namespace DMS_WebAPI.Utilities
             }).FirstOrDefault();
 
             return (ucs != null);
+        }
+
+        /// <summary>
+        /// Проверить доступность
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<bool> GetUserIsLockedOutAsync(string userId)
+        {
+            return await UserManager.IsLockedOutAsync(userId);
+        }
+
+        /// <summary>
+        /// Определяет не заблокирован ли пользователь
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+
+        public async Task CheckUserLockedOutAsync(AspNetUsers user)
+        {
+            
+
+
+
+        }
+
+        /// <summary>
+        /// Сбросить число AccessFailedCount
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task UserResetAccessFailedCountAsync(string userId)
+        {
+            IdentityResult result = await UserManager.ResetAccessFailedCountAsync(userId);
+
+            if (!result.Succeeded) throw new UserParmsCouldNotBeChanged(result.Errors);
+        }
+
+
+        /// <summary>
+        /// Инкрементировать число AccessFailedCount 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task UserAccessFailedAsync(string userId)
+        {
+            await UserManager.AccessFailedAsync(userId);
+        }
+
+        /// <summary>
+        /// Управление LockoutEnabled
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="enabled"></param>
+        /// <returns></returns>
+        public async Task SetUserLockoutEnabledAsync(string userId, bool enabled)
+        {
+            await UserManager.SetLockoutEnabledAsync(userId, enabled);
+        }
+
+        /// <summary>
+        /// Узнать число AccessFailedCount
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        public async Task<int> GetUserAccessFailedAsync(string userId)
+        {
+            return await UserManager.GetAccessFailedCountAsync(userId);
         }
 
         public FrontAgentEmployeeUser GetUserInfo(IContext context)
@@ -1071,7 +1142,7 @@ namespace DMS_WebAPI.Utilities
 
             var result = await UserManager.UpdateAsync(user);
 
-            if (!result.Succeeded) throw new UserEmailConfirmedCouldNotBeChanged(user.Email, result.Errors);
+            if (!result.Succeeded) throw new UserParmsCouldNotBeChanged(result.Errors);
 
             var emailConfirmationCode = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
 
@@ -1129,7 +1200,7 @@ namespace DMS_WebAPI.Utilities
 
             if (user == null) throw new UserIsNotDefined();
 
-            if (user.IsLockout) throw new UserIsDeactivated(user.UserName);
+            if (user.IsLockout) throw new EmployeeIsDeactivated(user.UserName);
 
             var passwordResetToken = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
 
@@ -1437,6 +1508,39 @@ namespace DMS_WebAPI.Utilities
         public FrontAspNetClientLicence GetClientLicenceActive(int clientId)
         {
             return _webDb.GetClientLicenceActive(clientId);
+        }
+
+        public async Task ThrowErrorGrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context, Exception ex)
+        {
+            string message = HttpContext.Current.Request.Browser.Info();
+            var clientCode = await context.Request.Body.GetClientCodeAsync();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            var server = webService.GetClientServer(clientCode);
+
+            var ctx = new AdminContext(server);
+            var logger = DmsResolver.Current.Get<ILogger>();
+            var errorInfo = new AuthError
+            {
+                ClientCode = clientCode,
+                EMail = context.UserName,
+                FingerPrint = await context.Request.Body.GetFingerprintAsync()
+            };
+            int? agentId = null;
+            var dbService = DmsResolver.Current.Get<WebAPIService>();
+
+            var user = await dbService.GetUserAsync(errorInfo.EMail);
+
+            if (user != null)
+            {
+                var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(ctx, user.Id);
+                agentId = agentUser?.Id;
+            }
+
+            var exceptionText = ExceptionHandling.GetExceptionText(ex);
+            var loginLogId = logger.Error(ctx, message, exceptionText, objectId: (int)EnumObjects.System, actionId: (int)EnumSystemActions.Login, logObject: errorInfo, agentId: agentId);
+
+            // Эти исключения отлавливает Application_Error в Global.asax
+            throw ex;
         }
 
     }

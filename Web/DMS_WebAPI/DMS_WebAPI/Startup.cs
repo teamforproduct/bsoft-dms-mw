@@ -1,8 +1,7 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
-using BL.Logic.SystemServices.FullTextSearch;
-using BL.Logic.SystemServices.QueueWorker;
+using BL.Logic.SystemServices.TaskManagerService;
 using BL.Model.Enums;
 using BL.Model.WebAPI.Filters;
 using DMS_WebAPI.DatabaseContext;
@@ -12,7 +11,6 @@ using Owin;
 using System;
 using System.Collections.Generic;
 using System.Web;
-using BL.Logic.SystemServices.TaskManagerService;
 
 [assembly: OwinStartup(typeof(DMS_WebAPI.Startup))]
 
@@ -26,10 +24,8 @@ namespace DMS_WebAPI
 
             FileLogger.AppendTextToFile("STARTUP BEGIN!!! " + DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm") + " UTC", filePath);
 
+            // Проверка доступности центральной базы
             ApplicationDbContext.CreateDatabaseIfNotExists();
-
-            // configuring authentication
-            ConfigureAuth(app);
 
             // Проверка на целостность Actions в процедуре импорта 
             //var systemService = DmsResolver.Current.Get<ISystemService>();
@@ -42,6 +38,9 @@ namespace DMS_WebAPI
             // Столкнулись с проблемой вычитки настроек из центральной базы в транзакции (Нельзя использовть два дб. контекста под одной транзакцией). 
             var genSett = DmsResolver.Current.Get<IGeneralSettings>();
             genSett.ReadAll();
+
+            // configuring authentication
+            ConfigureAuth(app);
 
             //Database.SetInitializer(new CreateDatabaseIfNotExists<ApplicationDbContext>());
             //var tt = Database.Exists("DefaultConnection");

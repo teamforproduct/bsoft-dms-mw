@@ -201,12 +201,12 @@ namespace DMS_WebAPI.Utilities
                 // проверка активности сотрудника
                 if (!agentUser.IsActive)
                 {
-                    throw new UserIsDeactivated(agentUser.Name);
+                    throw new EmployeeIsDeactivated(agentUser.Name);
                 }
 
                 if (agentUser.PositionExecutorsCount == 0)
                 {
-                    throw new UserNotExecuteAnyPosition(agentUser.Name);
+                    throw new EmployeeNotExecuteAnyPosition(agentUser.Name);
                 }
 
                 intContext.Employee.Id = agentUser.Id;

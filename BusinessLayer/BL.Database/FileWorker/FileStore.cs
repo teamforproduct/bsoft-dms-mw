@@ -78,7 +78,7 @@ namespace BL.Database.FileWorker
 
             if (File.Exists(localFilePath) || fileType != EnumDocumentFileType.UserFile) return localFilePath;
 
-            throw new UserFileNotExists();
+            throw new FileNotExists();
         }
 
         public string SaveFile(IContext ctx, InternalTemplateDocumentFile attFile, bool isOverride = true)
@@ -274,7 +274,7 @@ namespace BL.Database.FileWorker
                     var doc = new InternalTemplateDocumentFile(attFile);
                     if (!CreatePdfFile(ctx, doc))
                     {
-                        throw new UserPdfFileNotExists();
+                        throw new FilePdfNotExists();
                     }
                 }
 
@@ -282,9 +282,9 @@ namespace BL.Database.FileWorker
 
                 return attFile.File.FileContent;
             }
-            catch (UserFileNotExists)
+            catch (FileNotExists)
             {
-                throw new UserFileNotExists();
+                throw new FileNotExists();
             }
             catch (Exception ex)
             {
@@ -308,7 +308,7 @@ namespace BL.Database.FileWorker
                     var doc = new InternalDocumentFile(attFile);
                     if (!CreatePdfFile(ctx, doc))
                     {
-                        throw new UserPdfFileNotExists();
+                        throw new FilePdfNotExists();
                     }
                 }
 
@@ -514,7 +514,7 @@ namespace BL.Database.FileWorker
 
                 if (!File.Exists(localFromPath))
                 {
-                    throw new UserFileNotExists();
+                    throw new FileNotExists();
                 }
 
                 if (!Directory.Exists(toPath))
@@ -532,9 +532,9 @@ namespace BL.Database.FileWorker
 
                 toTempl.Hash = FileToSha512(localToPath);
             }
-            catch (UserFileNotExists)
+            catch (FileNotExists)
             {
-                throw new UserFileNotExists();
+                throw new FileNotExists();
             }
             catch (Exception ex)
             {

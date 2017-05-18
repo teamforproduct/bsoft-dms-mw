@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace BL.Model.Exception
 {
@@ -56,12 +54,29 @@ namespace BL.Model.Exception
         public FilterRequired(System.Exception ex) : base(ex) { }
     }
 
-    public class ClientRequestIsNotFound : DmsExceptions
+    public class OrgRequired : DmsExceptions
     {
-        public ClientRequestIsNotFound() : base() { }
-        public ClientRequestIsNotFound(System.Exception ex) : base(ex) { }
+        public OrgRequired() : base() { }
+        public OrgRequired(System.Exception ex) : base(ex) { }
     }
 
+    public class DepartmentRequired : DmsExceptions
+    {
+        public DepartmentRequired() : base() { }
+        public DepartmentRequired(System.Exception ex) : base(ex) { }
+    }
+
+    public class PositionRequired : DmsExceptions
+    {
+        public PositionRequired() : base() { }
+        public PositionRequired(System.Exception ex) : base(ex) { }
+    }
+
+    public class FingerprintRequired : DmsExceptions
+    {
+        public FingerprintRequired() : base() { }
+        public FingerprintRequired(System.Exception ex) : base(ex) { }
+    }
 
     #region [+] LicenceError ... 
 
@@ -111,16 +126,18 @@ namespace BL.Model.Exception
         public DefaultLanguageIsNotSet() : base() { }
         public DefaultLanguageIsNotSet(System.Exception ex) : base(ex) { }
     }
+
+    public class ClientRequestIsNotFound : DmsExceptions
+    {
+        public ClientRequestIsNotFound() : base() { }
+        public ClientRequestIsNotFound(System.Exception ex) : base(ex) { }
+    }
+
     /// <summary>
     /// Сообщение при ошибке регистрации нового клиента
     /// Имя клиента уже существует
     /// Client Name already exists
     /// </summary>
-    public class ClientNameAlreadyExists : DmsExceptions
-    {
-        public ClientNameAlreadyExists() : base() { }
-        public ClientNameAlreadyExists(System.Exception ex) : base(ex) { }
-    }
     public class ClientCodeAlreadyExists : DmsExceptions
     {
         public ClientCodeAlreadyExists(string Code) : base() { Parameters = new List<string> { Code }; }
@@ -210,16 +227,86 @@ namespace BL.Model.Exception
         public UserLoginCouldNotBeChanged(System.Exception ex) : base(ex) { }
     }
 
-    public class UserEmailConfirmedCouldNotBeChanged : DmsExceptions
+    public class UserParmsCouldNotBeChanged : DmsExceptions
     {
-        public UserEmailConfirmedCouldNotBeChanged(string userName, IEnumerable<string> Errors) : base() { Parameters = new List<string> { userName }; base.Errors = Errors; }
-        public UserEmailConfirmedCouldNotBeChanged(System.Exception ex) : base(ex) { }
+        public UserParmsCouldNotBeChanged(IEnumerable<string> Errors) : base() { base.Errors = Errors; }
+        public UserParmsCouldNotBeChanged(System.Exception ex) : base(ex) { }
     }
 
-    public class UserPositionExecutorIsIncorrect : DmsExceptions
+    public class UserIsNotDefined : DmsExceptions
     {
-        public UserPositionExecutorIsIncorrect() : base() { }
-        public UserPositionExecutorIsIncorrect(System.Exception ex) : base(ex) { }
+        public UserIsNotDefined() : base() { }
+        public UserIsNotDefined(System.Exception ex) : base(ex) { }
+    }
+
+    public class UserContextIsNotDefined : DmsExceptions
+    {
+        public UserContextIsNotDefined() : base() { }
+        public UserContextIsNotDefined(System.Exception ex) : base(ex) { }
+    }
+
+    public class UserUnauthorized : DmsExceptions
+    {
+        public UserUnauthorized() : base() { }
+        public UserUnauthorized(System.Exception ex) : base(ex) { }
+    }
+
+    public class UserMustChangePassword : DmsExceptions
+    {
+        public UserMustChangePassword() : base() { }
+        public UserMustChangePassword(System.Exception ex) : base(ex) { }
+    }
+
+    public class UserMustConfirmEmail : DmsExceptions
+    {
+        public UserMustConfirmEmail() : base() { }
+        public UserMustConfirmEmail(System.Exception ex) : base(ex) { }
+    }
+
+    // НЕ переименовывать - есть if на фронте
+    public class UserFingerprintIsIncorrect : DmsExceptions
+    {
+        public UserFingerprintIsIncorrect() : base() { }
+        public UserFingerprintIsIncorrect(System.Exception ex) : base(ex) { }
+    }
+
+    /// <summary>
+    /// UserContextUseOnly
+    /// </summary>
+    public class UserAccessIsDenied : DmsExceptions
+    {
+        public UserAccessIsDenied() : base() { }
+        public UserAccessIsDenied(System.Exception ex) : base(ex) { }
+    }
+
+    public class UserNameOrPasswordIsIncorrect : DmsExceptions
+    {
+        public UserNameOrPasswordIsIncorrect() : base() { }
+        public UserNameOrPasswordIsIncorrect(System.Exception ex) : base(ex) { }
+    }
+
+    // НЕ переименовывать - есть if на фронте
+    public class UserAnswerIsIncorrect : DmsExceptions
+    {
+        public UserAnswerIsIncorrect() : base() { }
+        public UserAnswerIsIncorrect(System.Exception ex) : base(ex) { }
+    }
+
+    public class EmployeeIsDeactivated : DmsExceptions
+    {
+        public EmployeeIsDeactivated(string UserName) : base() { Parameters = new List<string> { UserName }; }
+        public EmployeeIsDeactivated(System.Exception ex) : base(ex) { }
+    }
+    public class UserIsLockout : DmsExceptions
+    {
+        public UserIsLockout(string UserName) : base() { Parameters = new List<string> { UserName }; }
+        public UserIsLockout(System.Exception ex) : base(ex) { }
+    }
+
+    public class UserIsLockoutByAdmin : DmsExceptions
+    {
+        public UserIsLockoutByAdmin(string UserName) : base() { Parameters = new List<string> { UserName }; }
+        public UserIsLockoutByAdmin(System.Exception ex) : base(ex) { }
     }
 
     public class RoleNameAlreadyExists : DmsExceptions
@@ -326,120 +413,47 @@ namespace BL.Model.Exception
 
 
 
-    public class FingerprintRequired : DmsExceptions
+
+
+
+    public class EmployeePositionExecutorIsIncorrect : DmsExceptions
     {
-        public FingerprintRequired() : base() { }
-        public FingerprintRequired(System.Exception ex) : base(ex) { }
+        public EmployeePositionExecutorIsIncorrect() : base() { }
+        public EmployeePositionExecutorIsIncorrect(System.Exception ex) : base(ex) { }
     }
 
-    public class NameRequired : DmsExceptions
+    public class EmployeeNotExecuteAnyPosition : DmsExceptions
     {
-        public NameRequired() : base() { }
-        public NameRequired(System.Exception ex) : base(ex) { }
+        public EmployeeNotExecuteAnyPosition(string UserName) : base() { Parameters = new List<string> { UserName }; }
+        public EmployeeNotExecuteAnyPosition(System.Exception ex) : base(ex) { }
     }
 
-    public class FullNameRequired : DmsExceptions
+    public class EmployeeNotExecuteCheckPosition : DmsExceptions
     {
-        public FullNameRequired() : base() { }
-        public FullNameRequired(System.Exception ex) : base(ex) { }
+        public EmployeeNotExecuteCheckPosition() : base() { }
+        public EmployeeNotExecuteCheckPosition(System.Exception ex) : base(ex) { }
     }
 
-
-    /// <summary>
-    /// UserContextUseOnly
-    /// </summary>
-    public class UserAccessIsDenied : DmsExceptions
+    public class EmployeeHasNoAccessToDocument : DmsExceptions
     {
-        public UserAccessIsDenied() : base() { }
-        public UserAccessIsDenied(System.Exception ex) : base(ex) { }
+        public EmployeeHasNoAccessToDocument() : base() { }
+        public EmployeeHasNoAccessToDocument(System.Exception ex) : base(ex) { }
     }
 
-    public class UserNameOrPasswordIsIncorrect : DmsExceptions
+    public class FileNotExists : DmsExceptions
     {
-        public UserNameOrPasswordIsIncorrect() : base() { }
-        public UserNameOrPasswordIsIncorrect(System.Exception ex) : base(ex) { }
-    }
-
-    // НЕ переименовывать - есть if на фронте
-    public class UserAnswerIsIncorrect : DmsExceptions
-    {
-        public UserAnswerIsIncorrect() : base() { }
-        public UserAnswerIsIncorrect(System.Exception ex) : base(ex) { }
-    }
-
-    public class UserIsDeactivated : DmsExceptions
-    {
-        public UserIsDeactivated(string UserName) : base() { Parameters = new List<string> { UserName }; }
-        public UserIsDeactivated(System.Exception ex) : base(ex) { }
-    }
-
-    public class UserNotExecuteAnyPosition : DmsExceptions
-    {
-        public UserNotExecuteAnyPosition(string UserName) : base() { Parameters = new List<string> { UserName }; }
-        public UserNotExecuteAnyPosition(System.Exception ex) : base(ex) { }
-    }
-
-    public class UserNotExecuteCheckPosition : DmsExceptions
-    {
-        public UserNotExecuteCheckPosition() : base() { }
-        public UserNotExecuteCheckPosition(System.Exception ex) : base(ex) { }
-    }
-
-    public class UserHasNoAccessToDocument : DmsExceptions
-    {
-        public UserHasNoAccessToDocument() : base() { }
-        public UserHasNoAccessToDocument(System.Exception ex) : base(ex) { }
-    }
-
-    public class UserFileNotExists : DmsExceptions
-    {
-        public UserFileNotExists() : base() { }
-        public UserFileNotExists(System.Exception ex) : base(ex) { }
+        public FileNotExists() : base() { }
+        public FileNotExists(System.Exception ex) : base(ex) { }
     }
 
     //TODO PDF Change message to pdf file
-    public class UserPdfFileNotExists : DmsExceptions
+    public class FilePdfNotExists : DmsExceptions
     {
-        public UserPdfFileNotExists() : base() { }
-        public UserPdfFileNotExists(System.Exception ex) : base(ex) { }
+        public FilePdfNotExists() : base() { }
+        public FilePdfNotExists(System.Exception ex) : base(ex) { }
     }
 
-    public class UserIsNotDefined : DmsExceptions
-    {
-        public UserIsNotDefined() : base() { }
-        public UserIsNotDefined(System.Exception ex) : base(ex) { }
-    }
 
-    public class UserContextIsNotDefined : DmsExceptions
-    {
-        public UserContextIsNotDefined() : base() { }
-        public UserContextIsNotDefined(System.Exception ex) : base(ex) { }
-    }
-
-    public class UserUnauthorized : DmsExceptions
-    {
-        public UserUnauthorized() : base() { }
-        public UserUnauthorized(System.Exception ex) : base(ex) { }
-    }
-
-    public class UserMustChangePassword : DmsExceptions
-    {
-        public UserMustChangePassword() : base() { }
-        public UserMustChangePassword(System.Exception ex) : base(ex) { }
-    }
-
-    public class UserMustConfirmEmail : DmsExceptions
-    {
-        public UserMustConfirmEmail() : base() { }
-        public UserMustConfirmEmail(System.Exception ex) : base(ex) { }
-    }
-
-    // НЕ переименовывать - есть if на фронте
-    public class UserFingerprintIsIncorrect : DmsExceptions
-    {
-        public UserFingerprintIsIncorrect() : base() { }
-        public UserFingerprintIsIncorrect(System.Exception ex) : base(ex) { }
-    }
 
     public class DocumentHasAlreadyHasLink : DmsExceptions
     {
@@ -719,9 +733,6 @@ namespace BL.Model.Exception
         public DictionarySystemRecordCouldNotBeDeleted(System.Exception ex) : base(ex) { }
     }
 
-    /// <summary>
-    /// Сообщение о невозможности удаления системной записи из справочника
-    /// </summary>
     public class DefaultRolesCouldNotBeModified : DmsExceptions
     {
         public DefaultRolesCouldNotBeModified() : base() { }
@@ -737,23 +748,6 @@ namespace BL.Model.Exception
         public DictionaryRecordWasNotFound(System.Exception ex) : base(ex) { }
     }
 
-    /// <summary>
-    /// Сообщение об ошибке, когда при добавлении или изменении строки в справочнике появится дубль
-    /// </summary>
-    public class DictionaryRecordNotUnique : DmsExceptions
-    {
-        public DictionaryRecordNotUnique() : base() { }
-        public DictionaryRecordNotUnique(System.Exception ex) : base(ex) { }
-    }
-
-    /// <summary>
-    /// Ошибка возникает при попытке задублировать имя агента
-    /// </summary>
-    public class DictionaryAgentNameNotUnique : DmsExceptions
-    {
-        public DictionaryAgentNameNotUnique(string Name) : base() { Parameters = new List<string> { Name }; }
-        public DictionaryAgentNameNotUnique(System.Exception ex) : base(ex) { }
-    }
 
     public class DictionaryContactTypeNameNotUnique : DmsExceptions
     {
@@ -890,23 +884,7 @@ namespace BL.Model.Exception
         public DictionaryAgentCompanyOKPOCodeNotUnique(System.Exception ex) : base(ex) { }
     }
 
-    public class OrgRequired : DmsExceptions
-    {
-        public OrgRequired() : base() { }
-        public OrgRequired(System.Exception ex) : base(ex) { }
-    }
 
-    public class DepartmentRequired : DmsExceptions
-    {
-        public DepartmentRequired() : base() { }
-        public DepartmentRequired(System.Exception ex) : base(ex) { }
-    }
-
-    public class PositionRequired : DmsExceptions
-    {
-        public PositionRequired() : base() { }
-        public PositionRequired(System.Exception ex) : base(ex) { }
-    }
 
     public class DictionaryTagNotFoundOrUserHasNoAccess : DmsExceptions
     {

@@ -55,7 +55,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
                 Login = user.Email,
                 EmailConfirmed = user.EmailConfirmed,
                 IsLockout = user.IsLockout,
-               
+
             };
 
             var res = new JsonResult(authInfo, this);
@@ -198,8 +198,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
 
             AspNetUsers user = await userManager.FindByIdAsync(userId);
 
-            if (user == null)
-                throw new UserIsNotDefined();
+            if (user == null) throw new UserIsNotDefined();
 
             user.IsChangePasswordRequired = model.MustChangePassword;//true;
 

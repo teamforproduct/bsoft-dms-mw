@@ -41,8 +41,8 @@
   </con:settings>
   <con:interface xsi:type="con:RestService" id="04414674-bb52-45f0-b55f-c7f270d5072f" wadlVersion="http://wadl.dev.java.net/2009/02" name="ostrean" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <con:settings/>
-    <con:definitionCache type="TEXT" rootPart=""/>
-    <con:endpoints>
+    
+    <con:definitionCache type="TEXT" rootPart=""/><con:endpoints>
       <con:endpoint>http://10.88.12.22:80/</con:endpoint>
       <con:endpoint>http://localhost:21182/</con:endpoint>
     </con:endpoints>
@@ -66,7 +66,7 @@
               <con:endpoint>http://10.88.12.22:80/</con:endpoint>
               <con:request/>
               <con:credentials>
-                <con:authType>No Authorization</con:authType>
+                <con:selectedAuthProfile>lh docum t@t.t</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType>
               </con:credentials>
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
               <con:jmsPropertyConfig/>
@@ -360,7 +360,7 @@
               <con:request>[1044, 201373828, 1041, 1037]</con:request>
               <con:originalUri>http://10.88.12.22/api/v3/User/Assignments</con:originalUri>
               <con:credentials>
-                <con:selectedAuthProfile>lh docum t@t.t</con:selectedAuthProfile>
+                <con:selectedAuthProfile>lh docum sergey_pauls@mail.ru</con:selectedAuthProfile>
                 <con:authType>OAuth 2.0</con:authType>
               </con:credentials>
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
@@ -5078,14 +5078,12 @@
               </con:representation>
               <con:request name="Add Clients/Create/ByHash" id="7cb7bb80-d34b-420c-92b7-e9f00eaf2b7f" mediaType="application/json" postQueryString="false">
                 <con:settings>
-                  <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers"><![CDATA[
-                    <xml-fragment xmlns:con="http://eviware.com/soapui/config">
+                  <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers"><![CDATA[<xml-fragment xmlns:con="http://eviware.com/soapui/config">
   <con:entry key="Accept-Language" value="de_DE,en-US;q=0.8,en;q=0.6"/>
   <con:entry key="Accept-Encoding" value="gzip, deflate, br"/>
   <con:entry key="User-Agent" value="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/57.0.2987.133 Safari/537.36"/>
   <con:entry key="Accept" value="application/json, text/plain, */*"/>
-</xml-fragment>
-                  ]]></con:setting>
+</xml-fragment>]]></con:setting>
                 </con:settings>
                 <con:endpoint>http://localhost:21182/</con:endpoint>
                 <con:request>
@@ -5099,8 +5097,8 @@
                 </con:request>
                 <con:originalUri>http://localhost/api/v3/Clients/Create/ByHash</con:originalUri>
                 <con:credentials>
-                  <con:selectedAuthProfile>lh docum t@t.t</con:selectedAuthProfile>
-                  <con:authType>OAuth 2.0</con:authType>
+                  <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+                  <con:authType>No Authorization</con:authType>
                 </con:credentials>
                 <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
                 <con:jmsPropertyConfig/>
@@ -5121,8 +5119,8 @@
                 <con:endpoint>http://10.88.12.22:80/</con:endpoint>
                 <con:request/>
                 <con:credentials>
-                  <con:selectedAuthProfile>pr docum t@t.t</con:selectedAuthProfile>
-                  <con:authType>OAuth 2.0</con:authType>
+                  <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+                  <con:authType>No Authorization</con:authType>
                 </con:credentials>
                 <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
                 <con:jmsPropertyConfig/>
@@ -5151,8 +5149,8 @@
                 }
               </con:request>
               <con:credentials>
-                <con:selectedAuthProfile>pr docum t@t.t</con:selectedAuthProfile>
-                <con:authType>OAuth 2.0</con:authType>
+                <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
+                <con:authType>No Authorization</con:authType>
               </con:credentials>
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
               <con:jmsPropertyConfig/>
@@ -12811,7 +12809,7 @@
       <con:clientID>docum</con:clientID>
       <con:clientSecret>-</con:clientSecret>
       <con:accessTokenURI>http://localhost:21182/api/v3/token</con:accessTokenURI>
-      <con:accessToken>7aVjT7SVfU4yIwt-S9R8EVa98NFDRC-jQXDhoQonwY-34WRkv77DIVa9Hc5HQr7wMXaKAbD8dOjPZEEwu5j0jqruTjlK3mdGOyzROIlGCDf3jWNdPrZo_YcbTYERrF5SF9euEd_-lBfpBTZMR36ZjR4ACkxsl4KkxkR8F4_gllv8e93FDN1am1KhExP8vOEFXUv_X72b23bhwmKhgvh69oXXJszfhzUQv9qcqgkTGxqN-kSuxhWQF9po2ObSGqMqXE0SP5rkyHpreJ_3mlBLAf-o_i1yAanlss-pWutMqbLJ1W3eK3kVDTzT_bWKnZV0fILOlUpSTh_nulNlD2C-8sQBb_mHmCnsnqfg_UG1QvLkOruhUEK81suCrcvDtGTBBqfYyq5M11yhBvxFfJsId31gV_odh8qL9wmMzenZPbv7QN2z2jC0y42qlfVAsch8orkHOOI9sKnJRFw23yq4FPT_J2GwWyzphdWZQ3v66pg</con:accessToken>
+      <con:accessToken>1XVLdEdm9NxTFcvi5zn4Qqv5ZRHuYRkjyn8VObC37d4zB9XDcI7Mf9hHqvK_5LSsviEgIeWtawJqQbaxzj3eoU_vmU0YqAbsmDY6gJ7-086eHKDAFYR_AyUzkCGtCkRBAoFZbi-Ql50VEWA6v5udrGwOWZBf0LvMvF-Ndl3MhiDCeGmdrjj9gKgPvRHEDhT7U5c360FCY0V1kOcS63tyvKMV2xRaJCWjbv5KT6jAZjMNptBVUdfswYRaD2hlzu3B2kQdL7aQMDCge7D9a1T3gp5RRPhXI3rVlZoSW9LyRFsePdRLYCt09NS4uz1Ce6HnPU4tqX-5ADscX-rvaih5EyZ6JfYE-jXjrui-ukKSarTS3WH5IZNuIXmG-wX-JPss4x8h5f5acQ_h7Yk8Wylf4LeO13DbkFV4lOUslMWC44-neMs0wvd_RWDQDbZvK97gQvLE7vt6waFg5nGeppElQQhELg7posryiz9RFgPWZ20</con:accessToken>
       <con:accessTokenPosition>HEADER</con:accessTokenPosition>
       <con:oAuth2Flow>RESOURCE_OWNER_PASSWORD_CREDENTIALS</con:oAuth2Flow>
       <con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod>
@@ -12819,7 +12817,7 @@
       <con:accessTokenStatus>RETRIEVED_FROM_SERVER</con:accessTokenStatus>
       <con:accessTokenStartingStatus>RETRIEVED_FROM_SERVER</con:accessTokenStartingStatus>
       <con:accessTokenExpirationTime>1209599</con:accessTokenExpirationTime>
-      <con:accessTokenIssuedTime>1494364846</con:accessTokenIssuedTime>
+      <con:accessTokenIssuedTime>1495119889</con:accessTokenIssuedTime>
       <con:resourceOwnerName>t@t.t</con:resourceOwnerName>
       <con:resourceOwnerPassword>P@ssw0rd</con:resourceOwnerPassword>
     </con:oAuth2Profile>
@@ -12834,7 +12832,7 @@
       <con:oAuth2Flow>RESOURCE_OWNER_PASSWORD_CREDENTIALS</con:oAuth2Flow>
       <con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod>
       <con:scope>fingerprint</con:scope>
-      <con:accessTokenStatus>UNKNOWN</con:accessTokenStatus>
+      <con:accessTokenStatus>RETRIEVED_FROM_SERVER</con:accessTokenStatus>
       <con:accessTokenStartingStatus>RETRIEVED_FROM_SERVER</con:accessTokenStartingStatus>
       <con:accessTokenExpirationTime>1209599</con:accessTokenExpirationTime>
       <con:accessTokenIssuedTime>1494877526</con:accessTokenIssuedTime>
