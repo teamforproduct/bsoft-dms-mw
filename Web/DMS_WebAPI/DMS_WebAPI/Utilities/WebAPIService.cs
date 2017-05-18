@@ -710,6 +710,8 @@ namespace DMS_WebAPI.Utilities
 
             int res = 0;
 
+            var languages = DmsResolver.Current.Get<ILanguages>();
+
             try
             {
                 model.HashCode = model.ClientCode.md5();
@@ -717,7 +719,6 @@ namespace DMS_WebAPI.Utilities
 
                 if (string.IsNullOrEmpty(model.Language))
                 {
-                    var languages = DmsResolver.Current.Get<ILanguages>();
                     var language = languages.GetDefaultLanguage();
                     if (language != null) model.Language = language.Code;
                 }
@@ -733,9 +734,18 @@ namespace DMS_WebAPI.Utilities
 
                 callbackurl += $"?hash={model.HashCode}&login={model.Email}&code={model.ClientCode}&isNew={isNew}&language={model.Language}";
 
-                var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.RestorePassword);
+                var m = new WelcomeEmailModel()
+                {
+                    UserEmail = model.Email,
+                    UserName = model.FirstName,
+                    ClientUrl = callbackurl,
+                };
+
+                var htmlContent = m.RenderPartialViewToString(RenderPartialView.WelcomeEmail);
                 var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-                mailService.SendMessage(null, MailServers.Docum, model.Email, "Ostrean. Создание клиента", htmlContent);
+                
+
+                mailService.SendMessage(null, MailServers.Docum, model.Email, languages.GetTranslation("##l@Mail.Welcome.Subject@l##"), htmlContent);
             }
             catch (Exception)
             {
