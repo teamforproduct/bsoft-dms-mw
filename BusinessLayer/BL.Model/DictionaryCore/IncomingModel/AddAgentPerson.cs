@@ -33,7 +33,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// Имя
         /// </summary>
         [IgnoreDataMember]
-        public new string Name { get; set; }
+        public string Name { get; set; }
 
     }
 }

@@ -448,9 +448,28 @@ namespace BL.Database.Dictionaries
                 var dbModel = DictionaryModelConverter.GetDbAgentPerson(ctx, person);
 
                 dbContext.SafeAttach(dbModel);
-                dbContext.SaveChanges();
+                //dbContext.SaveChanges();
                 var entity = dbContext.Entry(dbModel);
                 entity.State = EntityState.Modified;
+                dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.UpdateFull);
+                transaction.Complete();
+
+            }
+        }
+
+        public void AddAgentPersonToCompany(IContext ctx, InternalDictionaryAgentPerson person)
+        {
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
+            {
+                var dbModel = DictionaryModelConverter.GetDbAgentPerson(ctx, person);
+
+                dbContext.SafeAttach(dbModel);
+                var entity = dbContext.Entry(dbModel);
+                //entity.State = EntityState.Modified;
+                entity.Property(x => x.AgentCompanyId).IsModified = true;
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.UpdateFull);
