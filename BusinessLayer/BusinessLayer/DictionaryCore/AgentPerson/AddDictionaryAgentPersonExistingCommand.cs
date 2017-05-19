@@ -4,7 +4,7 @@ using BL.Model.DictionaryCore.InternalModel;
 
 namespace BL.Logic.DictionaryCore
 {
-    public class AddDictionaryAgentPersonExistingCommand : BaseDictionaryAgentPersonCommand
+    public class AddDictionaryAgentPersonExistingCommand : BaseDictionaryCommand
     {
         private AddAgentPersonExisting Model { get { return GetModel<AddAgentPersonExisting>(); } }
 
@@ -16,6 +16,9 @@ namespace BL.Logic.DictionaryCore
             return null;
         }
 
+        public override bool CanBeDisplayed(int positionId) => true;
+
+        public override bool CanExecute() => true;
 
     }
 }

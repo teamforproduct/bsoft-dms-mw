@@ -360,7 +360,7 @@
               <con:request>[1044, 201373828, 1041, 1037]</con:request>
               <con:originalUri>http://10.88.12.22/api/v3/User/Assignments</con:originalUri>
               <con:credentials>
-                <con:selectedAuthProfile>lh docum sergey_pauls@mail.ru</con:selectedAuthProfile>
+                <con:selectedAuthProfile>lh docum t@t.t</con:selectedAuthProfile>
                 <con:authType>OAuth 2.0</con:authType>
               </con:credentials>
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
@@ -4965,19 +4965,19 @@
           <con:method name="Auth/RestorePassword" id="f909768e-94ec-4329-b2d4-ce15de481a15" method="POST">
             <con:settings/>
             <con:parameters/>
-            <con:request name="Add Auth/RestorePassword" id="9d5b9981-e1cb-4c96-9c9e-e41dea8c7246" mediaType="application/json" postQueryString="false">
+            <con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element xmlns:res="http://localhost/api/v3/Auth/RestorePassword">res:Fault</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Add Auth/RestorePassword" id="9d5b9981-e1cb-4c96-9c9e-e41dea8c7246" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
-              <con:endpoint>http://10.88.12.22:80/</con:endpoint>
+              <con:endpoint>http://localhost:21182/</con:endpoint>
               <con:request>
                 {
-                "Email": "sample string 1",
-                "ClientCode": "sample string 2",
-                "FirstEntry": "sample string 3"
+                "Email": "sergey_pauls@mail.ru",
+                "ClientCode": "docum",
+                "FirstEntry": ""
                 }
               </con:request>
-              <con:credentials>
+              <con:originalUri>http://localhost/api/v3/Auth/RestorePassword</con:originalUri><con:credentials>
                 <con:authType>No Authorization</con:authType>
               </con:credentials>
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
@@ -6894,7 +6894,192 @@
             </con:request>
           </con:method>
         </con:resource>
-      </con:resource>
+      <con:resource name="ContactPersons" path="ContactPersons" id="d2db0a96-1310-4538-a220-da2181444794">
+          <con:settings/>
+          <con:parameters/>
+          <con:resource name="{Id}" path="{Id}" id="675c7668-2226-4ce7-9f5d-9a402af52be0">
+            <con:settings/>
+            <con:parameters>
+              <con:parameter>
+                <con:name>Id</con:name>
+                <con:value>Id</con:value>
+                <con:style>TEMPLATE</con:style>
+                <con:default>Id</con:default>
+              </con:parameter>
+            </con:parameters>
+            <con:method name="Company/Contacts/{Id}" id="1e640cf8-58b9-4592-ae81-570be7d3ecf6" method="GET">
+              <con:settings/>
+              <con:parameters/>
+              <con:representation type="FAULT">
+                <con:mediaType>application/json; charset=utf-8</con:mediaType>
+                <con:status>401</con:status>
+                <con:params/>
+                <con:element xmlns:ns="http://10.88.12.22/api/v3/Company/Addresses/4309">ns:Fault</con:element>
+              </con:representation>
+              <con:representation type="RESPONSE">
+                <con:mediaType>application/json; charset=utf-8</con:mediaType>
+                <con:status>200</con:status>
+                <con:params/>
+                <con:element xmlns:ns="http://10.88.12.22/api/v3/Company/Addresses/4309">ns:Response</con:element>
+              </con:representation>
+              <con:request name="Get Company/Contacts/{Id}" id="7f536221-4e67-4666-91af-6d61de924b2e" mediaType="application/json">
+                <con:settings>
+                  <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+                </con:settings>
+                <con:endpoint>http://10.88.12.22:80/</con:endpoint>
+                <con:request/>
+                <con:originalUri>http://10.88.12.22/api/v3/Company/Addresses/4309</con:originalUri>
+                <con:credentials>
+                  <con:selectedAuthProfile>pr docum t@t.t</con:selectedAuthProfile>
+                  <con:authType>OAuth 2.0</con:authType>
+                </con:credentials>
+                <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+                <con:jmsPropertyConfig/>
+                <con:parameters>
+                  <entry key="Id" value="4309" xmlns="http://eviware.com/soapui/config"/>
+                </con:parameters>
+                <con:parameterOrder>
+                  <con:entry>Id</con:entry>
+                </con:parameterOrder>
+              </con:request>
+            </con:method>
+            <con:method name="Company/Contacts/{Id}" id="1e640cf8-58b9-4592-ae81-570be7d3ecf6" method="DELETE">
+              <con:settings/>
+              <con:parameters/>
+              <con:representation type="FAULT">
+                <con:mediaType>application/json; charset=utf-8</con:mediaType>
+                <con:status>401</con:status>
+                <con:params/>
+                <con:element xmlns:ns="http://10.88.12.22/api/v3/Company/Addresses/4309">ns:Fault</con:element>
+              </con:representation>
+              <con:representation type="REQUEST">
+                <con:mediaType>application/json</con:mediaType>
+                <con:params/>
+              </con:representation>
+              <con:representation type="RESPONSE">
+                <con:mediaType>application/json; charset=utf-8</con:mediaType>
+                <con:status>200</con:status>
+                <con:params/>
+                <con:element xmlns:ns="http://10.88.12.22/api/v3/Company/Addresses/4309">ns:Response</con:element>
+              </con:representation>
+              <con:request name="Del Company/Contacts/{Id}" id="7f536221-4e67-4666-91af-6d61de924b2e" mediaType="application/json" postQueryString="false">
+                <con:settings>
+                  <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+                </con:settings>
+                <con:endpoint>http://10.88.12.22:80/</con:endpoint>
+                <con:request/>
+                <con:originalUri>http://10.88.12.22/api/v3/Company/Addresses/4309</con:originalUri>
+                <con:credentials>
+                  <con:selectedAuthProfile>pr docum t@t.t</con:selectedAuthProfile>
+                  <con:authType>OAuth 2.0</con:authType>
+                </con:credentials>
+                <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+                <con:jmsPropertyConfig/>
+                <con:parameters>
+                  <entry key="Id" value="4309" xmlns="http://eviware.com/soapui/config"/>
+                </con:parameters>
+                <con:parameterOrder>
+                  <con:entry>Id</con:entry>
+                </con:parameterOrder>
+              </con:request>
+            </con:method>
+          </con:resource>
+          <con:resource name="Existing" path="Existing" id="cc3bc6ae-1db5-4461-9662-d65f12b1f1f4"><con:settings/><con:parameters/><con:method name="Method 1" id="2c781ee7-c439-4185-af76-5d3b1beca878" method="POST"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>401</con:status><con:params/><con:element xmlns:exis="http://10.88.12.22/api/v3/Company/ContactPersons/Existing">exis:Fault</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html</con:mediaType><con:status>401</con:status><con:params/><con:element xmlns:xht="http://www.w3.org/1999/xhtml">xht:html</con:element></con:representation><con:request name="Request 1" id="66be19d1-4353-4190-8875-a2cc3eadb6d7" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://10.88.12.22:80/</con:endpoint><con:request>{
+	"CompanyId": 200000002,
+     "PersonId": 200000925
+}
+</con:request><con:originalUri>http://10.88.12.22/api/v3/Company/ContactPersons/Existing</con:originalUri><con:credentials><con:selectedAuthProfile>pr docum t@t.t</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:method name="Company/Contacts" id="ad5eb4d3-8cb3-4ce1-859c-c4bf6ef6a33c" method="POST">
+            <con:settings/>
+            <con:parameters/>
+            <con:representation type="REQUEST">
+              <con:mediaType>application/json</con:mediaType>
+              <con:params/>
+            </con:representation>
+            <con:representation type="FAULT">
+              <con:mediaType>application/json; charset=utf-8</con:mediaType>
+              <con:status>401</con:status>
+              <con:params/>
+              <con:element xmlns:add="http://10.88.12.22/api/v3/Company/Addresses">add:Fault</con:element>
+            </con:representation>
+            <con:representation type="RESPONSE">
+              <con:mediaType>application/json; charset=utf-8</con:mediaType>
+              <con:status>200</con:status>
+              <con:params/>
+              <con:element xmlns:add="http://10.88.12.22/api/v3/Company/Addresses">add:Response</con:element>
+            </con:representation>
+            <con:request name="Add Company/Contacts" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+              <con:settings>
+                <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+              </con:settings>
+              <con:endpoint>http://10.88.12.22:80/</con:endpoint>
+              <con:request>
+                {
+                "AgentId": ${#Project#CompanyId},
+                "ContactTypeId": 2,
+                "Value": "sample string 3",
+                "IsActive": true,
+                "IsConfirmed": true,
+                "Description": "sample string 6"
+                }
+              </con:request>
+              <con:originalUri>http://10.88.12.22/api/v3/Company/Addresses</con:originalUri>
+              <con:credentials>
+                <con:selectedAuthProfile>pr docum t@t.t</con:selectedAuthProfile>
+                <con:authType>OAuth 2.0</con:authType>
+              </con:credentials>
+              <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+              <con:jmsPropertyConfig/>
+              <con:parameters/>
+              <con:parameterOrder/>
+            </con:request>
+          </con:method>
+          <con:method name="Company/Contacts" id="ad5eb4d3-8cb3-4ce1-859c-c4bf6ef6a33c" method="PUT">
+            <con:settings/>
+            <con:parameters/>
+            <con:representation type="REQUEST">
+              <con:mediaType>application/json</con:mediaType>
+              <con:params/>
+            </con:representation>
+            <con:representation type="FAULT">
+              <con:mediaType>application/json; charset=utf-8</con:mediaType>
+              <con:status>401</con:status>
+              <con:params/>
+              <con:element xmlns:add="http://10.88.12.22/api/v3/Company/Addresses">add:Fault</con:element>
+            </con:representation>
+            <con:representation type="RESPONSE">
+              <con:mediaType>application/json; charset=utf-8</con:mediaType>
+              <con:status>200</con:status>
+              <con:params/>
+              <con:element xmlns:add="http://10.88.12.22/api/v3/Company/Addresses">add:Response</con:element>
+            </con:representation>
+            <con:request name="Chg Company/Contacts" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+              <con:settings>
+                <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+              </con:settings>
+              <con:endpoint>http://10.88.12.22:80/</con:endpoint>
+              <con:request>
+                {
+                "Id": 1,
+                "AgentId": ${#Project#CompanyId},
+                "ContactTypeId": 3,
+                "Value": "sample string 4",
+                "IsActive": true,
+                "IsConfirmed": true,
+                "Description": "sample string 7"
+                }
+              </con:request>
+              <con:originalUri>http://10.88.12.22/api/v3/Company/Addresses</con:originalUri>
+              <con:credentials>
+                <con:selectedAuthProfile>pr docum t@t.t</con:selectedAuthProfile>
+                <con:authType>OAuth 2.0</con:authType>
+              </con:credentials>
+              <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
+              <con:jmsPropertyConfig/>
+              <con:parameters/>
+              <con:parameterOrder/>
+            </con:request>
+          </con:method>
+        </con:resource></con:resource>
       
       <con:resource name="Employees" path="Employee" id="ed6a8907-199e-4bbb-8e8f-3d1c499a0326">
         <con:settings/>
@@ -7764,7 +7949,7 @@
               <con:params/>
               <con:element>data</con:element>
             </con:representation>
-            <con:request name="Add Employee/AddInOrg" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
+            <con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Add Employee/AddInOrg" id="f03cb434-7fc1-4a61-a461-2028a8264012" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
@@ -7804,11 +7989,11 @@
               <con:endpoint>http://localhost:21182/</con:endpoint>
               <con:request>
                 {
-                "OrgName": "Организация 3",
-                "DepartmentName": "Отдел №6",
+                "OrgName": "Организация 6",
+                "DepartmentName": "Отдел №9",
                 "DepartmentIndex": "ind",
                 "PositionName": "Должность отдела",
-                "Login": "mnebdhjd@yomail.info",
+                "Login": "nzofqveeryzy@dropmail.me",
                 "Phone": "+7 978 12345678",
                 "LanguageId": 570,
                 "ExecutorType": 1,
@@ -12809,7 +12994,7 @@
       <con:clientID>docum</con:clientID>
       <con:clientSecret>-</con:clientSecret>
       <con:accessTokenURI>http://localhost:21182/api/v3/token</con:accessTokenURI>
-      <con:accessToken>1XVLdEdm9NxTFcvi5zn4Qqv5ZRHuYRkjyn8VObC37d4zB9XDcI7Mf9hHqvK_5LSsviEgIeWtawJqQbaxzj3eoU_vmU0YqAbsmDY6gJ7-086eHKDAFYR_AyUzkCGtCkRBAoFZbi-Ql50VEWA6v5udrGwOWZBf0LvMvF-Ndl3MhiDCeGmdrjj9gKgPvRHEDhT7U5c360FCY0V1kOcS63tyvKMV2xRaJCWjbv5KT6jAZjMNptBVUdfswYRaD2hlzu3B2kQdL7aQMDCge7D9a1T3gp5RRPhXI3rVlZoSW9LyRFsePdRLYCt09NS4uz1Ce6HnPU4tqX-5ADscX-rvaih5EyZ6JfYE-jXjrui-ukKSarTS3WH5IZNuIXmG-wX-JPss4x8h5f5acQ_h7Yk8Wylf4LeO13DbkFV4lOUslMWC44-neMs0wvd_RWDQDbZvK97gQvLE7vt6waFg5nGeppElQQhELg7posryiz9RFgPWZ20</con:accessToken>
+      <con:accessToken>w0zBZCp5f_PjiBUijSzKO0JhHaaELpStM0YRBQ-FFz_SU6EEnZUkw6neQ1mmcOlaAeHJI9FESmWjMLcrvPsf6jYPao9gJ7J6UeYvURgU5TGGWmLBwn5PtbjblP3FxSRndyksTyd9BzAz4gnnpjrROAK1JlhLKc0JAJ4gXitIGlX9ici_ukPCvFU5RPyPqfLrQTGh4f634FNMNAob2y7O3qzI5n5ZnSEhpBpd6cya5GH9saaQ4DfE5Qoba7rMGoUnz4JgPzCeznBWeBNVY883gTO1uHE_MCLtYAJLfHbGkj1zOAFHjggysIuQaHN8fD7WdqH6X3uVwyaEL48YoBrUsavyF11Vd3JveAEXuuOFYrSuyqA29Xh3NI2BjUc-gjA9EqXY2udRpWBko_1R-EeGmbyIC1SP0_nmzdClRN1owZ49W3xS-n0mq7ShZBU_keQOK8T0gOeqWjbaL8XHGAw4TV42o-nN-5unbxCOchSooxw</con:accessToken>
       <con:accessTokenPosition>HEADER</con:accessTokenPosition>
       <con:oAuth2Flow>RESOURCE_OWNER_PASSWORD_CREDENTIALS</con:oAuth2Flow>
       <con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod>
@@ -12817,7 +13002,7 @@
       <con:accessTokenStatus>RETRIEVED_FROM_SERVER</con:accessTokenStatus>
       <con:accessTokenStartingStatus>RETRIEVED_FROM_SERVER</con:accessTokenStartingStatus>
       <con:accessTokenExpirationTime>1209599</con:accessTokenExpirationTime>
-      <con:accessTokenIssuedTime>1495119889</con:accessTokenIssuedTime>
+      <con:accessTokenIssuedTime>1495147733</con:accessTokenIssuedTime>
       <con:resourceOwnerName>t@t.t</con:resourceOwnerName>
       <con:resourceOwnerPassword>P@ssw0rd</con:resourceOwnerPassword>
     </con:oAuth2Profile>
@@ -12845,7 +13030,7 @@
       <con:clientID>docum</con:clientID>
       <con:clientSecret>-</con:clientSecret>
       <con:accessTokenURI>http://10.88.12.22/api/v3/token</con:accessTokenURI>
-      <con:accessToken>WpOmPD7WJFzeoLZqh5YDqyIjZm99_OEIg9bwZ2_EtSrOjhfa8xX9tSM9ufrURiDFbvCcfk76rgqSyfZCQqso_3KmKUNK7wTS74DCDJyzcZu-JgCceo5FmyQPmHKS62OqYpJ0q4eD1BaFCSJxPrSb1XkP91_Sxkim3drsasbDJi5s06psfb9GPtxAJDscarCPx4P56MJJF7vs20odtV0pbRI-JccI1SD7sq1Ttoq--0KEClLHZ6NKatI6HUJTUps2D_oV6Z0VfNT0GXFq1sYYIAkIHBrwBEpmkaAUY9aQlKk05_ZyXgTz1k1ZxNmJei94AXcaZ9YVseTDc2Q9vIxlCdAgbdnFl4R-Cy3Y4sxDcilO82GHbv9-K5LmZT9BsiS8Wso__x5mX1ICvsglcX6PCQeXDWD8N_TtKHIk8k6vjNCA_EpPfeqqgpKsrcRbO_bjyfsdWUwmW6K7EYzezzBHoEqThGXutxLABlUCkwj5Hz8</con:accessToken>
+      <con:accessToken>ZRoVFG3JGaylwcXCWOfhI3CurkGeTx2gLWUYXdemgnSzKzBslGsRbl-d9YymgW55-b2ZMsaGOwW7OqnqZN7a8S59pBVIdytFKmi4qdt05Zl-1YEdMpxeHpO_3DJ18jpqmXoVkvHVnIFSxXCgMQ5eeair4WBbMur-qauiOxaZt6ZV0pNp6Yyqiz_tf50OyJWE2Tn1rLfGNpV2KmxSyUXRjiKofbsPndIXeQB-iq-LuH8ePaAuas9nBGCNcBh49Jx66YtQOb0-NZ7exuOsU48OTyqkvYqAYoMWy5SboP_s-UMg55HlNBst1rEmezrbXNyy27U9FTQnArik-tosZKvYIIMKfZse4wRMaTvmana3yzGr5blrwTPaAG_PdaZ_GmsUxoU8Aw3qjpWSROeH0qDxxG2tIkR3V2Vb-HTZZ_aHLPhmX35PwWWC3zavc-tPRS6gqzFjy5aEwhO5NAiH5s4yHg-iDbkSbuJpiOm5SKbj37Y</con:accessToken>
       <con:accessTokenPosition>HEADER</con:accessTokenPosition>
       <con:oAuth2Flow>RESOURCE_OWNER_PASSWORD_CREDENTIALS</con:oAuth2Flow>
       <con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod>
@@ -12853,7 +13038,7 @@
       <con:accessTokenStatus>RETRIEVED_FROM_SERVER</con:accessTokenStatus>
       <con:accessTokenStartingStatus>RETRIEVED_FROM_SERVER</con:accessTokenStartingStatus>
       <con:accessTokenExpirationTime>1209599</con:accessTokenExpirationTime>
-      <con:accessTokenIssuedTime>1493810241</con:accessTokenIssuedTime>
+      <con:accessTokenIssuedTime>1495186795</con:accessTokenIssuedTime>
       <con:resourceOwnerName>t@t.t</con:resourceOwnerName>
       <con:resourceOwnerPassword>P@ssw0rd</con:resourceOwnerPassword>
     </con:oAuth2Profile>
