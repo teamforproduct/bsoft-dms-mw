@@ -6397,6 +6397,20 @@ namespace BL.Database.Dictionaries
                     qry = qry.Where(filterContains);
                 }
 
+                if (filter.PositionDepartmentsIDs?.Count > 100)
+                {
+                    qry = qry.Where(x => filter.PositionDepartmentsIDs.Contains(x.Position.DepartmentId));
+                }
+                else if (filter.PositionDepartmentsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.New<DictionaryStandartSendLists>(false);
+                    filterContains = filter.PositionDepartmentsIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Position.DepartmentId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+
                 if (filter.AgentId != null)
                 {
                     var now = DateTime.UtcNow;

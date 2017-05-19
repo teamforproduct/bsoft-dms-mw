@@ -1130,17 +1130,27 @@ namespace BL.Logic.DictionaryCore
         public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, bool SearchInPositionsOnly = false)
         {
 
+            if (filter == null) filter = new FilterDictionaryStandartSendList();
+
             if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString) && SearchInPositionsOnly)
             {
                 var positions = _dictDb.GetPositionIDs(context, new FilterDictionaryPosition { NameDepartmentExecutor = ftSearch?.FullTextSearchString }).ToList();
 
                 if (!positions.Any()) return new List<FrontMainDictionaryStandartSendList>();
 
-                if (filter == null) filter = new FilterDictionaryStandartSendList();
-
                 filter.PositionIDs = positions;
 
                 ftSearch.FullTextSearchString = string.Empty;
+            }
+
+            // Тонкий момент, проверяю не является ли сотрудник локальным администратором.
+            // Если не локальный значит, надеюсь, что глобальный и отображаю все
+            var adminService = DmsResolver.Current.Get<IAdminService>();
+            var employeeDepartments = adminService.GetInternalEmployeeDepartments(context, context.Employee.Id);
+
+            if (employeeDepartments != null)
+            {
+                filter.PositionDepartmentsIDs = employeeDepartments;
             }
 
             return FTS.Get(context, Modules.SendList, ftSearch, filter, null, null, _dictDb.GetMainStandartSendLists, _dictDb.GetStandartSendListIDs);
