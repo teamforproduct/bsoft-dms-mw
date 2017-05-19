@@ -98,7 +98,7 @@ namespace DMS_WebAPI.ControllersV3.Companies
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumDictionaryActions.AddAgentPerson, model);
+                var tmpItem = Action.Execute(context, EnumDictionaryActions.AddAgentPersonExisting, model);
                 return GetById(context, tmpItem);
             });
         }
