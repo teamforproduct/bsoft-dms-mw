@@ -273,7 +273,7 @@ namespace DMS_WebAPI.Utilities
 
         public string GetTranslation(IContext context, string text)
         {
-            return GetTranslation(context.Employee.LanguageId, text);
+            return GetTranslation(context.User.LanguageId, text);
         }
 
         public void RefreshLanguageValues()
@@ -293,7 +293,7 @@ namespace DMS_WebAPI.Utilities
             {
                 defContext = DmsResolver.Current.Get<UserContexts>().Get(keepAlive: false, restoreToken: false);
 
-                if (defContext.Employee.LanguageId <= 0) defContext = null;
+                if (defContext.User.LanguageId <= 0) defContext = null;
             }
             catch
             { }

@@ -107,25 +107,18 @@ namespace DMS_WebAPI.Utilities
             return user != null;
         }
 
-        public bool ExistsUserInClient(AspNetUsers user, string clientCode)
-        {
-            var clientId = GetClientId(clientCode);
-
-            return ExistsUserInClient(user, clientId);
-
-        }
-
         public bool ExistsUserInClient(AspNetUsers user, int clientId)
         {
-            if (user == null) return false;
+            return (GetUserClient(user.Id, clientId) != null);
+        }
 
-            var ucs = _webDb.GetUserClientServerList(new FilterAspNetUserClientServer
+        public FrontAspNetUserClient GetUserClient(string userId, int clientId)
+        {
+            return _webDb.GetUserClientList(new FilterAspNetUserClient
             {
                 ClientIDs = new List<int> { clientId },
-                UserIDs = new List<string> { user.Id }
+                UserIDs = new List<string> { userId }
             }).FirstOrDefault();
-
-            return (ucs != null);
         }
 
         public bool ExistsUserInClient(string userName, int clientId)
@@ -135,72 +128,6 @@ namespace DMS_WebAPI.Utilities
             return ExistsUserInClient(user, clientId);
         }
 
-        /// <summary>
-        /// Проверить доступность
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        public async Task<bool> GetUserIsLockedOutAsync(string userId)
-        {
-            return await UserManager.IsLockedOutAsync(userId);
-        }
-
-        /// <summary>
-        /// Определяет не заблокирован ли пользователь
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public async Task CheckUserLockedOutAsync(AspNetUsers user)
-        {
-
-
-
-
-        }
-
-        /// <summary>
-        /// Сбросить число AccessFailedCount
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public async Task UserResetAccessFailedCountAsync(string userId)
-        {
-            IdentityResult result = await UserManager.ResetAccessFailedCountAsync(userId);
-
-            if (!result.Succeeded) throw new UserParmsCouldNotBeChanged(result.Errors);
-        }
-
-
-        /// <summary>
-        /// Инкрементировать число AccessFailedCount 
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public async Task UserAccessFailedAsync(string userId)
-        {
-            await UserManager.AccessFailedAsync(userId);
-        }
-
-        /// <summary>
-        /// Управление LockoutEnabled
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="enabled"></param>
-        /// <returns></returns>
-        public async Task SetUserLockoutEnabledAsync(string userId, bool enabled)
-        {
-            await UserManager.SetLockoutEnabledAsync(userId, enabled);
-        }
-
-        /// <summary>
-        /// Узнать число AccessFailedCount
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <returns></returns>
-        public async Task<int> GetUserAccessFailedAsync(string userId)
-        {
-            return await UserManager.GetAccessFailedCountAsync(userId);
-        }
 
         public FrontAgentEmployeeUser GetUserInfo(IContext context)
         {
@@ -261,6 +188,11 @@ namespace DMS_WebAPI.Utilities
                 {
                     user = AddUserToClient(new AddWebUser
                     {
+                        FirstName = model.FirstName,
+                        LastName = model.LastName,
+
+                        LanguageId = model.LanguageId,
+
                         Email = model.Login,
                         Phone = model.Phone,
                         // Для нового пользователя высылается письмо с линком на страницу "введите новый пароль"
@@ -268,13 +200,11 @@ namespace DMS_WebAPI.Utilities
 
                         EmailConfirmed = model.EmailConfirmed,
                         IsChangePasswordRequired = model.IsChangePasswordRequired,
-                        IsEmailConfirmRequired = model.IsEmailConfirmRequired,
 
 
                         // Предполагаю, что человек, который создает пользователей. создает их в тойже базе и в том же клиенте
                         // Первый пользователь создается под админ-контекстом
                         ClientId = context.Client.Id,
-                        ServerId = context.CurrentDB.Id,
                     });
 
                     // обновляю сотрудника 
@@ -311,7 +241,7 @@ namespace DMS_WebAPI.Utilities
             int posId = -1;
             EmployeeCreationResult res = null;
 
-            // проверяю нет ли уже сотрудника с указанным имененм у клиента
+            // проверяю нет ли уже сотрудника с указанным именем у клиента
             if (ExistsUserInClient(model.Login, context.Client.Id)) throw new UserNameAlreadyExists(model.Login);
 
             if (model.OrgId == null && string.IsNullOrEmpty(model.OrgName)) throw new OrgRequired();
@@ -330,7 +260,6 @@ namespace DMS_WebAPI.Utilities
             employee.LanguageId = model.LanguageId;
             employee.EmailConfirmed = model.EmailConfirmed;
             employee.IsChangePasswordRequired = model.IsChangePasswordRequired;
-            employee.IsEmailConfirmRequired = model.IsEmailConfirmRequired;
 
             try
             {  // тут возникает проблама транзакционности: если возникнет проблема при назначении сотрудника, то 
@@ -457,13 +386,12 @@ namespace DMS_WebAPI.Utilities
                             ClientCode = _webDb.GetClientCode(context.Client.Id),
                             Email = res.Email,
                             FirstEntry = "true",
-                            LanguageCode = languages.GetLanguageCodeById(model.LanguageId)
                         };
 
                         // Это временная залипуха, нужно разбираться почему password-restore
                         //Task.Factory.StartNew(async () => { await RestorePasswordAgentUserAsync(tmp); }).Wait();
 
-                        RestorePasswordAgentUserAsync(tmp);
+                        RestorePassword(tmp);
                     }
                     else
                     {
@@ -530,7 +458,8 @@ namespace DMS_WebAPI.Utilities
             // При деактивации сотрудника деактивирую пользователя
             if (!model.IsActive)
             {
-                ChangeLockoutAgentUserAsync(context, new ChangeLockoutAgentUser { IsLockout = model.IsActive, Id = model.Id, IsKillSessions = true });
+                var userContexts = DmsResolver.Current.Get<UserContexts>();
+                userContexts.RemoveByAgentId(model.Id);
             }
 
             if (model.ImageId.HasValue)
@@ -553,19 +482,20 @@ namespace DMS_WebAPI.Utilities
             DeleteUsersInClient(context.Client.Id, new List<string> { user.Id });
         }
 
-        private AspNetUsers AddUser(string userName, string userPassword, string userEmail, string userPhone = "",
-            bool isChangePasswordRequired = true, bool isEmailConfirmRequired = true, bool emailConfirmed = false, bool isLockout = false)
+        private AspNetUsers AddUser(string firstName, string lastName, string userName, string userPassword, int languageId, string userEmail, string userPhone = "",
+            bool emailConfirmed = false, bool isChangePasswordRequired = true)
         {
             var now = DateTime.UtcNow;
 
             var user = new AspNetUsers()
             {
+                FirstName = firstName?.Trim(),
+                LastName = lastName?.Trim(),
                 UserName = userName?.Trim(),
                 Email = userEmail?.Trim(),
+                LanguageId = languageId,
                 PhoneNumber = userPhone?.Trim(),
-                IsLockout = isLockout,
                 IsChangePasswordRequired = isChangePasswordRequired,
-                IsEmailConfirmRequired = isEmailConfirmRequired,
                 EmailConfirmed = emailConfirmed,
                 CreateDate = now,
                 LastChangeDate = now,
@@ -597,14 +527,14 @@ namespace DMS_WebAPI.Utilities
             {
                 if (isNew)
                 {
-                    user = AddUser(model.Email, model.Password, model.Email, model.Phone,
-                        model.IsChangePasswordRequired, model.IsEmailConfirmRequired, model.EmailConfirmed);
+                    user = AddUser(model.FirstName, model.LastName, model.Email, model.Password, model.LanguageId, model.Email, model.Phone,
+                        model.EmailConfirmed, model.IsChangePasswordRequired);
 
                 }
                 else
                 {
                     // Если пользователь существует, то проверяю не пытаются ли его залинковать с тем же клиентом
-                    var uc = _webDb.GetUserClientServerList(new FilterAspNetUserClientServer
+                    var uc = _webDb.GetUserClientList(new FilterAspNetUserClient
                     {
                         ClientIDs = new List<int> { model.ClientId },
                         UserIDs = new List<string> { user.Id }
@@ -615,7 +545,7 @@ namespace DMS_WebAPI.Utilities
                 }
 
                 // линкую пользователя с клиентом
-                _webDb.AddUserClientServer(new SetUserClientServer { UserId = user.Id, ClientId = model.ClientId, ServerId = model.ServerId });
+                _webDb.AddUserClient(new SetUserClient { UserId = user.Id, ClientId = model.ClientId });
 
                 transaction.Complete();
             }
@@ -628,7 +558,7 @@ namespace DMS_WebAPI.Utilities
             if (userIDs == null)
             {
                 // запоминаю пользователей клиента, которых потенциально нужно удалить
-                userIDs = _webDb.GetUserClientServerList(new FilterAspNetUserClientServer { ClientIDs = new List<int> { clientId } }).Select(x => x.UserId).ToList();
+                userIDs = _webDb.GetUserClientList(new FilterAspNetUserClient { ClientIDs = new List<int> { clientId } }).Select(x => x.UserId).ToList();
             }
 
             if (userIDs.Count() == 0) return;
@@ -636,14 +566,14 @@ namespace DMS_WebAPI.Utilities
             //using (var transaction = Transactions.GetTransaction())
             {
                 // Удаляю связи пользователя с клиентом
-                _webDb.DeleteUserClientServer(new FilterAspNetUserClientServer
+                _webDb.DeleteUserClient(new FilterAspNetUserClient
                 {
                     UserIDs = userIDs,
                     ClientIDs = new List<int> { clientId }
                 });
 
                 // пользователи, которые завязаны на других клиентов удалять нельзя, но они в списке для удаления
-                var safeList = _webDb.GetUserClientServerList(new FilterAspNetUserClientServer { UserIDs = userIDs }).Select(x => x.UserId).ToList();
+                var safeList = _webDb.GetUserClientList(new FilterAspNetUserClient { UserIDs = userIDs }).Select(x => x.UserId).ToList();
 
                 if (safeList.Any()) userIDs.RemoveAll(x => safeList.Contains(x));
 
@@ -935,7 +865,7 @@ namespace DMS_WebAPI.Utilities
             var languages = DmsResolver.Current.Get<ILanguages>();
 
             // Если не указан язык, беру язык по умолчанию 
-            ctx.Employee.LanguageId = string.IsNullOrEmpty(model.Language)
+            ctx.User.LanguageId = string.IsNullOrEmpty(model.Language)
                 ? languages.GetLanguageIdByHttpContext()
                 : languages.GetLanguageIdByCode(model.Language);
 
@@ -967,7 +897,7 @@ namespace DMS_WebAPI.Utilities
                     PositionName = model.PositionName, // languages.GetTranslation(ctx.Employee.LanguageId, "##l@Clients:" + "MyPosition" + "@l##"),
                     ExecutorType = EnumPositionExecutionTypes.Personal,
                     AccessLevel = EnumAccessLevels.Personally,
-                    LanguageId = ctx.Employee.LanguageId,
+                    LanguageId = ctx.User.LanguageId,
                     Phone = model.PhoneNumber,
                     Login = model.Email,
                     Role = Roles.Admin,
@@ -980,13 +910,13 @@ namespace DMS_WebAPI.Utilities
                 new AddJournalsInOrg
                 {
                     IncomingJournalIndex = "01",
-                    IncomingJournalName = languages.GetTranslation(ctx.Employee.LanguageId, languages.GetLabel("Journals", EnumDocumentDirections.Incoming.ToString())),
+                    IncomingJournalName = languages.GetTranslation(ctx.User.LanguageId, languages.GetLabel("Journals", EnumDocumentDirections.Incoming.ToString())),
 
                     OutcomingJournalIndex = "02",
-                    OutcomingJournalName = languages.GetTranslation(ctx.Employee.LanguageId, languages.GetLabel("Journals", EnumDocumentDirections.Outcoming.ToString())),
+                    OutcomingJournalName = languages.GetTranslation(ctx.User.LanguageId, languages.GetLabel("Journals", EnumDocumentDirections.Outcoming.ToString())),
 
                     InternalJournalIndex = "03",
-                    InternalJournalName = languages.GetTranslation(ctx.Employee.LanguageId, languages.GetLabel("Journals", EnumDocumentDirections.Internal.ToString())),
+                    InternalJournalName = languages.GetTranslation(ctx.User.LanguageId, languages.GetLabel("Journals", EnumDocumentDirections.Internal.ToString())),
                 },
                 sendEmail: false);
 
@@ -1151,7 +1081,6 @@ namespace DMS_WebAPI.Utilities
 
             var user = GetUser(context, agentId);
             if (user == null) throw new UserIsNotDefined();
-            user.IsEmailConfirmRequired = true;
             user.EmailConfirmed = false;
             user.LastChangeDate = DateTime.UtcNow;
 
@@ -1207,18 +1136,17 @@ namespace DMS_WebAPI.Utilities
 
         }
 
-        public async Task RestorePasswordAgentUserAsync(RestorePasswordAgentUser model)
+        public async Task RestorePassword(RestorePasswordAgentUser model)
         {
-            //, NameValueCollection query, string emailSubject
-
-            var settVal = DmsResolver.Current.Get<ISettingValues>();
-            string baseUrl = new Uri(new Uri(settVal.GetClientAddress(model.ClientCode)), "restore-password").ToString();
-
             var user = await GetUserAsync(model.Email);
 
             if (user == null) throw new UserIsNotDefined();
 
-            if (user.IsLockout) throw new EmployeeIsDeactivated(user.UserName);
+            // Для заблокированного пользователя запрещаю смену пароля
+            if (UserManager.SupportsUserLockout && await UserManager.GetLockoutEnabledAsync(user.Id) && await UserManager.IsLockedOutAsync(user.Id)) throw new UserIsLockout();
+
+            var settVal = DmsResolver.Current.Get<ISettingValues>();
+            string baseUrl = new Uri(new Uri(settVal.GetClientAddress(model.ClientCode)), "restore-password").ToString();
 
             var passwordResetToken = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
 
@@ -1234,17 +1162,21 @@ namespace DMS_WebAPI.Utilities
 
             builder.Query = newQuery.ToString();// string.Join("&", nvc.AllKeys.Select(key => string.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(nvc[key]))));
 
-            // сылка на восстановление пароля
-            string callbackurl = builder.ToString();
 
+            var m = new RestorePasswordModel()
+            {
+                FirstName = user.FirstName,
+                // сылка на восстановление пароля
+                Url = builder.ToString(),
+            };
 
             // html с подставленной моделью
-            var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.RestorePassword);
+            var htmlContent = m.RenderPartialViewToString(RenderPartialView.RestorePassword);
 
 
             var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
             var languages = DmsResolver.Current.Get<ILanguages>();
-            mailService.SendMessage(null, MailServers.Noreply, model.Email, languages.GetTranslation(model.LanguageCode, "##l@Mail.RestorePassword.Subject@l##"), htmlContent);
+            mailService.SendMessage(null, MailServers.Noreply, model.Email, languages.GetTranslation(user.LanguageId, "##l@Mail.RestorePassword.Subject@l##"), htmlContent);
         }
 
 
@@ -1279,50 +1211,18 @@ namespace DMS_WebAPI.Utilities
 
         }
 
-        public async Task ChangeLockoutAgentUserAsync(IContext context, ChangeLockoutAgentUser model)
+        public async Task ConfirmEmail(string userId, string code)
         {
-            var admService = DmsResolver.Current.Get<IAdminService>();
-            admService.ExecuteAction(EnumAdminActions.ChangeLockout, context, model.Id);
+            // Для заблокированного пользователя запрещаю смену пароля
+            if (UserManager.SupportsUserLockout && await UserManager.GetLockoutEnabledAsync(userId) && await UserManager.IsLockedOutAsync(userId)) throw new UserIsLockout();
 
-            var user = await GetUserAsync(context, model.Id);
-
-            if (user == null) throw new UserIsNotDefined();
-
-            user.IsLockout = model.IsLockout;
-            user.LastChangeDate = DateTime.UtcNow;
-
-            var result = await UserManager.UpdateAsync(user);
-
-            if (!result.Succeeded) throw new DatabaseError(result.Errors);
-
-            var userContexts = DmsResolver.Current.Get<UserContexts>();
-            if (model.IsKillSessions)
-                userContexts.RemoveByAgentId(model.Id);
-        }
-
-        public async Task<AspNetUsers> ConfirmEmailAgentUser(string userId, string code)
-        {
             var result = await UserManager.ConfirmEmailAsync(userId, code);
 
-            if (!result.Succeeded) throw new DatabaseError(result.Errors);
-
-            AspNetUsers user = await GetUserByIdAsync(userId);
-
-            if (user == null) throw new UserIsNotDefined();
-
-            user.IsEmailConfirmRequired = false;
-            user.LastChangeDate = DateTime.UtcNow;
-
-            result = await UserManager.UpdateAsync(user);
-
-            if (!result.Succeeded) throw new DatabaseError(result.Errors);
-
-            return user;
+            if (!result.Succeeded) throw new UserEmailCouldNotBeConfirmd(result.Errors);
         }
 
-        public async Task<string> ConfirmRestorePasswordAgentUser(ConfirmRestorePasswordAgentUser model)
+        public async Task<string> ResetPassword(ConfirmRestorePassword model)
         {
-
             var result = await UserManager.ResetPasswordAsync(model.UserId, model.Code, model.NewPassword);
 
             if (!result.Succeeded) throw new ResetPasswordCodeInvalid(result.Errors);
@@ -1331,16 +1231,13 @@ namespace DMS_WebAPI.Utilities
 
             if (user == null) throw new UserIsNotDefined();
 
-
-            user.EmailConfirmed = true;
-            user.IsEmailConfirmRequired = false;
             user.IsChangePasswordRequired = false;
+            user.EmailConfirmed = true;
             user.LastChangeDate = DateTime.UtcNow;
 
             result = await UserManager.UpdateAsync(user);
 
-            if (!result.Succeeded) throw new DatabaseError(result.Errors);
-
+            if (!result.Succeeded) throw new UserParmsCouldNotBeChanged(result.Errors);
 
             var userContexts = DmsResolver.Current.Get<UserContexts>();
             userContexts.RemoveByUserId(model.UserId);

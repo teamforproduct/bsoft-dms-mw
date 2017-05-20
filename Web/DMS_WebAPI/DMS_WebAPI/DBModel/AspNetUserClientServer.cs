@@ -1,4 +1,4 @@
-﻿using DMS_WebAPI.Models;
+﻿using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DMS_WebAPI.DBModel
@@ -15,6 +15,7 @@ namespace DMS_WebAPI.DBModel
         [Index("IX_UserClientServer", 2, IsUnique = true)]
         public int ClientId { get; set; }
 
+        [Obsolete("!!!", true)]
         [Index("IX_ServerId", 1)]
         [Index("IX_UserClientServer", 3, IsUnique = true)]
         public int ServerId { get; set; }

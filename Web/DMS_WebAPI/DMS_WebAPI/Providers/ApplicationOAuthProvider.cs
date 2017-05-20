@@ -74,9 +74,11 @@ namespace DMS_WebAPI.Providers
             // не можем передавать из соапа
             //if (string.IsNullOrEmpty(fingerprint?.Trim())) throw new FingerprintRequired();
 
-            // Если передали несуществующие код клиента. дальше не пускаю
+            // Если передали несуществующие код клиента. дальше не пускаю GetClientId генерит throw new ClientIsNotFound()
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            if (!webService.ExistsClients(new FilterAspNetClients { Code = clientCode })) throw new ClientIsNotFound(); // TODO может тут нужен ThrowErrorGrantResourceOwnerCredentials - не знаю - и зачем не понимаю
+            var clientId = webService.GetClientId(clientCode);
+
+            if (clientId <= 0) throw new ClientIsNotFound();
 
             // Нахожу пользователя по логину
             AspNetUsers user = await webService.GetUserAsync(context.UserName);
@@ -84,25 +86,19 @@ namespace DMS_WebAPI.Providers
             if (user == null) throw new UserIsNotDefined();
 
             // Проверяю принадлежность пользователя к клиенту
-            if (!webService.ExistsUserInClient(user, clientCode)) throw new ClientIsNotContainUser();
+            if (!webService.ExistsUserInClient(user, clientId)) throw new ClientIsNotContainUser();
 
-            // To enable password failures to trigger account lockout, change to shouldLockout: true
-            //var result = await SignInManager.PasswordSignInAsync(vm.Email, vm.Password, vm.RememberMe, shouldLockout: true);
-
-            
 
             // Пользователь может быть заблокирован по двум причинам:
-            // - администратор заблокировал пользователя
+            // - администратор заблокировал сотрудника (проверяется при добавлении контекста)
             // - пользователь сам себя заблокировал при очередной попытке ввода неправильного пароля (или взломщик)
-
-            if (user.IsLockout) await webService.ThrowErrorGrantResourceOwnerCredentials(context, new UserIsLockoutByAdmin(user.UserName));
 
             var userManager = context.OwinContext.GetUserManager<ApplicationUserManager>();
 
             // Если для пользователя включена возможность самоблокировки
             if (userManager.SupportsUserLockout && await userManager.GetLockoutEnabledAsync(user.Id) && await userManager.IsLockedOutAsync(user.Id))
             {
-                await webService.ThrowErrorGrantResourceOwnerCredentials(context, new UserIsLockout(user.UserName));
+                await webService.ThrowErrorGrantResourceOwnerCredentials(context, new UserIsLockout());
             }
 
             var passwordIsValid = userManager.CheckPassword(user, context.Password);
@@ -136,7 +132,7 @@ namespace DMS_WebAPI.Providers
 
 
             // Проверка подтверждения адреса
-            if (!user.EmailConfirmed && user.IsEmailConfirmRequired) await webService.ThrowErrorGrantResourceOwnerCredentials(context, new UserMustConfirmEmail());
+            if (!user.EmailConfirmed) await webService.ThrowErrorGrantResourceOwnerCredentials(context, new UserMustConfirmEmail());
 
             // Проверка Fingerprint: Если пользователь включил Fingerprint
             if (user.IsFingerprintEnabled)
@@ -175,7 +171,7 @@ namespace DMS_WebAPI.Providers
             }
 
             //////////////////////////////
-            // Проверки закончились - можно выдавать token
+            // Проверка пользователя закончилась - далее проверка сотрудника
             //////////////////////////////
 
 
@@ -257,7 +253,7 @@ namespace DMS_WebAPI.Providers
                 var userContexts = DmsResolver.Current.Get<UserContexts>();
 
                 // Создаю пользовательский контекст
-                var ctx = userContexts.Set(token, userId, user.UserName, user.IsChangePasswordRequired, clientCode, server, brInfo, fingerPrint);
+                var ctx = userContexts.Set(token, user, clientCode, server, brInfo, fingerPrint);
 
 
                 // --------------------------------------------------------------------------------
