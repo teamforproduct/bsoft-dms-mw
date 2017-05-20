@@ -37,6 +37,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
+using BL.Logic.SystemServices.TaskManagerService;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -48,8 +49,6 @@ namespace DMS_WebAPI.Utilities
         {
             _webDb = webDb;
         }
-
-        private string FormRoleName(string roleName, string clientCode) => $"{clientCode.Trim()}_{roleName.Trim()}";
 
         public ApplicationUserManager UserManager
         {
@@ -151,7 +150,6 @@ namespace DMS_WebAPI.Utilities
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-
         public async Task CheckUserLockedOutAsync(AspNetUsers user)
         {
 
@@ -586,7 +584,6 @@ namespace DMS_WebAPI.Utilities
         }
 
 
-
         public UserCreationResult AddUserToClient(AddWebUser model)
         {
 
@@ -778,7 +775,6 @@ namespace DMS_WebAPI.Utilities
             // контексты, которые не испольвались 14 дней
             _webDb.DeleteUserContexts(new FilterAspNetUserContext { LastUsegeDateLess = DateTime.UtcNow.AddDays(-14) });
         }
-
 
         public async Task<string> AddClientByEmail(AddClientFromHash model)
         {
@@ -994,6 +990,20 @@ namespace DMS_WebAPI.Utilities
                 },
                 sendEmail: false);
 
+            try
+            {
+                //add workers for new client. Check if settings exists for that workers. 
+                var tskInit = DmsResolver.Current.Get<ICommonTaskInitializer>();
+                tskInit.InitializeAutoPlanTask(new List<DatabaseModelForAdminContext> { dbAdmin });
+                tskInit.InitializeClearTrashTask(new List<DatabaseModelForAdminContext> { dbAdmin });
+                tskInit.InitializeMailWorkerTask(new List<DatabaseModelForAdminContext> { dbAdmin });
+            }
+            catch (Exception)
+            {
+                if (model.ClientId > 0) await DeleteClient(model.ClientId);
+
+                throw;
+            }
 
             //UserManager.AddLogin(userId, new UserLoginInfo {    })
             return true;
