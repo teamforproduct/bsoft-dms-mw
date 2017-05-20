@@ -25,7 +25,6 @@ namespace DMS_WebAPI.Models
             UserName = user.UserName;
 
             IsChangePasswordRequired = user.IsChangePasswordRequired;
-            IsEmailConfirmRequired = user.IsEmailConfirmRequired;
 
         }
 
@@ -38,7 +37,6 @@ namespace DMS_WebAPI.Models
             UserName = user.UserName;
 
             IsChangePasswordRequired = user.IsChangePasswordRequired;
-            IsEmailConfirmRequired = user.IsEmailConfirmRequired;
         }
 
         public string Id { set; get; }
@@ -47,8 +45,6 @@ namespace DMS_WebAPI.Models
 
         public bool EmailConfirmed { get; set; }
         public bool IsChangePasswordRequired { get; set; }
-        public bool IsEmailConfirmRequired { get; set; }
-
 
         public bool IsNew { set; get; }
     }

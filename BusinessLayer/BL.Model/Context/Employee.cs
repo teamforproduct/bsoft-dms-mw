@@ -1,4 +1,6 @@
-﻿namespace BL.Model.Context
+﻿using System;
+
+namespace BL.Model.Context
 {
     /// <summary>
     /// класс сотрудника
@@ -17,6 +19,7 @@
         /// <summary>
         /// Код языка
         /// </summary>
+        [Obsolete("!!!", true)]
         public int LanguageId { get; set; }
 
         //public int ClientId { get; set; }

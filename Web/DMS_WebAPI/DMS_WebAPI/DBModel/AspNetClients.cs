@@ -22,11 +22,18 @@ namespace DMS_WebAPI.DBModel
         [MaxLength(2000)]
         public string VerificationCode { get; set; }
 
+        public int LanguageId { get; set; }
+
+
+        [ForeignKey("LanguageId")]
+        public virtual AdminLanguages Language { get; set; }
 
         [ForeignKey("ClientId")]
         public virtual ICollection<AspNetClientLicences> ClientLicences { get; set; }
 
         [ForeignKey("ClientId")]
         public virtual ICollection<AspNetClientServers> ClientServers { get; set; }
+
+        
     }
 }

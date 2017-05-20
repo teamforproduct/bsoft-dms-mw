@@ -39,9 +39,11 @@ namespace DMS_WebAPI.ControllersV3.Auth
             if (!stopWatch.IsRunning) stopWatch.Restart();
 
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            var user = await webService.ConfirmEmailAgentUser(model.userId, model.code);
+            await webService.ConfirmEmail(model.userId, model.code);
 
+            var user = await webService.GetUserByIdAsync(model.userId);
             var res = new JsonResult(new BL.Model.Context.User { Id = user.Id, Name = user.UserName, IsChangePasswordRequired = user.IsChangePasswordRequired }, this);
+
             res.SpentTime = stopWatch;
             return res;
         }
@@ -57,7 +59,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
         public async Task<IHttpActionResult> RestorePassword(RestorePasswordAgentUser model)
         {
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            await webService.RestorePasswordAgentUserAsync(model);
+            await webService.RestorePassword(model);
             return new JsonResult(null, this);
         }
 
@@ -69,11 +71,27 @@ namespace DMS_WebAPI.ControllersV3.Auth
         [AllowAnonymous]
         [HttpPost]
         [Route("ConfirmRestorePassword")]
-        public async Task<IHttpActionResult> ConfirmRestorePasswordAgentUser([FromBody]ConfirmRestorePasswordAgentUser model)
+        public async Task<IHttpActionResult> ConfirmRestorePassword([FromBody]ConfirmRestorePassword model)
         {
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            var res = await webService.ConfirmRestorePasswordAgentUser(model);
+            var res = await webService.ResetPassword(model);
             return new JsonResult(new { UserName = res }, this);
         }
+
+        /// <summary>
+        /// Сбрасывает пароль
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("ResetPassword")]
+        public async Task<IHttpActionResult> ResetPassword([FromBody]ConfirmRestorePassword model)
+        {
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            var res = await webService.ResetPassword(model);
+            return new JsonResult(new { UserName = res }, this);
+        }
+
     }
 }

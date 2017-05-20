@@ -1,8 +1,5 @@
-﻿using BL.Model.Enums;
-using BL.Model.Extensions;
+﻿using BL.Model.Extensions;
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.Runtime.Serialization;
 
 namespace BL.Model.SystemCore.FrontModel
 {

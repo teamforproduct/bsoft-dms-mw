@@ -227,6 +227,14 @@ namespace BL.Model.Exception
         public UserLoginCouldNotBeChanged(System.Exception ex) : base(ex) { }
     }
 
+    public class UserEmailCouldNotBeConfirmd : DmsExceptions
+    {
+        public UserEmailCouldNotBeConfirmd(IEnumerable<string> Errors) : base() { base.Errors = Errors; }
+        public UserEmailCouldNotBeConfirmd(System.Exception ex) : base(ex) { }
+    }
+
+    
+
     public class UserParmsCouldNotBeChanged : DmsExceptions
     {
         public UserParmsCouldNotBeChanged(IEnumerable<string> Errors) : base() { base.Errors = Errors; }
@@ -311,7 +319,7 @@ namespace BL.Model.Exception
     }
     public class UserIsLockout : DmsExceptions
     {
-        public UserIsLockout(string UserName) : base() { Parameters = new List<string> { UserName }; }
+        public UserIsLockout() : base() { }
         public UserIsLockout(System.Exception ex) : base(ex) { }
     }
 

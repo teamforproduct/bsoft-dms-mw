@@ -425,6 +425,14 @@
     <Compile Include="Migrations\201705022021012_AddFingerToUserContext.Designer.cs">
       <DependentUpon>201705022021012_AddFingerToUserContext.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705202328332_UsersDelIsLockout.cs" />
+    <Compile Include="Migrations\201705202328332_UsersDelIsLockout.Designer.cs">
+      <DependentUpon>201705202328332_UsersDelIsLockout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705202330588_UsersDelIsLockout2.cs" />
+    <Compile Include="Migrations\201705202330588_UsersDelIsLockout2.Designer.cs">
+      <DependentUpon>201705202330588_UsersDelIsLockout2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="DBModel\AspNetUsers.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
@@ -436,6 +444,7 @@
     <Compile Include="Models\EmployeeCreationResult.cs" />
     <Compile Include="Models\UserCreationResult.cs" />
     <Compile Include="Models\ModuleFeatureModel.cs" />
+    <Compile Include="Models\RestorePasswordModel.cs" />
     <Compile Include="Models\WelcomeEmailModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -633,6 +642,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705022021012_AddFingerToUserContext.resx">
       <DependentUpon>201705022021012_AddFingerToUserContext.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705202328332_UsersDelIsLockout.resx">
+      <DependentUpon>201705202328332_UsersDelIsLockout.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705202330588_UsersDelIsLockout2.resx">
+      <DependentUpon>201705202330588_UsersDelIsLockout2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
