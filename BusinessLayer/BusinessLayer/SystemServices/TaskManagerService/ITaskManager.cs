@@ -11,5 +11,6 @@ namespace BL.Logic.SystemServices.TaskManagerService
         void AddTask(List<DatabaseModelForAdminContext> dbModel, int periodInMinutes, Action<IContext, object> action, object param = null);
         void AddTask(DatabaseModelForAdminContext dbModel, int periodInMinutes, Action<IContext, object> action, object param = null);
         void RemoveTask(DatabaseModelForAdminContext dbModel);
+        void RemoveTaskForClient(int clientId);
     }
 }

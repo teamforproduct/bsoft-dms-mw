@@ -1012,17 +1012,18 @@ namespace DMS_WebAPI.Utilities
 
         public async Task DeleteClient(int Id)
         {
+            if (Id == 1) throw new ClientIsNotFound();
+
             var client = _webDb.GetClients(new FilterAspNetClients { IDs = new List<int> { Id } }).FirstOrDefault();
 
             if (client == null) throw new ClientIsNotFound();
-
-            if (Id == 1) throw new ClientIsNotFound();
 
             var clients = new List<int> { Id };
 
             var server = _webDb.GetClientServer(Id);
             var ctx = new AdminContext(server);
-
+            var taskManager = DmsResolver.Current.Get<ITaskManager>();
+            taskManager.RemoveTaskForClient(Id);
             var clientService = DmsResolver.Current.Get<IClientService>();
             clientService.Delete(ctx);
 

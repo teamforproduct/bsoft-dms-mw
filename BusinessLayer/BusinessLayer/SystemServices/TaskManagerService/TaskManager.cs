@@ -59,11 +59,31 @@ namespace BL.Logic.SystemServices.TaskManagerService
         {
             lock (_lockObject)
             {
-                var sett = _taskSettingses.FirstOrDefault(x => x.DatabaseModel == dbModel);
-                if (sett == null) return;
-                _taskSettingses.Remove(sett);
-                sett.TaskTimer.Change(Timeout.Infinite, Timeout.Infinite);
-                sett.TaskTimer.Dispose();
+                var sett = _taskSettingses.Where(x => x.DatabaseModel == dbModel).ToList();
+                if (!sett.Any() ) return;
+                foreach (var s in sett)
+                {
+                    _taskSettingses.Remove(s);
+                    s.TaskTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                    s.TaskTimer.Dispose();
+                }
+                
+            }
+        }
+
+        public void RemoveTaskForClient(int clientId)
+        {
+            lock (_lockObject)
+            {
+                var sett = _taskSettingses.Where(x => x.DatabaseModel.ClientId == clientId).ToList();
+                if (!sett.Any()) return;
+                foreach (var s in sett)
+                {
+                    _taskSettingses.Remove(s);
+                    s.TaskTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                    s.TaskTimer.Dispose();
+                }
+
             }
         }
 
