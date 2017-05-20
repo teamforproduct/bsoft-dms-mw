@@ -78,16 +78,18 @@ namespace DMS_WebAPI.Providers
             var webService = DmsResolver.Current.Get<WebAPIService>();
             if (!webService.ExistsClients(new FilterAspNetClients { Code = clientCode })) throw new ClientIsNotFound(); // TODO может тут нужен ThrowErrorGrantResourceOwnerCredentials - не знаю - и зачем не понимаю
 
-            // Проверяю принадлежность пользователя к клиенту
-            if (!webService.ExistsUser(context.UserName, clientCode)) throw new UserIsNotDefined();
-
-            // To enable password failures to trigger account lockout, change to shouldLockout: true
-            //var result = await SignInManager.PasswordSignInAsync(vm.Email, vm.Password, vm.RememberMe, shouldLockout: true);
-
             // Нахожу пользователя по логину
             AspNetUsers user = await webService.GetUserAsync(context.UserName);
 
             if (user == null) throw new UserIsNotDefined();
+
+            // Проверяю принадлежность пользователя к клиенту
+            if (!webService.ExistsUserInClient(user, clientCode)) throw new ClientIsNotContainUser();
+
+            // To enable password failures to trigger account lockout, change to shouldLockout: true
+            //var result = await SignInManager.PasswordSignInAsync(vm.Email, vm.Password, vm.RememberMe, shouldLockout: true);
+
+            
 
             // Пользователь может быть заблокирован по двум причинам:
             // - администратор заблокировал пользователя
@@ -125,7 +127,7 @@ namespace DMS_WebAPI.Providers
                 }
             }
 
-            if (!passwordIsValid) await webService.ThrowErrorGrantResourceOwnerCredentials(context, new UserNameOrPasswordIsIncorrect());
+            if (!passwordIsValid) await webService.ThrowErrorGrantResourceOwnerCredentials(context, new UserPasswordIsIncorrect());
 
             /////////////////////////////
             // Лигин и пароль верные!!!

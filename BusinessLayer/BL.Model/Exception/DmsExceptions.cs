@@ -239,6 +239,12 @@ namespace BL.Model.Exception
         public UserIsNotDefined(System.Exception ex) : base(ex) { }
     }
 
+    public class ClientIsNotContainUser : DmsExceptions
+    {
+        public ClientIsNotContainUser() : base() { }
+        public ClientIsNotContainUser(System.Exception ex) : base(ex) { }
+    }
+
     public class UserContextIsNotDefined : DmsExceptions
     {
         public UserContextIsNotDefined() : base() { }
@@ -283,6 +289,12 @@ namespace BL.Model.Exception
     {
         public UserNameOrPasswordIsIncorrect() : base() { }
         public UserNameOrPasswordIsIncorrect(System.Exception ex) : base(ex) { }
+    }
+
+    public class UserPasswordIsIncorrect : DmsExceptions
+    {
+        public UserPasswordIsIncorrect() : base() { }
+        public UserPasswordIsIncorrect(System.Exception ex) : base(ex) { }
     }
 
     // НЕ переименовывать - есть if на фронте
@@ -427,6 +439,14 @@ namespace BL.Model.Exception
         public EmployeeNotExecuteAnyPosition(string UserName) : base() { Parameters = new List<string> { UserName }; }
         public EmployeeNotExecuteAnyPosition(System.Exception ex) : base(ex) { }
     }
+
+    public class EmployeeIsNotDefined : DmsExceptions
+    {
+        public EmployeeIsNotDefined() : base() { }
+        public EmployeeIsNotDefined(System.Exception ex) : base(ex) { }
+    }
+
+    
 
     public class EmployeeNotExecuteCheckPosition : DmsExceptions
     {

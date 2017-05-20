@@ -216,7 +216,7 @@ namespace DMS_WebAPI.Utilities
             }
             else
             {
-                throw new UserAccessIsDenied();
+                throw new EmployeeIsNotDefined();
             }
 
             return intContext;

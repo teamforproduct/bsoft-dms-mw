@@ -108,18 +108,16 @@ namespace DMS_WebAPI.Utilities
             return user != null;
         }
 
-        public bool ExistsUser(string userName, string clientCode)
+        public bool ExistsUserInClient(AspNetUsers user, string clientCode)
         {
             var clientId = GetClientId(clientCode);
 
-            return ExistsUser(userName, clientId);
+            return ExistsUserInClient(user, clientId);
 
         }
 
-        public bool ExistsUser(string userName, int clientId)
+        public bool ExistsUserInClient(AspNetUsers user, int clientId)
         {
-            var user = GetUser(userName);
-
             if (user == null) return false;
 
             var ucs = _webDb.GetUserClientServerList(new FilterAspNetUserClientServer
@@ -129,6 +127,13 @@ namespace DMS_WebAPI.Utilities
             }).FirstOrDefault();
 
             return (ucs != null);
+        }
+
+        public bool ExistsUserInClient(string userName, int clientId)
+        {
+            var user = GetUser(userName);
+
+            return ExistsUserInClient(user, clientId);
         }
 
         /// <summary>
@@ -245,7 +250,7 @@ namespace DMS_WebAPI.Utilities
             var employeeId = -1;
 
             // проверяю нет ли уже сотрудника с указанным имененм у клиента
-            if (ExistsUser(model.UserName, context.Client.Id)) throw new UserNameAlreadyExists(model.UserName);
+            if (ExistsUserInClient(model.UserName, context.Client.Id)) throw new UserNameAlreadyExists(model.UserName);
 
             // пробую создать сотрудника
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -309,7 +314,7 @@ namespace DMS_WebAPI.Utilities
             EmployeeCreationResult res = null;
 
             // проверяю нет ли уже сотрудника с указанным имененм у клиента
-            if (ExistsUser(model.Login, context.Client.Id)) throw new UserNameAlreadyExists(model.Login);
+            if (ExistsUserInClient(model.Login, context.Client.Id)) throw new UserNameAlreadyExists(model.Login);
 
             if (model.OrgId == null && string.IsNullOrEmpty(model.OrgName)) throw new OrgRequired();
 
@@ -921,18 +926,6 @@ namespace DMS_WebAPI.Utilities
                     ServerId = db.Id,
                 });
 
-
-                // Создаю первого пользователя
-                //var userId = AddFirstAdmin(new BL.Model.WebAPI.IncomingModel.AddFirstAdminClient
-                //{
-                //    ClientCode = model.ClientCode,
-                //    Admin = new ModifyAspNetUser
-                //    {
-                //        Email = model.Email,
-                //        Password = model.Password,
-                //    }
-
-                //});
 
                 transaction.Complete();
             }
