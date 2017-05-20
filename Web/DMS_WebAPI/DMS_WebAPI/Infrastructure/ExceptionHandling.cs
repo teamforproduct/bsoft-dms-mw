@@ -31,7 +31,6 @@ namespace DMS_WebAPI.Infrastructure
                 if (exception is UserUnauthorized
                     || exception is UserNameOrPasswordIsIncorrect
                     || exception is UserIsLockout
-                    || exception is UserIsLockoutByAdmin
                     || exception is UserAccessIsDenied
                     || exception is UserMustConfirmEmail
                     || exception is UserContextIsNotDefined

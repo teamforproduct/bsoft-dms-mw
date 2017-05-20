@@ -323,11 +323,6 @@ namespace BL.Model.Exception
         public UserIsLockout(System.Exception ex) : base(ex) { }
     }
 
-    public class UserIsLockoutByAdmin : DmsExceptions
-    {
-        public UserIsLockoutByAdmin(string UserName) : base() { Parameters = new List<string> { UserName }; }
-        public UserIsLockoutByAdmin(System.Exception ex) : base(ex) { }
-    }
 
     public class RoleNameAlreadyExists : DmsExceptions
     {
