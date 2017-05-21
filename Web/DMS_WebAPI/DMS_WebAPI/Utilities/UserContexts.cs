@@ -10,6 +10,7 @@ using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
 using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.FrontModel;
+using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Providers;
 using System;
 using System.Collections.Generic;
@@ -115,22 +116,20 @@ namespace DMS_WebAPI.Utilities
         /// Добавляет к существующему пользовательскому контексту информации по логу
         /// </summary>
         /// <param name="token"></param>
-        /// <param name="userId">Id Web-пользователя</param>
-        /// <param name="userName">Id Web-пользователя</param>
+        /// <param name="user">Id Web-пользователя</param>
         /// <param name="clientCode">доменное имя клиента</param>
-        /// <param name="IsChangePasswordRequired">доменное имя клиента</param>
         /// <param name="db">new server parameters</param>
         /// <param name="browserInfo">clientId</param>
         /// <param name="fingerPrint">clientId</param>
         /// <returns></returns>
         /// <exception cref="TokenAlreadyExists"></exception>
-        public IContext Set(string token, string userId, string userName, bool IsChangePasswordRequired, string clientCode, DatabaseModelForAdminContext db, string browserInfo, string fingerPrint)
+        public IContext Set(string token, AspNetUsers user, string clientCode, DatabaseModelForAdminContext db, string browserInfo, string fingerPrint)
         {
             token = token.ToLower();
 
             if (Contains(token)) throw new TokenAlreadyExists();
 
-            var intContext = GetContextInternal(token, userId, userName, IsChangePasswordRequired, clientCode, db, browserInfo, fingerPrint);
+            var intContext = GetContextInternal(token, user, clientCode, db, browserInfo, fingerPrint);
 
             // TODO вернуть, когда перейдем к лицензиям
             //VerifyNumberOfConnectionsByNew(intContext, new List<DatabaseModelForAdminContext> { db });
@@ -144,9 +143,9 @@ namespace DMS_WebAPI.Utilities
 
         }
 
-        
 
-        private IContext GetContextInternal(string token, string userId, string userName, bool IsChangePasswordRequired, string clientCode, DatabaseModelForAdminContext db, string browserInfo, string fingerPrint)
+
+        private IContext GetContextInternal(string token, AspNetUsers user, string clientCode, DatabaseModelForAdminContext db, string browserInfo, string fingerPrint)
         {
             var webService = DmsResolver.Current.Get<WebAPIService>();
             var clientId = webService.GetClientId(clientCode);
@@ -157,7 +156,7 @@ namespace DMS_WebAPI.Utilities
 
             if (!string.IsNullOrEmpty(fingerPrint))
             {
-                var fp = webService.GetUserFingerprints(new FilterAspNetUserFingerprint { UserIDs = new List<string> { userId }, FingerprintExact = fingerPrint }).FirstOrDefault();
+                var fp = webService.GetUserFingerprints(new FilterAspNetUserFingerprint { UserIDs = new List<string> { user.Id }, FingerprintExact = fingerPrint }).FirstOrDefault();
 
                 if (fp != null)
                 {
@@ -175,11 +174,11 @@ namespace DMS_WebAPI.Utilities
                 Token = token,
                 User = new User
                 {
-                    Id = userId,
-                    Name = userName,
+                    Id = user.Id,
+                    Name = user.UserName,
                     Fingerprint = fingerPrint,
-                    IsChangePasswordRequired = IsChangePasswordRequired,
-                    LanguageId = -1,
+                    IsChangePasswordRequired = user.IsChangePasswordRequired,
+                    LanguageId = user.LanguageId,
                 },
                 Employee = new Employee { },
                 Client = new Client
@@ -187,36 +186,34 @@ namespace DMS_WebAPI.Utilities
                     Id = clientId,
                     Code = clientCode
                 },
-                
+
                 CurrentDB = db,
                 ClientLicence = webService.GetClientLicenceActive(clientId),
                 LoginLogInfo = logInfo,
             };
 
             var context = new UserContext(intContext);
-            var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(context, userId);
+            var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(context, user.Id);
 
             if (agentUser != null)
             {
                 // проверка активности сотрудника
                 if (!agentUser.IsActive)
                 {
-                    throw new UserIsDeactivated(agentUser.Name);
+                    throw new EmployeeIsDeactivated(agentUser.Name);
                 }
 
                 if (agentUser.PositionExecutorsCount == 0)
                 {
-                    throw new UserNotExecuteAnyPosition(agentUser.Name);
+                    throw new EmployeeNotExecuteAnyPosition(agentUser.Name);
                 }
 
                 intContext.Employee.Id = agentUser.Id;
                 intContext.Employee.Name = agentUser.Name;
-                intContext.Employee.LanguageId = agentUser.LanguageId;
-                intContext.User.LanguageId = agentUser.LanguageId;
             }
             else
             {
-                throw new UserAccessIsDenied();
+                throw new EmployeeIsNotDefined();
             }
 
             return intContext;
@@ -466,7 +463,7 @@ namespace DMS_WebAPI.Utilities
             locker.EnterReadLock();
             try
             {
-                keys = _cacheContexts.Where(x => x.Value.StoreObject is IContext && ((IContext)x.Value.StoreObject).CurrentAgentId == agentId).Select(x => x.Key).ToList();
+                keys = _cacheContexts.Where(x => x.Value.StoreObject is IContext && ((IContext)x.Value.StoreObject).Employee.Id == agentId).Select(x => x.Key).ToList();
             }
             finally
             {
@@ -556,6 +553,7 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
+        // TODO LanguageId is User parm
         public void UpdateLanguageId(int agentId, int languageId)
         {
             List<IContext> contexts;
@@ -572,7 +570,6 @@ namespace DMS_WebAPI.Utilities
             }
             foreach (var context in contexts)
             {
-                context.Employee.LanguageId = languageId;
                 context.User.LanguageId = languageId;
             }
         }
@@ -715,8 +712,7 @@ namespace DMS_WebAPI.Utilities
 
                 var brInfo = HttpContext.Current.Request.Browser.Info();
 
-                var intContext = GetContextInternal(item.Token, user.Id, user.UserName, user.IsChangePasswordRequired, clientCode,
-                     server, brInfo, item.Fingerprint);
+                var intContext = GetContextInternal(item.Token, user, clientCode, server, brInfo, item.Fingerprint);
 
                 // TODO вернуть, когда перейдем к лицензиям 
                 //VerifyNumberOfConnectionsByNew(context, new List<DatabaseModelForAdminContext> { server });//LONG

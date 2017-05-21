@@ -58,7 +58,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _document = _operationDb.DeleteDocumentFilePrepare(_context, Model);
             if (_document == null)
             {
-                throw new UserHasNoAccessToDocument();
+                throw new EmployeeHasNoAccessToDocument();
             }
             if (_document.DocumentFiles == null || !_document.DocumentFiles.Any())
             {

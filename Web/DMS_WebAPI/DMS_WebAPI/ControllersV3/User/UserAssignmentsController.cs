@@ -2,10 +2,12 @@
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.AdminCore;
 using BL.Model.AdminCore.FrontModel;
+using BL.Model.Exception;
 using BL.Model.SystemCore;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -90,6 +92,8 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.Assignments)]
         public async Task<IHttpActionResult> Assignments([FromBody]List<int> positionsIdList)
         {
+            if (positionsIdList == null || !positionsIdList.Any()) throw new NobodyIsChosen();
+
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var userContexts = (UserContexts)param;

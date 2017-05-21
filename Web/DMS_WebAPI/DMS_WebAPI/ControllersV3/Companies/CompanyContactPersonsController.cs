@@ -88,6 +88,22 @@ namespace DMS_WebAPI.ControllersV3.Companies
         }
 
         /// <summary>
+        /// Добавляет контактное лицо из существующих
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route(Features.ContactPersons + "/Existing")]
+        public async Task<IHttpActionResult> Post([FromBody]AddAgentPersonExisting model)
+        {
+            return await SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var tmpItem = Action.Execute(context, EnumDictionaryActions.AddAgentPersonExisting, model);
+                return GetById(context, tmpItem);
+            });
+        }
+
+        /// <summary>
         /// Корректирует контактное лицо
         /// </summary>
         /// <param name="model"></param>

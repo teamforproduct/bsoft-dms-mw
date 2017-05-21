@@ -16,6 +16,12 @@ namespace BL.Model.DictionaryCore.FilterModel
         public List<int> PositionIDs { get; set; }
 
         /// <summary>
+        /// Отделы
+        /// </summary>
+        [IgnoreDataMember]
+        public List<int> PositionDepartmentsIDs { get; set; }
+
+        /// <summary>
         /// Пользователь
         /// </summary>
         [IgnoreDataMember]

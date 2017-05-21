@@ -448,9 +448,28 @@ namespace BL.Database.Dictionaries
                 var dbModel = DictionaryModelConverter.GetDbAgentPerson(ctx, person);
 
                 dbContext.SafeAttach(dbModel);
-                dbContext.SaveChanges();
+                //dbContext.SaveChanges();
                 var entity = dbContext.Entry(dbModel);
                 entity.State = EntityState.Modified;
+                dbContext.SaveChanges();
+
+                CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.UpdateFull);
+                transaction.Complete();
+
+            }
+        }
+
+        public void AddAgentPersonToCompany(IContext ctx, InternalDictionaryAgentPerson person)
+        {
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
+            {
+                var dbModel = DictionaryModelConverter.GetDbAgentPerson(ctx, person);
+
+                dbContext.SafeAttach(dbModel);
+                var entity = dbContext.Entry(dbModel);
+                //entity.State = EntityState.Modified;
+                entity.Property(x => x.AgentCompanyId).IsModified = true;
                 dbContext.SaveChanges();
 
                 CommonQueries.AddFullTextCacheInfo(ctx, dbModel.Id, EnumObjects.DictionaryAgentPersons, EnumOperationType.UpdateFull);
@@ -6390,6 +6409,20 @@ namespace BL.Database.Dictionaries
 
                     qry = qry.Where(filterContains);
                 }
+
+                if (filter.PositionDepartmentsIDs?.Count > 100)
+                {
+                    qry = qry.Where(x => filter.PositionDepartmentsIDs.Contains(x.Position.DepartmentId));
+                }
+                else if (filter.PositionDepartmentsIDs?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.New<DictionaryStandartSendLists>(false);
+                    filterContains = filter.PositionDepartmentsIDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Position.DepartmentId == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
 
                 if (filter.AgentId != null)
                 {

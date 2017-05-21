@@ -170,6 +170,8 @@
         /// добавить физлицо
         /// </summary>
         AddAgentPerson = 209001,
+
+        AddAgentPersonExisting = 209002,
         /// <summary>
         /// изменить физлицо
         /// </summary>

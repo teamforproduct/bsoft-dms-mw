@@ -20,6 +20,15 @@ namespace BL.Logic.DictionaryCore
 
             Model.Name?.Trim();
 
+            // Тонкий момент, проверяю не является ли сотрудник локальным администратором.
+            // Если не локальный значит, надеюсь, что глобальный и разрешаю создавать и изменять параметры всех должностей
+            var employeeDepartments = _adminService.GetInternalEmployeeDepartments(_context, _context.Employee.Id);
+
+            if (employeeDepartments != null)
+            {
+                if (!employeeDepartments.Contains(Model.DepartmentId)) throw new AccessIsDenied();
+            }
+
             var filter = new FilterDictionaryRegistrationJournal
             {
                 NameExact = Model.Name,

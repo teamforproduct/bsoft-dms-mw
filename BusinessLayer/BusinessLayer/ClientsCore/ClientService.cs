@@ -89,8 +89,8 @@ namespace BL.Logic.ClientCore
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             foreach (var item in GetAddressTypes())
             {
-                item.Name = languages.GetTranslation(context.Employee.LanguageId, item.Name);
-                item.Code = languages.GetTranslation(context.Employee.LanguageId, item.Code);
+                item.Name = languages.GetTranslation(context.User.LanguageId, item.Name);
+                item.Code = languages.GetTranslation(context.User.LanguageId, item.Code);
                 tmpService.ExecuteAction(EnumDictionaryActions.AddAddressType, context, item);
             };
             #endregion
@@ -99,7 +99,7 @@ namespace BL.Logic.ClientCore
 
             foreach (var item in GetDocumentTypes())
             {
-                item.Name = languages.GetTranslation(context.Employee.LanguageId, item.Name);
+                item.Name = languages.GetTranslation(context.User.LanguageId, item.Name);
                 tmpService.ExecuteAction(EnumDictionaryActions.AddDocumentType, context, item);
             };
 
@@ -219,8 +219,8 @@ namespace BL.Logic.ClientCore
             var languageService = DmsResolver.Current.Get<ILanguages>();
 
             string specCode = ctype.ToString();
-            string code = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("ContactTypesCode", ctype.ToString())); ;
-            string name = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("ContactTypes", ctype.ToString()));
+            string code = languageService.GetTranslation(context.User.LanguageId, GetLabel("ContactTypesCode", ctype.ToString())); ;
+            string name = languageService.GetTranslation(context.User.LanguageId, GetLabel("ContactTypes", ctype.ToString()));
 
             var model = new AddContactType()
             {
@@ -280,13 +280,13 @@ namespace BL.Logic.ClientCore
             var languageService = DmsResolver.Current.Get<ILanguages>();
             var items = new List<AddTag>();
 
-            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("Tags", "Trade")) });
-            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("Tags", "Development")) });
-            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("Tags", "Production")) });
-            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("Tags", "Design")) });
-            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("Tags", "Finance")) });
-            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("Tags", "Accounting")) });
-            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.Employee.LanguageId, GetLabel("Tags", "Staff")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.User.LanguageId, GetLabel("Tags", "Trade")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.User.LanguageId, GetLabel("Tags", "Development")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.User.LanguageId, GetLabel("Tags", "Production")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.User.LanguageId, GetLabel("Tags", "Design")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.User.LanguageId, GetLabel("Tags", "Finance")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.User.LanguageId, GetLabel("Tags", "Accounting")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.User.LanguageId, GetLabel("Tags", "Staff")) });
 
             return items;
         }

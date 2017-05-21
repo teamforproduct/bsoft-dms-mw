@@ -68,7 +68,6 @@ namespace BL.CrossCutting.Context
                 Employee = new Employee
                 {
                     Id = ctx.Employee.Id,
-                    LanguageId = ctx.Employee.LanguageId,
                     Name = ctx.Employee.Name,
                     IsActive = ctx.Employee.IsActive,
                     PositionExecutorsCount = ctx.Employee.PositionExecutorsCount,

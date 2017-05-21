@@ -344,7 +344,7 @@ namespace BL.Database.Admins
                     {
                         Id = x.Id,
                         Name = x.Agent.Name,
-                        LanguageId = x.Agent.AgentUser.LanguageId,
+                        //LanguageId = x.Agent.AgentUser.LanguageId,
                         IsActive = x.Agent.AgentEmployee.IsActive,
                         PositionExecutorsCount = x.Agent.AgentEmployee.PositionExecutors.Where(y => y.AgentId == x.Id & y.IsActive == true & now >= y.StartDate & now <= y.EndDate).Count(), //IS THAT CORRECT?? 
                     }).FirstOrDefault();
