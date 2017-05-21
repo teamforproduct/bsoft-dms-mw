@@ -1142,7 +1142,7 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        private IQueryable<AspNetUserClientServer> GetUserClientQuery(ApplicationDbContext dbContext, FilterAspNetUserClient filter)
+        private IQueryable<AspNetUserClients> GetUserClientQuery(ApplicationDbContext dbContext, FilterAspNetUserClient filter)
         {
             var qry = dbContext.AspNetUserClientServerSet.AsQueryable();
 
@@ -1150,7 +1150,7 @@ namespace DMS_WebAPI.Utilities
             {
                 if (filter.UserServerIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.New<AspNetUserClientServer>(false);
+                    var filterContains = PredicateBuilder.New<AspNetUserClients>(false);
                     filterContains = filter.UserServerIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
@@ -1158,7 +1158,7 @@ namespace DMS_WebAPI.Utilities
                 }
                 if (filter.ClientIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.New<AspNetUserClientServer>(false);
+                    var filterContains = PredicateBuilder.New<AspNetUserClients>(false);
                     filterContains = filter.ClientIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ClientId == value).Expand());
 
@@ -1166,7 +1166,7 @@ namespace DMS_WebAPI.Utilities
                 }
                 if (filter.UserIDs?.Count > 0)
                 {
-                    var filterContains = PredicateBuilder.New<AspNetUserClientServer>(false);
+                    var filterContains = PredicateBuilder.New<AspNetUserClients>(false);
                     filterContains = filter.UserIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.UserId == value).Expand());
 
@@ -1181,7 +1181,7 @@ namespace DMS_WebAPI.Utilities
         {
             using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                var item = new AspNetUserClientServer
+                var item = new AspNetUserClients
                 {
                     UserId = model.UserId,
                     ClientId = model.ClientId,

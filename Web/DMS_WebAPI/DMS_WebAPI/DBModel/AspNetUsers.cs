@@ -20,7 +20,7 @@ namespace DMS_WebAPI.DBModel
             return userIdentity;
         }
         [ForeignKey("UserId")]
-        public virtual ICollection<AspNetUserClientServer> ClientServer { get; set; }
+        public virtual ICollection<AspNetUserClients> ClientServer { get; set; }
 
         [ForeignKey("UserId")]
         public virtual ICollection<AspNetUserFingerprints> Fingerprints { get; set; }

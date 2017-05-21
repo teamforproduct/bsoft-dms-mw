@@ -378,7 +378,7 @@
     <Compile Include="DBModel\AspNetClientRequests.cs" />
     <Compile Include="DBModel\AspNetClientServers.cs" />
     <Compile Include="DBModel\AspNetUserContexts.cs" />
-    <Compile Include="DBModel\AspNetUserClientServer.cs" />
+    <Compile Include="DBModel\AspNetUserClients.cs" />
     <Compile Include="DBModel\SystemControlQuestions.cs" />
     <Compile Include="DBModel\AdminLanguages.cs" />
     <Compile Include="DBModel\AdminServers.cs" />

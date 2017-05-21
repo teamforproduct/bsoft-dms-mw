@@ -2,8 +2,7 @@
 
 namespace DMS_WebAPI.DBModel
 {
-    [Table("AspNetUserClients")]
-    public class AspNetUserClientServer
+    public class AspNetUserClients
     {
         public int Id { get; set; }
 
