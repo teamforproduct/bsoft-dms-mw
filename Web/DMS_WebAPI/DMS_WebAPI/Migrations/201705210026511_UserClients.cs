@@ -7,12 +7,14 @@ namespace DMS_WebAPI.Migrations
     {
         public override void Up()
         {
-            RenameTable(name: "dbo.AspNetUserClientServers", newName: "AspNetUserClients");
+            
             DropForeignKey("dbo.AspNetUserClientServers", "ServerId", "dbo.AdminServers");
+            RenameTable(name: "dbo.AspNetUserClientServers", newName: "AspNetUserClients");
             DropIndex("dbo.AspNetUserClients", "IX_UserClientServer");
             DropIndex("dbo.AspNetUserClients", new[] { "ServerId" });
             CreateIndex("dbo.AspNetUserClients", new[] { "UserId", "ClientId" }, unique: true, name: "IX_UserClientServer");
             DropColumn("dbo.AspNetUserClients", "ServerId");
+            
         }
         
         public override void Down()
