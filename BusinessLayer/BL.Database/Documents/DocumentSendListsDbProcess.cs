@@ -253,8 +253,7 @@ namespace BL.Database.Documents
             {
                 InternalAdditinalLinkedDocumentSendListsPrepare res = new InternalAdditinalLinkedDocumentSendListsPrepare();
                 res.SendTypeName = dbContext.DictionarySendTypesSet.Where(x => x.Id == (int)EnumSendTypes.SendForInformation).Select(x => x.Name).FirstOrDefault();
-                var linkId = CommonQueries.GetDocumentQuery(ctx, null, false, true, true)
-                    .Where(x => x.Id == model.DocumentId)
+                var linkId = CommonQueries.GetDocumentQuery(ctx, new FilterDocument { DocumentId = new List<int> { model.DocumentId }, IsInWork = true })
                     .Select(y => y.LinkId).FirstOrDefault();
                 var qry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.Client.Id)
                     .Where(x => x.DocumentId != model.DocumentId && x.Document.LinkId == linkId);
@@ -268,8 +267,7 @@ namespace BL.Database.Documents
                     PositionId = x.PositionId
                 }
                 ).ToList();
-                var docs = CommonQueries.GetDocumentQuery(ctx, null, false, true, true)
-                    .Where(y => y.LinkId == linkId && y.Id != model.DocumentId)
+                var docs = CommonQueries.GetDocumentQuery(ctx, new FilterDocument { LinkId = new List<int> { linkId.Value }, NotContainsDocumentId = new List<int> { model.DocumentId }, IsInWork = true })
                     .Select(y => new FrontDocument
                     {
                         Id = y.Id,

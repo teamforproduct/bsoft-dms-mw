@@ -40,7 +40,7 @@ namespace BL.Database.Documents
             {
                 var res = new DocumentActionsModel();
                 res.ActionsList = new Dictionary<int, List<InternalSystemActionForDocument>>();
-                var qry = CommonQueries.GetDocumentQuery(context);
+                var qry = CommonQueries.GetDocumentQuery(context, null);
                 if (documentId.HasValue)
                 {
                     qry = qry.Where(x => x.Id == documentId);
@@ -87,7 +87,7 @@ namespace BL.Database.Documents
                     res.Document.IsInWork = res.Document.Accesses.Any(x => x.IsInWork);
                     res.Document.IsFavourite = res.Document.Accesses.Any(x => x.IsFavourite);
 
-                    var qryEvents = dbContext.DocumentEventsSet.Where(x => x.ClientId == context.Client.Id);
+                    var qryEvents = CommonQueries.GetDocumentEventQuery(context,null);
                     if (id.HasValue)
                         qryEvents = qryEvents.Where(x => x.Id == id);
                     else
@@ -100,7 +100,7 @@ namespace BL.Database.Documents
                     }
                         ).ToList();
 
-                    var qryWaits = dbContext.DocumentWaitsSet.Where(x => x.ClientId == context.Client.Id);
+                    var qryWaits = CommonQueries.GetDocumentWaitQuery(context, null);
                     if (id.HasValue)
                         qryWaits = qryWaits.Where(x => x.OnEventId == id);
                     else
@@ -195,8 +195,7 @@ namespace BL.Database.Documents
                 var res = new DocumentActionsModel();
                 res.ActionsList = new Dictionary<int, List<InternalSystemActionForDocument>>();
 
-                res.Document = CommonQueries.GetDocumentQuery(context)
-                    .Where(x => x.Id == documentId)
+                res.Document = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { documentId } })
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
@@ -255,7 +254,7 @@ namespace BL.Database.Documents
                 var res = new DocumentActionsModel();
                 res.ActionsList = new Dictionary<int, List<InternalSystemActionForDocument>>();
 
-                var qry = CommonQueries.GetDocumentQuery(context);
+                var qry = CommonQueries.GetDocumentQuery(context, null);
 
                 if (documentId.HasValue)
                 {
@@ -328,8 +327,7 @@ namespace BL.Database.Documents
                 var res = new DocumentActionsModel();
                 res.ActionsList = new Dictionary<int, List<InternalSystemActionForDocument>>();
 
-                res.Document = CommonQueries.GetDocumentQuery(context)
-                    .Where(x => x.Id == documentId)
+                res.Document = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { documentId } })
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
@@ -588,8 +586,8 @@ namespace BL.Database.Documents
                 filterPositionContains = context.CurrentPositionsAccessLevel.Aggregate(filterPositionContains,
                     (current, value) => current.Or(e => e.PositionId == value.Key && e.Document.Accesses.Any(x => x.PositionId == value.Key && x.AccessLevelId >= value.Value)).Expand());
 
-                var qryView = dbContext.DocumentEventsSet.Where(x => qryRes.Select(y => y.Id).Contains(x.Id))
-                    //TODO Sort
+                var qryView = dbContext.DocumentEventsSet  //Without security restrictions
+                    .Where(x => qryRes.Select(y => y.Id).Contains(x.Id))
                     .OrderByDescending(x => x.Date)
                     .Select(x => new FrontDocumentEvent
                     {
@@ -655,7 +653,7 @@ namespace BL.Database.Documents
 
                 if (filter?.Document != null)
                 {
-                    var documentIds = CommonQueries.GetDocumentQuery(context, filter?.Document, true).Select(x => x.Id);
+                    var documentIds = CommonQueries.GetDocumentQuery(context, filter?.Document).Select(x => x.Id);
                     qrys = qrys.Select(qry => { return qry.Where(x => documentIds.Contains(x.DocumentId)); }).ToList();
                 }
 
@@ -772,9 +770,8 @@ namespace BL.Database.Documents
                 var maxDateTime = DateTime.UtcNow.AddYears(50);
                 var isNeedRegistrationFullNumber = !(filter?.Wait?.DocumentId?.Any() ?? false);
 
-                var qryFE = dbContext.DocumentWaitsSet.Where(x => qryRes.Select(y => y.Id).Contains(x.Id))
-
-                    //TODO Sort
+                var qryFE = dbContext.DocumentWaitsSet  //Without security restrictions
+                    .Where(x => qryRes.Select(y => y.Id).Contains(x.Id))
                     .OrderBy(x => x.DueDate)
                     .Select(x => new FrontDocumentWait
                     {
@@ -1292,11 +1289,11 @@ namespace BL.Database.Documents
             {
                 var maxDateTime = DateTime.UtcNow.AddYears(50);
 
-                var doc = dbContext.DocumentWaitsSet.Where(x => x.ClientId == context.Client.Id)
-                    .Where(x => x.OnEventId == eventId && x.OnEvent.EventTypeId != (int)EnumEventTypes.AskPostponeDueDate)
-                    .Concat(dbContext.DocumentWaitsSet.Where(x => x.ClientId == context.Client.Id).
-                            Where(x => x.Id == dbContext.DocumentWaitsSet.Where(y => y.OnEventId == eventId && y.OnEvent.EventTypeId == (int)EnumEventTypes.AskPostponeDueDate).Select(y => y.ParentId).FirstOrDefault())
-                            )
+                var doc = CommonQueries.GetDocumentWaitQuery(context, new FilterDocumentWait { OnEventId = new List<int> { eventId } })
+                    .Where(x => x.OnEvent.EventTypeId != (int)EnumEventTypes.AskPostponeDueDate)
+                    .Concat(CommonQueries.GetDocumentWaitQuery(context, new FilterDocumentWait {Id = dbContext.DocumentWaitsSet //Without security restrictions
+                                                        .Where(y => y.ParentId.HasValue && y.OnEventId == eventId && y.OnEvent.EventTypeId == (int)EnumEventTypes.AskPostponeDueDate)
+                                                        .Select(y => y.ParentId.Value).ToList() })     )
                     .Select(x => new InternalDocument
                     {
                         Id = x.DocumentId,
@@ -1358,8 +1355,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = dbContext.DocumentWaitsSet.Where(x => x.ClientId == context.Client.Id)
-                    .Where(x => x.OnEventId == eventId)
+                var doc = CommonQueries.GetDocumentWaitQuery(context, new FilterDocumentWait { OnEventId = new List<int> { eventId } })
                     .Select(x => new InternalDocument
                     {
                         Id = x.DocumentId,
@@ -1401,8 +1397,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = dbContext.DocumentWaitsSet.Where(x => x.ClientId == context.Client.Id)
-                    .Where(x => x.OnEventId == eventId)
+                var doc = CommonQueries.GetDocumentWaitQuery(context, new FilterDocumentWait { OnEventId = new List<int> { eventId } })
                     .Select(x => new InternalDocument
                     {
                         Id = x.DocumentId,
@@ -1449,9 +1444,8 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = CommonQueries.GetDocumentQuery(context, null, false, true, true);
-                var doc = qry.Where(x => x.Id == documentId)
-                            .Select(x => new InternalDocument
+                var qry = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { documentId }, IsInWork = true });
+                var doc = qry.Select(x => new InternalDocument
                             {
                                 Id = x.Id,
                                 ClientId = x.ClientId,
@@ -1467,9 +1461,8 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = CommonQueries.GetDocumentQuery(context, null, false, true, true);
-                var doc = qry.Where(x => x.Id == documentId)
-                            .Select(x => new InternalDocument
+                var qry = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { documentId }, IsInWork = true });
+                var doc = qry.Select(x => new InternalDocument
                             {
                                 Id = x.Id,
                                 ClientId = x.ClientId,
@@ -1509,13 +1502,8 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var filterContains = PredicateBuilder.New<DocumentWaits>(false);
-                filterContains = document.Waits.Select(x => x.Id).ToList().Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.ParentId == value).Expand());
-
-                var waitRes = dbContext.DocumentWaitsSet.Where(x => x.ClientId == context.Client.Id)
-                    .Where(filterContains)
-                    .Where(x => !x.OffEventId.HasValue && x.OnEvent.EventTypeId == (int)EnumEventTypes.AskPostponeDueDate)
+                 var waitRes = CommonQueries.GetDocumentWaitQuery(context, new FilterDocumentWait { IsOpened = true, ParentId = document.Waits.Select(x => x.Id).ToList() })
+                    .Where(x => x.OnEvent.EventTypeId == (int)EnumEventTypes.AskPostponeDueDate)
                     .Select(x => new InternalDocumentWait
                     {
                         Id = x.Id,
@@ -1546,13 +1534,8 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var filterContains = PredicateBuilder.New<DocumentWaits>(false);
-                filterContains = document.Waits.Select(x => x.Id).ToList().Aggregate(filterContains,
-                    (current, value) => current.Or(e => e.ParentId == value).Expand());
-
-                var waitRes = dbContext.DocumentWaitsSet.Where(x => x.ClientId == context.Client.Id)
-                    .Where(filterContains)
-                    .Where(x => !x.OffEventId.HasValue && x.OnEvent.EventTypeId == (int)EnumEventTypes.MarkExecution)
+                var waitRes = CommonQueries.GetDocumentWaitQuery(context, new FilterDocumentWait { IsOpened = true, ParentId = document.Waits.Select(x => x.Id).ToList() })
+                    .Where(x => x.OnEvent.EventTypeId == (int)EnumEventTypes.MarkExecution)
                     .Select(x => new InternalDocumentWait
                     {
                         Id = x.Id,
@@ -2037,8 +2020,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(context, null, false, true, true)
-                    .Where(x => x.Id == model.DocumentId)
+                var doc = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { model.DocumentId }, IsInWork = true })
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
@@ -2070,8 +2052,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(context, null, false, true, true)
-                    .Where(x => x.Id == sendList.DocumentId)
+                var doc = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { sendList.DocumentId }, IsInWork = true })
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
@@ -2096,7 +2077,7 @@ namespace BL.Database.Documents
                     if (initiatorInfo == null) return null;
                     sendList.InitiatorPositionName = initiatorInfo.Name;
                     sendList.InitiatorPositionExecutorAgentName = initiatorInfo.ExecutorAgentName;
-                    doc.Events = dbContext.DocumentEventsSet.Where(x => x.ClientId == context.Client.Id)
+                    doc.Events = dbContext.DocumentEventsSet.Where(x => x.ClientId == context.Client.Id)  //Without security restrictions
                         .Where(x => x.DocumentId == sendList.DocumentId && x.Task.Id == sendList.TaskId
                                     && x.EventTypeId == (int)EnumEventTypes.SendForControl
                                     && x.Accesses.Any(y => y.PositionId == sendList.SourcePositionId))
@@ -2123,7 +2104,7 @@ namespace BL.Database.Documents
                             TargetPositionExecutorAgentName = x.target.Position.ExecutorAgent.Name + (x.target.PositionExecutorType.Suffix != null ? " (" + x.target.PositionExecutorType.Suffix + ")" : null),
                         }).ToList();
 
-                    var qryWaits = doc.Waits = dbContext.DocumentWaitsSet.Where(x => x.ClientId == context.Client.Id)
+                    doc.Waits = dbContext.DocumentWaitsSet.Where(x => x.ClientId == context.Client.Id)  //Without security restrictions
                         .Where(x => x.DocumentId == sendList.DocumentId && x.OnEvent.Task.Id == sendList.TaskId && !x.OffEventId.HasValue
                                     && (x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution || x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecutionChange))
                         .Select(x => new
@@ -2157,8 +2138,7 @@ namespace BL.Database.Documents
                                 TargetPositionExecutorTypeId = x.targetRE.PositionExecutorTypeId,
                                 TargetPositionExecutorAgentName = x.targetRE.Position.ExecutorAgent.Name + (x.targetRE.PositionExecutorType.Suffix != null ? " (" + x.targetRE.PositionExecutorType.Suffix + ")" : null),
                             }
-                        });
-                    doc.Waits = qryWaits.ToList();
+                        }).ToList();
                 }
                 if (sendList.IsInitial)
                 {
@@ -2187,8 +2167,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(context, null, false, true, true)
-                    .Where(x => x.Id == sendList.DocumentId)
+                var doc = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { sendList.DocumentId }, IsInWork = true })
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
@@ -2267,8 +2246,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(context, null, false, true, true)
-                    .Where(x => x.Id == model.DocumentId)
+                var doc = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { model.DocumentId }, IsInWork = true })
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
@@ -2281,8 +2259,7 @@ namespace BL.Database.Documents
 
                 if (doc == null) return null;
 
-                var par = CommonQueries.GetDocumentQuery(context)
-                    .Where(x => x.Id == model.ParentDocumentId)
+                var par = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { model.ParentDocumentId } })
                     .Select(x => new { x.Id, x.LinkId }).FirstOrDefault();
 
                 if (par == null) return null;
@@ -2420,8 +2397,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(context, null, false, true, true)
-                    .Where(x => x.Id == documentId)
+                var doc = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { documentId }, IsInWork = true })
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
@@ -2499,7 +2475,7 @@ namespace BL.Database.Documents
 
                 if (id != 0)
                 {
-                    doc.PaperEvents = dbContext.DocumentEventsSet.Where(x => x.ClientId == context.Client.Id)
+                    doc.PaperEvents = CommonQueries.GetDocumentEventQuery(context, null)
                         .Where(x => x.SendListId == id)
                         .Select(x => new InternalDocumentEvent
                         {
@@ -2691,13 +2667,8 @@ namespace BL.Database.Documents
                 if (delPaperEvents?.Any() ?? false)
                 {
                     var filterContains = PredicateBuilder.New<DocumentEvents>(false);
-                    filterContains = delPaperEvents.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.PaperId == value).Expand());
-
-                    dbContext.DocumentEventsSet.RemoveRange(
-                        dbContext.DocumentEventsSet.Where(x => x.ClientId == context.Client.Id)
-                                .Where(filterContains)
-                                .Where(x => x.SendListId == sendList.Id));
+                    filterContains = delPaperEvents.Aggregate(filterContains, (current, value) => current.Or(e => e.PaperId == value).Expand());
+                    dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.ClientId == context.Client.Id).Where(filterContains).Where(x => x.SendListId == sendList.Id));
                     dbContext.SaveChanges();
                 }
                 if (addPaperEvents?.Any() ?? false)
@@ -2764,8 +2735,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(context, null, false, true, true)
-                    .Where(x => x.Id == documentId)
+                var doc = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { documentId }, IsInWork = true })
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
@@ -3046,8 +3016,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(context, null, false, true, true)
-                    .Where(x => x.Id == model.DocumentId)
+                var doc = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { model.DocumentId }, IsInWork = true })
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
@@ -3180,8 +3149,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(context, null, false, true, true)
-                    .Where(x => x.Id == model.DocumentId)
+                var doc = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { model.DocumentId }, IsInWork = true })
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
@@ -3596,8 +3564,7 @@ namespace BL.Database.Documents
                     filterContains = item.Events.Select(x => x.Id).ToList().Aggregate(filterContains,
                         (current, value) => current.Or(e => e.Id == value).Expand());
 
-                    dbContext.DocumentEventsSet
-                        .Where(x => x.ClientId == context.Client.Id)
+                    dbContext.DocumentEventsSet.Where(x => x.ClientId == context.Client.Id)
                         .Where(filterContains)
                         .ToList()
                         .ForEach(x =>

@@ -77,8 +77,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public IEnumerable<FrontDocument> GetDocuments(IContext context, FilterBase filter, UIPaging paging,
-            EnumGroupCountType? groupCountType = null)
+        public IEnumerable<FrontDocument> GetDocuments(IContext context, FilterBase filter, UIPaging paging, EnumGroupCountType? groupCountType = null)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
@@ -87,7 +86,7 @@ namespace BL.Database.Documents
 
                 #region main qry
 
-                var qry = CommonQueries.GetDocumentQuery(context, filter?.Document, true);
+                var qry = CommonQueries.GetDocumentQuery(context, filter?.Document, false);
 
                 if (filter?.File != null)
                 {
@@ -510,7 +509,7 @@ namespace BL.Database.Documents
                                 .Aggregate(filterLinkIdContains,
                                     (current, value) => current.Or(e => e.LinkId == value).Expand());
 
-                        var links = CommonQueries.GetDocumentQuery(context, null, null, true)
+                        var links = CommonQueries.GetDocumentQuery(context, null)
                             .Where(filterLinkIdContains)
                             .GroupBy(x => x.LinkId.Value)
                             .Select(x => new { LinkId = x.Key, Count = x.Count() })
@@ -587,10 +586,9 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = CommonQueries.GetDocumentQuery(context).Where(x => x.Id == documentId);
-
-                var accs =
-                    CommonQueries.GetDocumentAccessesQuery(context, null).Where(x => x.DocumentId == documentId)
+                var qry = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { documentId } }, false);
+                var accs = CommonQueries.GetDocumentAccessesQuery(context, null)
+                        .Where(x => x.DocumentId == documentId)
                         .Select(acc => new FrontDocumentAccess
                         {
                             Id = acc.Id,
@@ -747,8 +745,7 @@ namespace BL.Database.Documents
                 filterAccessPositionContains = context.CurrentPositionsAccessLevel.Aggregate(filterAccessPositionContains,
                     (current, value) => current.Or(e => (e.PositionId == value.Key && e.AccessLevelId >= value.Value)).Expand());
 
-                var items = CommonQueries.GetDocumentQuery(context)
-                        .Where(x => x.LinkId == linkId)
+                var items = CommonQueries.GetDocumentQuery(context, new FilterDocument { LinkId = new List<int> { linkId } })
                             .OrderBy(x => x.RegistrationDate ?? x.CreateDate)
                             .Select(y => new FrontDocument
                             {
@@ -910,9 +907,8 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = CommonQueries.GetDocumentQuery(context).Where(x => x.Id == documentId);
-
-                var doc = qry.Select(x => new InternalDocument
+                var doc = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { documentId } })
+                .Select(x => new InternalDocument
                 {
                     Id = x.Id,
                     ClientId = x.ClientId,
@@ -936,35 +932,29 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = CommonQueries.GetDocumentQuery(context).Where(x => x.Id == documentId);
-
-                var doc = qry.FirstOrDefault();
-                if (doc == null)
+                var res = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { documentId } })
+                    .Select(doc => new InternalDocument
+                    {
+                        Id = doc.Id,
+                        ClientId = doc.ClientId,
+                        EntityTypeId = doc.EntityTypeId,
+                        DocumentTypeName = doc.TemplateDocument.DocumentType.Name,
+                        ExecutorPositionName = doc.ExecutorPosition.Name,
+                        Addressee = doc.Addressee,
+                        Description = doc.Description,
+                        SenderAgentName = doc.SenderAgent.Name,
+                        SenderAgentPersonName = doc.SenderAgentPerson.Agent.Name,
+                    })
+                    .FirstOrDefault();
+                if (res == null)
                 {
                     throw new DocumentNotFoundOrUserHasNoAccess();
                 }
-                //var accs = CommonQueries.GetDocumentAccesses(context, dbContext).Where(x => x.DocumentId == doc.Id).ToList();
-
-                var res = new InternalDocument
-                {
-                    Id = doc.Id,
-                    ClientId = doc.ClientId,
-                    EntityTypeId = doc.EntityTypeId,
-                    DocumentTypeName = doc.TemplateDocument.DocumentType.Name,
-                    ExecutorPositionName = doc.ExecutorPosition.Name,
-                    Addressee = doc.Addressee,
-                    Description = doc.Description,
-                    SenderAgentName = doc.SenderAgent?.Name,
-                    SenderAgentPersonName = doc.SenderAgentPerson?.Agent.Name,
-                };
-
                 var docIds = new List<int> { res.Id };
 
                 var maxDateTime = DateTime.UtcNow.AddYears(50);
 
-                res.Waits =
-                    CommonQueries.GetDocumentWaitQuery(context,
-                        new FilterDocumentWait { DocumentId = new List<int> { res.Id } })
+                res.Waits = CommonQueries.GetDocumentWaitQuery(context, new FilterDocumentWait { DocumentId = new List<int> { res.Id } })
                         .Select(x => new InternalDocumentWait
                         {
                             Id = x.Id,
@@ -1240,8 +1230,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(context)
-                    .Where(x => x.Id == documentId)
+                var doc = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { documentId } })
                     .Select(x => new InternalDocument
                     {
                         ClientId = x.ClientId,
@@ -1254,14 +1243,11 @@ namespace BL.Database.Documents
                         SenderAgentId = x.SenderAgentId,
                         SenderAgentPersonId = x.SenderAgentPersonId,
                         Addressee = x.Addressee,
-
                     }).FirstOrDefault();
-
                 if (doc == null)
                 {
                     return null;
                 }
-
                 doc.AccessLevel =
                     (EnumAccessLevels)
                         CommonQueries.GetDocumentAccessesesQry(context, documentId).Max(x => x.AccessLevelId);
@@ -1420,8 +1406,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(context, null, true, true, true)
-                    .Where(x => x.Id == model.Id)
+                var doc = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { model.Id }, IsExecutorPosition = true, IsInWork = true })
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
@@ -1513,8 +1498,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(context, null, true, true, true)
-                    .Where(x => x.Id == documentId)
+                var doc = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { documentId }, IsExecutorPosition = true, IsInWork = true })
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
@@ -1553,8 +1537,7 @@ namespace BL.Database.Documents
                 dbContext.DocumentEventAccessGroupsSet.RemoveRange(
                     dbContext.DocumentEventAccessGroupsSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == id));
                 //TODO придумать с удалением для полнотекста
-                dbContext.DocumentEventsSet.RemoveRange(
-                    dbContext.DocumentEventsSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == id));
+                dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == id));
                 dbContext.SaveChanges();
 
                 dbContext.DocumentTagsSet.RemoveRange(
@@ -1595,8 +1578,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(context, null, false, true, true)
-                    .Where(x => x.Id == model.DocumentId)
+                var doc = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { model.DocumentId }, IsInWork = true })
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
@@ -1672,8 +1654,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(context, null, false, true, true)
-                    .Where(x => x.Id == model.DocumentId)
+                var doc = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { model.DocumentId }, IsInWork = true })
                     .Select(x => new
                     {
                         DocumentId = x.Id,
@@ -1796,9 +1777,8 @@ namespace BL.Database.Documents
                 }
                 else
                 {
-                    dbContext.DocumentEventsSet.RemoveRange(
-                        dbContext.DocumentEventsSet.Where(x => x.ClientId == context.Client.Id)
-                            .Where(x => x.DocumentId == document.Id && x.EventTypeId == (int)EnumEventTypes.Registered));
+                    dbContext.DocumentEventsSet.RemoveRange(dbContext.DocumentEventsSet.Where(x => x.ClientId == context.Client.Id)
+                                                                .Where(x => x.DocumentId == document.Id && x.EventTypeId == (int)EnumEventTypes.Registered));
                 }
 
                 dbContext.SaveChanges();
@@ -1844,8 +1824,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(context, null, true, true, true)
-                    .Where(x => x.Id == model.DocumentId)
+                var doc = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { model.DocumentId }, IsExecutorPosition = true, IsInWork = true })
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
@@ -1884,8 +1863,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(context, null, true, true, true)
-                    .Where(x => x.Id == model.DocumentId)
+                var doc = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { model.DocumentId }, IsExecutorPosition = true, IsInWork = true })
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
@@ -2069,8 +2047,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(context, null, true, true, true)
-                    .Where(x => x.Id == documentId)
+                var doc = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { documentId }, IsExecutorPosition = true, IsInWork = true })
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
@@ -2174,8 +2151,7 @@ namespace BL.Database.Documents
 
         #region DocumentAccesses
 
-        public IEnumerable<InternalDocumentAccess> CheckIsInWorkForControlsPrepare(IContext context,
-            FilterDocumentAccess filter)
+        public IEnumerable<InternalDocumentAccess> CheckIsInWorkForControlsPrepare(IContext context, FilterDocumentAccess filter)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
@@ -2191,8 +2167,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public IEnumerable<FrontDocumentAccess> GetDocumentAccesses(IContext context, FilterDocumentAccess filter,
-            UIPaging paging)
+        public IEnumerable<FrontDocumentAccess> GetDocumentAccesses(IContext context, FilterDocumentAccess filter, UIPaging paging)
         {
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())

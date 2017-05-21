@@ -31,6 +31,11 @@ namespace BL.Model.DocumentCore.Filters
         public List<int> NotContainsLinkId { get; set; }
 
         /// <summary>
+        /// Массив ИД процессов
+        /// </summary>
+        public List<int> LinkId { get; set; }
+
+        /// <summary>
         /// Отобрать по связанным документам
         /// Работает только если в DocumentId передан один ID
         /// </summary>
@@ -147,6 +152,10 @@ namespace BL.Model.DocumentCore.Filters
         /// В Моем управлении. true - выполнять поиск иначе ничего не делаеться
         /// </summary>
         public bool? IsInMyControl { get; set; }
+        /// <summary>
+        /// Признак того, что доступ исполнителя по документу. true - выполнять поиск иначе ничего не делаеться
+        /// </summary>
+        public bool? IsExecutorPosition { get; set; }
 
         /// <summary>
         /// В избраном

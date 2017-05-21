@@ -33,7 +33,7 @@ namespace BL.Database.Documents
 
                 if (filter?.Document != null)
                 {
-                    var documentIds = CommonQueries.GetDocumentQuery(context, filter.Document, true).Select(x => x.Id);
+                    var documentIds = CommonQueries.GetDocumentQuery(context, filter.Document).Select(x => x.Id);
                     qrys = qrys.Select(qry => { return qry.Where(x => documentIds.Contains(x.DocumentId)); }).ToList();
                 }
 
@@ -313,8 +313,7 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(ctx, null, null, true, true)
-                                    .Where(x => x.Id == documentId)
+                var doc = CommonQueries.GetDocumentQuery(ctx, new FilterDocument { DocumentId = new List<int> { documentId }, IsInWork = true })
                                     .Select(x => new InternalDocument
                                     {
                                         Id = x.Id,
@@ -359,8 +358,7 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(ctx, null, null, true, true)
-                    .Where(x => x.Id == documentId)
+                var doc = CommonQueries.GetDocumentQuery(ctx, new FilterDocument { DocumentId = new List<int> { documentId }, IsInWork = true })
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,

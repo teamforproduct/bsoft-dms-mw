@@ -192,7 +192,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                templateDocumentId = CommonQueries.GetDocumentQuery(context, null, false, true, true)
+                templateDocumentId = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { documentId }, IsInWork = true })
                     .Where(x => x.Id == documentId).Select(x => x.TemplateDocumentId) .FirstOrDefault();
                 var res = GetTemplateDocument(context, templateDocumentId);
                 transaction.Complete();

@@ -4239,13 +4239,10 @@ namespace BL.Database.Dictionaries
                     if (filter.DocumentIDs?.Count > 0)
                     {
                         var filterContains = PredicateBuilder.New<DBModel.Document.DocumentEvents>(false);
-                        filterContains = filter.DocumentIDs.Aggregate(filterContains,
-                            (current, value) => current.Or(e => e.DocumentId == value).Expand());
+                        filterContains = filter.DocumentIDs.Aggregate(filterContains, (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
-                        qry = qry.Where(x =>
-                                dbContext.DocumentEventsSet.Where(y => y.ClientId == ctx.Client.Id)
-                                    .Where(filterContains).Select(y => y.EventTypeId).Contains(x.Id)
-                                    );
+                        qry = qry.Where(x => CommonQueries.GetDocumentEventQuery(ctx, null)
+                                                .Where(filterContains).Select(y => y.EventTypeId).Contains(x.Id) );
                     }
                 }
                 var res = qry.Select(x => new FrontDictionaryEventType
@@ -4312,11 +4309,8 @@ namespace BL.Database.Dictionaries
                         var filterContains = PredicateBuilder.New<DBModel.Document.DocumentEvents>(false);
                         filterContains = filter.DocumentIDs.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.DocumentId == value).Expand());
-
-                        qry = qry.Where(x =>
-                                dbContext.DocumentEventsSet.Where(y => y.ClientId == ctx.Client.Id)
-                                    .Where(filterContains).Select(y => y.EventType.ImportanceEventTypeId).Contains(x.Id)
-                                    );
+                        qry = qry.Where(x => CommonQueries.GetDocumentEventQuery(ctx, null)
+                                                .Where(filterContains).Select(y => y.EventType.ImportanceEventTypeId).Contains(x.Id) );
                     }
                 }
 

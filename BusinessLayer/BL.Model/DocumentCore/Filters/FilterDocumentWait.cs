@@ -13,6 +13,14 @@ namespace BL.Model.DocumentCore.Filters
     public class FilterDocumentWait
     {
         /// <summary>
+        /// Массив ИД контролей
+        /// </summary>
+        public List<int> Id { get; set; }
+        /// <summary>
+        /// Массив ИД родительских контролей
+        /// </summary>
+        public List<int> ParentId { get; set; }
+        /// <summary>
         /// Массив ИД документов
         /// </summary>
         public List<int> DocumentId { get; set; }
