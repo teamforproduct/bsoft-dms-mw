@@ -8,7 +8,7 @@ namespace DMS_WebAPI.DBModel
     {
         public AdminServers()
         {
-            this.ClientUsers = new HashSet<AspNetUserClientServer>();
+            this.Clients = new HashSet<AspNetClientServers>();
         }
         /// <summary>
         /// ID 
@@ -58,10 +58,7 @@ namespace DMS_WebAPI.DBModel
 
 
         [ForeignKey("ServerId")]
-        public virtual ICollection<AspNetUserClientServer> ClientUsers { get; set; }
-
-        [ForeignKey("ServerId")]
-        public virtual ICollection<AspNetClientServers> ClientServers { get; set; }
+        public virtual ICollection<AspNetClientServers> Clients { get; set; }
 
     }
 }

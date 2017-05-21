@@ -433,6 +433,10 @@
     <Compile Include="Migrations\201705202330588_UsersDelIsLockout2.Designer.cs">
       <DependentUpon>201705202330588_UsersDelIsLockout2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705210026511_UserClients.cs" />
+    <Compile Include="Migrations\201705210026511_UserClients.Designer.cs">
+      <DependentUpon>201705210026511_UserClients.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="DBModel\AspNetUsers.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
@@ -648,6 +652,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705202330588_UsersDelIsLockout2.resx">
       <DependentUpon>201705202330588_UsersDelIsLockout2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705210026511_UserClients.resx">
+      <DependentUpon>201705210026511_UserClients.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -16,11 +16,6 @@ namespace BL.Model.Context
         /// ФИО
         /// </summary>
         public string Name { get; set; }
-        /// <summary>
-        /// Код языка
-        /// </summary>
-        [Obsolete("!!!", true)]
-        public int LanguageId { get; set; }
 
         //public int ClientId { get; set; }
         //public string ClientCode { get; set; }

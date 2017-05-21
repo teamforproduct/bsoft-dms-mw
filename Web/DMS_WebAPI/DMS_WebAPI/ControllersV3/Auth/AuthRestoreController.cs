@@ -28,6 +28,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
 
         /// <summary>
         /// Подтверждает адрес пользователя
+        /// Это апи отрабатывает по ссылке из письма
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>

@@ -1,8 +1,8 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DMS_WebAPI.DBModel
 {
+    [Table("AspNetUserClients")]
     public class AspNetUserClientServer
     {
         public int Id { get; set; }
@@ -15,17 +15,9 @@ namespace DMS_WebAPI.DBModel
         [Index("IX_UserClientServer", 2, IsUnique = true)]
         public int ClientId { get; set; }
 
-        [Obsolete("!!!", true)]
-        [Index("IX_ServerId", 1)]
-        [Index("IX_UserClientServer", 3, IsUnique = true)]
-        public int ServerId { get; set; }
-
 
         [ForeignKey("UserId")]
         public AspNetUsers User { get; set; }
-
-        [ForeignKey("ServerId")]
-        public virtual AdminServers Server { get; set; }
 
         [ForeignKey("ClientId")]
         public virtual AspNetClients Client { get; set; }

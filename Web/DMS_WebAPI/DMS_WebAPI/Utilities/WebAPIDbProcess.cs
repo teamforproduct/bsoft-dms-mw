@@ -123,7 +123,7 @@ namespace DMS_WebAPI.Utilities
             {
                 if (!string.IsNullOrEmpty(filter.ClientCode))
                 {
-                    qry = qry.Where(x => x.ClientServers.AsQueryable().Any(y => y.Client.Code == filter.ClientCode));
+                    qry = qry.Where(x => x.Clients.AsQueryable().Any(y => y.Client.Code == filter.ClientCode));
                 }
 
                 if (filter.ClientIDs?.Count > 0)
@@ -132,7 +132,7 @@ namespace DMS_WebAPI.Utilities
                     filterContains = filter.ClientIDs.Aggregate(filterContains,
                         (current, value) => current.Or(e => e.ClientId == value).Expand());
 
-                    qry = qry.Where(x => x.ClientServers.AsQueryable().Any(filterContains));
+                    qry = qry.Where(x => x.Clients.AsQueryable().Any(filterContains));
                 }
 
                 if (filter.ServerIDs?.Count > 0)
