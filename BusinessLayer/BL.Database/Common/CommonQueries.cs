@@ -608,9 +608,9 @@ namespace BL.Database.Common
                                     .Select(y => y.RegJournalId).Contains(x.RegistrationJournalId.Value));
                 if (qryAcc != null)
                     qry = qry.Where(x => qryAcc.Select(a => a.DocumentId).Contains(x.Id));
-                qry = qry.Concat(qryRJA);
+                var qryAll = qry.Concat(qryRJA);
                 qry = dbContext.DocumentsSet    //Without security restrictions
-                    .Where(x => qry.Select(y => y.Id).Contains(x.Id)); //Without duplicates
+                    .Where(x => qryAll.Any(y => y.Id==x.Id)); //Without duplicates
             }
             else
                 qry = qry.Where(x => qryAcc.Select(a => a.DocumentId).Contains(x.Id));
