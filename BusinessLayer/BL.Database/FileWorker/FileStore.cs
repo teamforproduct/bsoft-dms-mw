@@ -147,18 +147,17 @@ namespace BL.Database.FileWorker
                     File.Delete(previewFile);
                 }
 
-                if (PdfGenerator.CreatePdf(localFilePath, pdfFileName))
-                {
-                    attFile.LastPdfAccess = DateTime.Now;
-                    attFile.PdfCreated = true;
-                }
+                PdfGenerator.CreatePdf(localFilePath, pdfFileName);
                 PdfGenerator.CreatePdfPreview(pdfFileName, previewFile);
                 attFile.PdfCreated = true;
+                attFile.PdfAcceptable = true;
                 attFile.LastPdfAccess = DateTime.Now;
                 return true;
             }
             catch (Exception ex)
             {
+                attFile.PdfCreated = false;
+                attFile.PdfAcceptable = false;
                 var log = DmsResolver.Current.Get<ILogger>();
                 log.Error(ctx, ex, "Cannot save user file", Environment.StackTrace);
                 throw new CannotSaveFile(ex);

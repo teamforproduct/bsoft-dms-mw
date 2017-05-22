@@ -412,6 +412,7 @@ namespace BL.Database.Common
                 ExecutorPositionExecutorTypeId = docFile.ExecutorPositionExecutorTypeId,
                 LastPdfAccessDate = docFile.LastPdfAccess,
                 IsPdfCreated = docFile.PdfCreated,
+                PdfAcceptable = docFile.PdfAcceptable
             };
 
             return res;
@@ -506,6 +507,7 @@ namespace BL.Database.Common
                 Extention = docFile.File.Extension,
                 FileType = docFile.File.FileType,
                 FileSize = docFile.File.FileSize??0,
+                PdfAcceptable = docFile.PdfAcceptable
             };
         }
 

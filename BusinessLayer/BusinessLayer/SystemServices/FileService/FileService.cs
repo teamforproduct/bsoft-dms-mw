@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.DocumentCore.FrontModel;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.SystemServices.FileService
 {

@@ -58,14 +58,14 @@ namespace BL.Database.DBModel.Document
         public int? ExecutorPositionExecutorTypeId { get; set; }
 
         public bool? IsPdfCreated { get; set; }
+
+        public bool? PdfAcceptable { get; set; }
         public DateTime? LastPdfAccessDate { get; set; }        
 
         public int LastChangeUserId { get; set; }
 
         [Index("IX_LastChangeDate",1)]
         public DateTime LastChangeDate { get; set; }
-
-
 
         [ForeignKey("DocumentId")]
         public virtual Documents Document { get; set; }

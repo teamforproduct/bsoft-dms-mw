@@ -1,5 +1,4 @@
 ﻿using BL.Database.DBModel.Dictionary;
-using BL.Model.Enums;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -30,6 +29,7 @@ namespace BL.Database.DBModel.Template
         [MaxLength(2000)]
         public string Description { get; set; }
         public bool? IsPdfCreated { get; set; }
+        public bool? PdfAcceptable { get; set; }
         public DateTime? LastPdfAccessDate { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }

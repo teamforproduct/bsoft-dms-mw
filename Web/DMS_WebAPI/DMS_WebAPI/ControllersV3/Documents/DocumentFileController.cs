@@ -60,8 +60,8 @@ namespace DMS_WebAPI.ControllersV3.Documents
                 items.ForEach(x =>
                 {
                     x.FileLink = fileService.GetFileUri(apipreffix, Modules.Documents, Features.Files, "File", x.Id);
-                    x.PdfFileLink = fileService.GetFileUri(apipreffix, Modules.Documents, Features.Files, "Pdf", x.Id);
-                    x.PreviewFileLink = fileService.GetFileUri(apipreffix, Modules.Documents, Features.Files, "Preview", x.Id);
+                    x.PdfFileLink = x.PdfAcceptable? fileService.GetFileUri(apipreffix, Modules.Documents, Features.Files, "Pdf", x.Id):"";
+                    x.PreviewFileLink = x.PdfAcceptable ? fileService.GetFileUri(apipreffix, Modules.Documents, Features.Files, "Preview", x.Id) : "";
                 });
 
                 var res = new JsonResult(items, this);

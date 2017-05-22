@@ -147,6 +147,7 @@ namespace BL.Database.Documents
                                     RegistrationNumberSuffix = y.file.Document.RegistrationNumberSuffix,
                                     RegistrationFullNumber = "#" + y.file.Document.Id,
                                     EventId = y.file.EventId,
+                                    PdfAcceptable = y.file.PdfAcceptable??false,
                                     File = new BaseFile
                                     {
                                         Extension = y.file.IsDeleted ? null : y.file.Extension,
@@ -154,18 +155,7 @@ namespace BL.Database.Documents
                                         FileSize = y.file.IsDeleted ? (long?)null : y.file.FileSize,
                                         Name = y.file.IsDeleted ? "##l@General:FileHasBeenDeleted@l##" : y.file.Name,
                                     },
-                                    //Event = new FrontDocumentEvent
-                                    //{
-                                    //    Id = file.Event.Id,
-                                    //    EventType = file.Event.EventTypeId,
-                                    //    EventTypeName = file.Event.EventType.Name,
-                                    //    Date = file.Event.Date,
-                                    //    CreateDate = file.Event.Date != file.Event.CreateDate ? (DateTime?)file.Event.CreateDate : null,
-                                    //    Task = file.Event.Task.Task,
-                                    //    Description = file.Event.Description,
-                                    //    AddDescription = file.Event.AddDescription,
-                                    //    OnWait = file.Event.OnWait.Select(y => new FrontDocumentWait { DueDate = y.DueDate, OffEventDate = (DateTime?)y.OffEvent.Date }).FirstOrDefault(),
-                                    //}
+
                                 });
 
                 var res = qryFE.ToList();
@@ -255,7 +245,8 @@ namespace BL.Database.Documents
                         ClientId = x.ClientId,
                         EntityTypeId = x.EntityTypeId,
                         PdfCreated = x.IsPdfCreated ?? false,
-                        LastPdfAccess = x.LastPdfAccessDate //??DateTime.MinValue
+                        PdfAcceptable = x.PdfAcceptable??false,
+                        LastPdfAccess = x.LastPdfAccessDate 
                     }).FirstOrDefault();
                 transaction.Complete();
                 return res;
@@ -471,6 +462,7 @@ namespace BL.Database.Documents
                     Version = x.Version,
                     IsDeleted = x.IsDeleted,
                     PdfCreated = x.IsPdfCreated.Value,
+                    PdfAcceptable = x.PdfAcceptable ?? false,
                     LastPdfAccess = x.LastPdfAccessDate.Value,
                     File = new BaseFile
                     {
@@ -492,6 +484,7 @@ namespace BL.Database.Documents
                 dbContext.SafeAttach(fl);
                 var entry = dbContext.Entry(fl);
                 entry.Property(x => x.IsPdfCreated).IsModified = true;
+                entry.Property(x => x.PdfAcceptable).IsModified = true;
                 entry.Property(x => x.LastPdfAccessDate).IsModified = true;
                 dbContext.SaveChanges();
                 transaction.Complete();

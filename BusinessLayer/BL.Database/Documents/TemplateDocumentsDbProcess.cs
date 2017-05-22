@@ -358,6 +358,7 @@ namespace BL.Database.Documents
                         Hash = x.Hash,
                         Description = x.Description,
                         PdfCreated = x.IsPdfCreated ?? false,
+                        PdfAcceptable = x.PdfAcceptable ?? false,
                         LastPdfAccess = x.LastPdfAccessDate,
                         File = new BaseFile
                         {
@@ -1350,6 +1351,7 @@ namespace BL.Database.Documents
                             OrderInDocument = x.fl.OrderNumber,
                             Description = x.fl.Description,
                             PdfCreated = x.fl.IsPdfCreated ?? false,
+                            PdfAcceptable = x.fl.PdfAcceptable ?? false,
                             LastPdfAccess = x.fl.LastPdfAccessDate,
                             File = new BaseFile
                             {
@@ -1414,12 +1416,8 @@ namespace BL.Database.Documents
                             Type = (EnumFileTypes)x.TypeId,
                             Description = x.Description,
                             PdfCreated = x.IsPdfCreated ?? false,
-                            LastPdfAccess = x.LastPdfAccessDate//??DateTime.MinValue,
-                            //Name = x.Name,
-                            //Extension = x.Extention,
-                            //FileType = x.FileType,
-                            //FileSize = x.FileSize,
-                            //Hash = x.Hash,
+                            PdfAcceptable = x.PdfAcceptable ?? false,
+                            LastPdfAccess = x.LastPdfAccessDate
                         }).FirstOrDefault();
                 transaction.Complete();
                 return file;
@@ -1456,6 +1454,7 @@ namespace BL.Database.Documents
                 var entry = dbContext.Entry(fl);
                 entry.Property(x => x.IsPdfCreated).IsModified = true;
                 entry.Property(x => x.LastPdfAccessDate).IsModified = true;
+                entry.Property(x => x.PdfAcceptable).IsModified = true;
 
                 dbContext.SaveChanges();
                 CommonQueries.AddFullTextCacheInfo(context, docFile.Id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.UpdateFull);

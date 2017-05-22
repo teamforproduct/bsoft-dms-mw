@@ -562,6 +562,8 @@ namespace BL.Logic.Common
                 Type = model.Type,
                 Description = model.Description,
                 File = file,
+                PdfAcceptable = false,
+                PdfCreated = false,
             };
             SetLastChange(context, res);
             return res;
@@ -579,7 +581,8 @@ namespace BL.Logic.Common
                 Hash = src.Hash,
                 Description = src.Description,
                 PdfCreated = src.PdfCreated,
-                LastPdfAccess = src.LastPdfAccess
+                LastPdfAccess = src.LastPdfAccess,
+                PdfAcceptable = src.PdfAcceptable
             };
             SetLastChange(context, res);
             return res;
@@ -604,6 +607,8 @@ namespace BL.Logic.Common
                 ExecutorPositionId = executorPositionExecutor.PositionId,
                 ExecutorPositionExecutorAgentId = executorPositionExecutor.ExecutorAgentId.Value,
                 ExecutorPositionExecutorTypeId = executorPositionExecutor.ExecutorTypeId,
+                PdfCreated = false,
+                PdfAcceptable = false
             };
             SetLastChange(context, res);
             return res;
@@ -629,6 +634,7 @@ namespace BL.Logic.Common
                 ExecutorPositionExecutorAgentId = src.ExecutorPositionExecutorAgentId,
                 ExecutorPositionExecutorTypeId = src.ExecutorPositionExecutorTypeId,
                 PdfCreated = src.PdfCreated,
+                PdfAcceptable = src.PdfAcceptable,
                 LastPdfAccess = src.LastPdfAccess
             };
             SetLastChange(context, res);

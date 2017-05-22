@@ -320,6 +320,10 @@
     <Compile Include="Migrations\201705180852282_SystemActionsCategoryId.Designer.cs">
       <DependentUpon>201705180852282_SystemActionsCategoryId.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705222139066_AddPdfAcceptable.cs" />
+    <Compile Include="Migrations\201705222139066_AddPdfAcceptable.Designer.cs">
+      <DependentUpon>201705222139066_AddPdfAcceptable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
@@ -422,6 +426,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705180852282_SystemActionsCategoryId.resx">
       <DependentUpon>201705180852282_SystemActionsCategoryId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705222139066_AddPdfAcceptable.resx">
+      <DependentUpon>201705222139066_AddPdfAcceptable.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
