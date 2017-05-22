@@ -82,39 +82,14 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
+                IQueryable<DBModel.Document.Documents> qry = null;
                 List<FrontDocument> docs = null;
-
-                #region main qry
-
-                var qry = CommonQueries.GetDocumentQuery(context, filter?.Document, false);
-
-                if (filter?.File != null)
-                {
-                    var files = CommonQueries.GetDocumentFileQuery(context, filter?.File);
-                    qry = qry.Where(x => files.Select(y => y.DocumentId).Contains(x.Id));
-                }
-
-                if (filter?.Event != null)
-                {
-                    var events = CommonQueries.GetDocumentEventQuery(context, filter?.Event);
-                    qry = qry.Where(x => events.Select(y => y.DocumentId).Contains(x.Id));
-                }
-
-                if (filter?.Wait != null)
-                {
-                    var waits = CommonQueries.GetDocumentWaitQuery(context, filter?.Wait);
-                    qry = qry.Where(x => waits.Select(y => y.DocumentId).Contains(x.Id));
-                }
-
-                #endregion main qry
 
                 #region Position filters for counters preparing
 
                 var filterAccessPositionsContains = PredicateBuilder.New<DocumentAccesses>(false);
-                filterAccessPositionsContains = context.CurrentPositionsAccessLevel.Aggregate(
-                    filterAccessPositionsContains,
-                    (current, value) =>
-                        current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand());
+                filterAccessPositionsContains = context.CurrentPositionsAccessLevel.Aggregate(filterAccessPositionsContains,
+                    (current, value) => current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand());
 
                 //var filterWaitPositionsContains = PredicateBuilder.New<DocumentWaits>();
                 //filterWaitPositionsContains = context.CurrentPositionsIdList.Aggregate(filterWaitPositionsContains,
@@ -124,7 +99,7 @@ namespace BL.Database.Documents
 
                 #endregion Position filters for counters preparing
 
-                #region Paging
+                #region QueryTypes
 
                 if (paging.Sort == EnumSort.IncomingIds && filter?.Document?.DocumentId?.Count() > 0)
                 {
@@ -256,9 +231,9 @@ namespace BL.Database.Documents
                             }
                         };
                     }
-                    else
-                    #endregion groupCount
 
+                    #endregion groupCount
+                    else
                     {
                         if ((paging.IsOnlyCounter ?? true) && !filter.FullTextSearchSearch.IsNotAll)
                         {
@@ -315,17 +290,41 @@ namespace BL.Database.Documents
                 }
                 else
                 {
-                    #region Others
+                    #region Main branch
+
+                    #region main qry
+
+                    qry = CommonQueries.GetDocumentQuery(context, filter?.Document, false);
+
+                    if (filter?.File != null)
+                    {
+                        var files = CommonQueries.GetDocumentFileQuery(context, filter?.File);
+                        qry = qry.Where(x => files.Select(y => y.DocumentId).Contains(x.Id));
+                    }
+
+                    if (filter?.Event != null)
+                    {
+                        var events = CommonQueries.GetDocumentEventQuery(context, filter?.Event);
+                        qry = qry.Where(x => events.Select(y => y.DocumentId).Contains(x.Id));
+                    }
+
+                    if (filter?.Wait != null)
+                    {
+                        var waits = CommonQueries.GetDocumentWaitQuery(context, filter?.Wait);
+                        qry = qry.Where(x => waits.Select(y => y.DocumentId).Contains(x.Id));
+                    }
+
+                    #endregion main qry
 
                     #region groupCount
 
                     if (groupCountType == EnumGroupCountType.Tags)
                     {
-                        var qryT = qry;
-                        if (filter?.Document?.TagId?.Count > 1)
-                        {
-                            qryT = qryT.Where(x => x.Tags.Count == filter.Document.TagId.Count);
-                        }
+                        //var qryT = qry;
+                        //if (filter?.Document?.TagId?.Count > 1)
+                        //{
+                        //    qryT = qryT.Where(x => x.Tags.Count == filter.Document.TagId.Count);
+                        //}
                         var qryTagCounters = dbContext.DictionaryTagsSet.Select(x => new FrontDocumentTag
                         {
                             TagId = x.Id,
@@ -334,7 +333,7 @@ namespace BL.Database.Documents
                             Color = x.Color,
                             Name = x.Name,
                             IsSystem = !x.PositionId.HasValue,
-                            DocCount = x.Documents.Count(y => qryT.Select(z => z.Id).Contains(y.DocumentId))
+                            DocCount = x.Documents.Count(y => qry.Select(z => z.Id).Contains(y.DocumentId))
                         }).Where(x => x.DocCount > 0);
                         var tagCounters = qryTagCounters.OrderBy(x => x.Name).ToList();
                         docs = new List<FrontDocument> { new FrontDocument { DocumentTags = tagCounters } };
@@ -357,9 +356,11 @@ namespace BL.Database.Documents
                         var positionCounters = qryPositionCounters.OrderBy(x => x.ExecutorAgentName).ToList();
                         docs = new List<FrontDocument> { new FrontDocument { DocumentWorkGroup = positionCounters } };
                     }
-                    else
+
                     #endregion groupCount
 
+                    #region Paging
+                    else
                     {
                         if (paging.IsOnlyCounter ?? true)
                         {
@@ -411,21 +412,19 @@ namespace BL.Database.Documents
                             }
                         }
                     }
+                    #endregion Paging
 
-                    #endregion Others
+                    #endregion Main branch
                 }
 
-                #endregion Paging
+                #endregion QueryTypes
 
                 if (docs == null)
                 {
-
-                    if ((paging?.IsAll ?? true) &&
-                        (filter?.Document == null || ((filter.Document.DocumentId?.Count ?? 0) == 0)))
+                    if ((paging?.IsAll ?? true) && (filter?.Document == null || ((filter.Document.DocumentId?.Count ?? 0) == 0)))
                     {
                         throw new WrongAPIParameters();
                     }
-
                     if (!string.IsNullOrEmpty(filter?.FullTextSearchSearch?.FullTextSearchString))
                         FileLogger.AppendTextToFile(
                             $"{DateTime.Now} '{filter?.FullTextSearchSearch?.FullTextSearchString}' *************** start fetch from db",

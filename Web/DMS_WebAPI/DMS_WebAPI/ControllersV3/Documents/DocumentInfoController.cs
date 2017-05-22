@@ -82,7 +82,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             {
                 var docProc = DmsResolver.Current.Get<IDocumentService>();
                 var items =
-                    docProc.GetDocuments(context, model ?? new FilterBase(), new UIPaging {IsOnlyCounter = true},
+                    docProc.GetDocuments(context, model ?? new FilterBase(), new UIPaging {IsOnlyCounter = false},
                         EnumGroupCountType.Tags).ToList().FirstOrDefault()?.DocumentTags;
                 ;
                 var res = new JsonResult(items, this);
@@ -105,7 +105,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             {
                 var docProc = DmsResolver.Current.Get<IDocumentService>();
                 var items =
-                    docProc.GetDocuments(context, model ?? new FilterBase(), new UIPaging {IsOnlyCounter = true},
+                    docProc.GetDocuments(context, model ?? new FilterBase(), new UIPaging {IsOnlyCounter = false },
                         EnumGroupCountType.Positions).ToList().FirstOrDefault()?.DocumentWorkGroup;
                 var res = new JsonResult(items, this);
                 return res;

@@ -202,28 +202,15 @@ namespace BL.Database.Common
         public static IQueryable<DBModel.Document.Documents> GetDocumentQuery(IContext context, FilterDocument filter, bool isDontVerifyAccess = false)
         {
             var dbContext = context.DbContext as DmsContext;
-            IQueryable<DocumentAccesses> acc = null;
 
-            #region Filter access
-            if (!isDontVerifyAccess || filter.IsInWork.HasValue || filter.IsFavourite.HasValue || filter.IsExecutorPosition.HasValue || filter.AccessLevelId?.Count() > 0)
-            {
-                acc = GetDocumentAccessesQuery(context, new FilterDocumentAccess
-                {
-                    IsInWork = filter?.IsInWork,
-                    IsFavourite = filter?.IsFavourite,
-                    AccessLevelId = filter?.AccessLevelId,
-                    AccessPositionId = filter?.AccessPositionId,
-                    IsExecutorPosition = filter?.IsExecutorPosition,
-                }, isDontVerifyAccess);
-            }
-            #endregion Filter access
             var qry = dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id); //Without security restrictions
 
+            #region Filter
             if (filter == null || !filter.IsIgnoreRegistered)
             {
                 qry = qry.Where(x => x.IsRegistered.HasValue);
             }
-            #region Filter
+
             if (filter != null)
             {
                 #region Base
@@ -593,6 +580,22 @@ namespace BL.Database.Common
             }
             #endregion Filter
 
+            IQueryable<DocumentAccesses> qryAcc = null;
+
+            #region Filter access
+            if (!isDontVerifyAccess || filter.IsInWork.HasValue || filter.IsFavourite.HasValue || filter.IsExecutorPosition.HasValue || filter.AccessLevelId?.Count() > 0)
+            {
+                qryAcc = GetDocumentAccessesQuery(context, new FilterDocumentAccess
+                {
+                    IsInWork = filter?.IsInWork,
+                    IsFavourite = filter?.IsFavourite,
+                    AccessLevelId = filter?.AccessLevelId,
+                    AccessPositionId = filter?.AccessPositionId,
+                    IsExecutorPosition = filter?.IsExecutorPosition,
+                }, isDontVerifyAccess);
+            }
+            #endregion Filter access
+
             var filterPositionsIdList = PredicateBuilder.New<AdminRegistrationJournalPositions>(false);
             filterPositionsIdList = context.CurrentPositionsIdList.Aggregate(filterPositionsIdList, (current, value) => current.Or(e => e.PositionId == value).Expand());
             if (dbContext.AdminRegistrationJournalPositionsSet
@@ -603,14 +606,12 @@ namespace BL.Database.Common
                                 && dbContext.AdminRegistrationJournalPositionsSet
                                     .Where(filterPositionsIdList).Where(y => y.RegJournalAccessTypeId == (int)EnumRegistrationJournalAccessTypes.View)
                                     .Select(y => y.RegJournalId).Contains(x.RegistrationJournalId.Value));
-                if (acc != null)
-                    qry = qry.Where(x => acc.Select(a => a.DocumentId).Contains(x.Id));
-                var qryCont = qry.Concat(qryRJA);
-                qry = dbContext.DocumentsSet    //Without security restrictions
-                    .Where(x => qryCont.Select(y => y.Id).Contains(x.Id));
+                if (qryAcc != null)
+                    qry = qry.Where(x => qryAcc.Select(a => a.DocumentId).Contains(x.Id));
+                qry = qry.Concat(qryRJA); 
             }
             else
-                qry = qry.Where(x => acc.Select(a => a.DocumentId).Contains(x.Id));
+                qry = qry.Where(x => qryAcc.Select(a => a.DocumentId).Contains(x.Id));
 
             return qry;
         }
@@ -918,9 +919,9 @@ namespace BL.Database.Common
 
         #region Files
 
-        public static IQueryable<DocumentFiles> GetDocumentFileQuery(IContext context, FilterDocumentFile filter, bool isVerifyAccessLevel = true)
+        public static IQueryable<DocumentFiles> GetDocumentFileQuery(IContext context, FilterDocumentFile filter, bool isDontVerifyAccess = false)
         {
-            var qrys = GetDocumentFileQueries(context, filter, isVerifyAccessLevel);
+            var qrys = GetDocumentFileQueries(context, filter, isDontVerifyAccess);
             var res = qrys.First();
             foreach (var qry in qrys.Skip(1).ToList())
             {
@@ -928,20 +929,18 @@ namespace BL.Database.Common
             }
             return res;
         }
-        public static List<IQueryable<DocumentFiles>> GetDocumentFileQueries(IContext context, FilterDocumentFile filter, bool isVerifyAccessLevel = true)
+        public static List<IQueryable<DocumentFiles>> GetDocumentFileQueries(IContext context, FilterDocumentFile filter, bool isDontVerifyAccess = false)
         {
             var dbContext = context.DbContext as DmsContext;
             var qry = dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id).AsQueryable();
 
-            if (!context.IsAdmin)
+            if (!isDontVerifyAccess && !context.IsAdmin)
             {
                 var filterContains = PredicateBuilder.New<DocumentAccesses>(false);
-                filterContains = isVerifyAccessLevel
-                    ? context.CurrentPositionsAccessLevel.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand())
-                    : context.CurrentPositionsIdList.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value).Expand());
+                filterContains = context.CurrentPositionsAccessLevel.Aggregate(filterContains, (current, value) => current.Or(e => e.PositionId == value.Key && e.AccessLevelId >= value.Value).Expand());
                 qry = qry.Where(x => x.Document.Accesses.AsQueryable().Any(filterContains));
             }
-
+            #region Filter
             if (filter != null)
             {
                 if (filter.FileId?.Count > 0)
@@ -1050,6 +1049,7 @@ namespace BL.Database.Common
                     qry = qry.Where(filterContains);
                 }
             }
+            #endregion Filter
             var res = new List<IQueryable<DocumentFiles>>();
 
             if (!context.IsAdmin)
