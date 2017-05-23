@@ -19,13 +19,12 @@ namespace BL.Logic.SystemServices.TaskManagerService
             _logger = logger;
         }
 
-        public void AddTask(DatabaseModelForAdminContext dbModel, int periodInMinutes, Action<IContext, object> action, object param = null)
+        public void AddTask(int periodInMinutes, Action<IContext, object> action, DatabaseModelForAdminContext dbModel = null, object param = null)
         {
-            var ctx = new AdminContext(dbModel);
-            AddTask(dbModel, periodInMinutes, ctx, action, param);
+            AddTask(periodInMinutes, action, dbModel, dbModel == null ? null:new AdminContext(dbModel), param);
         }
 
-        public void AddTask(DatabaseModelForAdminContext dbModel, int periodInMinutes, IContext ctx, Action<IContext, object> action, object param = null)
+        public void AddTask(int periodInMinutes, Action<IContext, object> action, DatabaseModelForAdminContext dbModel, IContext ctx, object param = null)
         {
             lock (_lockObject)
             {
@@ -47,11 +46,11 @@ namespace BL.Logic.SystemServices.TaskManagerService
             }
         }
 
-        public void AddTask(List<DatabaseModelForAdminContext> dbModel, int periodInMinutes, Action<IContext, object> action, object param = null)
+        public void AddTask(int periodInMinutes, Action<IContext, object> action, List<DatabaseModelForAdminContext> dbModel, object param = null)
         {
             foreach (var md in dbModel)
             {
-                AddTask(md, periodInMinutes, new AdminContext(md), action, param);
+                AddTask(periodInMinutes, action, md, new AdminContext(md), param);
             }
         }
 

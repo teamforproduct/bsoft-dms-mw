@@ -12,6 +12,7 @@ using BL.Logic.Common;
 using BL.Logic.DocumentCore;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.SystemServices.AutoPlan;
+using BL.Logic.SystemServices.FullTextSearch;
 using BL.Logic.SystemServices.MailWorker;
 using BL.Logic.SystemServices.QueueWorker;
 using BL.Model.Context;
@@ -42,7 +43,7 @@ namespace BL.Logic.SystemServices.TaskManagerService
                 var tmrInterval = _settingValues.GetAutoplanTimeoutMinute(ctx);
                 ((DmsContext) ctx.DbContext).Dispose();
                 ctx.DbContext = null;
-                _taskManager.AddTask(db, tmrInterval, ctx, (context, param) =>
+                _taskManager.AddTask(tmrInterval, (context, param) =>
                 {
                     if (context == null) return;
                     var admCtx = new AdminContext(context);
@@ -67,7 +68,7 @@ namespace BL.Logic.SystemServices.TaskManagerService
                     });
 
                     workerSrv.AddNewTask(admCtx, wrkUnit);
-                });
+                }, db, ctx);
             }
         }
 
@@ -81,14 +82,14 @@ namespace BL.Logic.SystemServices.TaskManagerService
                 var mailParam = mailSrv.GetMailServerParameters(MailServers.Noreply,CommonSystemUtilities.GetServerKey(ctx));
                 ((DmsContext)ctx.DbContext).Dispose();
                 ctx.DbContext = null;
-                _taskManager.AddTask(db, tmrInterval, ctx, (context, param) =>
+                _taskManager.AddTask(tmrInterval, (context, param) =>
                 {
                     context.DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", context.CurrentDB));
                     var mSrv = DmsResolver.Current.Get<IMailSenderWorkerService>();
                     mSrv.CheckForNewMessages(context, (InternalSendMailServerParameters)param);
                     ((DmsContext)context.DbContext).Dispose();
                     context.DbContext = null;
-                }, mailParam);
+                }, db, ctx, mailParam);
             }
         }
 
@@ -101,7 +102,7 @@ namespace BL.Logic.SystemServices.TaskManagerService
                 ((DmsContext)ctx.DbContext).Dispose();
                 ctx.DbContext = null;
 
-                _taskManager.AddTask(db, tmrInterval, ctx, (context, param) =>
+                _taskManager.AddTask(tmrInterval, (context, param) =>
                 {
                     if (context == null) return;
 
@@ -165,8 +166,32 @@ namespace BL.Logic.SystemServices.TaskManagerService
                     }
                     ((DmsContext) context.DbContext).Dispose();
                     context.DbContext = null;
-                });
+                }, db, ctx);
             }
+        }
+
+        public void InitWorkersForClient(DatabaseModelForAdminContext dbModel)
+        {
+            var dbs = new List<DatabaseModelForAdminContext> { dbModel };
+            InitializeAutoPlanTask(dbs);
+            InitializeClearTrashTask(dbs);
+            InitializeMailWorkerTask(dbs);
+
+            // add full text worker for new client. 
+            var ftSrv = DmsResolver.Current.Get<IFullTextSearchService>();
+            ftSrv.AddNewClient(new AdminContext(dbModel));
+
+            var queueSrv = DmsResolver.Current.Get<IQueueWorkerService>();
+            queueSrv.AddNewClient(new AdminContext(dbModel));
+        }
+
+        public void RemoveWorkersForClient(int clientId)
+        {
+            _taskManager.RemoveTaskForClient(clientId);
+            var ftSrv = DmsResolver.Current.Get<IFullTextSearchService>();
+            ftSrv.RemoveClient(clientId);
+            var queueSrv = DmsResolver.Current.Get<IQueueWorkerService>();
+            queueSrv.RemoveWorkersForClient(clientId);
         }
     }
 }

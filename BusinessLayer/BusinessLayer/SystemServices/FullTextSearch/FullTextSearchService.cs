@@ -15,6 +15,9 @@ using BL.Logic.AdminCore.Interfaces;
 using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Extensions;
+using BL.Database.DatabaseContext;
+using Ninject;
+using Ninject.Parameters;
 
 namespace BL.Logic.SystemServices.FullTextSearch
 {
@@ -280,6 +283,57 @@ namespace BL.Logic.SystemServices.FullTextSearch
             FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{text}' JoinWords: {res.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
             return res;
         }
+
+        public void AddNewClient(AdminContext ctx)
+        {
+            try
+            {
+                var ftsSetting = new FullTextSettings
+                {
+                    TimeToUpdate = SettingValues.GetFulltextRefreshTimeout(),
+                    DatabaseKey = CommonSystemUtilities.GetServerKey(ctx),
+                    StorePath = SettingValues.GetFulltextStorePath(),
+                    IsFullTextInitialized = SettingValues.GetFulltextWasInitialized(ctx) // that is a question should we immidiatelly initialize FT or not.. False by default
+                };
+                var worker = new FullTextIndexWorker(ftsSetting.DatabaseKey, ftsSetting.StorePath);
+                _workers.Add(worker);
+                // start timer only once. Do not do it regulary in case we don't know how much time sending of email take. So we can continue sending only when previous iteration was comlete
+                var tmr = new Timer(OnSinchronize, ftsSetting, ftsSetting.TimeToUpdate * 60000, Timeout.Infinite);
+                _timers.Add(ftsSetting, tmr);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ctx, ex, "Could not initialize Full text service for new client");
+            }
+        }
+
+        public void RemoveClient(int clientId)
+        {
+            var toRemove = _timers.Where(x => x.Key.DatabaseKey.EndsWith($"/{clientId}")).Select(x=>x.Key).ToList();
+            foreach (var sett in toRemove)
+            {
+                var tmr = GetTimer(sett);
+
+                while (_stopTimersList.Contains(tmr))
+                {
+                    Thread.Sleep(10);
+                }
+
+                var ctx = GetAdminContext(sett.DatabaseKey);
+
+                if (ctx == null) return;
+                ServerContext.Remove(sett.DatabaseKey);
+                tmr.Change(Timeout.Infinite, Timeout.Infinite);
+                tmr.Dispose();
+
+                var worker = _workers.FirstOrDefault(x => x.ServerKey == CommonSystemUtilities.GetServerKey(ctx));
+                if (worker == null) return;
+                _workers.Remove(worker);
+                worker.DeleteAllDocuments(clientId);
+                worker.Dispose();
+            }
+        }
+
         protected override void InitializeServers()
         {
             try
@@ -335,6 +389,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             worker.StartUpdate();
             try
             {
+                ctx.DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", ctx.CurrentDB));
                 var currCashId = _systemDb.GetCurrentMaxCasheId(ctx);
                 var cacheList = _systemDb.FullTextIndexToUpdate(ctx, currCashId);
 
@@ -344,14 +399,26 @@ namespace BL.Logic.SystemServices.FullTextSearch
                     {
                         if (_systemDb.ObjectToReindex().Contains(item.ObjectType))
                             if (item.OperationType == EnumOperationType.Delete)
-                                worker.DeleteItem(new FullTextIndexItem { ObjectId = item.ObjectId, ObjectType = item.ObjectType });
+                                worker.DeleteItem(new FullTextIndexItem
+                                {
+                                    ObjectId = item.ObjectId,
+                                    ObjectType = item.ObjectType
+                                });
                             else
                             {
-                                var items = _systemDb.FullTextIndexPrepareNew(ctx, item.ObjectType, (item.OperationType == EnumOperationType.AddFull || item.OperationType == EnumOperationType.UpdateFull), false, item.Id, item.Id);
+                                var items = _systemDb.FullTextIndexPrepareNew(ctx, item.ObjectType,
+                                    (item.OperationType == EnumOperationType.AddFull ||
+                                     item.OperationType == EnumOperationType.UpdateFull), false, item.Id, item.Id);
                                 if (items.Any(x => x.ParentObjectType == EnumObjects.Documents))
                                 {
-                                    items.Where(x => x.ParentObjectType == EnumObjects.Documents).Select(x => x.ParentObjectId).Distinct().ToList()
-                                        .ForEach(x => ReindexDocument(ctx, worker, EnumObjects.Documents, true, EnumOperationType.Update, x, x));
+                                    items.Where(x => x.ParentObjectType == EnumObjects.Documents)
+                                        .Select(x => x.ParentObjectId)
+                                        .Distinct()
+                                        .ToList()
+                                        .ForEach(
+                                            x =>
+                                                ReindexDocument(ctx, worker, EnumObjects.Documents, true,
+                                                    EnumOperationType.Update, x, x));
                                     items = items.Where(x => x.ParentObjectType != EnumObjects.Documents);
                                 }
                                 if (items.Any(x => x.ParentObjectType != EnumObjects.Documents))
@@ -405,6 +472,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
             {
                 //Logger.Information(ctx, "Finisch FullText sinchronization " + DateTime.Now);
                 worker.CommitChanges();
+                ((DmsContext)ctx.DbContext).Dispose();
+                ctx.DbContext = null;
             }
         }
         private void OnSinchronize(object state)
