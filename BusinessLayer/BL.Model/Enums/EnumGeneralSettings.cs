@@ -75,5 +75,8 @@
         DefaultAccountLockoutMinute,
         MaxFailedAccessAttemptsBeforeLockout,
 
+
+        GoogleReCaptchaURL,
+        GoogleReCaptchaSecret,
     }
 }
