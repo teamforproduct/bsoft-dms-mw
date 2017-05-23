@@ -1,4 +1,6 @@
-﻿namespace BL.Model.DocumentCore.InternalModel
+﻿using System.Collections.Generic;
+
+namespace BL.Model.DocumentCore.InternalModel
 {
     public class InternalActionRecord
     {
@@ -13,7 +15,14 @@
         public int? TaskId { get; set; }
         public int? LinkId { get; set; }
         public bool? IsHideInMainMenu { get; set; }
-        public string Description { get; set; }
+        /// <summary>
+        /// Наименование
+        /// </summary>
+        public string Name { get; set; }
+        /// <summary>
+        /// Детали
+        /// </summary>
+        public List<string> Details { get; set; }
 
     }
 }
