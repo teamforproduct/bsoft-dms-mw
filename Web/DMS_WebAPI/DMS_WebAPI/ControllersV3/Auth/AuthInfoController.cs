@@ -7,7 +7,6 @@ using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Model.Users;
 using DMS_WebAPI.DBModel;
-using DMS_WebAPI.Models;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using Microsoft.AspNet.Identity.Owin;
