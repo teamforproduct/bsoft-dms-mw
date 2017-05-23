@@ -370,16 +370,6 @@ namespace BL.Logic.SystemServices.FullTextSearch
             }
         }
 
-        protected override void InitializeServers()
-        {
-            try
-            {
-                Dispose();
-            }
-            catch
-            {
-                // ignored
-            }
 
         private Timer GetTimer(FullTextSettings key)
         {
