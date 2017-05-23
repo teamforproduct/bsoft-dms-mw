@@ -253,8 +253,7 @@ namespace BL.Database.Documents
             {
                 InternalAdditinalLinkedDocumentSendListsPrepare res = new InternalAdditinalLinkedDocumentSendListsPrepare();
                 res.SendTypeName = dbContext.DictionarySendTypesSet.Where(x => x.Id == (int)EnumSendTypes.SendForInformation).Select(x => x.Name).FirstOrDefault();
-                var linkId = dbContext.DocumentsSet.Where(y => y.Id == model.DocumentId)
-                    .Where(y => y.Accesses.Any(z => z.PositionId == model.CurrentPositionId && z.IsInWork))
+                var linkId = CommonQueries.GetDocumentQuery(ctx, new FilterDocument { DocumentId = new List<int> { model.DocumentId }, IsInWork = true })
                     .Select(y => y.LinkId).FirstOrDefault();
                 var qry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.Client.Id)
                     .Where(x => x.DocumentId != model.DocumentId && x.Document.LinkId == linkId);
@@ -268,22 +267,19 @@ namespace BL.Database.Documents
                     PositionId = x.PositionId
                 }
                 ).ToList();
-                var docs = dbContext.DocumentsSet.Where(y => y.LinkId == linkId && y.Id != model.DocumentId)
-                    .Where(x => x.Accesses.Any(y => y.PositionId == model.CurrentPositionId))
-                     .Select(y => new FrontDocument
-                     {
-                         Id = y.Id,
-                         DocumentDirectionName = y.TemplateDocument.DocumentDirection.Name,
-                         DocumentTypeName = y.TemplateDocument.DocumentType.Name,
-
-                         RegistrationNumber = y.RegistrationNumber,
-                         RegistrationNumberPrefix = y.RegistrationNumberPrefix,
-                         RegistrationNumberSuffix = y.RegistrationNumberSuffix,
-
-                         DocumentDate = y.RegistrationDate ?? y.CreateDate,
-                         IsRegistered = y.IsRegistered,
-                         Description = y.Description,
-                     }).ToList();
+                var docs = CommonQueries.GetDocumentQuery(ctx, new FilterDocument { LinkId = new List<int> { linkId.Value }, NotContainsDocumentId = new List<int> { model.DocumentId }, IsInWork = true })
+                    .Select(y => new FrontDocument
+                    {
+                        Id = y.Id,
+                        DocumentDirectionName = y.TemplateDocument.DocumentDirection.Name,
+                        DocumentTypeName = y.TemplateDocument.DocumentType.Name,
+                        RegistrationNumber = y.RegistrationNumber,
+                        RegistrationNumberPrefix = y.RegistrationNumberPrefix,
+                        RegistrationNumberSuffix = y.RegistrationNumberSuffix,
+                        DocumentDate = y.RegistrationDate ?? y.CreateDate,
+                        IsRegistered = y.IsRegistered,
+                        Description = y.Description,
+                    }).ToList();
                 docs.ForEach(x => CommonQueries.SetRegistrationFullNumber(x));
                 res.Documents = docs;
                 var filterPositionsContains = PredicateBuilder.New<DictionaryPositions>(false);

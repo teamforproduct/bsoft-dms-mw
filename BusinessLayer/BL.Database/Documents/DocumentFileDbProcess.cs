@@ -33,7 +33,7 @@ namespace BL.Database.Documents
 
                 if (filter?.Document != null)
                 {
-                    var documentIds = CommonQueries.GetDocumentQuery(context, filter.Document, true).Select(x => x.Id);
+                    var documentIds = CommonQueries.GetDocumentQuery(context, filter.Document).Select(x => x.Id);
                     qrys = qrys.Select(qry => { return qry.Where(x => documentIds.Contains(x.DocumentId)); }).ToList();
                 }
 
@@ -147,6 +147,7 @@ namespace BL.Database.Documents
                                     RegistrationNumberSuffix = y.file.Document.RegistrationNumberSuffix,
                                     RegistrationFullNumber = "#" + y.file.Document.Id,
                                     EventId = y.file.EventId,
+                                    PdfAcceptable = y.file.PdfAcceptable??false,
                                     File = new BaseFile
                                     {
                                         Extension = y.file.IsDeleted ? null : y.file.Extension,
@@ -154,18 +155,7 @@ namespace BL.Database.Documents
                                         FileSize = y.file.IsDeleted ? (long?)null : y.file.FileSize,
                                         Name = y.file.IsDeleted ? "##l@General:FileHasBeenDeleted@l##" : y.file.Name,
                                     },
-                                    //Event = new FrontDocumentEvent
-                                    //{
-                                    //    Id = file.Event.Id,
-                                    //    EventType = file.Event.EventTypeId,
-                                    //    EventTypeName = file.Event.EventType.Name,
-                                    //    Date = file.Event.Date,
-                                    //    CreateDate = file.Event.Date != file.Event.CreateDate ? (DateTime?)file.Event.CreateDate : null,
-                                    //    Task = file.Event.Task.Task,
-                                    //    Description = file.Event.Description,
-                                    //    AddDescription = file.Event.AddDescription,
-                                    //    OnWait = file.Event.OnWait.Select(y => new FrontDocumentWait { DueDate = y.DueDate, OffEventDate = (DateTime?)y.OffEvent.Date }).FirstOrDefault(),
-                                    //}
+
                                 });
 
                 var res = qryFE.ToList();
@@ -255,7 +245,8 @@ namespace BL.Database.Documents
                         ClientId = x.ClientId,
                         EntityTypeId = x.EntityTypeId,
                         PdfCreated = x.IsPdfCreated ?? false,
-                        LastPdfAccess = x.LastPdfAccessDate //??DateTime.MinValue
+                        PdfAcceptable = x.PdfAcceptable??false,
+                        LastPdfAccess = x.LastPdfAccessDate 
                     }).FirstOrDefault();
                 transaction.Complete();
                 return res;
@@ -313,8 +304,7 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(ctx, null, null, true, true)
-                                    .Where(x => x.Id == documentId)
+                var doc = CommonQueries.GetDocumentQuery(ctx, new FilterDocument { DocumentId = new List<int> { documentId }, IsInWork = true })
                                     .Select(x => new InternalDocument
                                     {
                                         Id = x.Id,
@@ -359,8 +349,7 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(ctx, null, null, true, true)
-                    .Where(x => x.Id == documentId)
+                var doc = CommonQueries.GetDocumentQuery(ctx, new FilterDocument { DocumentId = new List<int> { documentId }, IsInWork = true })
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
@@ -439,10 +428,10 @@ namespace BL.Database.Documents
                 entry.Property(x => x.IsMainVersion).IsModified = true;
                 //entry.Property(x => x.Date).IsModified = true;//we do not update that
                 dbContext.SaveChanges();
-                if (docFile.Event != null)
+                if (doc.Events?.Any() ?? false)
                 {
-                    var dbEvent = ModelConverter.GetDbDocumentEvent(docFile.Event);
-                    dbContext.DocumentEventsSet.Add(dbEvent);
+                    var dbEvents = ModelConverter.GetDbDocumentEvents(doc.Events);
+                    dbContext.DocumentEventsSet.AddRange(dbEvents);
                     dbContext.SaveChanges();
                 }
                 if (doc.Accesses?.Any() ?? false)
@@ -473,6 +462,7 @@ namespace BL.Database.Documents
                     Version = x.Version,
                     IsDeleted = x.IsDeleted,
                     PdfCreated = x.IsPdfCreated.Value,
+                    PdfAcceptable = x.PdfAcceptable ?? false,
                     LastPdfAccess = x.LastPdfAccessDate.Value,
                     File = new BaseFile
                     {
@@ -494,6 +484,7 @@ namespace BL.Database.Documents
                 dbContext.SafeAttach(fl);
                 var entry = dbContext.Entry(fl);
                 entry.Property(x => x.IsPdfCreated).IsModified = true;
+                entry.Property(x => x.PdfAcceptable).IsModified = true;
                 entry.Property(x => x.LastPdfAccessDate).IsModified = true;
                 dbContext.SaveChanges();
                 transaction.Complete();

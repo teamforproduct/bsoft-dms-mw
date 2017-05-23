@@ -6,7 +6,7 @@ namespace DMS_WebAPI.Models
     {
         public EmployeeCreationResult() { }
 
-        public EmployeeCreationResult(UserCreationResult user) : base ( user) { }
+        public EmployeeCreationResult(UserCreationResult user) : base ( user) { IsNew = user.IsNew; }
 
         public int EmployeeId { set; get; }
 

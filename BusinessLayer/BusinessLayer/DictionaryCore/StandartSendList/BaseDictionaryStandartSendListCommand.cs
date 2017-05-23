@@ -21,10 +21,26 @@ namespace BL.Logic.DictionaryCore
 
             Model.Name?.Trim();
 
+            // Тонкий момент, проверяю не является ли сотрудник локальным администратором.
+            // Если не локальный значит, надеюсь, что глобальный и разрешаю 
+            var employeeDepartments = _adminService.GetInternalEmployeeDepartments(_context, _context.Employee.Id);
+
+            if (employeeDepartments != null)
+            {
+                var position = _dictDb.GetInternalPositions(_context, new FilterDictionaryPosition { IDs = new List<int> { Model.PositionId } }).FirstOrDefault();
+
+                if (position != null)
+                {
+                    if (!employeeDepartments.Contains(position.DepartmentId)) throw new AccessIsDenied();
+                }
+
+            }
+
+
             var filter = new FilterDictionaryStandartSendList()
             {
                 NameExact = Model.Name,
-                PositionIDs = new List<int> { Model.PositionId ?? 0 },
+                PositionIDs = new List<int> { Model.PositionId },
             };
 
             if (TypeModelIs<ModifyStandartSendList>())

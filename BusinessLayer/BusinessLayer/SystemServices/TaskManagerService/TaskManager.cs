@@ -19,13 +19,12 @@ namespace BL.Logic.SystemServices.TaskManagerService
             _logger = logger;
         }
 
-        public void AddTask(DatabaseModelForAdminContext dbModel, int periodInMinutes, Action<IContext, object> action, object param = null)
+        public void AddTask(int periodInMinutes, Action<IContext, object> action, DatabaseModelForAdminContext dbModel = null, object param = null)
         {
-            var ctx = new AdminContext(dbModel);
-            AddTask(dbModel, periodInMinutes, ctx, action, param);
+            AddTask(periodInMinutes, action, dbModel, dbModel == null ? null:new AdminContext(dbModel), param);
         }
 
-        public void AddTask(DatabaseModelForAdminContext dbModel, int periodInMinutes, IContext ctx, Action<IContext, object> action, object param = null)
+        public void AddTask(int periodInMinutes, Action<IContext, object> action, DatabaseModelForAdminContext dbModel, IContext ctx, object param = null)
         {
             lock (_lockObject)
             {
@@ -47,11 +46,11 @@ namespace BL.Logic.SystemServices.TaskManagerService
             }
         }
 
-        public void AddTask(List<DatabaseModelForAdminContext> dbModel, int periodInMinutes, Action<IContext, object> action, object param = null)
+        public void AddTask(int periodInMinutes, Action<IContext, object> action, List<DatabaseModelForAdminContext> dbModel, object param = null)
         {
             foreach (var md in dbModel)
             {
-                AddTask(md, periodInMinutes, new AdminContext(md), action, param);
+                AddTask(periodInMinutes, action, md, new AdminContext(md), param);
             }
         }
 
@@ -59,11 +58,31 @@ namespace BL.Logic.SystemServices.TaskManagerService
         {
             lock (_lockObject)
             {
-                var sett = _taskSettingses.FirstOrDefault(x => x.DatabaseModel == dbModel);
-                if (sett == null) return;
-                _taskSettingses.Remove(sett);
-                sett.TaskTimer.Change(Timeout.Infinite, Timeout.Infinite);
-                sett.TaskTimer.Dispose();
+                var sett = _taskSettingses.Where(x => x.DatabaseModel == dbModel).ToList();
+                if (!sett.Any() ) return;
+                foreach (var s in sett)
+                {
+                    _taskSettingses.Remove(s);
+                    s.TaskTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                    s.TaskTimer.Dispose();
+                }
+                
+            }
+        }
+
+        public void RemoveTaskForClient(int clientId)
+        {
+            lock (_lockObject)
+            {
+                var sett = _taskSettingses.Where(x => x.DatabaseModel.ClientId == clientId).ToList();
+                if (!sett.Any()) return;
+                foreach (var s in sett)
+                {
+                    _taskSettingses.Remove(s);
+                    s.TaskTimer.Change(Timeout.Infinite, Timeout.Infinite);
+                    s.TaskTimer.Dispose();
+                }
+
             }
         }
 

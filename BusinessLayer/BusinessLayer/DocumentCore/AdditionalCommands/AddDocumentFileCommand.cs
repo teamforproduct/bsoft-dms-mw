@@ -57,7 +57,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _document = _operationDb.AddDocumentFilePrepare(_context, Model.Select(x => x.DocumentId).FirstOrDefault());
             if (_document == null)
             {
-                throw new UserHasNoAccessToDocument();
+                throw new EmployeeHasNoAccessToDocument();
             }
             Model.ForEach(m =>
             {

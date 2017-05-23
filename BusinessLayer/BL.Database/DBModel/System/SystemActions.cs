@@ -9,11 +9,6 @@ namespace BL.Database.DBModel.System
 
     public partial class SystemActions
     {
-        public SystemActions()
-        {
-            this.GarantableActions = new HashSet<SystemActions>();
-        }
-
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
@@ -31,14 +26,12 @@ namespace BL.Database.DBModel.System
 
         [MaxLength(2000)]
         public string Category { get; set; }
-
+        public int? CategoryId { get; set; }
 
         [ForeignKey("PermissionId")]
         public virtual SystemPermissions Permission { get; set; }
 
         [ForeignKey("ObjectId")]
         public virtual SystemObjects Object { get; set; }
-
-        public virtual ICollection<SystemActions> GarantableActions { get; set; }
     }
 }

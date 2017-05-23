@@ -286,5 +286,63 @@ namespace BL.Logic.Settings
         public string GetAuthAddress() => GetMainHostProtocol() + "://" + GetAuthDomain() + "." + GetMainHost();
 
         public string GetClientAddress(string clientCode) => GetMainHostProtocol() + "://" + clientCode + "." + GetMainHost();
+
+        public int GetPasswordRequiredLength()
+        {
+            var val = genSett.GetSetting<int>(EnumGeneralSettings.PasswordRequiredLength);
+            return val;
+        }
+
+        public bool GetPasswordRequireNonLetterOrDigit()
+        {
+            return genSett.GetSetting<bool>(EnumGeneralSettings.PasswordRequireNonLetterOrDigit);
+        }
+
+        public bool GetPasswordRequireDigit()
+        {
+            return genSett.GetSetting<bool>(EnumGeneralSettings.PasswordRequireDigit);
+        }
+
+        public bool GetPasswordRequireLowercase()
+        {
+            return genSett.GetSetting<bool>(EnumGeneralSettings.PasswordRequireLowercase);
+        }
+
+        public bool GetPasswordRequireUppercase()
+        {
+            return genSett.GetSetting<bool>(EnumGeneralSettings.PasswordRequireUppercase);
+        }
+
+
+
+        public bool GetUserLockoutEnabledByDefault()
+        {
+            return genSett.GetSetting<bool>(EnumGeneralSettings.UserLockoutEnabledByDefault);
+        }
+
+        public int GetDefaultAccountLockoutMinute()
+        {
+            return genSett.GetSetting<int>(EnumGeneralSettings.DefaultAccountLockoutMinute);
+        }
+
+        public int GetMaxFailedAccessAttemptsBeforeLockout()
+        {
+            return genSett.GetSetting<int>(EnumGeneralSettings.MaxFailedAccessAttemptsBeforeLockout);
+        }
+
+        public string GetGoogleReCaptchaURL()
+        {
+            var val = genSett.GetSetting<string>(EnumGeneralSettings.GoogleReCaptchaURL);
+            if (string.IsNullOrEmpty(val)) throw new SettingValueIsNotSet(EnumGeneralSettings.GoogleReCaptchaURL.ToString());
+            return val;
+        }
+
+        public string GetGoogleReCaptchaSecret()
+        {
+            var val = genSett.GetSetting<string>(EnumGeneralSettings.GoogleReCaptchaSecret);
+            if (string.IsNullOrEmpty(val)) throw new SettingValueIsNotSet(EnumGeneralSettings.GoogleReCaptchaSecret.ToString());
+            return val;
+        }
+
     }
 }

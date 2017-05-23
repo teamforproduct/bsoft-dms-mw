@@ -38,10 +38,8 @@ namespace BL.Logic.DocumentCore.Commands
         {
             if ((_document.Accesses?.Count() ?? 0) != 0 && !_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork))
                 return false;
-            if (_document.AccessesCount > 1)
-                return true;
-            else
-                return false;
+            return true;
+//            if (_document.AccessesCount > 1)                return true;            else                return false;
         }
 
         public override bool CanExecute()
@@ -70,8 +68,11 @@ namespace BL.Logic.DocumentCore.Commands
             using (var transaction = Transactions.GetTransaction())
             {
                 _operationDb.AddDocumentEvents(_context, _document);
-                Model.AddDocumentFiles.ForEach(x => { x.DocumentId = _document.Id; x.EventId = _document.Events.Select(y => y.Id).First(); });
-                _documentProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, _context, Model.AddDocumentFiles);
+                if (Model.AddDocumentFiles?.Any() ?? false)
+                {
+                    Model.AddDocumentFiles.ForEach(x => { x.DocumentId = _document.Id; x.EventId = _document.Events.Select(y => y.Id).First(); });
+                    _documentProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, _context, Model.AddDocumentFiles);
+                }
                 transaction.Complete();
             }
             return null;

@@ -416,9 +416,6 @@ namespace BL.Logic.DocumentCore
                     cmd = DmsResolver.Current.Get<ModifyTemplateFileCommand>();
                     break;
 
-                case EnumDocumentActions.AddDocumentSendListItem:
-                    return null;
-                    break;
                 default:
                     throw new CommandNotDefinedError(act.ToString());
             }

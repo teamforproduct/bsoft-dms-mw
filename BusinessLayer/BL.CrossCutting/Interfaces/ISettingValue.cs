@@ -17,6 +17,18 @@ namespace BL.CrossCutting.Interfaces
 
         List<string> GetSystemHosts();
 
+
+        int GetPasswordRequiredLength();
+        bool GetPasswordRequireNonLetterOrDigit();
+        bool GetPasswordRequireDigit();
+        bool GetPasswordRequireLowercase();
+        bool GetPasswordRequireUppercase();
+
+
+        bool GetUserLockoutEnabledByDefault();
+        int GetDefaultAccountLockoutMinute();
+        int GetMaxFailedAccessAttemptsBeforeLockout();
+
         bool GetSubordinationsSendAllForExecution(IContext ctx);
         bool GetSubordinationsSendAllForInforming(IContext ctx);
 
@@ -89,6 +101,11 @@ namespace BL.CrossCutting.Interfaces
 
         int GetClearTrashDocumentsTimeoutMinuteForClear(IContext ctx);
 
+
+
+        string GetGoogleReCaptchaSecret();
+
+        string GetGoogleReCaptchaURL();
 
 
     }

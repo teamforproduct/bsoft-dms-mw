@@ -1,45 +1,44 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace DMS_WebAPI.Providers
 {
     public static class StreamBodyExtensions
     {
-        public static string GetClientCode(this Stream Body)
+        public static async Task<string> GetClientCodeAsync(this Stream Body)
         {
             // ВНИМАНИЕ!!! в SoapUI параметр называется так client_id
-            return GetFromBody(Body, "client_id"); ;
+            return await GetFromBodyAsync(Body, "client_id"); ;
         }
 
-        public static string GetFingerprint(this Stream Body)
+        public static async Task<string> GetFingerprintAsync(this Stream Body)
         {
-            return GetFromBody(Body, "fingerprint");
+            return await GetFromBodyAsync(Body, "fingerprint");
         }
 
-        public static string GetScope(this Stream Body)
+        public static async Task<string> GetScopeAsync(this Stream Body)
         {
-            return GetFromBody(Body, "scope");
+            return await GetFromBodyAsync(Body, "scope");
         }
-        public static string GetClientSecret(this Stream Body)
+        public static async Task<string> GetClientSecretAsync(this Stream Body)
         {
-            return GetFromBody(Body, "client_secret");
+            return await GetFromBodyAsync(Body, "client_secret");
         }
-        public static string GetControlAnswer(this Stream Body)
+        public static async Task<string> GetControlAnswerAsync(this Stream Body)
         {
-            var res = GetFromBody(Body, "answer");
+            var res = await GetFromBodyAsync(Body, "answer");
             if (!string.IsNullOrEmpty(res)) res = res.Trim();
             return res;
         }
 
-        public static bool GetRememberFingerprint(this Stream Body)
+        public static async Task<bool> GetRememberFingerprintAsync(this Stream Body)
         {
-            try { return bool.Parse(GetFromBody(Body, "remember_fingerprint")); } catch (Exception ex) { return false; }
+            try { return bool.Parse(await GetFromBodyAsync(Body, "remember_fingerprint")); } catch (Exception) { return false; }
         }
 
-        private static string GetFromBody(Stream Body, string key)
+        private static async Task<string> GetFromBodyAsync(Stream Body, string key)
         {
             var value = string.Empty;
 
@@ -48,32 +47,14 @@ namespace DMS_WebAPI.Providers
                 Body.Position = 0;
                 var body = new StreamReader(Body);
                 //var bodyStr = HttpUtility.UrlDecode(body.ReadToEnd());
-                var bodyStr = body.ReadToEnd();
+                var bodyStr = await body.ReadToEndAsync();
 
                 var dic = HttpUtility.ParseQueryString(bodyStr);
 
                 value = dic[key] ?? string.Empty;
 
             }
-            catch (Exception ex) { }
-
-            return value;
-        }
-
-
-        public static string GetString(this Stream Body)
-        {
-            var value = string.Empty;
-
-            try
-            {
-                Body.Position = 0;
-                var body = new StreamReader(Body);
-                //var bodyStr = HttpUtility.UrlDecode(body.ReadToEnd());
-                value = body.ReadToEnd();
-
-            }
-            catch (Exception ex) { }
+            catch (Exception) { }
 
             return value;
         }

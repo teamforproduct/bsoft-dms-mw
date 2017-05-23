@@ -282,8 +282,7 @@ namespace BL.Logic.DocumentCore
             else
                 adminCtx = new AdminContext(ctx);
             var list = _documentDb.CheckIsInWorkForControlsPrepare(ctx, filter).Where(x => x.PositionId.HasValue).ToList();
-            list.ForEach(x =>
-            ExecuteAction(EnumDocumentActions.StartWork, adminCtx, new ChangeWorkStatus { CurrentPositionId = x.PositionId.Value, DocumentId = x.DocumentId }));
+            list.ForEach(x => ExecuteAction(EnumDocumentActions.StartWork, adminCtx, new ChangeWorkStatus { CurrentPositionId = x.PositionId.Value, DocumentId = x.DocumentId }));
         }
 
         #endregion DocumentAccesses 

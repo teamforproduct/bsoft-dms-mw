@@ -76,7 +76,7 @@ namespace BL.Logic.DocumentCore.Commands
                     TargetPosition = newEvent.Accesses.Where(x => x.AccessType != EnumEventAccessTypes.Source && x.PositionId.HasValue).Select(x => x.PositionId.Value).ToList(),
                     SourcePositions = CommonDocumentUtilities.GetSourcePositionsForSubordinationVeification(_context, Model, _document),
                 },
-                true, Model.AccessLevel);
+                false, Model.AccessLevel);
             if (ex != null) CommonDocumentUtilities.ThrowError(_context, ex, Model);
             CommonDocumentUtilities.SetLastChange(_context, Model);
             _document.SendLists = new List<InternalDocumentSendList> { Model };

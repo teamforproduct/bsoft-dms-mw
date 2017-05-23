@@ -32,6 +32,12 @@ namespace BL.Model.DictionaryCore.InternalModel
             SetInternalDictionaryAgentPerson(model);
         }
 
+        public InternalDictionaryAgentPerson(AddAgentPersonExisting model)
+        {
+            Id = model.PersonId;
+            AgentCompanyId = model.CompanyId;
+        }
+
         public InternalDictionaryAgentPerson(ModifyAgentPeoplePassport model)
         {
             Id = model.Id;

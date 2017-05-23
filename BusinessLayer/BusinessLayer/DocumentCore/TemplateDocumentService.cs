@@ -172,6 +172,7 @@ namespace BL.Logic.DocumentCore
             {
                 _fStore.GetFile(ctx, fl, fileType);
                 fl.PdfCreated = true;
+                fl.PdfAcceptable = true;
                 fl.LastPdfAccess = DateTime.Now;
                 _templateDb.UpdateFilePdfView(ctx,fl);
             }

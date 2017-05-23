@@ -885,17 +885,42 @@ namespace BL.Logic.DictionaryCore
 
         public IEnumerable<FrontDictionaryRegistrationJournal> GetMainRegistrationJournals(IContext context, FullTextSearch ftSearch, FilterDictionaryRegistrationJournal filter, UIPaging paging, UISorting sorting)
         {
+            // Тонкий момент, проверяю не является ли сотрудник локальным администратором.
+            // Если не локальный значит, надеюсь, что глобальный и отображаю все
+            var adminService = DmsResolver.Current.Get<IAdminService>();
+            List<int> employeeDepartments = adminService.GetInternalEmployeeDepartments(context, context.Employee.Id);
+
+            if (employeeDepartments != null)
+            {
+                if (filter == null) filter = new FilterDictionaryRegistrationJournal();
+
+                filter.DepartmentIDs = employeeDepartments;
+            }
+
             return FTS.Get(context, Modules.Journal, ftSearch, filter, paging, sorting, _dictDb.GetRegistrationJournals, _dictDb.GetRegistrationJournalIDs);
         }
 
         public IEnumerable<ITreeItem> GetRegistrationJournalsFilter(IContext context, bool searchInJournals, FullTextSearch ftSearch, FilterDictionaryJournalsTree filter)
         {
-            if (filter == null) filter = new FilterDictionaryJournalsTree();
             return GetRegistrationJournalsTree(context, searchInJournals, ftSearch, filter);
         }
 
         private IEnumerable<ITreeItem> GetRegistrationJournalsTree(IContext context, bool searchInJournals, FullTextSearch ftSearch, FilterDictionaryJournalsTree filter, FilterDictionaryRegistrationJournal filterJoirnal = null)
         {
+            if (filter == null) filter = new FilterDictionaryJournalsTree();
+
+            // Тонкий момент, проверяю не является ли сотрудник локальным администратором.
+            // Если не локальный значит, надеюсь, что глобальный и отображаю все
+            var adminService = DmsResolver.Current.Get<IAdminService>();
+            List<int> employeeDepartments = adminService.GetInternalEmployeeDepartments(context, context.Employee.Id);
+            List<int> employeeDepartmentsExtendedList = null;
+
+            if (employeeDepartments != null)
+            {
+                employeeDepartmentsExtendedList = GetEmployeeDepartmentsExtendedList(context, employeeDepartments);
+            }
+
+
 
             int levelCount = filter?.LevelCount ?? 0;
             //IEnumerable<TreeItem> journals = null;
@@ -915,7 +940,7 @@ namespace BL.Logic.DictionaryCore
                 {
                     IsActive = filter?.IsActive,
                     ExcludeDepartmentsWithoutJournals = !filter.IsShowAll,
-                    //IDs = filter.DepartmentIDs
+                    IDs = employeeDepartmentsExtendedList
                 });
             }
 
@@ -926,7 +951,7 @@ namespace BL.Logic.DictionaryCore
                     IsActive = filter?.IsActive,
                 };
 
-                if (!filter.IsShowAll.HasValue)
+                if (!filter.IsShowAll.HasValue || employeeDepartments != null)
                 {
                     f.DepartmentIDs = departments.Select(x => x.Id).ToList();
                 }
@@ -1105,17 +1130,27 @@ namespace BL.Logic.DictionaryCore
         public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, bool SearchInPositionsOnly = false)
         {
 
+            if (filter == null) filter = new FilterDictionaryStandartSendList();
+
             if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString) && SearchInPositionsOnly)
             {
                 var positions = _dictDb.GetPositionIDs(context, new FilterDictionaryPosition { NameDepartmentExecutor = ftSearch?.FullTextSearchString }).ToList();
 
                 if (!positions.Any()) return new List<FrontMainDictionaryStandartSendList>();
 
-                if (filter == null) filter = new FilterDictionaryStandartSendList();
-
                 filter.PositionIDs = positions;
 
                 ftSearch.FullTextSearchString = string.Empty;
+            }
+
+            // Тонкий момент, проверяю не является ли сотрудник локальным администратором.
+            // Если не локальный значит, надеюсь, что глобальный и отображаю все
+            var adminService = DmsResolver.Current.Get<IAdminService>();
+            var employeeDepartments = adminService.GetInternalEmployeeDepartments(context, context.Employee.Id);
+
+            if (employeeDepartments != null)
+            {
+                filter.PositionDepartmentsIDs = employeeDepartments;
             }
 
             return FTS.Get(context, Modules.SendList, ftSearch, filter, null, null, _dictDb.GetMainStandartSendLists, _dictDb.GetStandartSendListIDs);
@@ -1253,9 +1288,32 @@ namespace BL.Logic.DictionaryCore
 
         #region [+] StaffList ...
 
+        private List<int> GetEmployeeDepartmentsExtendedList(IContext context, List<int> employeeDepartments)
+        {
+            List<int> res = null;
+
+            if (employeeDepartments == null) return res;
+            List<int> safeList = new List<int>();
+
+            var deps = _dictDb.GetInternalDepartments(context, new FilterDictionaryDepartment { IDs = employeeDepartments });
+
+            safeList.AddRange(employeeDepartments);
+
+            // собираю список Id включая родительские отделы
+            foreach (var dep in deps)
+            {
+                if (dep.Path != null) safeList.AddRange(dep.Path?.Split('/').Select(x => int.Parse(x)));
+            }
+
+            return safeList.Distinct().ToList();
+
+        }
+
 
         public IEnumerable<ITreeItem> GetStaffList(IContext context, FullTextSearch ftSearch, FilterDictionaryStaffList filter)
         {
+            if (filter == null) filter = new FilterDictionaryStaffList();
+
 
             // Тонкий момент, проверяю не является ли сотрудник локальным администратором.
             // Если не локальный значит, надеюсь, что глобальный и отображаю все
@@ -1264,31 +1322,19 @@ namespace BL.Logic.DictionaryCore
 
             if (employeeDepartments != null)
             {
-                List<int> safeList = new List<int>();
-
-                var deps = _dictDb.GetInternalDepartments(context, new FilterDictionaryDepartment { IDs = employeeDepartments });
-
-                safeList.AddRange(employeeDepartments);
-
-                // собираю список Id включая родительские отделы
-                foreach (var dep in deps)
-                {
-                    if (dep.Path != null) safeList.AddRange(dep.Path?.Split('/').Select(x => int.Parse(x)));
-                }
-
-                safeList = safeList.Distinct().ToList();
+                var employeeDepartmentsExtendedList = GetEmployeeDepartmentsExtendedList(context, employeeDepartments);
 
                 // Если передан фильтр, то проверяю чтобы переданный id были из safeList
                 if (filter?.DepartmentIDs?.Count() > 0)
                 {
-                    filter.DepartmentIDs = filter.DepartmentIDs.Where(x => safeList.Contains(x)).ToList();
+                    filter.DepartmentIDs = filter.DepartmentIDs.Where(x => employeeDepartmentsExtendedList.Contains(x)).ToList();
+
+                    if (!filter.DepartmentIDs.Any()) filter.DepartmentIDs = new List<int> { -1 };
                 }
                 else
                 {
-                    if (filter == null) filter = new FilterDictionaryStaffList();
-                    filter.DepartmentIDs = safeList;
+                    filter.DepartmentIDs = employeeDepartmentsExtendedList;
                 }
-
             }
 
             int levelCount = filter?.LevelCount ?? 0;

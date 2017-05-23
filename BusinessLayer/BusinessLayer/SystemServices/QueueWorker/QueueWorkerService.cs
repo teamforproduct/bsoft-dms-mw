@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using BL.CrossCutting.Context;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.Common;
 
@@ -28,6 +31,29 @@ namespace BL.Logic.SystemServices.QueueWorker
                 {
                     Logger.Error(keyValuePair.Value, "Could not start QueueWorkerService for server", ex);
                 }
+            }
+        }
+
+        public void AddNewClient(AdminContext ctx)
+        {
+            try
+            {
+                _workers.Add(CommonSystemUtilities.GetServerKey(ctx), new QueueWorker());
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ctx, "Could not start QueueWorkerService for new client", ex);
+            }
+        }
+
+        public void RemoveWorkersForClient(int clientId)
+        {
+            var wrks = _workers.Where(x => x.Key.EndsWith($"/{clientId}")).Select(x=>x.Key).ToList();
+            foreach (var key in wrks)
+            {
+                var wrk = _workers[key];
+                _workers.Remove(key);
+                wrk.StopWorker();
             }
         }
 

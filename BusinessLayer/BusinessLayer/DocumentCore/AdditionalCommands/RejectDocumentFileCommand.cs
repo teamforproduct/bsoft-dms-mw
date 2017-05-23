@@ -6,6 +6,7 @@ using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using System.Collections.Generic;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
@@ -56,7 +57,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _document = _operationDb.ModifyDocumentFilePrepare(_context, Model.FileId);
             if (_document == null)
             {
-                throw new UserHasNoAccessToDocument();
+                throw new EmployeeHasNoAccessToDocument();
             }
             if (_document.DocumentFiles == null || !_document.DocumentFiles.Any())
             {
@@ -84,7 +85,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _file.DocumentId, EnumEventTypes.RejectDocumentFile, Model.EventDate, 
                 Model.Description, $"{_file.File.FileName} v.{_file.Version}", _file.EventId, null, Model.TargetAccessGroups);
             CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
-            _file.Event = newEvent;
+            _document.Events = new List<InternalDocumentEvent> { newEvent };
             _operationDb.UpdateFileOrVersion(_context, _document);
             return _file.Id;
         }

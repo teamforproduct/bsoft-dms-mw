@@ -2,6 +2,7 @@
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace DMS_WebAPI.DBModel
             return userIdentity;
         }
         [ForeignKey("UserId")]
-        public virtual ICollection<AspNetUserClientServer> ClientServer { get; set; }
+        public virtual ICollection<AspNetUserClients> ClientServer { get; set; }
 
         [ForeignKey("UserId")]
         public virtual ICollection<AspNetUserFingerprints> Fingerprints { get; set; }
@@ -27,14 +28,21 @@ namespace DMS_WebAPI.DBModel
         [ForeignKey("UserId")]
         public virtual ICollection<AspNetUserContexts> Contexts { get; set; }
 
-        public bool IsChangePasswordRequired { get; set; }
-        public bool IsEmailConfirmRequired { get; set; }
-        public bool IsLockout { get; set; }
+        [MaxLength(2000)]
+        public string LastName { get; set; }
+        [MaxLength(2000)]
+        public string FirstName { get; set; }
+
+        public int LanguageId { get; set; }
 
         public bool IsFingerprintEnabled { get; set; }
 
+        public bool IsChangePasswordRequired { get; set; }
+
         public int? ControlQuestionId { get; set; }
 
+
+        [MaxLength(2000)]
         public string ControlAnswer { get; set; }
 
         public DateTime CreateDate { get; set; }
@@ -43,6 +51,9 @@ namespace DMS_WebAPI.DBModel
 
         [ForeignKey("ControlQuestionId")]
         public virtual SystemControlQuestions ControlQuestion { get; set; }
+
+        [ForeignKey("LanguageId")]
+        public virtual AdminLanguages Language { get; set; }
 
     }
 }

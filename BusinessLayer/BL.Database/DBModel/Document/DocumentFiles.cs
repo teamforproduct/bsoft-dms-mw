@@ -13,24 +13,20 @@ namespace BL.Database.DBModel.Document
         [Index("IX_EntityTypeId", 1)]
         public int EntityTypeId { get; set; }
 
-        [Index("IX_DocumentNameExtensionVersion", 1, IsUnique = true)]
         [Index("IX_DocumentOrderNumberVersion", 1, IsUnique = true)]
         public int DocumentId { get; set; }
         public int? EventId { get; set; }
 
         [MaxLength(2000)]
-        [Index("IX_DocumentNameExtensionVersion", 2, IsUnique = true)]
         public string Name { get; set; }
 
         [Index("IX_DocumentOrderNumberVersion", 2, IsUnique = true)]
         public int OrderNumber { get; set; }
 
-        [Index("IX_DocumentNameExtensionVersion", 4, IsUnique = true)]
         [Index("IX_DocumentOrderNumberVersion", 3, IsUnique = true)]
         public int Version { get; set; }
 
         [MaxLength(2000)]
-        [Index("IX_DocumentNameExtensionVersion", 3, IsUnique = true)]
         public string Extension { get; set; }
 
         [MaxLength(2000)]
@@ -42,6 +38,7 @@ namespace BL.Database.DBModel.Document
         public string Content { get; set; }
         public int TypeId { get; set; }
         public bool IsDeleted { get; set; }
+        public bool IsContentDeleted { get; set; }
         public bool? IsWorkedOut { get; set; }
 
         [MaxLength(2000)]
@@ -58,14 +55,14 @@ namespace BL.Database.DBModel.Document
         public int? ExecutorPositionExecutorTypeId { get; set; }
 
         public bool? IsPdfCreated { get; set; }
+
+        public bool? PdfAcceptable { get; set; }
         public DateTime? LastPdfAccessDate { get; set; }        
 
         public int LastChangeUserId { get; set; }
 
         [Index("IX_LastChangeDate",1)]
         public DateTime LastChangeDate { get; set; }
-
-
 
         [ForeignKey("DocumentId")]
         public virtual Documents Document { get; set; }

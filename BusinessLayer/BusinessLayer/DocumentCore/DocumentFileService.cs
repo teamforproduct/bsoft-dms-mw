@@ -47,7 +47,7 @@ namespace BL.Logic.DocumentCore
                 else
                 {
                     _fStore.GetFile(ctx, fl, fileType);
-                    var internalFile = new InternalDocumentFile { Id = fl.Id, LastPdfAccess = DateTime.Now, PdfCreated = true, File = fl.File };
+                    var internalFile = new InternalDocumentFile { Id = fl.Id, LastPdfAccess = DateTime.Now, PdfCreated = true, PdfAcceptable = true, File = fl.File };
                     _dbProcess.UpdateFilePdfView(ctx, internalFile);
                 }
 

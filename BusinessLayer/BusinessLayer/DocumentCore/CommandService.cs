@@ -53,7 +53,7 @@ namespace BL.Logic.DocumentCore
             return null;
         }
 
-        private static void MenuFormation(IContext ctx, DocumentActionsModel model, bool isOnlyIdActions = false)
+        private static void MenuFormation(IContext ctx, DocumentActionsModel model, bool isOnlyIdActions = false, List<EnumObjects> mаndatoryObject = null)
         {
             // total list of type for possible actions we could process
             var totalCommandListType = new List<EnumDocumentActions>();
@@ -72,39 +72,45 @@ namespace BL.Logic.DocumentCore
             //TODO remove when all command will be implemented
 
             //for each position check his actions
-            if (model.PositionWithActions?.Any()??false)
-            foreach (var pos in model.PositionWithActions)
-            {
-                var actionList = model.ActionsList[pos.Id];
-                var resultActions = new List<InternalSystemActionForDocument>();
-                if (actionList != null)
+            if (model.PositionWithActions?.Any() ?? false)
+                foreach (var pos in model.PositionWithActions)
                 {
-                    foreach (var act in actionList)
+                    var actionList = model.ActionsList[pos.Id];
+                    var resultActions = new List<InternalSystemActionForDocument>();
+                    if (actionList != null)
                     {
-                        var cmd = totalCommandList.FirstOrDefault(x => x.CommandType == act.DocumentAction);
-                        if (cmd != null)
+                        foreach (var act in actionList)
                         {
-                            // each command should add to action list of entries, where that action can be executed
-                            if (cmd.CanBeDisplayed(pos.Id))
+                            var cmd = totalCommandList.FirstOrDefault(x => x.CommandType == act.DocumentAction);
+                            if (cmd != null)
                             {
-                                act.ActionRecords = cmd.ActionRecords;
-                                if (!isOnlyIdActions || (act.ActionRecords?.Any()??false))
+                                // each command should add to action list of entries, where that action can be executed
+                                if (cmd.CanBeDisplayed(pos.Id))
                                 {
-                                    resultActions.Add(act);
+                                    act.ActionRecords = cmd.ActionRecords?.ToList();
+                                    if (((mаndatoryObject?.Any() ?? false) && mаndatoryObject.Contains(act.Object)) || !isOnlyIdActions || (act.ActionRecords?.Any() ?? false))
+                                    {
+                                        resultActions.Add(act);
+                                    }
                                 }
                             }
                         }
+                        pos.Actions = resultActions;
                     }
-                    pos.Actions = resultActions;
                 }
-            }
+            model.PositionWithActions.SelectMany(x => x.Actions).Where(x => x.ActionRecords != null).SelectMany(x => x.ActionRecords).Where(x => x != null).ToList()
+            .ForEach(x =>
+            {
+                x.Name = $"Название для {x.EventId}";
+                x.Details = new List<string> { "Детали 1", "Детали 2" };
+            });
         }
 
         public IEnumerable<InternalDictionaryPositionWithActions> GetDocumentActions(IContext ctx, int? documentId, int? id = null)
         {
             var model = _operationDb.GetDocumentActionsModelPrepare(ctx, documentId, id);
 
-            MenuFormation(ctx, model, id.HasValue);
+            MenuFormation(ctx, model, id.HasValue, new List<EnumObjects> { { EnumObjects.DocumentEvents } });
 
             return model.PositionWithActions?.Where(x => x.Actions != null && x.Actions.Any()).ToList();
         }
@@ -124,7 +130,7 @@ namespace BL.Logic.DocumentCore
 
             MenuFormation(ctx, model, id.HasValue);
 
-            return model.PositionWithActions.Where(x=>x.Actions!=null && x.Actions.Any()).ToList();
+            return model.PositionWithActions.Where(x => x.Actions != null && x.Actions.Any()).ToList();
         }
 
         public IEnumerable<InternalDictionaryPositionWithActions> GetDocumentPaperActions(IContext ctx, int documentId)

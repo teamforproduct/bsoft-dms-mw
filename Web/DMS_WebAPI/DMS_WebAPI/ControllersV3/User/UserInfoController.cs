@@ -187,6 +187,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route("Language")]
         public async Task<IHttpActionResult> SetLanguage(SetUserLanguage model)
         {
+            // TODO ClientsForEach - пробросить язык каждому клиенту
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var contexts = (UserContexts)param;

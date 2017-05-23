@@ -61,7 +61,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
             if (user == null) throw new UserNameOrPasswordIsIncorrect();
 
             var tmpService = DmsResolver.Current.Get<ILanguages>();
-            var qst = tmpService.GetTranslation(model.Language, user.ControlQuestion.Name);
+            var qst = tmpService.GetTranslation(user.LanguageId, user.ControlQuestion.Name);
 
             var res = new JsonResult(new { ControlQuestion = qst }, this);
             res.SpentTime = stopWatch;

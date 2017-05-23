@@ -266,7 +266,7 @@ namespace BL.Database.DatabaseContext
                 );
 
             AddPermission(860, Modules.Employee, Features.AddInOrg, r: false, u: false, d: false,
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementEmployees }
+                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementEmployees, Roles.ManagementDepartments, Roles.ManagementOrg }
                 );
 
             AddPermission(900, Modules.Company, Features.Info,
@@ -557,10 +557,13 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSystemObjects(EnumObjects.DocumentAccesses));
             items.Add(GetSystemObjects(EnumObjects.DocumentRestrictedSendLists));
             items.Add(GetSystemObjects(EnumObjects.DocumentSendLists));
+            items.Add(GetSystemObjects(EnumObjects.DocumentSendListAccessGroups));
             items.Add(GetSystemObjects(EnumObjects.DocumentFiles));
             items.Add(GetSystemObjects(EnumObjects.DocumentLinks));
             items.Add(GetSystemObjects(EnumObjects.DocumentSendListStages));
             items.Add(GetSystemObjects(EnumObjects.DocumentEvents));
+            items.Add(GetSystemObjects(EnumObjects.DocumentEventAccessGroups));
+            items.Add(GetSystemObjects(EnumObjects.DocumentEventAccesses));
             items.Add(GetSystemObjects(EnumObjects.DocumentWaits));
             items.Add(GetSystemObjects(EnumObjects.DocumentSubscriptions));
             items.Add(GetSystemObjects(EnumObjects.DocumentTasks));
@@ -651,39 +654,36 @@ namespace BL.Database.DatabaseContext
             var items = new List<SystemActions>();
 
 
-            items.Add(GetSysAct(EnumDocumentActions.ViewDocument, EnumObjects.Documents, category: "Документ", isVisibleInMenu: false));
-            items.Add(GetSysAct(EnumDocumentActions.AddDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.C), category: "Документ"));
-            items.Add(GetSysAct(EnumDocumentActions.AddLinkedDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.C), category: "Документ"));
-            items.Add(GetSysAct(EnumDocumentActions.CopyDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.C), category: "Документ"));
-            items.Add(GetSysAct(EnumDocumentActions.ModifyDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: "Документ"));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.D), category: "Документ"));
-            items.Add(GetSysAct(EnumDocumentActions.LaunchPlan, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.U), category: "Действия"));
-            items.Add(GetSysAct(EnumDocumentActions.AddDocumentSendListItem, EnumObjects.Documents, category: "Действия"));
-            items.Add(GetSysAct(EnumDocumentActions.StopPlan, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.U), category: "Действия"));
-            items.Add(GetSysAct(EnumDocumentActions.ChangeExecutor, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: "Действия"));
-            items.Add(GetSysAct(EnumDocumentActions.RegisterDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.C), category: "Действия"));
-            items.Add(GetSysAct(EnumDocumentActions.MarkDocumentEventAsRead, EnumObjects.Documents, category: "Информирование", isVisibleInMenu: false));
+            items.Add(GetSysAct(EnumDocumentActions.AddDocument, EnumObjects.Documents));
+            items.Add(GetSysAct(EnumDocumentActions.AddLinkedDocument, EnumObjects.Documents));
+            items.Add(GetSysAct(EnumDocumentActions.CopyDocument, EnumObjects.Documents));
+            items.Add(GetSysAct(EnumDocumentActions.ModifyDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: EnumActionCategories.Document));
+            items.Add(GetSysAct(EnumDocumentActions.DeleteDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.D), category: EnumActionCategories.Document));
+            items.Add(GetSysAct(EnumDocumentActions.LaunchPlan, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.U), category: EnumActionCategories.Actions));
+            items.Add(GetSysAct(EnumDocumentActions.StopPlan, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.U), category: EnumActionCategories.Actions));
+            items.Add(GetSysAct(EnumDocumentActions.ChangeExecutor, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: EnumActionCategories.Actions));
+            items.Add(GetSysAct(EnumDocumentActions.RegisterDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.C), category: EnumActionCategories.Actions));
+            items.Add(GetSysAct(EnumDocumentActions.MarkDocumentEventAsRead, EnumObjects.Documents));
 
-            items.Add(GetSysAct(EnumDocumentActions.SendForInformation, EnumObjects.Documents, category: "Информирование", isVisibleInMenu: false));
-            items.Add(GetSysAct(EnumDocumentActions.SendForConsideration, EnumObjects.Documents, category: "Информирование", isVisibleInMenu: false));
-            items.Add(GetSysAct(EnumDocumentActions.SendForInformationExternal, EnumObjects.Documents, category: "Информирование", isVisibleInMenu: false));
-            items.Add(GetSysAct(EnumDocumentActions.SendForControl, EnumObjects.Documents, category: "Контроль", isVisibleInMenu: false));
-            //items.Add(GetSysAct(EnumDocumentActions.SendForControlChange, EnumObjects.Documents, category: "Контроль"));
-            items.Add(GetSysAct(EnumDocumentActions.SendForResponsibleExecution, EnumObjects.Documents, category: "Контроль", isVisibleInMenu: false));
-            items.Add(GetSysAct(EnumDocumentActions.SendForExecution, EnumObjects.Documents, category: "Контроль", isVisibleInMenu: false));
-            items.Add(GetSysAct(EnumDocumentActions.SendForVisaing, EnumObjects.Documents, category: "Подписание", isVisibleInMenu: false));
-            items.Add(GetSysAct(EnumDocumentActions.SendForАgreement, EnumObjects.Documents, category: "Подписание", isVisibleInMenu: false));
-            items.Add(GetSysAct(EnumDocumentActions.SendForАpproval, EnumObjects.Documents, category: "Подписание", isVisibleInMenu: false));
-            items.Add(GetSysAct(EnumDocumentActions.SendForSigning, EnumObjects.Documents, category: "Подписание", isVisibleInMenu: false));
-            items.Add(GetSysAct(EnumDocumentActions.ReportRegistrationCardDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.R), category: "Документ"));
-            items.Add(GetSysAct(EnumDocumentActions.ReportRegisterTransmissionDocuments, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.R), category: "Отчеты"));
-            items.Add(GetSysAct(EnumDocumentActions.ReportDocumentForDigitalSignature, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.R), category: "Подписание"));
-            items.Add(GetSysAct(EnumDocumentActions.AddFavourite, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Favourite, EnumAccessTypes.U), category: "Дополнительно"));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteFavourite, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Favourite, EnumAccessTypes.U), category: "Дополнительно"));
+            items.Add(GetSysAct(EnumDocumentActions.SendForInformation, EnumObjects.Documents));
+            items.Add(GetSysAct(EnumDocumentActions.SendForConsideration, EnumObjects.Documents));
+            items.Add(GetSysAct(EnumDocumentActions.SendForInformationExternal, EnumObjects.Documents));
+            items.Add(GetSysAct(EnumDocumentActions.SendForControl, EnumObjects.Documents));
+            items.Add(GetSysAct(EnumDocumentActions.SendForResponsibleExecution, EnumObjects.Documents));
+            items.Add(GetSysAct(EnumDocumentActions.SendForExecution, EnumObjects.Documents));
+            items.Add(GetSysAct(EnumDocumentActions.SendForVisaing, EnumObjects.Documents));
+            items.Add(GetSysAct(EnumDocumentActions.SendForАgreement, EnumObjects.Documents));
+            items.Add(GetSysAct(EnumDocumentActions.SendForАpproval, EnumObjects.Documents));
+            items.Add(GetSysAct(EnumDocumentActions.SendForSigning, EnumObjects.Documents));
+            items.Add(GetSysAct(EnumDocumentActions.ReportRegistrationCardDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.R), category: EnumActionCategories.Document));
+            items.Add(GetSysAct(EnumDocumentActions.ReportRegisterTransmissionDocuments, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.R), category: EnumActionCategories.Reports));
+            items.Add(GetSysAct(EnumDocumentActions.ReportDocumentForDigitalSignature, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.R), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumDocumentActions.AddFavourite, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Favourite, EnumAccessTypes.U), category: EnumActionCategories.Additional));
+            items.Add(GetSysAct(EnumDocumentActions.DeleteFavourite, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Favourite, EnumAccessTypes.U), category: EnumActionCategories.Additional));
 
-            items.Add(GetSysAct(EnumDocumentActions.FinishWork, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: "Дополнительно"));
-            items.Add(GetSysAct(EnumDocumentActions.StartWork, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: "Дополнительно"));
-            items.Add(GetSysAct(EnumDocumentActions.ChangePosition, EnumObjects.Documents, GetPermissionId(Modules.Position, Features.DocumentAccesses, EnumAccessTypes.U), category: "Администратор", isVisibleInMenu: false));
+            items.Add(GetSysAct(EnumDocumentActions.FinishWork, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: EnumActionCategories.Additional));
+            items.Add(GetSysAct(EnumDocumentActions.StartWork, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: EnumActionCategories.Additional));
+            items.Add(GetSysAct(EnumDocumentActions.ChangePosition, EnumObjects.Documents, GetPermissionId(Modules.Position, Features.DocumentAccesses, EnumAccessTypes.U), category: EnumActionCategories.Admin));
 
             items.Add(GetSysAct(EnumDocumentActions.AddDocumentRestrictedSendList, EnumObjects.DocumentRestrictedSendLists, GetPermissionId(Modules.Documents, Features.AccessList, EnumAccessTypes.C)));
             items.Add(GetSysAct(EnumDocumentActions.AddByStandartSendListDocumentRestrictedSendList, EnumObjects.DocumentRestrictedSendLists, GetPermissionId(Modules.Documents, Features.AccessList, EnumAccessTypes.C)));
@@ -694,15 +694,15 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentSendListStage, EnumObjects.DocumentSendListStages));
             items.Add(GetSysAct(EnumDocumentActions.ModifyDocumentSendList, EnumObjects.DocumentSendLists, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.U)));
             items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentSendList, EnumObjects.DocumentSendLists, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.D)));
-            items.Add(GetSysAct(EnumDocumentActions.CopyDocumentSendList, EnumObjects.DocumentSendLists, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.C), isVisibleInMenu: false));
+            items.Add(GetSysAct(EnumDocumentActions.CopyDocumentSendList, EnumObjects.DocumentSendLists, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.C)));
             items.Add(GetSysAct(EnumDocumentActions.LaunchDocumentSendListItem, EnumObjects.DocumentSendLists, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.U)));
 
             items.Add(GetSysAct(EnumDocumentActions.AddDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.C)));
             items.Add(GetSysAct(EnumDocumentActions.ModifyDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.U)));
             items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.D)));
 //            items.Add(GetSysAct(EnumDocumentActions.AddDocumentFileUseMainNameFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.C)));
-            items.Add(GetSysAct(EnumDocumentActions.AcceptDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.U), category: "Файл"));
-            items.Add(GetSysAct(EnumDocumentActions.RejectDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.U), category: "Файл"));
+            items.Add(GetSysAct(EnumDocumentActions.AcceptDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.U), category: EnumActionCategories.Files));
+            items.Add(GetSysAct(EnumDocumentActions.RejectDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.U), category: EnumActionCategories.Files));
             items.Add(GetSysAct(EnumDocumentActions.RenameDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.U)));
             items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentFileVersion, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.D)));
 //            items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentFileVersionRecord, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.D)));
@@ -711,55 +711,55 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDocumentActions.AddDocumentLink, EnumObjects.DocumentLinks, GetPermissionId(Modules.Documents, Features.Links, EnumAccessTypes.C)));
             items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentLink, EnumObjects.DocumentLinks, GetPermissionId(Modules.Documents, Features.Links, EnumAccessTypes.D)));
 
-            items.Add(GetSysAct(EnumDocumentActions.SendDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Events, EnumAccessTypes.C), category: "Действия"));
-            items.Add(GetSysAct(EnumDocumentActions.SendMessage, EnumObjects.DocumentEvents, GetPermissionId(Modules.Documents, Features.Events, EnumAccessTypes.C), category: "Информирование"));
-            items.Add(GetSysAct(EnumDocumentActions.AddNote, EnumObjects.DocumentEvents, GetPermissionId(Modules.Documents, Features.Events, EnumAccessTypes.C), category: "Информирование"));
+            items.Add(GetSysAct(EnumDocumentActions.SendDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Events, EnumAccessTypes.C), category: EnumActionCategories.Actions));
+            items.Add(GetSysAct(EnumDocumentActions.SendMessage, EnumObjects.DocumentEvents, GetPermissionId(Modules.Documents, Features.Events, EnumAccessTypes.C), category: EnumActionCategories.Informing));
+            items.Add(GetSysAct(EnumDocumentActions.AddNote, EnumObjects.DocumentEvents, GetPermissionId(Modules.Documents, Features.Events, EnumAccessTypes.C), category: EnumActionCategories.Informing));
 
-            items.Add(GetSysAct(EnumDocumentActions.ControlOn, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.C), category: "Контроль"));
-            items.Add(GetSysAct(EnumDocumentActions.ControlChange, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: "Контроль"));
-            items.Add(GetSysAct(EnumDocumentActions.SendForExecutionChange, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: "Контроль"));
-            items.Add(GetSysAct(EnumDocumentActions.SendForResponsibleExecutionChange, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: "Контроль"));
-            items.Add(GetSysAct(EnumDocumentActions.ControlTargetChange, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: "Контроль"));
-            items.Add(GetSysAct(EnumDocumentActions.ControlOff, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: "Контроль"));
-            items.Add(GetSysAct(EnumDocumentActions.AskPostponeDueDate, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.C), category: "Контроль"));
-            items.Add(GetSysAct(EnumDocumentActions.CancelPostponeDueDate, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: "Контроль"));
-            items.Add(GetSysAct(EnumDocumentActions.MarkExecution, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.C), category: "Контроль"));
-            items.Add(GetSysAct(EnumDocumentActions.AcceptResult, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: "Контроль"));
-            items.Add(GetSysAct(EnumDocumentActions.CancelExecution, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: "Контроль"));
-            items.Add(GetSysAct(EnumDocumentActions.RejectResult, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: "Контроль"));
-            items.Add(GetSysAct(EnumDocumentActions.WithdrawVisaing, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: "Подписание"));
-            items.Add(GetSysAct(EnumDocumentActions.WithdrawАgreement, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: "Подписание"));
-            items.Add(GetSysAct(EnumDocumentActions.WithdrawАpproval, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: "Подписание"));
-            items.Add(GetSysAct(EnumDocumentActions.WithdrawSigning, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: "Подписание"));
-            items.Add(GetSysAct(EnumDocumentActions.AffixVisaing, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: "Подписание"));
-            items.Add(GetSysAct(EnumDocumentActions.AffixАgreement, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: "Подписание"));
-            items.Add(GetSysAct(EnumDocumentActions.AffixАpproval, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: "Подписание"));
-            items.Add(GetSysAct(EnumDocumentActions.AffixSigning, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: "Подписание"));
-            items.Add(GetSysAct(EnumDocumentActions.SelfAffixSigning, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: "Подписание", isVisibleInMenu: false));
-            items.Add(GetSysAct(EnumDocumentActions.RejectVisaing, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: "Подписание"));
-            items.Add(GetSysAct(EnumDocumentActions.RejectАgreement, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: "Подписание"));
-            items.Add(GetSysAct(EnumDocumentActions.RejectАpproval, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: "Подписание"));
-            items.Add(GetSysAct(EnumDocumentActions.RejectSigning, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: "Подписание"));
-            items.Add(GetSysAct(EnumDocumentActions.VerifySigning, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.R), category: "Подписание"));
+            items.Add(GetSysAct(EnumDocumentActions.ControlOn, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.C), category: EnumActionCategories.Controls));
+            items.Add(GetSysAct(EnumDocumentActions.ControlChange, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: EnumActionCategories.Controls));
+            items.Add(GetSysAct(EnumDocumentActions.SendForExecutionChange, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: EnumActionCategories.Controls));
+            items.Add(GetSysAct(EnumDocumentActions.SendForResponsibleExecutionChange, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: EnumActionCategories.Controls));
+            items.Add(GetSysAct(EnumDocumentActions.ControlTargetChange, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: EnumActionCategories.Controls));
+            items.Add(GetSysAct(EnumDocumentActions.ControlOff, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: EnumActionCategories.Controls));
+            items.Add(GetSysAct(EnumDocumentActions.AskPostponeDueDate, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.C), category: EnumActionCategories.Controls));
+            items.Add(GetSysAct(EnumDocumentActions.CancelPostponeDueDate, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: EnumActionCategories.Controls));
+            items.Add(GetSysAct(EnumDocumentActions.MarkExecution, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.C), category: EnumActionCategories.Controls));
+            items.Add(GetSysAct(EnumDocumentActions.AcceptResult, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: EnumActionCategories.Controls));
+            items.Add(GetSysAct(EnumDocumentActions.CancelExecution, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: EnumActionCategories.Controls));
+            items.Add(GetSysAct(EnumDocumentActions.RejectResult, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: EnumActionCategories.Controls));
+            items.Add(GetSysAct(EnumDocumentActions.WithdrawVisaing, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumDocumentActions.WithdrawАgreement, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumDocumentActions.WithdrawАpproval, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumDocumentActions.WithdrawSigning, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumDocumentActions.AffixVisaing, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumDocumentActions.AffixАgreement, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumDocumentActions.AffixАpproval, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumDocumentActions.AffixSigning, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumDocumentActions.SelfAffixSigning, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumDocumentActions.RejectVisaing, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumDocumentActions.RejectАgreement, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumDocumentActions.RejectАpproval, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumDocumentActions.RejectSigning, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumDocumentActions.VerifySigning, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.R), category: EnumActionCategories.Signing));
 
             items.Add(GetSysAct(EnumDocumentActions.AddDocumentTask, EnumObjects.DocumentTasks, GetPermissionId(Modules.Documents, Features.Tasks, EnumAccessTypes.C)));
             items.Add(GetSysAct(EnumDocumentActions.ModifyDocumentTask, EnumObjects.DocumentTasks, GetPermissionId(Modules.Documents, Features.Tasks, EnumAccessTypes.U)));
             items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentTask, EnumObjects.DocumentTasks, GetPermissionId(Modules.Documents, Features.Tasks, EnumAccessTypes.D)));
 
-            items.Add(GetSysAct(EnumDocumentActions.AddDocumentPaper, EnumObjects.DocumentPapers, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.C), category: "Бумажные носители"));
-            items.Add(GetSysAct(EnumDocumentActions.ModifyDocumentPaper, EnumObjects.DocumentPapers, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: "Бумажные носители"));
-            items.Add(GetSysAct(EnumDocumentActions.MarkOwnerDocumentPaper, EnumObjects.DocumentPapers, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.D), category: "Бумажные носители"));
-            items.Add(GetSysAct(EnumDocumentActions.MarkСorruptionDocumentPaper, EnumObjects.DocumentPapers, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: "Бумажные носители"));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentPaper, EnumObjects.DocumentPapers, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: "Бумажные носители"));
-            items.Add(GetSysAct(EnumDocumentActions.PlanDocumentPaperEvent, EnumObjects.DocumentPaperEvents, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: "Бумажные носители"));
-            items.Add(GetSysAct(EnumDocumentActions.CancelPlanDocumentPaperEvent, EnumObjects.DocumentPaperEvents, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: "Бумажные носители"));
-            items.Add(GetSysAct(EnumDocumentActions.SendDocumentPaperEvent, EnumObjects.DocumentPaperEvents, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: "Бумажные носители"));
-            items.Add(GetSysAct(EnumDocumentActions.CancelSendDocumentPaperEvent, EnumObjects.DocumentPaperEvents, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: "Бумажные носители"));
-            items.Add(GetSysAct(EnumDocumentActions.RecieveDocumentPaperEvent, EnumObjects.DocumentPaperEvents, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: "Бумажные носители"));
+            items.Add(GetSysAct(EnumDocumentActions.AddDocumentPaper, EnumObjects.DocumentPapers, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.C), category: EnumActionCategories.Parers));
+            items.Add(GetSysAct(EnumDocumentActions.ModifyDocumentPaper, EnumObjects.DocumentPapers, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: EnumActionCategories.Parers));
+            items.Add(GetSysAct(EnumDocumentActions.MarkOwnerDocumentPaper, EnumObjects.DocumentPapers, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.D), category: EnumActionCategories.Parers));
+            items.Add(GetSysAct(EnumDocumentActions.MarkСorruptionDocumentPaper, EnumObjects.DocumentPapers, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: EnumActionCategories.Parers));
+            items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentPaper, EnumObjects.DocumentPapers, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: EnumActionCategories.Parers));
+            items.Add(GetSysAct(EnumDocumentActions.PlanDocumentPaperEvent, EnumObjects.DocumentPaperEvents, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: EnumActionCategories.Parers));
+            items.Add(GetSysAct(EnumDocumentActions.CancelPlanDocumentPaperEvent, EnumObjects.DocumentPaperEvents, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: EnumActionCategories.Parers));
+            items.Add(GetSysAct(EnumDocumentActions.SendDocumentPaperEvent, EnumObjects.DocumentPaperEvents, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: EnumActionCategories.Parers));
+            items.Add(GetSysAct(EnumDocumentActions.CancelSendDocumentPaperEvent, EnumObjects.DocumentPaperEvents, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: EnumActionCategories.Parers));
+            items.Add(GetSysAct(EnumDocumentActions.RecieveDocumentPaperEvent, EnumObjects.DocumentPaperEvents, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: EnumActionCategories.Parers));
 
-            items.Add(GetSysAct(EnumDocumentActions.AddDocumentPaperList, EnumObjects.DocumentPaperLists, GetPermissionId(Modules.PaperList, Features.Info, EnumAccessTypes.C), category: "Реестры бумажных носителей"));
-            items.Add(GetSysAct(EnumDocumentActions.ModifyDocumentPaperList, EnumObjects.DocumentPaperLists, GetPermissionId(Modules.PaperList, Features.Info, EnumAccessTypes.U), category: "Реестры бумажных носителей"));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentPaperList, EnumObjects.DocumentPaperLists, GetPermissionId(Modules.PaperList, Features.Info, EnumAccessTypes.D), category: "Реестры бумажных носителей"));
+            items.Add(GetSysAct(EnumDocumentActions.AddDocumentPaperList, EnumObjects.DocumentPaperLists, GetPermissionId(Modules.PaperList, Features.Info, EnumAccessTypes.C), category: EnumActionCategories.ParerLists));
+            items.Add(GetSysAct(EnumDocumentActions.ModifyDocumentPaperList, EnumObjects.DocumentPaperLists, GetPermissionId(Modules.PaperList, Features.Info, EnumAccessTypes.U), category: EnumActionCategories.ParerLists));
+            items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentPaperList, EnumObjects.DocumentPaperLists, GetPermissionId(Modules.PaperList, Features.Info, EnumAccessTypes.D), category: EnumActionCategories.ParerLists));
 
             items.Add(GetSysAct(EnumDocumentActions.AddSavedFilter, EnumObjects.DocumentSavedFilters, GetPermissionId(Modules.Documents, Features.SavedFilters, EnumAccessTypes.C)));
             items.Add(GetSysAct(EnumDocumentActions.ModifySavedFilter, EnumObjects.DocumentSavedFilters, GetPermissionId(Modules.Documents, Features.SavedFilters, EnumAccessTypes.U)));
@@ -854,7 +854,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDictionaryActions.AddAgentEmployee, EnumObjects.DictionaryAgentEmployees));
             items.Add(GetSysAct(EnumDictionaryActions.ModifyAgentEmployee, EnumObjects.DictionaryAgentEmployees));
             items.Add(GetSysAct(EnumDictionaryActions.DeleteAgentEmployee, EnumObjects.DictionaryAgentEmployees));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyAgentEmployeeLanguage, EnumObjects.DictionaryAgentEmployees, isVisible: false, grantId: (int)EnumDictionaryActions.ModifyAgentEmployee));
+            items.Add(GetSysAct(EnumDictionaryActions.ModifyAgentEmployeeLanguage, EnumObjects.DictionaryAgentEmployees));
 
             items.Add(GetSysAct(EnumDictionaryActions.AddDepartment, EnumObjects.DictionaryDepartments));
             items.Add(GetSysAct(EnumDictionaryActions.ModifyDepartment, EnumObjects.DictionaryDepartments));
@@ -917,23 +917,23 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumAdminActions.DeleteRole, EnumObjects.AdminRoles));
 
             items.Add(GetSysAct(EnumAdminActions.SetPositionRole, EnumObjects.AdminPositionRoles));
-            items.Add(GetSysAct(EnumAdminActions.DuplicatePositionRoles, EnumObjects.AdminPositionRoles, isVisible: false, grantId: (int)EnumAdminActions.SetPositionRole));
+            items.Add(GetSysAct(EnumAdminActions.DuplicatePositionRoles, EnumObjects.AdminPositionRoles));
 
             items.Add(GetSysAct(EnumAdminActions.SetRolePermission, EnumObjects.AdminRolePermission));
-            items.Add(GetSysAct(EnumAdminActions.SetRolePermissionByModuleFeature, EnumObjects.AdminRolePermission, isVisible: false, grantId: (int)EnumAdminActions.SetRolePermission));
-            items.Add(GetSysAct(EnumAdminActions.SetRolePermissionByModule, EnumObjects.AdminRolePermission, isVisible: false, grantId: (int)EnumAdminActions.SetRolePermission));
-            items.Add(GetSysAct(EnumAdminActions.SetRolePermissionByModuleAccessType, EnumObjects.AdminRolePermission, isVisible: false, grantId: (int)EnumAdminActions.SetRolePermission));
+            items.Add(GetSysAct(EnumAdminActions.SetRolePermissionByModuleFeature, EnumObjects.AdminRolePermission));
+            items.Add(GetSysAct(EnumAdminActions.SetRolePermissionByModule, EnumObjects.AdminRolePermission));
+            items.Add(GetSysAct(EnumAdminActions.SetRolePermissionByModuleAccessType, EnumObjects.AdminRolePermission));
 
 
             items.Add(GetSysAct(EnumAdminActions.SetUserRole, EnumObjects.AdminUserRoles));
-            items.Add(GetSysAct(EnumAdminActions.SetUserRoleByAssignment, EnumObjects.AdminUserRoles, isVisible: false, grantId: (int)EnumAdminActions.SetUserRole));
+            items.Add(GetSysAct(EnumAdminActions.SetUserRoleByAssignment, EnumObjects.AdminUserRoles));
 
             items.Add(GetSysAct(EnumAdminActions.SetSubordination, EnumObjects.AdminSubordination));
-            items.Add(GetSysAct(EnumAdminActions.SetSubordinationByCompany, EnumObjects.AdminSubordination, isVisible: false, grantId: (int)EnumAdminActions.SetSubordination));
-            items.Add(GetSysAct(EnumAdminActions.SetSubordinationByDepartment, EnumObjects.AdminSubordination, isVisible: false, grantId: (int)EnumAdminActions.SetSubordination));
-            items.Add(GetSysAct(EnumAdminActions.SetDefaultSubordination, EnumObjects.AdminSubordination, isVisible: false, grantId: (int)EnumAdminActions.SetSubordination));
-            items.Add(GetSysAct(EnumAdminActions.DuplicateSubordinations, EnumObjects.AdminSubordination, isVisible: false, grantId: (int)EnumAdminActions.SetSubordination));
-            items.Add(GetSysAct(EnumAdminActions.SetAllSubordination, EnumObjects.AdminSubordination, isVisible: false, grantId: (int)EnumAdminActions.SetSubordination));
+            items.Add(GetSysAct(EnumAdminActions.SetSubordinationByCompany, EnumObjects.AdminSubordination));
+            items.Add(GetSysAct(EnumAdminActions.SetSubordinationByDepartment, EnumObjects.AdminSubordination));
+            items.Add(GetSysAct(EnumAdminActions.SetDefaultSubordination, EnumObjects.AdminSubordination));
+            items.Add(GetSysAct(EnumAdminActions.DuplicateSubordinations, EnumObjects.AdminSubordination));
+            items.Add(GetSysAct(EnumAdminActions.SetAllSubordination, EnumObjects.AdminSubordination));
 
             //items.Add(GetSysAct(EnumAdminActions.SetRegistrationJournalPosition, EnumObjects.AdminRegistrationJournalPositions));
             //items.Add(GetSysAct(EnumAdminActions.SetRegistrationJournalPositionByCompany, EnumObjects.AdminRegistrationJournalPositions, isVisible: false, grantId: (int)EnumAdminActions.SetRegistrationJournalPosition));
@@ -953,7 +953,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumAdminActions.ChangeLogin, EnumObjects.DictionaryAgentUsers));
             items.Add(GetSysAct(EnumAdminActions.MustChangePassword, EnumObjects.DictionaryAgentUsers));
 
-            items.Add(GetSysAct(EnumSystemActions.Login, EnumObjects.System, isGrantable: false, isVisible: false, isVisibleInMenu: false));
+            items.Add(GetSysAct(EnumSystemActions.Login, EnumObjects.System));
             items.Add(GetSysAct(EnumSystemActions.SetSetting, EnumObjects.SystemSettings));
             // при добавлении действия не забудь добавить перевод! DMS_WebAPI.Models.ApplicationDbImportData GetAdminLanguageValuesForActions
 
@@ -1045,45 +1045,44 @@ namespace BL.Database.DatabaseContext
         }
 
 
-        private static SystemActions GetSysAct(EnumAdminActions id, EnumObjects objId, int? permissionId = null, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
+        private static SystemActions GetSysAct(EnumAdminActions id, EnumObjects objId, int? permissionId = null, EnumActionCategories? category = null)
         {
             string description = GetLabel("AdminActions", id.ToString());
-            return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
+            return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category);
         }
 
-        private static SystemActions GetSysAct(EnumEncryptionActions id, EnumObjects objId, int? permissionId = null, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
+        private static SystemActions GetSysAct(EnumEncryptionActions id, EnumObjects objId, int? permissionId = null, EnumActionCategories? category = null)
         {
             string description = GetLabel("EncryptionActions", id.ToString());
-            return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
+            return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category);
         }
 
-        private static SystemActions GetSysAct(EnumPropertyActions id, EnumObjects objId, int? permissionId = null, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
+        private static SystemActions GetSysAct(EnumPropertyActions id, EnumObjects objId, int? permissionId = null, EnumActionCategories? category = null)
         {
             string description = GetLabel("PropertyActions", id.ToString());
-            return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
+            return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category);
         }
 
-        private static SystemActions GetSysAct(EnumDictionaryActions id, EnumObjects objId, int? permissionId = null, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
+        private static SystemActions GetSysAct(EnumDictionaryActions id, EnumObjects objId, int? permissionId = null, EnumActionCategories? category = null)
         {
             string description = GetLabel("DictionaryActions", id.ToString());
-            return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
+            return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category);
         }
 
-        private static SystemActions GetSysAct(EnumDocumentActions id, EnumObjects objId, int? permissionId = null, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
+        private static SystemActions GetSysAct(EnumDocumentActions id, EnumObjects objId, int? permissionId = null, EnumActionCategories? category = null)
         {
             string description = GetLabel("DocumentActions", id.ToString());
-            return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
+            return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category);
         }
 
-        private static SystemActions GetSysAct(EnumSystemActions id, EnumObjects objId, int? permissionId = null, string category = null, bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
+        private static SystemActions GetSysAct(EnumSystemActions id, EnumObjects objId, int? permissionId = null, EnumActionCategories? category = null)
         {
             string description = GetLabel("SystemActions", id.ToString());
-            return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category, isGrantable, isGrantableByRecordId, isVisible, isVisibleInMenu, grantId);
+            return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category);
         }
 
         private static SystemActions GetSystemAction(int id, string code, EnumObjects objId, string description,
-            int? permissionId, string category = null,
-            bool isGrantable = true, bool isGrantableByRecordId = false, bool isVisible = true, bool isVisibleInMenu = true, int? grantId = null)
+            int? permissionId, EnumActionCategories? category = null)
 
         {
             return new SystemActions()
@@ -1092,7 +1091,7 @@ namespace BL.Database.DatabaseContext
                 ObjectId = (int)objId,
                 Code = code,
                 Description = description,
-                Category = category,
+                CategoryId = (int?)category,
                 PermissionId = permissionId
             };
         }

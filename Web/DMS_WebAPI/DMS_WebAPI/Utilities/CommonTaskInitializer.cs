@@ -17,7 +17,7 @@ namespace DMS_WebAPI.Utilities
             var taskMngr = DmsResolver.Current.Get<ITaskManager>();
 
             //auth worker fast
-            taskMngr.AddTask(null, _FAST_TIMEOUT_MIN, null, (context, param) =>
+            taskMngr.AddTask(_FAST_TIMEOUT_MIN, (context, param) =>
             {
                 try
                 {
@@ -31,7 +31,7 @@ namespace DMS_WebAPI.Utilities
             });
 
             //auth worker slow
-            taskMngr.AddTask(null, _SLOW_TIMEOUT_MIN, null, (context, param) =>
+            taskMngr.AddTask(_SLOW_TIMEOUT_MIN, (context, param) =>
             {
                 try
                 {
@@ -45,7 +45,7 @@ namespace DMS_WebAPI.Utilities
             });
 
             //Licence worker
-            taskMngr.AddTask(null, _VERIFY_LICENCES_TIMEOUT_MIN, null, (context, param) =>
+            taskMngr.AddTask(_VERIFY_LICENCES_TIMEOUT_MIN, (context, param) =>
             {
                 try
                 {

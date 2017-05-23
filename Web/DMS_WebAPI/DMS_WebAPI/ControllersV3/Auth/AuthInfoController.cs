@@ -7,7 +7,6 @@ using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Model.Users;
 using DMS_WebAPI.DBModel;
-using DMS_WebAPI.Models;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using Microsoft.AspNet.Identity.Owin;
@@ -54,8 +53,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
                 Email = user.Email,
                 Login = user.Email,
                 EmailConfirmed = user.EmailConfirmed,
-                IsLockout = user.IsLockout,
-               
+                LockoutEndDate = user.LockoutEndDateUtc
             };
 
             var res = new JsonResult(authInfo, this);
@@ -78,12 +76,35 @@ namespace DMS_WebAPI.ControllersV3.Auth
             if (!stopWatch.IsRunning) stopWatch.Restart();
 
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            webService.ChangeLoginAgentUser(model);
+            await webService.ChangeLoginAgentUser(model);
 
             var res = new JsonResult(null, this);
             res.SpentTime = stopWatch;
             return res;
         }
+
+        /// <summary>
+        /// Высылает письмо для подтверждения email
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route(Features.Info + "/ConfirmEmail")]
+        public async Task<IHttpActionResult> ConfirmEmail([FromBody]Item model)
+        {
+            if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
+
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            await webService.ConfirmEmailAgentUser(model.Id);
+
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
+
 
         /// <summary>
         /// Измененяет пароль
@@ -107,27 +128,6 @@ namespace DMS_WebAPI.ControllersV3.Auth
             return res;
         }
 
-        /// <summary>
-        /// Управляет блокировкой пользователя (управляет возможностью войти в систему)
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpPut]
-        [Route(Features.Info + "/ChangeLockout")]
-        public async Task<IHttpActionResult> ChangeLockout([FromBody]ChangeLockoutAgentUser model)
-        {
-            if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
-
-            if (!stopWatch.IsRunning) stopWatch.Restart();
-
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
-            var webService = DmsResolver.Current.Get<WebAPIService>();
-            await webService.ChangeLockoutAgentUserAsync(ctx, model);
-
-            var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
-            return res;
-        }
 
         /// <summary>
         /// Убиение всех активных сессий пользователя
@@ -175,8 +175,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
 
             AspNetUsers user = await userManager.FindByIdAsync(userId);
 
-            if (user == null)
-                throw new UserIsNotDefined();
+            if (user == null) throw new UserIsNotDefined();
 
             user.IsChangePasswordRequired = model.MustChangePassword;//true;
 

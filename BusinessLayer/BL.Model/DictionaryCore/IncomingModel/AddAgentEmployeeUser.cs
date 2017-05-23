@@ -26,8 +26,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
 
         [IgnoreDataMember]
         public bool IsChangePasswordRequired { get; set; } = true;
-        [IgnoreDataMember]
-        public bool IsEmailConfirmRequired { get; set; } = true;
+    
         [IgnoreDataMember]
         public bool EmailConfirmed { get; set; }
 

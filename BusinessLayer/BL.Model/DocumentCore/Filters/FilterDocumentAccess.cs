@@ -31,6 +31,10 @@ namespace BL.Model.DocumentCore.Filters
         /// Признак фаварита
         /// </summary>
         public bool? IsFavourite { get; set; } // should be true by default
+                                               /// <summary>
+                                               /// Признак того, что доступ исполнителя по документу. true - выполнять поиск иначе ничего не делаеться
+                                               /// </summary>
+        public bool? IsExecutorPosition { get; set; }
 
     }
 }

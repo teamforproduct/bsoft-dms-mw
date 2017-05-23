@@ -202,6 +202,7 @@
     <Compile Include="DictionaryCore\AgentEmployee\BaseDictionaryAgentEmployeeCommand.cs" />
     <Compile Include="DictionaryCore\AgentEmployee\ModifyDictionaryAgentEmployeeCommand.cs" />
     <Compile Include="DictionaryCore\AgentPerson\AddDictionaryAgentPersonCommand.cs" />
+    <Compile Include="DictionaryCore\AgentPerson\AddDictionaryAgentPersonExistingCommand.cs" />
     <Compile Include="DictionaryCore\Agent\DeleteDictionaryAgentImageCommand.cs" />
     <Compile Include="DictionaryCore\Agent\SetDictionaryAgentImageCommand.cs" />
     <Compile Include="DictionaryCore\AgentPerson\DeleteDictionaryAgentPersonCommand.cs" />

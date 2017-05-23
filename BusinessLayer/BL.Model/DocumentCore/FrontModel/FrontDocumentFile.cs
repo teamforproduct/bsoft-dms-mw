@@ -102,8 +102,8 @@ namespace BL.Model.DocumentCore.FrontModel
         public string FileLink { get; set; }
         public int? EventId { get; set; }
         /// <summary>
-        /// Событие
+        /// Можно ли создать ПДФ и превью для этого файла
         /// </summary>
-        //public FrontDocumentEvent Event { get; set; }
+        public bool PdfAcceptable { get; set; }
     }
 }

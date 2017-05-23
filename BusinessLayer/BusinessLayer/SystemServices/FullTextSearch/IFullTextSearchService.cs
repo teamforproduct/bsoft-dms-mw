@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using BL.CrossCutting.Context;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.SystemServices.MailWorker;
 using BL.Model.FullTextSearch;
@@ -13,5 +14,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
         List<FullTextSearchResult> SearchItems(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter, UIPaging paging = null);
         List<int> SearchItemParentId(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter, UIPaging paging = null);
         List<int> SearchItemId(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter, UIPaging paging = null);
+        void AddNewClient(AdminContext ctx);
+        void RemoveClient(int clientId);
     }
 }

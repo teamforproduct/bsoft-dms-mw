@@ -1,4 +1,6 @@
 ﻿using BL.Model.Common;
+using BL.Model.Extensions;
+using System;
 
 namespace BL.Model.DictionaryCore.FrontModel
 {
@@ -28,11 +30,10 @@ namespace BL.Model.DictionaryCore.FrontModel
         public bool EmailConfirmed { get; set; }
 
         /// <summary>
-        /// IsLockout - блокирован 
+        /// Дата, жл которой в последний раз был заблокирован пользователь в результате подбора пароля
         /// </summary>
-        public bool IsLockout { get; set; }
-
-
+        public DateTime? LockoutEndDate { get { return _LockoutEndDate; } set { _LockoutEndDate = value.ToUTC(); } }
+        private DateTime? _LockoutEndDate;
 
 
         //Id = user.Id, UserName = user.Email, IsLockout = user.IsLockout, Email = user.Email, EmailConfirmed = user.EmailConfirmed, IsEmailConfirmRequired = user.IsEmailConfirmRequired, IsChangePasswordRequired = user.IsChangePasswordRequired,  AccessFailedCount = user.AccessFailedCount

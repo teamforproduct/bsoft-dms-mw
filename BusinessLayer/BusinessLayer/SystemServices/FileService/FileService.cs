@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.DocumentCore.FrontModel;
-using BL.Model.SystemCore;
 
 namespace BL.Logic.SystemServices.FileService
 {
@@ -22,7 +21,7 @@ namespace BL.Logic.SystemServices.FileService
         {
             System.Reflection.FieldInfo oFieldInfo = Band.GetType().GetField(Band.ToString());
             DescriptionAttribute[] attributes =
-                (DescriptionAttribute[]) oFieldInfo.GetCustomAttributes(typeof (DescriptionAttribute), false);
+                (DescriptionAttribute[])oFieldInfo.GetCustomAttributes(typeof(DescriptionAttribute), false);
 
             if (attributes.Length > 0)
             {
@@ -43,7 +42,7 @@ namespace BL.Logic.SystemServices.FileService
                 string description = GetDescription(mimeType);
                 return description;
             }
-            catch 
+            catch
             {
                 return "application/octet-stream";
             }
@@ -51,7 +50,11 @@ namespace BL.Logic.SystemServices.FileService
 
         public string GetFileUri(string apiPrefix, string module, string feature, string fileType, int id)
         {
-            return string.IsNullOrEmpty(fileType) ? $"/{apiPrefix}/{module}/{feature}/{id}" : $"/{apiPrefix}/{module}/{feature}/{id}/{fileType}";
+            var res = $"/{apiPrefix.TrimEnd('/')}/{module}/{feature}/{id}";
+
+            if (!string.IsNullOrEmpty(fileType)) res = $"{res}/{fileType}";
+
+            return res;
         }
 
         // TODO Сервис получился завязан на файлы документов. Для шаблонов EnumFileTypes, аватарки пока хранятся в базе

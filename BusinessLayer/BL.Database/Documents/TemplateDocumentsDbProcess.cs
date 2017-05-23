@@ -192,12 +192,8 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                templateDocumentId =
-                    dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.Id == documentId)
-                        .Select(x => x.TemplateDocumentId)
-                        .FirstOrDefault();
-
-
+                templateDocumentId = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { documentId }, IsInWork = true })
+                    .Where(x => x.Id == documentId).Select(x => x.TemplateDocumentId) .FirstOrDefault();
                 var res = GetTemplateDocument(context, templateDocumentId);
                 transaction.Complete();
                 return res;
@@ -362,6 +358,7 @@ namespace BL.Database.Documents
                         Hash = x.Hash,
                         Description = x.Description,
                         PdfCreated = x.IsPdfCreated ?? false,
+                        PdfAcceptable = x.PdfAcceptable ?? false,
                         LastPdfAccess = x.LastPdfAccessDate,
                         File = new BaseFile
                         {
@@ -439,7 +436,8 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 //TODO: Уточнить безнес-логику, в каких случаях можно менять/удалять шаблон документа
-                var count = dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id).Count(x => x.TemplateDocumentId == template.Id);
+                var count = dbContext.DocumentsSet //Without security restrictions
+                    .Where(x => x.ClientId == context.Client.Id).Count(x => x.TemplateDocumentId == template.Id);
                 transaction.Complete();
                 return count == 0;
             }
@@ -1353,6 +1351,7 @@ namespace BL.Database.Documents
                             OrderInDocument = x.fl.OrderNumber,
                             Description = x.fl.Description,
                             PdfCreated = x.fl.IsPdfCreated ?? false,
+                            PdfAcceptable = x.fl.PdfAcceptable ?? false,
                             LastPdfAccess = x.fl.LastPdfAccessDate,
                             File = new BaseFile
                             {
@@ -1417,12 +1416,8 @@ namespace BL.Database.Documents
                             Type = (EnumFileTypes)x.TypeId,
                             Description = x.Description,
                             PdfCreated = x.IsPdfCreated ?? false,
-                            LastPdfAccess = x.LastPdfAccessDate//??DateTime.MinValue,
-                            //Name = x.Name,
-                            //Extension = x.Extention,
-                            //FileType = x.FileType,
-                            //FileSize = x.FileSize,
-                            //Hash = x.Hash,
+                            PdfAcceptable = x.PdfAcceptable ?? false,
+                            LastPdfAccess = x.LastPdfAccessDate
                         }).FirstOrDefault();
                 transaction.Complete();
                 return file;
@@ -1459,6 +1454,7 @@ namespace BL.Database.Documents
                 var entry = dbContext.Entry(fl);
                 entry.Property(x => x.IsPdfCreated).IsModified = true;
                 entry.Property(x => x.LastPdfAccessDate).IsModified = true;
+                entry.Property(x => x.PdfAcceptable).IsModified = true;
 
                 dbContext.SaveChanges();
                 CommonQueries.AddFullTextCacheInfo(context, docFile.Id, EnumObjects.TemplateDocumentAttachedFiles, EnumOperationType.UpdateFull);

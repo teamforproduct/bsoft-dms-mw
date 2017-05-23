@@ -1028,7 +1028,7 @@ namespace BL.Database.SystemDb
                     Id = x.Id,
                     Code = x.Code,
                     Description = x.Description,
-                    Category = x.Category,
+                    Category = (EnumActionCategories)x.CategoryId,
                     ObjectId = (EnumObjects)x.ObjectId
                 }).ToList();
 
@@ -1721,7 +1721,7 @@ namespace BL.Database.SystemDb
             using (var transaction = Transactions.GetTransaction())
             {
                 var date = DateTime.UtcNow.AddMinutes(-timeMinForClearTrashDocuments);
-                var qry = dbContext.DocumentsSet.Where(x => x.ClientId == ctx.Client.Id)
+                var qry = dbContext.DocumentsSet.Where(x => x.ClientId == ctx.Client.Id) //Without security restrictions
                     .Where(
                         x =>
                             !x.IsRegistered.HasValue && !x.Waits.Any() && !x.Subscriptions.Any() &&
