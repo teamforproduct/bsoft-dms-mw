@@ -827,21 +827,18 @@ namespace BL.Model.Exception
     }
 
     /// <summary>
-    /// Ошибка возникает при попытке задублировать паспортные данные физлица
-    /// </summary>
-    public class DictionaryAgentPersonPassportNotUnique : DmsExceptions
-    {
-        public DictionaryAgentPersonPassportNotUnique(string PassportSerial, int? PassportNumber) : base() { Parameters = new List<string> { PassportSerial, PassportNumber?.ToString() }; }
-        public DictionaryAgentPersonPassportNotUnique(System.Exception ex) : base(ex) { }
-    }
-
-    /// <summary>
     /// Ошибка возникает при попытке задублировать ИНН физлица
     /// </summary>
     public class DictionaryAgentPersonTaxCodeNotUnique : DmsExceptions
     {
         public DictionaryAgentPersonTaxCodeNotUnique(string TaxCode) : base() { Parameters = new List<string> { TaxCode }; }
         public DictionaryAgentPersonTaxCodeNotUnique(System.Exception ex) : base(ex) { }
+    }
+
+    public class DictionaryAgentPersonCompanyExists: DmsExceptions
+    {
+        public DictionaryAgentPersonCompanyExists(string CompanyName) : base() { Parameters = new List<string> { CompanyName }; }
+        public DictionaryAgentPersonCompanyExists(System.Exception ex) : base(ex) { }
     }
 
     /// <summary>
