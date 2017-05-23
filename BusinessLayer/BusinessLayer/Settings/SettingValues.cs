@@ -330,6 +330,19 @@ namespace BL.Logic.Settings
             return genSett.GetSetting<int>(EnumGeneralSettings.MaxFailedAccessAttemptsBeforeLockout);
         }
 
-        
+        public string GetGoogleReCaptchaURL()
+        {
+            var val = genSett.GetSetting<string>(EnumGeneralSettings.GoogleReCaptchaURL);
+            if (string.IsNullOrEmpty(val)) throw new SettingValueIsNotSet(EnumGeneralSettings.GoogleReCaptchaURL.ToString());
+            return val;
+        }
+
+        public string GetGoogleReCaptchaSecret()
+        {
+            var val = genSett.GetSetting<string>(EnumGeneralSettings.GoogleReCaptchaSecret);
+            if (string.IsNullOrEmpty(val)) throw new SettingValueIsNotSet(EnumGeneralSettings.GoogleReCaptchaSecret.ToString());
+            return val;
+        }
+
     }
 }

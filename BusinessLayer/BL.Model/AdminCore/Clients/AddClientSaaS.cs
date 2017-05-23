@@ -67,6 +67,14 @@ namespace BL.Model.AdminCore.Clients
         /// </summary>
         public string PhoneNumber { get; set; }
 
+
+        /// <summary>
+        /// Google Recaptcha
+        /// </summary>
+        [Required]
+        public string Recaptcha { get; set; }
+        
+
         [IgnoreDataMember]
         public string OrgName { get; set; }
 

@@ -102,8 +102,10 @@ namespace BL.CrossCutting.Interfaces
         int GetClearTrashDocumentsTimeoutMinuteForClear(IContext ctx);
 
 
-       
 
+        string GetGoogleReCaptchaSecret();
+
+        string GetGoogleReCaptchaURL();
 
 
     }
