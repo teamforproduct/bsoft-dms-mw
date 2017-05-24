@@ -389,11 +389,10 @@ namespace DMS_WebAPI.Utilities
                 {
                     if (res.IsNew)
                     {
-                        var tmp = new RestorePasswordAgentUser
+                        var tmp = new RestorePassword
                         {
                             ClientCode = _webDb.GetClientCode(context.Client.Id),
                             Email = res.Email,
-                            FirstEntry = "true",
                         };
 
                         // Это временная залипуха, нужно разбираться почему password-restore
@@ -1182,7 +1181,7 @@ namespace DMS_WebAPI.Utilities
 
         }
 
-        public async Task RestorePassword(RestorePasswordAgentUser model)
+        public async Task RestorePassword(RestorePassword model)
         {
             var user = await GetUserAsync(model.Email);
 
@@ -1192,16 +1191,17 @@ namespace DMS_WebAPI.Utilities
             if (UserManager.SupportsUserLockout && await UserManager.GetLockoutEnabledAsync(user.Id) && await UserManager.IsLockedOutAsync(user.Id)) throw new UserIsLockout();
 
             var settVal = DmsResolver.Current.Get<ISettingValues>();
-            string baseUrl = new Uri(new Uri(settVal.GetClientAddress(model.ClientCode)), "restore-password").ToString();
+
+            var baseUri = string.IsNullOrEmpty(model.ClientCode) ? new Uri(settVal.GetAuthAddress()) : new Uri(settVal.GetClientAddress(model.ClientCode));
+
+            string url = new Uri(baseUri, "restore-password").ToString();
 
             var passwordResetToken = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
 
-            var builder = new UriBuilder(baseUrl);
+            var builder = new UriBuilder(url);
             var newQuery = HttpUtility.ParseQueryString(builder.Query);
             newQuery.Add("UserId", user.Id);
             newQuery.Add("Code", passwordResetToken);
-
-            if (!string.IsNullOrEmpty(model.FirstEntry)) newQuery.Add("FirstEntry", model.FirstEntry);
 
             //var query = new NameValueCollection();
             //newQuery.Add(query);
@@ -1267,7 +1267,7 @@ namespace DMS_WebAPI.Utilities
             if (!result.Succeeded) throw new UserEmailCouldNotBeConfirmd(result.Errors);
         }
 
-        public async Task<string> ResetPassword(ConfirmRestorePassword model)
+        public async Task<string> ResetPassword(ResetPassword model)
         {
             var result = await UserManager.ResetPasswordAsync(model.UserId, model.Code, model.NewPassword);
 
