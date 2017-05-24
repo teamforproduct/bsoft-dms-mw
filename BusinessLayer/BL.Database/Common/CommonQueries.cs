@@ -219,7 +219,7 @@ namespace BL.Database.Common
                  {
                      if (info.CountVersions > 0)
                          x.CountVersions = info.CountVersions;
-                     if (info.IsNotAllWorkedOut && x.ExecutorPositionId.HasValue && context.CurrentPositionsIdList.Contains(x.ExecutorPositionId.Value))
+                     if (info.IsNotAllWorkedOut && x.ExecutorPositionId.HasValue && context.CurrentPositionsIdList.Contains(x.ExecutorPositionId.Value)) //TODO ADD LEVEL VERIFICATION
                          x.IsNotAllWorkedOut = info.IsNotAllWorkedOut;
                  }
              }
@@ -617,11 +617,11 @@ namespace BL.Database.Common
             {
                 qryAcc = GetDocumentAccessesQuery(context, new FilterDocumentAccess
                 {
-                    IsInWork = filter.IsInWork,
-                    IsFavourite = filter.IsFavourite,
-                    AccessLevelId = filter.AccessLevelId,
-                    AccessPositionId = filter.AccessPositionId,
-                    IsExecutorPosition = filter.IsExecutorPosition,
+                    IsInWork = filter?.IsInWork,
+                    IsFavourite = filter?.IsFavourite,
+                    AccessLevelId = filter?.AccessLevelId,
+                    AccessPositionId = filter?.AccessPositionId,
+                    IsExecutorPosition = filter?.IsExecutorPosition,
                 }, isDontVerifyAccess);
             }
             #endregion Filter access
