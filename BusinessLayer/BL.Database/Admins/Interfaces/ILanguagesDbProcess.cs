@@ -14,7 +14,6 @@ namespace BL.Database.Admins.Interfaces
 
         #region AdminLanguages
         IEnumerable<FrontAdminLanguage> GetAdminLanguages(IContext context, FilterAdminLanguage filter);
-        IEnumerable<FrontAdminUserLanguage> GetAdminUserLanguages(IContext context, int userId, FilterAdminLanguage filter);
         InternalAdminLanguage GetInternalAdminLanguage(IContext context, FilterAdminLanguage filter);
         int AddAdminLanguage(IContext context, InternalAdminLanguage model);
         void UpdateAdminLanguage(IContext context, InternalAdminLanguage model);

@@ -60,21 +60,6 @@ namespace DMS_WebAPI.ControllersV3.Auth
         }
 
         /// <summary>
-        /// НЕ ИСПОЛЬЗОВАТЬ!!!! Подтверждает пароль
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("ConfirmRestorePassword")]
-        public async Task<IHttpActionResult> ConfirmRestorePassword([FromBody]ConfirmRestorePassword model)
-        {
-            var webService = DmsResolver.Current.Get<WebAPIService>();
-            var res = await webService.ResetPassword(new ResetPassword { UserId = model.UserId, Code = model.Code, NewPassword = model.NewPassword });
-            return new JsonResult(new { UserName = res }, this);
-        }
-
-        /// <summary>
         /// Сбрасывает пароль
         /// </summary>
         /// <param name="model"></param>

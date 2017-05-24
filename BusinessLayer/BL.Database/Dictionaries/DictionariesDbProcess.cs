@@ -950,9 +950,7 @@ namespace BL.Database.Dictionaries
                     PersonnelNumber = x.PersonnelNumber,
                     TaxCode = x.Agent.AgentPeople.TaxCode,
 
-                    LanguageId = x.Agent.AgentUser.LanguageId,
-                    LanguageCode = x.Agent.AgentUser.Language.Code,
-                    LanguageName = x.Agent.AgentUser.Language.Name,
+                    
                     IsActive = x.IsActive,
                     Description = x.Description,
 
@@ -960,6 +958,10 @@ namespace BL.Database.Dictionaries
                     //PassportSerial = x.Agent.AgentPeople.PassportSerial,
                     //PassportNumber = x.Agent.AgentPeople.PassportNumber,
                     //PassportText = x.Agent.AgentPeople.PassportText,
+
+                    LanguageId = x.Agent.AgentUser.LanguageId,
+                    LanguageCode = x.Agent.AgentUser.Language.Code,
+                    LanguageName = x.Agent.AgentUser.Language.Name,
 
                 }).FirstOrDefault();
 
@@ -1270,23 +1272,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        public void SetAgentUserLanguage(IContext ctx, InternalDictionaryAgentUser User)
-        {
-            var dbContext = ctx.DbContext as DmsContext;
-            using (var transaction = Transactions.GetTransaction())
-            {
-                var dbModel = DictionaryModelConverter.GetDbAgentUser(ctx, User);
-
-                dbContext.SafeAttach(dbModel);
-                var entity = dbContext.Entry(dbModel);
-                entity.Property(x => x.LanguageId).IsModified = true;
-                entity.Property(x => x.LastChangeDate).IsModified = true;
-                entity.Property(x => x.LastChangeUserId).IsModified = true;
-                dbContext.SaveChanges();
-
-                transaction.Complete();
-            }
-        }
+        
 
         public void SetAgentUserLastPositionChose(IContext ctx, InternalDictionaryAgentUser User)
         {
@@ -1338,27 +1324,6 @@ namespace BL.Database.Dictionaries
             }
         }
 
-
-        public FrontDictionaryAgentUser GetAgentUser(IContext ctx, int id)
-        {
-            var dbContext = ctx.DbContext as DmsContext;
-            using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = GetAgentUsersQuery(ctx, new FilterDictionaryAgentUsers { IDs = new List<int> { id } });
-                // Where(x => x.ClientId == ctx.Client.Id).
-                var res = qry.Select(x => new FrontDictionaryAgentUser
-                {
-                    Id = x.Id,
-                    LanguageId = x.LanguageId,
-                    LanguageName = x.Language.Code,
-                    IsActive = x.Agent.AgentEmployee.IsActive,
-                    IsSendEMail = false, //TODO
-                    Name = x.Agent.Name,
-                }).FirstOrDefault();
-                transaction.Complete();
-                return res;
-            }
-        }
 
         public InternalDictionaryAgentUser GetInternalAgentUser(IContext ctx, int id)
         {

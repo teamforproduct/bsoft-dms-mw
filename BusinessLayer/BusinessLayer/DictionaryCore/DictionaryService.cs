@@ -186,6 +186,13 @@ namespace BL.Logic.DictionaryCore
             return uPic;
         }
 
+        /// <summary>
+        /// Возвращает id пользователя связанного с сотрудником
+        /// Если пользователь еще не зарегистрировался, то Empty 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="employeeId"></param>
+        /// <returns></returns>
         public string GetDictionaryAgentUserId(IContext context, int employeeId)
         {
             var user = _dictDb.GetInternalAgentUser(context, employeeId);
@@ -309,20 +316,6 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryAgentCompanies
 
         #region DictionaryAgentUser
-        public FrontDictionaryAgentUser GetDictionaryAgentUser(IContext context, int id)
-        {
-            return _dictDb.GetAgentUser(context, id);
-        }
-
-        public int SetAgentUserLanguage(IContext context, string languageCode)
-        {
-            var languageService = DmsResolver.Current.Get<ILanguages>();
-            var languageId = languageService.GetLanguageIdByCode(languageCode);
-            var model = new InternalDictionaryAgentUser { Id = context.CurrentAgentId, LanguageId = languageId };
-            CommonDocumentUtilities.SetLastChange(context, model);
-            _dictDb.SetAgentUserLanguage(context, model);
-            return languageId;
-        }
 
         public void SetDictionaryAgentUserLastPositionChose(IContext context, List<int> positionsIdList)
         {

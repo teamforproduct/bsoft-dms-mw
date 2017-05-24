@@ -63,7 +63,8 @@ namespace DMS_WebAPI.ControllersV3.Auth
 
 
         /// <summary>
-        /// Измененяет логин
+        /// Администратор меняет логин - жуть
+        /// Выбрасывает пользователя из всех его клиентов
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -107,7 +108,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
 
 
         /// <summary>
-        /// Измененяет пароль
+        /// Администратор мененяет пароль пользователю, жуть - чтобы под ним зайти наверное
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -128,9 +129,41 @@ namespace DMS_WebAPI.ControllersV3.Auth
             return res;
         }
 
+        /// <summary>
+        /// Управляет блокировкой пользователя (управляет возможностью войти в систему)
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Route(Features.Info + "/ChangeLockout")]
+        public async Task<IHttpActionResult> ChangeLockout([FromBody]ChangeLockoutAgentUser model)
+        {
+            if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
+
+            if (!stopWatch.IsRunning) stopWatch.Restart();
+
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+
+            if (model.IsLockout)
+            {
+                var userContexts = DmsResolver.Current.Get<UserContexts>();
+
+                var user = webService.GetUser(ctx, model.Id);
+
+                if (user == null) throw new UserIsNotDefined();
+
+                userContexts.RemoveByClientId(ctx.Client.Id, user.Id);
+            }
+
+            var res = new JsonResult(null, this);
+            res.SpentTime = stopWatch;
+            return res;
+        }
+
 
         /// <summary>
-        /// Убиение всех активных сессий пользователя
+        /// Убиение всех активных сессий пользователя в текущем клиенте
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -140,13 +173,15 @@ namespace DMS_WebAPI.ControllersV3.Auth
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
 
+            var webService = DmsResolver.Current.Get<WebAPIService>();
             var userContexts = DmsResolver.Current.Get<UserContexts>();
             var ctx = userContexts.Get();
 
-            var admService = DmsResolver.Current.Get<IAdminService>();
-            admService.ExecuteAction(EnumAdminActions.KillSessions, ctx, model.Id);
+            var user = webService.GetUser(ctx, model.Id);
 
-            userContexts.RemoveByAgentId(model.Id);
+            if (user == null) throw new UserIsNotDefined();
+
+            userContexts.RemoveByClientId(ctx.Client.Id, user.Id);
 
             var res = new JsonResult(null, this);
             res.SpentTime = stopWatch;
@@ -158,6 +193,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        // TODO перейти на UserId c AgentId 
         [HttpPut]
         [Route(Features.Info + "/SetMustChangePassword")]
         public async Task<IHttpActionResult> SetMustChangePassword([FromBody]MustChangePasswordAgentUser model)
@@ -197,6 +233,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info + "/SwitchOffFingerprint")]
+        // TODO перейти на UserId c AgentId 
         public async Task<IHttpActionResult> SwitchOffFingerprint([FromBody]Item model)
         {
             if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
