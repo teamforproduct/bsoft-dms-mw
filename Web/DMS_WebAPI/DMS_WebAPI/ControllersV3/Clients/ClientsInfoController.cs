@@ -29,10 +29,10 @@ namespace DMS_WebAPI.ControllersV3.Clients
         /// <returns></returns>
         [HttpPost]
         [Route("Create")]
-        public IHttpActionResult AddClientRequest([FromBody]AddClientSaaS model)
+        public async Task<IHttpActionResult> AddClientRequest([FromBody]AddClientSaaS model)
         {
             var tmpService = DmsResolver.Current.Get<WebAPIService>();
-            tmpService.AddClientSaaSRequest(model);
+            await tmpService.AddClientSaaSRequest(model);
             return new JsonResult(null, this);
         }
 

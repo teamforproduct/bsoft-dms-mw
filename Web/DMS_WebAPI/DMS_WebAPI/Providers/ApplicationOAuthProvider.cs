@@ -101,7 +101,7 @@ namespace DMS_WebAPI.Providers
                 await webService.ThrowErrorGrantResourceOwnerCredentials(context, new UserIsLockout());
             }
 
-            var passwordIsValid = userManager.CheckPassword(user, context.Password);
+            var passwordIsValid = await userManager.CheckPasswordAsync(user, context.Password);
 
             // Если для пользователя включена возможность самоблокировки
             if (userManager.SupportsUserLockout && await userManager.GetLockoutEnabledAsync(user.Id))

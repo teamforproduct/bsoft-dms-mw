@@ -7,9 +7,9 @@ namespace BL.Logic.SystemServices.TaskManagerService
 {
     public interface ITaskManager
     {
-        void AddTask(DatabaseModelForAdminContext dbModel, int periodInMinutes, IContext ctx, Action<IContext, object> action, object param = null);
-        void AddTask(List<DatabaseModelForAdminContext> dbModel, int periodInMinutes, Action<IContext, object> action, object param = null);
-        void AddTask(DatabaseModelForAdminContext dbModel, int periodInMinutes, Action<IContext, object> action, object param = null);
+        void AddTask(int periodInMinutes, Action<IContext, object> action, DatabaseModelForAdminContext dbModel, IContext ctx, object param = null);
+        void AddTask(int periodInMinutes, Action<IContext, object> action, List<DatabaseModelForAdminContext> dbModel, object param = null);
+        void AddTask(int periodInMinutes, Action<IContext, object> action, DatabaseModelForAdminContext dbModel = null, object param = null);
         void RemoveTask(DatabaseModelForAdminContext dbModel);
         void RemoveTaskForClient(int clientId);
     }

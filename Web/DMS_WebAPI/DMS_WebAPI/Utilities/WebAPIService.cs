@@ -32,12 +32,13 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security.OAuth;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using BL.Logic.SystemServices.TaskManagerService;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -267,10 +268,12 @@ namespace DMS_WebAPI.Utilities
                 {
                     if (model.OrgId == null && !string.IsNullOrEmpty(model.OrgName))
                     {
-                        var org = new AddOrg();
-                        org.FullName = model.OrgName;
-                        org.Name = model.OrgName;
-                        org.IsActive = true;
+                        var org = new AddOrg
+                        {
+                            FullName = model.OrgName,
+                            Name = model.OrgName,
+                            IsActive = true
+                        };
 
                         orgId = (int)dicService.ExecuteAction(EnumDictionaryActions.AddOrg, context, org);
                     }
@@ -282,12 +285,14 @@ namespace DMS_WebAPI.Utilities
 
                     if (model.DepartmentId == null && !string.IsNullOrEmpty(model.DepartmentName))
                     {
-                        var dep = new AddDepartment();
-                        dep.CompanyId = orgId;
-                        dep.FullName = model.DepartmentName;
-                        dep.Name = model.DepartmentName;
-                        dep.IsActive = true;
-                        dep.Index = model.DepartmentIndex;
+                        var dep = new AddDepartment
+                        {
+                            CompanyId = orgId,
+                            FullName = model.DepartmentName,
+                            Name = model.DepartmentName,
+                            IsActive = true,
+                            Index = model.DepartmentIndex
+                        };
 
                         depId = (int)dicService.ExecuteAction(EnumDictionaryActions.AddDepartment, context, dep);
                     }
@@ -362,13 +367,16 @@ namespace DMS_WebAPI.Utilities
 
 
                 // назначаю сотрудника на должность
-                var ass = new AddPositionExecutor();
-                ass.AccessLevelId = model.AccessLevel;
-                ass.AgentId = res.EmployeeId;
-                ass.IsActive = true;
-                ass.PositionId = posId;
-                ass.StartDate = DateTime.UtcNow.StartOfDay(); // AAV попросил делать назначение на начало дня.
-                ass.PositionExecutorTypeId = model.ExecutorType;
+                var ass = new AddPositionExecutor
+                {
+                    AccessLevelId = model.AccessLevel,
+                    AgentId = res.EmployeeId,
+                    IsActive = true,
+                    PositionId = posId,
+                    StartDate = DateTime.UtcNow.StartOfDay(),
+                    PositionExecutorTypeId = model.ExecutorType
+                };
+                // AAV попросил делать назначение на начало дня.
 
                 assignmentId = (int)dicService.ExecuteAction(EnumDictionaryActions.AddExecutor, context, ass);
 
@@ -487,7 +495,7 @@ namespace DMS_WebAPI.Utilities
         {
             var now = DateTime.UtcNow;
 
-            var user = new AspNetUsers()
+            var user = new AspNetUsers
             {
                 FirstName = firstName?.Trim(),
                 LastName = lastName?.Trim(),
@@ -503,7 +511,7 @@ namespace DMS_WebAPI.Utilities
 
             using (var transaction = Transactions.GetTransaction())
             {
-                IdentityResult result = UserManager.Create(user, userPassword);
+                var result = UserManager.Create(user, userPassword);
 
                 if (!result.Succeeded) throw new UserCouldNotBeAdded(userEmail, result.Errors);
 
@@ -640,8 +648,48 @@ namespace DMS_WebAPI.Utilities
             return _webDb.ExistsClientRequests(filter);
         }
 
-        public int AddClientSaaSRequest(AddClientSaaS model)
+        public async Task<int> AddClientSaaSRequest(AddClientSaaS model)
         {
+            if (!string.IsNullOrEmpty(model.Recaptcha))
+            {
+                //  https://developers.google.com/recaptcha/docs/verify
+                var setVal = DmsResolver.Current.Get<ISettingValues>();
+                var url = setVal.GetGoogleReCaptchaURL();
+
+                var values = new Dictionary<string, string>
+                {
+                   { "secret", setVal.GetGoogleReCaptchaSecret() }, // Required. The shared key between your site and reCAPTCHA.
+                   { "response", model.Recaptcha }, // Required. The user response token provided by reCAPTCHA, verifying the user on your site.
+                   //{ "remoteip",  }, // Optional. The user's IP address.
+                };
+
+                var content = new FormUrlEncodedContent(values);
+
+                var httpClient = DmsResolver.Current.Get<HttpClient>();
+
+                var response = await httpClient.PostAsync(url, content);
+
+                /* The response is a JSON object:
+                {
+                  "success": true|false,
+                  "challenge_ts": timestamp,  // timestamp of the challenge load (ISO format yyyy-MM-dd'T'HH:mm:ssZZ)
+                  "hostname": string,         // the hostname of the site where the reCAPTCHA was solved
+                  "error-codes": [...]        // optional
+                } */
+
+                //if (response.StatusCode != System.Net.HttpStatusCode.OK) throw new HttpException((int)response.StatusCode);
+
+                var json = await response.Content.ReadAsStringAsync();
+
+                var jObject = JObject.Parse(json);
+
+                if (jObject.Value<bool>("success") == false)
+                {
+                    throw new ClientCreateException(jObject.GetValue("error-codes").Select(x => x.ToString()).ToList());
+                }
+
+            }
+
             if (ExistsClient(new FilterAspNetClients { Code = model.ClientCode })) throw new ClientCodeAlreadyExists(model.ClientCode);
 
             if (string.IsNullOrEmpty(model.ClientName)) model.ClientName = model.ClientCode;
@@ -924,9 +972,7 @@ namespace DMS_WebAPI.Utilities
             {
                 //add workers for new client. Check if settings exists for that workers. 
                 var tskInit = DmsResolver.Current.Get<ICommonTaskInitializer>();
-                tskInit.InitializeAutoPlanTask(new List<DatabaseModelForAdminContext> { dbAdmin });
-                tskInit.InitializeClearTrashTask(new List<DatabaseModelForAdminContext> { dbAdmin });
-                tskInit.InitializeMailWorkerTask(new List<DatabaseModelForAdminContext> { dbAdmin });
+                tskInit.InitWorkersForClient(dbAdmin);
             }
             catch (Exception)
             {
@@ -948,15 +994,15 @@ namespace DMS_WebAPI.Utilities
 
             if (client == null) throw new ClientIsNotFound();
 
-            var clients = new List<int> { Id };
+            var taskManager = DmsResolver.Current.Get<ICommonTaskInitializer>();
+            taskManager.RemoveWorkersForClient(Id);
 
             var server = _webDb.GetClientServer(Id);
             var ctx = new AdminContext(server);
-            var taskManager = DmsResolver.Current.Get<ITaskManager>();
-            taskManager.RemoveTaskForClient(Id);
             var clientService = DmsResolver.Current.Get<IClientService>();
             clientService.Delete(ctx);
 
+            var clients = new List<int> { Id };
             //using (var transaction = Transactions.GetTransaction())
             {
                 _webDb.DeleteClientLicence(new FilterAspNetClientLicences { ClientIds = clients });
