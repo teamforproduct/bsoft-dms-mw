@@ -5,6 +5,7 @@ using BL.Model.SystemCore;
 using BL.Model.WebAPI.Filters;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -123,15 +124,14 @@ namespace DMS_WebAPI.ControllersV3.Clients
         /// <summary>
         /// Определяет существует ли уже заявка на создание клиента
         /// </summary>
-        /// <param name="filter"></param>
+        /// <param name="Code"></param>
         /// <returns></returns>
         [HttpGet]
-        [Route("Requests")]
-        public IHttpActionResult Get([FromUri] FilterAspNetClientRequests filter)
+        [Route("Request")]
+        public IHttpActionResult Get([FromUri] string Code)
         {
-            if (filter == null) throw new FilterRequired();
             var tmpService = DmsResolver.Current.Get<WebAPIService>();
-            var res = tmpService.GetClientRequest(filter);
+            var res = tmpService.GetClientRequest(new FilterAspNetClientRequests { HashCodeExact = Code }).FirstOrDefault();
             return new JsonResult(res, this);
         }
     }
