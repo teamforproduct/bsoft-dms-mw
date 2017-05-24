@@ -19,12 +19,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
     {
         Stopwatch stopWatch = new Stopwatch();
 
-        public class ConfirmEmail
-        {
-            public string userId { get; set; }
-
-            public string code { get; set; }
-        }
+        
 
         /// <summary>
         /// Подтверждает адрес пользователя
@@ -40,9 +35,9 @@ namespace DMS_WebAPI.ControllersV3.Auth
             if (!stopWatch.IsRunning) stopWatch.Restart();
 
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            await webService.ConfirmEmail(model.userId, model.code);
+            await webService.ConfirmEmail(model.UserId, model.Code);
 
-            var user = await webService.GetUserByIdAsync(model.userId);
+            var user = await webService.GetUserByIdAsync(model.UserId);
             var res = new JsonResult(new BL.Model.Context.User { Id = user.Id, Name = user.UserName, IsChangePasswordRequired = user.IsChangePasswordRequired }, this);
 
             res.SpentTime = stopWatch;
@@ -57,26 +52,11 @@ namespace DMS_WebAPI.ControllersV3.Auth
         [AllowAnonymous]
         [HttpPost]
         [Route("RestorePassword")]
-        public async Task<IHttpActionResult> RestorePassword(RestorePasswordAgentUser model)
+        public async Task<IHttpActionResult> RestorePassword(RestorePassword model)
         {
             var webService = DmsResolver.Current.Get<WebAPIService>();
             await webService.RestorePassword(model);
             return new JsonResult(null, this);
-        }
-
-        /// <summary>
-        /// Подтверждает пароль
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [AllowAnonymous]
-        [HttpPost]
-        [Route("ConfirmRestorePassword")]
-        public async Task<IHttpActionResult> ConfirmRestorePassword([FromBody]ConfirmRestorePassword model)
-        {
-            var webService = DmsResolver.Current.Get<WebAPIService>();
-            var res = await webService.ResetPassword(model);
-            return new JsonResult(new { UserName = res }, this);
         }
 
         /// <summary>
@@ -87,7 +67,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
         [AllowAnonymous]
         [HttpPost]
         [Route("ResetPassword")]
-        public async Task<IHttpActionResult> ResetPassword([FromBody]ConfirmRestorePassword model)
+        public async Task<IHttpActionResult> ResetPassword([FromBody]ResetPassword model)
         {
             var webService = DmsResolver.Current.Get<WebAPIService>();
             var res = await webService.ResetPassword(model);

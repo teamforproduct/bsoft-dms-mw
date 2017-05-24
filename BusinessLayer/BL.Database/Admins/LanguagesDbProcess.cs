@@ -87,26 +87,6 @@ namespace BL.Database.Admins
             }
         }
 
-        public IEnumerable<FrontAdminUserLanguage> GetAdminUserLanguages(IContext ctx, int userId, FilterAdminLanguage filter)
-        {
-            var dbContext = ctx.DbContext as DmsContext;
-            using (var transaction = Transactions.GetTransaction())
-            {
-                var qry = GetAdminLanguagesQuery(dbContext, filter);
-
-                var res = qry.Select(x => new FrontAdminUserLanguage
-                {
-                    Id = x.Id,
-                    Code = x.Code,
-                    Name = x.Name,
-                    IsDefault = x.IsDefault,
-                    IsChecked = x.AgentUsers.Where(y => y.LanguageId == x.Id).Any(),
-                }).ToList();
-                transaction.Complete();
-                return res;
-            }
-        }
-
         public InternalAdminLanguage GetInternalAdminLanguage(IContext ctx, FilterAdminLanguage filter)
         {
             var dbContext = ctx.DbContext as DmsContext;

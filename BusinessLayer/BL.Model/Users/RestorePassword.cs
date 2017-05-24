@@ -2,7 +2,7 @@
 
 namespace BL.Model.Users
 {
-    public class RestorePasswordAgentUser
+    public class RestorePassword
     {
         /// <summary>
         /// 
@@ -14,10 +14,6 @@ namespace BL.Model.Users
         /// <summary>
         /// 
         /// </summary>   
-        [Required]
         public string ClientCode { get; set; }
-
-        public string FirstEntry { get; set; }
-
     }
 }

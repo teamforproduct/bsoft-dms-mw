@@ -318,7 +318,7 @@ namespace BL.Database.Common
                 Id = item.Id,
                 UserId = item.UserId,
                 UserName = item.UserName,
-                LanguageId = item.LanguageId,
+                //LanguageId = item.LanguageId,
                 LastPositionChose = item.LastPositionChose,
                 //IsActive = item.IsActive,
                 LastChangeDate = item.LastChangeDate,

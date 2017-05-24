@@ -95,10 +95,6 @@ namespace BL.Logic.AdminCore
             return _languageDb.GetAdminLanguages(context, filter);
         }
 
-        public IEnumerable<FrontAdminUserLanguage> GetAdminUserLanguages(IContext context, int userId, FilterAdminLanguage filter)
-        {
-            return _languageDb.GetAdminUserLanguages(context, userId, filter);
-        }
 
         #endregion AdminLanguages
 
