@@ -1130,19 +1130,6 @@ namespace BL.Logic.Common
             return res;
         }
 
-        internal static string GetNextDocumentFileName(IContext context, int documentId, string name, string extention)
-        {
-            var _fileDb = DmsResolver.Current.Get<IDocumentFileDbProcess>();
-            var res = name;
-            var i = 1;
-            while (_fileDb.CheckFileForDocument(context, documentId, res, extention) > 0)
-            {
-                res = name + $" ({i})";
-                i++;
-            }
-            return res;
-        }
-
         internal static string GetTemplateNameForCopy(IContext context, string name)
         {
             var _templateDb = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();

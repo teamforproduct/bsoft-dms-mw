@@ -61,7 +61,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             //_document = _operationDb.RenameDocumentFilePrepare(_context, Model.DocumentId, Model.OrderInDocument);
             if (_document == null)
             {
-                throw new EmployeeHasNoAccessToDocument();
+                throw new DocumentNotFoundOrUserHasNoAccess();
             }
             if (_document.DocumentFiles == null || !_document.DocumentFiles.Any())
             {

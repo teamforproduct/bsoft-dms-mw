@@ -457,12 +457,6 @@ namespace BL.Model.Exception
         public EmployeeNotExecuteCheckPosition(System.Exception ex) : base(ex) { }
     }
 
-    public class EmployeeHasNoAccessToDocument : DmsExceptions
-    {
-        public EmployeeHasNoAccessToDocument() : base() { }
-        public EmployeeHasNoAccessToDocument(System.Exception ex) : base(ex) { }
-    }
-
     public class FileNotExists : DmsExceptions
     {
         public FileNotExists() : base() { }

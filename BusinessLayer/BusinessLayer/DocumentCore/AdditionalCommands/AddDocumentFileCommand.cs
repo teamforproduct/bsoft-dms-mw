@@ -57,7 +57,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _document = _operationDb.AddDocumentFilePrepare(_context, Model.Select(x => x.DocumentId).FirstOrDefault());
             if (_document == null)
             {
-                throw new EmployeeHasNoAccessToDocument();
+                throw new DocumentNotFoundOrUserHasNoAccess();
             }
             Model.ForEach(m =>
             {
@@ -71,9 +71,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                     {
                         throw new CouldNotPerformOperation();
                     }
-                    m.File.Name = mainFile.File.Name;
-                    m.File.Extension = mainFile.File.Extension;
-                    m.File.FileType = mainFile.File.FileType;
                     m.ExecutorPositionId = mainFile.ExecutorPositionId;
                 }
                 else
@@ -109,7 +106,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                                 }
                                 else
                                 {
-                                    m.File.Name = CommonDocumentUtilities.GetNextDocumentFileName(_context, att.DocumentId, m.File.Name, m.File.Extension);
                                     att.OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, m.DocumentId);
                                 }
                                 _fStore.SaveFile(_context, att);
