@@ -118,45 +118,45 @@ namespace BL.Database.Documents
                             (file, agent) => new { file, agent, source = file.Event.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source && file.ExecutorPositionId != y.PositionId) })
                     .Select(y => new FrontDocumentFile
                     {
-                                    Id = y.file.Id,
-                                    Date = y.file.Date,
-                                    DocumentId = y.file.DocumentId,
-                                    Type = (EnumFileTypes)y.file.TypeId,
-                                    TypeName = y.file.Type.Code,
-                                    IsMainVersion = y.file.IsMainVersion,
-                                    IsDeleted = y.file.IsDeleted,
-                                    IsWorkedOut = y.file.IsWorkedOut ?? true,
-                                    Description = y.file.IsDeleted ? null : y.file.Description,
-                                    LastChangeDate = y.file.LastChangeDate,
-                                    LastChangeUserId = y.file.LastChangeUserId,
-                                    LastChangeUserName = y.agent.Name,
-                                    OrderInDocument = y.file.OrderNumber,
-                                    Version = y.file.Version,
-                                    WasChangedExternal = false,
-                                    SourcePositionId = y.source.PositionId,
-                                    SourcePositionName = y.source.Position.Name,
-                                    SourcePositionExecutorAgentName = y.source.Agent.Name + (y.source.PositionExecutorType.Suffix != null ? " (" + y.source.PositionExecutorType.Suffix + ")" : null),
+                        Id = y.file.Id,
+                        Date = y.file.Date,
+                        DocumentId = y.file.DocumentId,
+                        Type = (EnumFileTypes)y.file.TypeId,
+                        TypeName = y.file.Type.Code,
+                        IsMainVersion = y.file.IsMainVersion,
+                        IsDeleted = y.file.IsDeleted,
+                        IsWorkedOut = y.file.IsWorkedOut ?? true,
+                        Description = y.file.IsDeleted ? null : y.file.Description,
+                        LastChangeDate = y.file.LastChangeDate,
+                        LastChangeUserId = y.file.LastChangeUserId,
+                        LastChangeUserName = y.agent.Name,
+                        OrderInDocument = y.file.OrderNumber,
+                        Version = y.file.Version,
+                        WasChangedExternal = false,
+                        SourcePositionId = y.source.PositionId,
+                        SourcePositionName = y.source.Position.Name,
+                        SourcePositionExecutorAgentName = y.source.Agent.Name + (y.source.PositionExecutorType.Suffix != null ? " (" + y.source.PositionExecutorType.Suffix + ")" : null),
 
-                                    ExecutorPositionId = y.file.ExecutorPositionId,
-                                    ExecutorPositionName = y.file.ExecutorPosition.Name,
-                                    ExecutorPositionExecutorAgentName = y.file.ExecutorPositionExecutorAgent.Name
+                        ExecutorPositionId = y.file.ExecutorPositionId,
+                        ExecutorPositionName = y.file.ExecutorPosition.Name,
+                        ExecutorPositionExecutorAgentName = y.file.ExecutorPositionExecutorAgent.Name
                                         + (y.file.ExecutorPositionExecutorType.Suffix != null ? " (" + y.file.ExecutorPositionExecutorType.Suffix + ")" : null),
-                                    DocumentDate = (y.file.Document.LinkId.HasValue || isNeedRegistrationFullNumber) ? y.file.Document.RegistrationDate ?? y.file.Document.CreateDate : (DateTime?)null,
-                                    RegistrationNumber = y.file.Document.RegistrationNumber,
-                                    RegistrationNumberPrefix = y.file.Document.RegistrationNumberPrefix,
-                                    RegistrationNumberSuffix = y.file.Document.RegistrationNumberSuffix,
-                                    RegistrationFullNumber = "#" + y.file.Document.Id,
-                                    EventId = y.file.EventId,
-                                    PdfAcceptable = y.file.PdfAcceptable??false,
-                                    File = new BaseFile
-                                    {
-                                        Extension = y.file.IsDeleted ? null : y.file.Extension,
-                                        FileType = y.file.IsDeleted ? null : y.file.FileType,
-                                        FileSize = y.file.IsDeleted ? (long?)null : y.file.FileSize,
-                                        Name = y.file.IsDeleted ? "##l@General:FileHasBeenDeleted@l##" : y.file.Name,
-                                    },
+                        DocumentDate = (y.file.Document.LinkId.HasValue || isNeedRegistrationFullNumber) ? y.file.Document.RegistrationDate ?? y.file.Document.CreateDate : (DateTime?)null,
+                        RegistrationNumber = y.file.Document.RegistrationNumber,
+                        RegistrationNumberPrefix = y.file.Document.RegistrationNumberPrefix,
+                        RegistrationNumberSuffix = y.file.Document.RegistrationNumberSuffix,
+                        RegistrationFullNumber = "#" + y.file.Document.Id,
+                        EventId = y.file.EventId,
+                        PdfAcceptable = y.file.PdfAcceptable ?? false,
+                        File = new BaseFile
+                        {
+                            Extension = y.file.IsDeleted ? null : y.file.Extension,
+                            FileType = y.file.IsDeleted ? null : y.file.FileType,
+                            FileSize = y.file.IsDeleted ? (long?)null : y.file.FileSize,
+                            Name = y.file.IsDeleted ? "##l@General:FileHasBeenDeleted@l##" : y.file.Name,
+                        },
 
-                                });
+                    });
 
                 var res = qryFE.ToList();
 
@@ -180,6 +180,7 @@ namespace BL.Database.Documents
                 }
 
                 res.ForEach(x => CommonQueries.SetRegistrationFullNumber(x));
+                CommonQueries.SetCountVersions(context, res, filter?.File);
                 //var events = res.Select(x => x.Event).ToList();
                 //CommonQueries.SetAccessGroups(context, events);
                 //CommonQueries.SetWaitInfo(context, events);
@@ -196,37 +197,37 @@ namespace BL.Database.Documents
             {
                 var res = dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.Client.Id).Where(x => x.Id == id)
                     .Join(dbContext.DictionaryAgentsSet, o => o.LastChangeUserId, i => i.Id,
-                            (file, agent) => new { file, agent, source = file.Event.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source && file.ExecutorPositionId!=y.PositionId )})
+                            (file, agent) => new { file, agent, source = file.Event.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source && file.ExecutorPositionId != y.PositionId) })
                     .Select(y => new FrontDocumentFile
                     {
-                            Id = y.file.Id,
-                            Date = y.file.Date,
-                            DocumentId = y.file.DocumentId,
-                            Type = (EnumFileTypes)y.file.TypeId,
-                            TypeName = y.file.Type.Code,
-                            Hash = y.file.Hash,
-                            LastChangeDate = y.file.LastChangeDate,
-                            LastChangeUserId = y.file.LastChangeUserId,
-                            LastChangeUserName = y.agent.Name,
-                            OrderInDocument = y.file.OrderNumber,
-                            Version = y.file.Version,
-                            WasChangedExternal = false,
-                            SourcePositionId = y.source.PositionId,
-                            SourcePositionName = y.source.Position.Name,
-                            SourcePositionExecutorAgentName = y.source.Agent.Name + (y.source.PositionExecutorType.Suffix != null ? " (" + y.source.PositionExecutorType.Suffix + ")" : null),
+                        Id = y.file.Id,
+                        Date = y.file.Date,
+                        DocumentId = y.file.DocumentId,
+                        Type = (EnumFileTypes)y.file.TypeId,
+                        TypeName = y.file.Type.Code,
+                        Hash = y.file.Hash,
+                        LastChangeDate = y.file.LastChangeDate,
+                        LastChangeUserId = y.file.LastChangeUserId,
+                        LastChangeUserName = y.agent.Name,
+                        OrderInDocument = y.file.OrderNumber,
+                        Version = y.file.Version,
+                        WasChangedExternal = false,
+                        SourcePositionId = y.source.PositionId,
+                        SourcePositionName = y.source.Position.Name,
+                        SourcePositionExecutorAgentName = y.source.Agent.Name + (y.source.PositionExecutorType.Suffix != null ? " (" + y.source.PositionExecutorType.Suffix + ")" : null),
 
-                            ExecutorPositionId = y.file.ExecutorPositionId,
-                            ExecutorPositionName = y.file.ExecutorPosition.Name,
-                            ExecutorPositionExecutorAgentName = y.file.ExecutorPositionExecutorAgent.Name + (y.file.ExecutorPositionExecutorType.Suffix != null ? " (" + y.file.ExecutorPositionExecutorType.Suffix + ")" : null),
-                            EventId = y.file.EventId,
-                            Description = y.file.IsDeleted ? null : y.file.Description,
-                            File = new BaseFile
-                            {
-                                Extension = y.file.IsDeleted ? null : y.file.Extension,
-                                FileType = y.file.IsDeleted ? null : y.file.FileType,
-                                FileSize = y.file.IsDeleted ? (long?)null : y.file.FileSize,
-                                Name = y.file.IsDeleted ? "##l@General:FileHasBeenDeleted@l##" : y.file.Name,
-                            },
+                        ExecutorPositionId = y.file.ExecutorPositionId,
+                        ExecutorPositionName = y.file.ExecutorPosition.Name,
+                        ExecutorPositionExecutorAgentName = y.file.ExecutorPositionExecutorAgent.Name + (y.file.ExecutorPositionExecutorType.Suffix != null ? " (" + y.file.ExecutorPositionExecutorType.Suffix + ")" : null),
+                        EventId = y.file.EventId,
+                        Description = y.file.IsDeleted ? null : y.file.Description,
+                        File = new BaseFile
+                        {
+                            Extension = y.file.IsDeleted ? null : y.file.Extension,
+                            FileType = y.file.IsDeleted ? null : y.file.FileType,
+                            FileSize = y.file.IsDeleted ? (long?)null : y.file.FileSize,
+                            Name = y.file.IsDeleted ? "##l@General:FileHasBeenDeleted@l##" : y.file.Name,
+                        },
                     }).FirstOrDefault();
                 transaction.Complete();
                 return res;
@@ -245,8 +246,8 @@ namespace BL.Database.Documents
                         ClientId = x.ClientId,
                         EntityTypeId = x.EntityTypeId,
                         PdfCreated = x.IsPdfCreated ?? false,
-                        PdfAcceptable = x.PdfAcceptable??false,
-                        LastPdfAccess = x.LastPdfAccessDate 
+                        PdfAcceptable = x.PdfAcceptable ?? false,
+                        LastPdfAccess = x.LastPdfAccessDate
                     }).FirstOrDefault();
                 transaction.Complete();
                 return res;

@@ -62,6 +62,10 @@ namespace BL.Model.DocumentCore.FrontModel
         /// Версия вложения
         /// </summary>
         public int Version { get; set; }
+        /// <summary>
+        /// Количество версий для основного файла
+        /// </summary>
+        public int? CountVersions { get; set; }
 
         /// <summary>
         /// Дата создания файла

@@ -196,6 +196,28 @@ namespace BL.Database.Common
                 item.OnWait = null;
             }
         }
+        public static void SetCountVersions(IContext context, List<FrontDocumentFile> items, FilterDocumentFile filter)
+        {
+            var dbContext = context.DbContext as DmsContext;
+            var qry = items.Where(x => x != null && x.IsMainVersion);
+            var files = qry.Select(x => new { x.DocumentId, x.OrderInDocument }).ToList();
+            if (!files.Any()) return;
+            var filterContains = PredicateBuilder.New<DocumentFiles>(false);
+            filterContains = files.Aggregate(filterContains, (current, value) => current.Or(e => e.DocumentId == value.DocumentId && e.OrderNumber == value.OrderInDocument).Expand());
+            var qryCount = dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id).Where(x => !x.IsMainVersion).Where(filterContains);
+            if (!filter.IsAllDeleted)
+            {
+                qryCount = qryCount.Where(x => x.IsDeleted == filter.IsDeleted);
+            }
+            var counter = qryCount.GroupBy(x => new { x.DocumentId, x.OrderNumber }).Select(x => new { x.Key.DocumentId, x.Key.OrderNumber, CountVersions = x.Count() }).Where(x => x.CountVersions > 0).ToList();
+            qry.ToList().ForEach(x =>
+             {
+                 var count = counter.Where(y => y.DocumentId == x.DocumentId && y.OrderNumber == x.OrderInDocument).Select(y => y.CountVersions).FirstOrDefault();
+                 if (count > 0)
+                     x.CountVersions = count;
+             }
+            );
+        }
         #endregion
 
         #region Documents
@@ -610,7 +632,7 @@ namespace BL.Database.Common
                     qry = qry.Where(x => qryAcc.Select(a => a.DocumentId).Contains(x.Id));
                 var qryAll = qry.Concat(qryRJA);
                 qry = dbContext.DocumentsSet    //Without security restrictions
-                    .Where(x => qryAll.Any(y => y.Id==x.Id)); //Without duplicates
+                    .Where(x => qryAll.Any(y => y.Id == x.Id)); //Without duplicates
             }
             else
                 qry = qry.Where(x => qryAcc.Select(a => a.DocumentId).Contains(x.Id));
