@@ -113,7 +113,8 @@ namespace BL.Database.Documents
                 }
                 var isNeedRegistrationFullNumber = !(filter?.File?.DocumentId?.Any() ?? false);
 
-                var qryFE = dbContext.DocumentFilesSet.Where(x => qryRes.Select(y => y.Id).Contains(x.Id)).OrderByDescending(x => x.LastChangeDate)
+                var qryFE = dbContext.DocumentFilesSet  //Without security restrictions
+                    .Where(x => qryRes.Select(y => y.Id).Contains(x.Id)).OrderByDescending(x => x.LastChangeDate)
                     .Join(dbContext.DictionaryAgentsSet, o => o.LastChangeUserId, i => i.Id,
                             (file, agent) => new { file, agent, source = file.Event.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source && file.ExecutorPositionId != y.PositionId) })
                     .Select(y => new FrontDocumentFile
@@ -157,30 +158,10 @@ namespace BL.Database.Documents
                         },
 
                     });
-
                 var res = qryFE.ToList();
 
-                if (res.Any(x => x.IsMainVersion))
-                {
-                    var filterContains = PredicateBuilder.New<DocumentFiles>(false);
-                    filterContains = res.Where(x => x.IsMainVersion).Select(x => new { x.DocumentId, x.OrderInDocument }).ToList()
-                                        .Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.DocumentId == value.DocumentId && e.OrderNumber == value.OrderInDocument).Expand());
-
-                    var isNotAllWorkedOut = dbContext.DocumentFilesSet.Where(filterContains)
-                                .Where(x => !x.IsDeleted)
-                                .GroupBy(x => new { x.DocumentId, x.OrderNumber })
-                                .Select(x => new
-                                {
-                                    DocumentId = x.Key.DocumentId,
-                                    OrderNumber = x.Key.OrderNumber,
-                                    IsNotAllWorkedOut = x.Any(y => y.IsWorkedOut == false)
-                                }).ToList();
-                    res.ForEach(x => x.IsNotAllWorkedOut = isNotAllWorkedOut.FirstOrDefault(y => y.DocumentId == x.DocumentId && y.OrderNumber == x.OrderInDocument)?.IsNotAllWorkedOut ?? false);
-                }
-
-                res.ForEach(x => CommonQueries.SetRegistrationFullNumber(x));
-                CommonQueries.SetCountVersions(context, res, filter?.File);
+               res.ForEach(x => CommonQueries.SetRegistrationFullNumber(x));
+                CommonQueries.SetFileInfo(context, res, filter?.File);
                 //var events = res.Select(x => x.Event).ToList();
                 //CommonQueries.SetAccessGroups(context, events);
                 //CommonQueries.SetWaitInfo(context, events);

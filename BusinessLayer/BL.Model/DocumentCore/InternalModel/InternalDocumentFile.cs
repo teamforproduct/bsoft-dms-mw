@@ -22,7 +22,7 @@ namespace BL.Model.DocumentCore.InternalModel
             Description = doc.Description;
             DocumentId = doc.DocumentId ?? -1;
             Id = doc.Id;
-            OrderInDocument = doc.OrderInDocument;
+            OrderInDocument = doc.OrderInDocument??0;
             File = doc.File;
         }
 

@@ -50,7 +50,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override bool CanExecute()
         {
             var tempStorageService = DmsResolver.Current.Get<ITempStorageService>();
-            Model.ForEach(x => x.File = tempStorageService.GetStoreObject(x.TmpFileId) as BaseFile);
+            Model.ForEach(x => x.File = x.TmpFileId.HasValue ? tempStorageService.GetStoreObject(x.TmpFileId.Value) as BaseFile : null);
             if (Model.Any(x => x.File == null))
                 throw new CannotAccessToFile();
             _adminProc.VerifyAccess(_context, CommandType);

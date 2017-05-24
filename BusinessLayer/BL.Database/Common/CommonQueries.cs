@@ -77,10 +77,7 @@ namespace BL.Database.Common
             var dbContext = context.DbContext as DmsContext;
             var ids = items.Where(x => x != null).Select(x => x.Id).ToList();
             if (!ids.Any()) return;
-            var filterContains = PredicateBuilder.New<DocumentFiles>(false);
-            filterContains = ids.Aggregate(filterContains,
-                (current, value) => current.Or(e => e.EventId == value).Expand());
-            var qry = dbContext.DocumentFilesSet.Where(filterContains);
+            var qry = CommonQueries.GetDocumentFileQuery(context, new FilterDocumentFile { EventId = ids });
             var files = qry.GroupBy(x => x.EventId).Select(x => new
             {
                 EventId = x.Key,
@@ -196,25 +193,35 @@ namespace BL.Database.Common
                 item.OnWait = null;
             }
         }
-        public static void SetCountVersions(IContext context, List<FrontDocumentFile> items, FilterDocumentFile filter)
+        public static void SetFileInfo(IContext context, List<FrontDocumentFile> items, FilterDocumentFile filter)
         {
             var dbContext = context.DbContext as DmsContext;
             var qry = items.Where(x => x != null && x.IsMainVersion);
             var files = qry.Select(x => new { x.DocumentId, x.OrderInDocument }).ToList();
-            if (!files.Any()) return;
-            var filterContains = PredicateBuilder.New<DocumentFiles>(false);
-            filterContains = files.Aggregate(filterContains, (current, value) => current.Or(e => e.DocumentId == value.DocumentId && e.OrderNumber == value.OrderInDocument).Expand());
-            var qryCount = dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id).Where(x => !x.IsMainVersion).Where(filterContains);
-            if (!filter.IsAllDeleted)
+            if (!qry.Any()) return;
+            var qryCount = CommonQueries.GetDocumentFileQuery(context, new FilterDocumentFile
             {
-                qryCount = qryCount.Where(x => x.IsDeleted == filter.IsDeleted);
-            }
-            var counter = qryCount.GroupBy(x => new { x.DocumentId, x.OrderNumber }).Select(x => new { x.Key.DocumentId, x.Key.OrderNumber, CountVersions = x.Count() }).Where(x => x.CountVersions > 0).ToList();
+                DocumentId = qry.Where(x => x.DocumentId.HasValue).Select(x => x.DocumentId.Value).ToList(),
+                OrderInDocument = qry.Where(x => x.OrderInDocument.HasValue).Select(x => x.OrderInDocument.Value).ToList(),
+                IsAllDeleted = filter?.IsAllDeleted ?? false,
+                IsDeleted = filter?.IsDeleted ?? false,
+                IsAllVersion = false,
+                IsMainVersion = false,
+            });
+            var counter = qryCount.GroupBy(x => new { x.DocumentId, x.OrderNumber })
+                .Select(x => new { x.Key.DocumentId, x.Key.OrderNumber, CountVersions = x.Count(), IsNotAllWorkedOut = x.Any(y => !(y.IsWorkedOut ?? true)) })
+                .Where(x => x.CountVersions > 0).ToList();
             qry.ToList().ForEach(x =>
              {
-                 var count = counter.Where(y => y.DocumentId == x.DocumentId && y.OrderNumber == x.OrderInDocument).Select(y => y.CountVersions).FirstOrDefault();
-                 if (count > 0)
-                     x.CountVersions = count;
+                 var info = counter.Where(y => y.DocumentId == x.DocumentId && y.OrderNumber == x.OrderInDocument)
+                 .Select(y => new { y.CountVersions, y.IsNotAllWorkedOut }).FirstOrDefault();
+                 if (info != null)
+                 {
+                     if (info.CountVersions > 0)
+                         x.CountVersions = info.CountVersions;
+                     if (info.IsNotAllWorkedOut && x.ExecutorPositionId.HasValue && context.CurrentPositionsIdList.Contains(x.ExecutorPositionId.Value))
+                         x.IsNotAllWorkedOut = info.IsNotAllWorkedOut;
+                 }
              }
             );
         }
@@ -605,15 +612,16 @@ namespace BL.Database.Common
             IQueryable<DocumentAccesses> qryAcc = null;
 
             #region Filter access
-            if (!isDontVerifyAccess || filter.IsInWork.HasValue || filter.IsFavourite.HasValue || filter.IsExecutorPosition.HasValue || filter.AccessLevelId?.Count() > 0)
+            var isAccFilter = filter != null && (filter.IsInWork.HasValue || filter.IsFavourite.HasValue || filter.IsExecutorPosition.HasValue || filter.AccessLevelId?.Count() > 0);
+            if (!isDontVerifyAccess || isAccFilter)
             {
                 qryAcc = GetDocumentAccessesQuery(context, new FilterDocumentAccess
                 {
-                    IsInWork = filter?.IsInWork,
-                    IsFavourite = filter?.IsFavourite,
-                    AccessLevelId = filter?.AccessLevelId,
-                    AccessPositionId = filter?.AccessPositionId,
-                    IsExecutorPosition = filter?.IsExecutorPosition,
+                    IsInWork = filter.IsInWork,
+                    IsFavourite = filter.IsFavourite,
+                    AccessLevelId = filter.AccessLevelId,
+                    AccessPositionId = filter.AccessPositionId,
+                    IsExecutorPosition = filter.IsExecutorPosition,
                 }, isDontVerifyAccess);
             }
             #endregion Filter access
@@ -622,7 +630,8 @@ namespace BL.Database.Common
             filterPositionsIdList = context.CurrentPositionsIdList.Aggregate(filterPositionsIdList, (current, value) => current.Or(e => e.PositionId == value).Expand());
             if (dbContext.AdminRegistrationJournalPositionsSet
                 .Where(filterPositionsIdList).Where(x => x.RegJournalAccessTypeId == (int)EnumRegistrationJournalAccessTypes.View)
-                .Select(x => x.RegJournalId).Any())
+                .Select(x => x.RegJournalId).Any()
+                && !isAccFilter)
             {
                 var qryRJA = qry.Where(x => x.RegistrationJournalId.HasValue
                                 && dbContext.AdminRegistrationJournalPositionsSet
@@ -956,7 +965,7 @@ namespace BL.Database.Common
         public static List<IQueryable<DocumentFiles>> GetDocumentFileQueries(IContext context, FilterDocumentFile filter, bool isDontVerifyAccess = false)
         {
             var dbContext = context.DbContext as DmsContext;
-            var qry = dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id).AsQueryable();
+            var qry = dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id);  //Without security restrictions
 
             if (!isDontVerifyAccess && !context.IsAdmin)
             {
@@ -970,9 +979,7 @@ namespace BL.Database.Common
                 if (filter.FileId?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.New<DocumentFiles>(false);
-                    filterContains = filter.FileId.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Id == value).Expand());
-
+                    filterContains = filter.FileId.Aggregate(filterContains, (current, value) => current.Or(e => e.Id == value).Expand());
                     qry = qry.Where(filterContains);
                 }
 
@@ -986,27 +993,27 @@ namespace BL.Database.Common
                 if (filter.DocumentId?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.New<DocumentFiles>(false);
-                    filterContains = filter.DocumentId.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.DocumentId == value).Expand());
-
+                    filterContains = filter.DocumentId.Aggregate(filterContains, (current, value) => current.Or(e => e.DocumentId == value).Expand());
+                    qry = qry.Where(filterContains);
+                }
+                if (filter.EventId?.Count > 0)
+                {
+                    var filterContains = PredicateBuilder.New<DocumentFiles>(false);
+                    filterContains = filter.EventId.Aggregate(filterContains, (current, value) => current.Or(e => e.EventId == value).Expand());
                     qry = qry.Where(filterContains);
                 }
 
                 if (filter.OrderInDocument?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.New<DocumentFiles>(false);
-                    filterContains = filter.OrderInDocument.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.OrderNumber == value).Expand());
-
+                    filterContains = filter.OrderInDocument.Aggregate(filterContains, (current, value) => current.Or(e => e.OrderNumber == value).Expand());
                     qry = qry.Where(filterContains);
                 }
 
                 if (filter.Types?.Count() > 0)
                 {
                     var filterContains = PredicateBuilder.New<DocumentFiles>(false);
-                    filterContains = filter.Types.Cast<int>().Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.TypeId == value).Expand());
-
+                    filterContains = filter.Types.Cast<int>().Aggregate(filterContains, (current, value) => current.Or(e => e.TypeId == value).Expand());
                     qry = qry.Where(filterContains);
                 }
 
@@ -1060,23 +1067,20 @@ namespace BL.Database.Common
                 if (filter.AgentId?.Count() > 0)
                 {
                     var filterContains = PredicateBuilder.New<DocumentFiles>(false);
-                    filterContains = filter.AgentId.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.LastChangeUserId == value).Expand());
-
+                    filterContains = filter.AgentId.Aggregate(filterContains, (current, value) => current.Or(e => e.LastChangeUserId == value).Expand());
                     qry = qry.Where(filterContains);
                 }
                 if (filter.IsMyFiles ?? false)
                 {
                     var filterContains = PredicateBuilder.New<DocumentFiles>(false);
-                    filterContains = context.CurrentPositionsIdList.Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.ExecutorPositionId == value).Expand());
+                    filterContains = context.CurrentPositionsIdList.Aggregate(filterContains, (current, value) => current.Or(e => e.ExecutorPositionId == value).Expand());
                     qry = qry.Where(filterContains);
                 }
             }
             #endregion Filter
             var res = new List<IQueryable<DocumentFiles>>();
 
-            if (!context.IsAdmin)
+            if (!context.IsAdmin && !isDontVerifyAccess)
             {
                 res.Add(qry.Where(x => x.TypeId != (int)EnumFileTypes.Additional));
                 var filterPositionContains = PredicateBuilder.New<DocumentEventAccesses>(false);

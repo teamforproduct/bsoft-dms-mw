@@ -15,6 +15,10 @@ namespace BL.Model.DocumentCore.Filters
         /// </summary>
         public List<int> DocumentId { get; set; }
         /// <summary>
+        /// Массив ИД событий
+        /// </summary>
+        public List<int> EventId { get; set; }
+        /// <summary>
         /// Отобрать по связанным документам
         /// Работает только если в DocumentId передан один ID
         /// </summary>
