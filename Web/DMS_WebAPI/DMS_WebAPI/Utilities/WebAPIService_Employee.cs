@@ -264,38 +264,47 @@ namespace DMS_WebAPI.Utilities
                 // Если пользователь уже был в базе, то ему нужно выслать только ссылку на нового клиента, а если нет то ссылку на смену пароля
                 if (sendEmail)
                 {
+                    var clickURL = string.Empty;
+                    var clientCode = _webDb.GetClientCode(context.Client.Id);
+                    var settVal = DmsResolver.Current.Get<ISettingValues>();
+
                     if (res.IsNew)
                     {
-                        var tmp = new RestorePassword
-                        {
-                            ClientCode = _webDb.GetClientCode(context.Client.Id),
-                            Email = res.Email,
-                        };
+                        var baseUri = new Uri(settVal.GetClientAddress(clientCode));
 
-                        // Это временная залипуха, нужно разбираться почему password-restore
-                        //Task.Factory.StartNew(async () => { await RestorePasswordAgentUserAsync(tmp); }).Wait();
+                        string url = new Uri(baseUri, "finish-registration").ToString();
 
-                        RestorePassword(tmp);
+                        var passwordResetToken = UserManager.GeneratePasswordResetToken(res.Id);
+
+                        var builder = new UriBuilder(url);
+                        var newQuery = HttpUtility.ParseQueryString(builder.Query);
+                        newQuery.Add("UserId", res.Id);
+                        newQuery.Add("Code", passwordResetToken);
+
+                        builder.Query = newQuery.ToString();
+
+                        clickURL = builder.ToString();
                     }
                     else
                     {
-                        var clientCode = _webDb.GetClientCode(context.Client.Id);
-                        var settVal = DmsResolver.Current.Get<ISettingValues>();
-                        var we = new WelcomeEmailModel()
-                        {
-                            UserName = res.UserName,
-                            UserEmail = res.Email,
-                            ClientUrl = settVal.GetClientAddress(clientCode),
-                            CabinetUrl = settVal.GetClientAddress(clientCode) + "/cabinet/",
-                            OstreanEmail = settVal.GetMailDocumEmail(),
-                            SpamUrl = settVal.GetMailNoreplyEmail(),
-                        };
-
-                        var htmlContent = we.RenderPartialViewToString(RenderPartialView.WelcomeEmail);
-                        var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-
-                        mailService.SendMessage(null, MailServers.Noreply, res.Email, languages.GetTranslation(model.LanguageId, "##l@Mail.Welcome.Subject@l##"), htmlContent);
+                        clickURL = settVal.GetClientAddress(clientCode);
                     }
+
+                    var we = new WelcomeEmailModel()
+                    {
+                        Url = clickURL,
+                        FirstName = model.FirstName,
+                        ClientName= clientCode,
+                        OrgName = model.OrgName,
+                        DepartmentName = model.DepartmentIndex + " " + model.DepartmentName,
+                        PostionsName = model.PositionName,
+                        Period = "от забора до обеда"
+                    };
+
+                    var htmlContent = we.RenderPartialViewToString(RenderPartialView.WelcomeEmail);
+                    var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
+
+                    mailService.SendMessage(null, MailServers.Noreply, res.Email, languages.GetTranslation(model.LanguageId, "##l@Mail.Welcome.Subject@l##"), htmlContent);
                 }
 
                 return res.EmployeeId;

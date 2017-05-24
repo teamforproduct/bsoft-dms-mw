@@ -407,6 +407,11 @@ namespace DMS_WebAPI.Utilities
             return _webDb.ExistsClientRequests(filter);
         }
 
+        public IEnumerable<FrontAspNetClientRequest> GetClientRequest(FilterAspNetClientRequests filter)
+        {
+            return _webDb.GetClientRequests(filter);
+        }
+
         public async Task<int> AddClientSaaSRequest(AddClientSaaS model)
         {
             if (!string.IsNullOrEmpty(model.Recaptcha))
@@ -477,16 +482,18 @@ namespace DMS_WebAPI.Utilities
                 // isNew можно вычислить только на текущий момент времени (пользователь может сделать несколько компаний)
                 var isNew = !ExistsUser(model.Email);
 
-                callbackurl += $"?hash={model.HashCode}&login={model.Email}&code={model.ClientCode}&isNew={isNew}&language={model.Language}";
+                callbackurl += $"?code={model.HashCode}"; // &login={model.Email}&code={model.ClientCode}&isNew={isNew}&language={model.Language}
 
-                var m = new WelcomeEmailModel()
+                var m = new NewCompanyRequestModel()
                 {
-                    UserEmail = model.Email,
-                    UserName = model.FirstName,
-                    ClientUrl = callbackurl,
+                    Url = callbackurl,
+                    ClientCode = model.ClientCode,
+                    ClientName = model.ClientName,
+                    FirstName = model.FirstName,
+                    Language = model.Language
                 };
 
-                var htmlContent = m.RenderPartialViewToString(RenderPartialView.WelcomeEmail);
+                var htmlContent = m.RenderPartialViewToString(RenderPartialView.NewCompanyRequest);
                 var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
 
 

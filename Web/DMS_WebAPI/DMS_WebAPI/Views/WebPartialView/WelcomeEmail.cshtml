@@ -1,16 +1,21 @@
 ﻿@model DMS_WebAPI.Models.WelcomeEmailModel
 
 @{
-    ViewBag.Title = "Добро пожаловать в Острин!";
-    var text = "Здравствуйте, " + Model.UserName + "!Ваш Острин готов и ждет указаний. Осталось всего три шага до реализации ваших грандиозных планов:";
+    Layout = null;
 }
 
-
-<h1 style="font-family: Georgia, serif;font-size: 30px;font-weight: normal;margin: 28px 0 11px">Добро пожаловать в Ostrean!</h1>
-
-<p style="font-family: Arial, Helvetica, sans-serif;font-size: 13px;margin:13px 0 16px;line-height: 1.6;">@text</p>
-
-<a style="border-radius: 4px;font-size: 15px;color: white;text-decoration: none;padding: 14px 7px 14px 7px;width: 210px;max-width: 210px;font-family: &quot;Open Sans&quot;, &quot;Helvetica Neue&quot;, Arial;margin: 0;display: block;background-color: #007ee6;text-align: center;"
-   href='@Model.ClientUrl' target="_blank" rel="noopener">Перейти в Ostrean</a>
-
-
+<div>
+  <br>
+  <br>
+  Здравствуйте, @Model.FirstName!
+  <br>
+  <br>
+  @Model.ClientName пригласил Вас сотрудничать! Вы назначены на должность: @Model.PostionsName @Model.Period в @Model.OrgName, @Model.DepartmentName
+  <br>
+  <br>
+  <a style="border-radius: 4px;font-size: 15px;color: white;text-decoration: none;padding: 14px 7px 14px 7px;width: 210px;max-width: 210px;font-family: &quot;Open Sans&quot;, &quot;Helvetica Neue&quot;, Arial;margin: 0;display: block;background-color: #007ee6;text-align: center;"
+     href='@Model.Url' target="_blank" rel="noopener">Начать работу в Ostrean</a>
+  <br>
+  <br>
+  Пользуйтесь с удовольствием!
+</div>

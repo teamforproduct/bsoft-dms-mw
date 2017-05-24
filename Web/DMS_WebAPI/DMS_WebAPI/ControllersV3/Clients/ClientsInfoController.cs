@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.Model.AdminCore.Clients;
+using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Model.WebAPI.Filters;
 using DMS_WebAPI.Results;
@@ -116,6 +117,21 @@ namespace DMS_WebAPI.ControllersV3.Clients
         {
             var tmpService = DmsResolver.Current.Get<WebAPIService>();
             var res = tmpService.ExistsClientRequest(filter);
+            return new JsonResult(res, this);
+        }
+
+        /// <summary>
+        /// Определяет существует ли уже заявка на создание клиента
+        /// </summary>
+        /// <param name="filter"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("Requests")]
+        public IHttpActionResult Get([FromUri] FilterAspNetClientRequests filter)
+        {
+            if (filter == null) throw new FilterRequired();
+            var tmpService = DmsResolver.Current.Get<WebAPIService>();
+            var res = tmpService.GetClientRequest(filter);
             return new JsonResult(res, this);
         }
     }
