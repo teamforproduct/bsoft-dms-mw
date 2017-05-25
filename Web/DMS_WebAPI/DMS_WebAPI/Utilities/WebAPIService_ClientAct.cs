@@ -482,7 +482,7 @@ namespace DMS_WebAPI.Utilities
                 // isNew можно вычислить только на текущий момент времени (пользователь может сделать несколько компаний)
                 var isNew = !ExistsUser(model.Email);
 
-                callbackurl += $"?code={model.HashCode}"; // &login={model.Email}&code={model.ClientCode}&isNew={isNew}&language={model.Language}
+                callbackurl += $"?hash={model.HashCode}&login={model.Email}&code={model.ClientCode}&isNew={isNew}&language={model.Language}";
 
                 var m = new NewCompanyRequestModel()
                 {
