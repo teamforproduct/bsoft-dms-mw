@@ -2,6 +2,7 @@
 using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.SystemServices.MailWorker;
+using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.Users;
@@ -19,8 +20,11 @@ namespace DMS_WebAPI.Utilities
     internal partial class WebAPIService
     {
 
-        public void UpdateUserParms(string userId,)
-            { }
+        public void UpdateUserParms(string userId, ModifyAgentUser model)
+        {
+
+
+        }
 
         public async Task ChangeFingerprintEnabled(string userId, bool parm)
         {

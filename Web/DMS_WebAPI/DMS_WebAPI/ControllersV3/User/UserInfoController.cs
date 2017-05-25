@@ -143,12 +143,11 @@ namespace DMS_WebAPI.ControllersV3.User
         public IHttpActionResult Put([FromBody]ModifyAgentUser model)
         {
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            webService.UpdateUserParms(User.Identity.GetUserId(), model);
+            //webService.UpdateUserParms(User.Identity.GetUserId(), model);
 
             //!ASYNC
             var contexts = DmsResolver.Current.Get<UserContexts>();
             var context = contexts.Get();
-            var webSeevice = DmsResolver.Current.Get<WebAPIService>();
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
 
             var employee = tmpService.GetDictionaryAgentEmployee(context, context.CurrentAgentId);
@@ -163,9 +162,9 @@ namespace DMS_WebAPI.ControllersV3.User
             employee.IsMale = model.IsMale;
             employee.BirthDate = model.BirthDate;
 
-            webSeevice.UpdateUserEmployee(context, employee);
+            webService.UpdateUserEmployee(context, employee);
 
-            webSeevice.SetUserLanguage(context.User.Id, model.LanguageId);
+            webService.SetUserLanguage(context.User.Id, model.LanguageId);
 
             return GetById(context);
         }

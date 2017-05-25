@@ -291,11 +291,8 @@ namespace DMS_WebAPI.Utilities
                     {
                         Url = clickURL,
                         FirstName = model.FirstName,
-                        ClientName= clientCode,
-                        OrgName = model.OrgName,
-                        DepartmentName = model.DepartmentIndex + " " + model.DepartmentName,
-                        PostionsName = model.PositionName,
-                        Period = "от забора до обеда"
+                        ClientName = settVal.GetClientAddress(clientCode),
+                        InvitingName = context.Employee.Name,
                     };
 
                     var htmlContent = we.RenderPartialViewToString(RenderPartialView.WelcomeEmail);

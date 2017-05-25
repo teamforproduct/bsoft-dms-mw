@@ -53,7 +53,7 @@ namespace DMS_WebAPI.ControllersV3.User
         public IHttpActionResult Put([FromBody]ModifyAspNetUserControlQuestion model)
         {
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            webService.ChangeControlQuestion(model);
+            webService.ChangeControlQuestion(User.Identity.GetUserId(), model);
             return GetById();
         }
 

@@ -9,7 +9,7 @@ namespace DMS_WebAPI.Utilities
     public static class RenderPartialView
     {
         public static string ControllerName { get { return "WebPartialViewController"; } }
-        public static string PartialViewNameChangeLoginAgentUserVerificationEmail { get { return "~/Views/WebPartialView/ChangeLoginAgentUserVerificationEmail.cshtml"; } }
+        public static string ChangeLogin { get { return "~/Views/WebPartialView/ChangeLogin.cshtml"; } }
         public static string RestorePassword { get { return "~/Views/WebPartialView/RestorePassword.cshtml"; } }
         public static string WelcomeEmail { get { return "~/Views/WebPartialView/WelcomeEmail.cshtml"; } }
         public static string NewCompanyRequest { get { return "~/Views/WebPartialView/NewCompanyRequest.cshtml"; } }

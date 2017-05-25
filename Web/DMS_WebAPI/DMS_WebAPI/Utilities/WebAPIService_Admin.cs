@@ -125,7 +125,7 @@ namespace DMS_WebAPI.Utilities
 
             callbackurl += String.Format("?userId={0}&code={1}", user.Id, HttpUtility.UrlEncode(emailConfirmationCode));
 
-            var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.PartialViewNameChangeLoginAgentUserVerificationEmail);
+            var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.ChangeLogin);
 
             var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
 
