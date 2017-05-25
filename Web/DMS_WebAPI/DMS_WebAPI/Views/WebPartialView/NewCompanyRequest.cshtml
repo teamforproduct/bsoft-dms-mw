@@ -1,0 +1,25 @@
+﻿@model DMS_WebAPI.Models.NewCompanyRequestModel
+
+@{
+    Layout = null;
+}
+
+<div>
+  <br>
+  <br>
+  Здравствуйте, @Model.FirstName!
+  <br>
+  <br>
+  Вы оставили заявку на создание компании @Model.ClientName (@Model.Language) в Ostrean. 
+  Вы можете начать работу в Ostrean прямо сейчас, пройдя по этой ссылке:
+  <br>
+  <br>
+  <a style="border-radius: 4px;font-size: 15px;color: white;text-decoration: none;padding: 14px 7px 14px 7px;width: 210px;max-width: 210px;font-family: &quot;Open Sans&quot;, &quot;Helvetica Neue&quot;, Arial;margin: 0;display: block;background-color: #007ee6;text-align: center;"
+     href='@Model.Url' target="_blank" rel="noopener">Перейти в Ostrean</a>
+  <br>
+  <br>
+  В нашем справочном центре Вы найдете <a href="https://www.dropbox.com/l/AADzRHyq4aDg0YBAjiCNeqWDkIGFaCFE2X0/help/365" target="_blank" rel="noopener">подробную информацию на интересующие Вас вопросы</a>.
+  <br>
+  <br>
+  Пользуйтесь с удовольствием!
+</div>

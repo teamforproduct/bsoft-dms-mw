@@ -116,7 +116,7 @@ namespace DMS_WebAPI.ControllersV3.User
 
             webSeevice.UpdateUserEmployee(context, employee);
 
-            contexts.UpdateLanguageId(employee.Id, model.LanguageId);
+            webSeevice.SetUserLanguage(model.LanguageId);
 
             return GetById(context);
         }
@@ -185,19 +185,14 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route("Language")]
-        public async Task<IHttpActionResult> SetLanguage(SetUserLanguage model)
+        public IHttpActionResult SetLanguage(SetUserLanguage model)
         {
-            // TODO ClientsForEach - пробросить язык каждому клиенту
-            return await SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                var contexts = (UserContexts)param;
-                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-                var tmpItem = tmpService.SetAgentUserLanguage(context, model.LanguageCode);
-                contexts.UpdateLanguageId(context.CurrentAgentId, tmpItem);
-                var res = new JsonResult(null, this);
-                return res;
-            }, DmsResolver.Current.Get<UserContexts>());
+            var tmpService = DmsResolver.Current.Get<WebAPIService>();
+            tmpService.SetUserLanguage(model.LanguageCode);
+            return new JsonResult(null, this);
         }
+
+       
 
         /// <summary>
         /// Устанавливает новый пароль

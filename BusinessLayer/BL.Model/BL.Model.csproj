@@ -652,13 +652,15 @@
     <Compile Include="Tree\TreeItem.cs" />
     <Compile Include="Users\ChangeLockoutAgentUser.cs" />
     <Compile Include="Users\ChangeNotifications.cs" />
+    <Compile Include="Users\ConfirmEmail.cs" />
+    <Compile Include="Users\ResetPassword.cs" />
     <Compile Include="Users\FrontNotifications.cs" />
     <Compile Include="Users\FrontPermission.cs" />
     <Compile Include="Users\ChangeLogin.cs" />
     <Compile Include="Users\ChangePassword.cs" />
     <Compile Include="Users\MustChangePasswordAgentUser.cs" />
     <Compile Include="Users\ConfirmRestorePassword.cs" />
-    <Compile Include="Users\RestorePasswordAgentUser.cs" />
+    <Compile Include="Users\RestorePassword.cs" />
     <Compile Include="Users\ChangeLoginAgentUser.cs" />
     <Compile Include="Users\ChangePasswordAgentUser.cs" />
     <Compile Include="Context\Employee.cs" />
