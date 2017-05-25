@@ -1,5 +1,6 @@
 ﻿using BL.Database.DBModel.Dictionary;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,6 +8,10 @@ namespace BL.Database.DBModel.Document
 {
     public class DocumentFiles
     {
+        public DocumentFiles()
+        {
+            this.FileLinks = new HashSet<DocumentFileLinks>();
+        }
         public int Id { get; set; }
         [Index("IX_ClientId", 1)]
         public int ClientId { get; set; }
@@ -68,7 +73,8 @@ namespace BL.Database.DBModel.Document
         public virtual Documents Document { get; set; }
         [ForeignKey("EventId")]
         public virtual DocumentEvents Event { get; set; }
-
+        [ForeignKey("FileId")]
+        public virtual ICollection<DocumentFileLinks> FileLinks { get; set; }
         [ForeignKey("ExecutorPositionId")]
         public virtual DictionaryPositions ExecutorPosition { get; set; }
 

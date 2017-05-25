@@ -6,7 +6,10 @@ using System.Runtime.Serialization;
 namespace BL.Model.DocumentCore.IncomingModel
 {
     /// <summary>
-    /// Добавляемый или редактируемый файл документа или из веременного хранилища(TmpFileId) или из уже существующего файла (FileId)
+    /// Добавляемый или редактируемый файл документа  
+    /// или из веременного хранилища(TmpFileId)
+    /// или из уже существующего файла (CopyingFileId)
+    /// или добавить ссылку на существующий файл (LinkingFileId)
     /// </summary>
     public class AddDocumentFile : CurrentPosition
     {
@@ -15,13 +18,17 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// </summary>
         public int DocumentId { get; set; }
         /// <summary>
-        /// ИД файла во временном хранилище(или TmpFileId или FileId)
+        /// ИД файла во временном хранилище(или TmpFileId или CopyingFileId, или LinkingFileId)
         /// </summary>        
         public int? TmpFileId { get; set; }
         /// <summary>
-        /// ИД файла который надо скопировать (или TmpFileId или FileId)
+        /// ИД файла который надо скопировать (или TmpFileId или CopyingFileId, или LinkingFileId)
         /// </summary>        
         public int? CopyingFileId { get; set; }
+        /// <summary>
+        /// ИД файла, на который нужно сделать ссылку (или TmpFileId, или CopyingFileId, или LinkingFileId)
+        /// </summary>        
+        public int? LinkingFileId { get; set; }
         /// <summary>
         /// Порядковый номер файла в списке файлов документа, если указан, то файл будет добавлен как версия, если нет, то добавлен как новый файл. Если файл с таким названием есть, то будет переименован.
         /// </summary>

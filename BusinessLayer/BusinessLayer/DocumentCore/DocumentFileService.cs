@@ -32,9 +32,9 @@ namespace BL.Logic.DocumentCore
             return _dbProcess.GetDocumentFiles(ctx, filter, paging);
         }
 
-        private FrontDocumentFile GetUserFile(IContext ctx, int id, EnumDocumentFileType fileType)
+        private FrontDocumentFile GetDocumentFile(IContext ctx, int id, EnumDocumentFileType fileType)
         {
-            var fl = _dbProcess.GetDocumentFileVersion(ctx, id);
+            var fl = _dbProcess.GetDocumentFile(ctx, id);
             if (fl == null)
             {
                 throw new UnknownDocumentFile();
@@ -56,17 +56,17 @@ namespace BL.Logic.DocumentCore
 
         public FrontDocumentFile GetUserFile(IContext ctx, int id)
         {
-            return GetUserFile(ctx, id, EnumDocumentFileType.UserFile);
+            return GetDocumentFile(ctx, id, EnumDocumentFileType.UserFile);
         }
 
         public FrontDocumentFile GetUserFilePdf(IContext ctx, int id)
         {
-            return GetUserFile(ctx, id, EnumDocumentFileType.PdfFile);
+            return GetDocumentFile(ctx, id, EnumDocumentFileType.PdfFile);
         }
 
         public FrontDocumentFile GetUserFilePreview(IContext ctx, int id)
         {
-            return GetUserFile(ctx, id, EnumDocumentFileType.PdfPreview);
+            return GetDocumentFile(ctx, id, EnumDocumentFileType.PdfPreview);
         }
 
     }

@@ -194,6 +194,7 @@
     <Compile Include="DBModel\Dictionary\DictionaryRegistrationJournalAccessTypes.cs" />
     <Compile Include="DBModel\Dictionary\DictionarySubscriptionStates.cs" />
     <Compile Include="DBModel\Dictionary\DictionaryTags.cs" />
+    <Compile Include="DBModel\Document\DocumentFileLinks.cs" />
     <Compile Include="DBModel\Document\DocumentSendListAccessGroups.cs" />
     <Compile Include="DBModel\Document\DocumentEventAccessGroups.cs" />
     <Compile Include="DBModel\Document\DocumentEventAccesses.cs" />
@@ -332,6 +333,10 @@
     <Compile Include="Migrations\201705231814553_IsContentDeleted.Designer.cs">
       <DependentUpon>201705231814553_IsContentDeleted.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705251722416_DocumentFileLinks.cs" />
+    <Compile Include="Migrations\201705251722416_DocumentFileLinks.Designer.cs">
+      <DependentUpon>201705251722416_DocumentFileLinks.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
@@ -443,6 +448,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705231814553_IsContentDeleted.resx">
       <DependentUpon>201705231814553_IsContentDeleted.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705251722416_DocumentFileLinks.resx">
+      <DependentUpon>201705251722416_DocumentFileLinks.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

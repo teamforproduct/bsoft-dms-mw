@@ -1528,11 +1528,8 @@ namespace BL.Database.Documents
                 dbContext.DocumentPapersSet.Where(x => x.ClientId == context.Client.Id)
                     .Where(x => x.DocumentId == id)
                     .Update(x => new DocumentPapers { LastPaperEventId = null });
-                dbContext.DocumentFilesSet.RemoveRange(
-                    dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == id));
-                dbContext.DocumentEventAccessesSet.RemoveRange(
-                    dbContext.DocumentEventAccessesSet.Where(x => x.ClientId == context.Client.Id)
-                        .Where(x => x.DocumentId == id));
+                dbContext.DocumentFilesSet.RemoveRange(dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == id));
+                dbContext.DocumentEventAccessesSet.RemoveRange(dbContext.DocumentEventAccessesSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == id));
                 dbContext.DocumentEventAccessGroupsSet.RemoveRange(
                     dbContext.DocumentEventAccessGroupsSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == id));
                 //TODO придумать с удалением для полнотекста
@@ -1833,11 +1830,7 @@ namespace BL.Database.Documents
                         IsRegistered = x.IsRegistered
                     }).FirstOrDefault();
                 if (doc == null) return null;
-                doc.DocumentFiles = dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id)
-                    .Where(
-                        x =>
-                            x.DocumentId == model.DocumentId && x.ExecutorPositionId == doc.ExecutorPositionId &&
-                            x.TypeId == (int)EnumFileTypes.Main) // !x.IsAdditional)
+                doc.DocumentFiles = CommonQueries.GetDocumentFileQuery(context, new FilterDocumentFile { DocumentId = new List<int> { model.DocumentId }, Types = new List<EnumFileTypes> { EnumFileTypes.Main } })
                     .Select(x => new InternalDocumentFile
                     {
                         Id = x.Id,
@@ -1872,11 +1865,7 @@ namespace BL.Database.Documents
                         IsRegistered = x.IsRegistered
                     }).FirstOrDefault();
                 if (doc == null) return null;
-                doc.DocumentFiles = dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id)
-                    .Where(
-                        x =>
-                            x.DocumentId == model.DocumentId && x.ExecutorPositionId == doc.ExecutorPositionId &&
-                            x.TypeId == (int)EnumFileTypes.Main) //!x.IsAdditional)
+                doc.DocumentFiles = CommonQueries.GetDocumentFileQuery(context, new FilterDocumentFile { DocumentId = new List<int> { model.DocumentId }, Types = new List<EnumFileTypes> { EnumFileTypes.Main } })
                     .Select(x => new InternalDocumentFile
                     {
                         Id = x.Id,
@@ -1986,7 +1975,7 @@ namespace BL.Database.Documents
                 dbContext.DocumentsSet.Where(x => x.ClientId == context.Client.Id) //Without security restrictions
                     .Where(x => x.Id == model.DocumentId && x.ExecutorPositionId == model.OldPositionId)
                     .Update(x => new DBModel.Document.Documents { ExecutorPositionId = model.NewPositionId, });//TODO исполнители по должности!!!
-                dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id)
+                dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id)//Without security restrictions
                     .Where(x => x.DocumentId == model.DocumentId && x.ExecutorPositionId == model.OldPositionId)
                     .Update(x => new DocumentFiles { ExecutorPositionId = model.NewPositionId });
                 dbContext.DocumentTasksSet.Where(x => x.ClientId == context.Client.Id)

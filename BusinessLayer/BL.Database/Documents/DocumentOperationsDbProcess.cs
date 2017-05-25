@@ -158,7 +158,7 @@ namespace BL.Database.Documents
                         }
                         ).ToList();
 
-                    var qryFiles = dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id);
+                    var qryFiles = CommonQueries.GetDocumentFileQuery(context, null);
                     if (id.HasValue)
                         qryFiles = qryFiles.Where(x => x.EventId == id);
                     else
@@ -288,7 +288,7 @@ namespace BL.Database.Documents
                             IsInWork = x.IsInWork,
                         }
                         ).ToList();
-                    var qryFiles = dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id);
+                    var qryFiles = CommonQueries.GetDocumentFileQuery(context, null);
                     if (id.HasValue)
                     {
                         qryFiles = qryFiles.Where(x => x.Id == id);
@@ -1045,7 +1045,9 @@ namespace BL.Database.Documents
                 var waitParentDb = ModelConverter.GetDbDocumentWait(wait.ParentWait);
                 dbContext.DocumentWaitsSet.Add(waitParentDb);
                 dbContext.SaveChanges();
-                dbContext.DocumentFilesSet.Where(x => x.EventId == wait.OnEvent.Id).Update(x => new DocumentFiles { EventId = waitParentDb.OnEventId }); //перекидываем файлы на новый ИД
+                dbContext.DocumentFilesSet  //Without security restrictions
+                    .Where(x => x.EventId == wait.OnEvent.Id)
+                    .Update(x => new DocumentFiles { EventId = waitParentDb.OnEventId }); //перекидываем файлы на новый ИД
 
                 var eventDb = ModelConverter.GetDbDocumentEvent(wait.OnEvent);
                 eventDb.Id = wait.OnEvent.Id;
