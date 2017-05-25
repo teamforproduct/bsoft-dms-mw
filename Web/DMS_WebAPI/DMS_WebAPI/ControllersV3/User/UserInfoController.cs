@@ -26,6 +26,7 @@ using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
 using BL.Model.WebAPI.FrontModel;
+using BL.Model.Exception;
 
 namespace DMS_WebAPI.ControllersV3.User
 {
@@ -116,7 +117,7 @@ namespace DMS_WebAPI.ControllersV3.User
 
             webSeevice.UpdateUserEmployee(context, employee);
 
-            webSeevice.SetUserLanguage(model.LanguageId);
+            webSeevice.SetUserLanguage(context.User.Id, model.LanguageId);
 
             return GetById(context);
         }
@@ -187,8 +188,11 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route("Language")]
         public IHttpActionResult SetLanguage(SetUserLanguage model)
         {
-            var tmpService = DmsResolver.Current.Get<WebAPIService>();
-            tmpService.SetUserLanguage(model.LanguageCode);
+            if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
+
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            webService.SetUserLanguage(User.Identity.GetUserId(), model.LanguageCode);
+
             return new JsonResult(null, this);
         }
 
@@ -201,21 +205,14 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route("SetPassword")]
-        public async Task<IHttpActionResult> SetPassword(SetPasswordBindingModel model)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+        public async Task<IHttpActionResult> SetPassword(SetUserPassword model)
+        { 
+            if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
 
-            IdentityResult result = await UserManager.AddPasswordAsync(User.Identity.GetUserId(), model.NewPassword);
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            await webService.SetUserPasswordAsync(User.Identity.GetUserId(), model);
 
-            if (!result.Succeeded)
-            {
-                return new JsonResult(result, false, string.Join(" ", result.Errors), this);
-            }
-
-            return Ok();
+            return new JsonResult(null, this);
         }
 
         /// <summary>
@@ -225,34 +222,12 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPut]
         [Route(Features.ChangePassword)]
-        public async Task<IHttpActionResult> ChangePassword([FromBody]ChangePasswordBindingModel model)
+        public async Task<IHttpActionResult> ChangePassword([FromBody]ChangeUserPassword model)
         {
-            if (!ModelState.IsValid)
-            {
-                return new JsonResult(ModelState, false, this);
-            }
+            if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
 
-            IdentityResult result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
-
-            if (!result.Succeeded)
-            {
-                return new JsonResult(result, false, string.Join(" ", result.Errors), this);
-            }
-
-            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            AspNetUsers user = await userManager.FindByIdAsync(User.Identity.GetUserId());
-
-            user.IsChangePasswordRequired = false;
-
-            result = await UserManager.UpdateAsync(user);
-
-            if (!result.Succeeded)
-            {
-                return new JsonResult(result, false, string.Join(" ", result.Errors), this);
-            }
-
-            var user_context = DmsResolver.Current.Get<UserContexts>();
-            user_context.UpdateChangePasswordRequired(user.Id, false);
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            await webService.ChangeUserPasswordAsync(User.Identity.GetUserId(), model);
 
             return new JsonResult(null, this);
         }

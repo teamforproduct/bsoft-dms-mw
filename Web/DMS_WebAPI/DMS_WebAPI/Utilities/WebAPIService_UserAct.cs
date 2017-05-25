@@ -15,6 +15,7 @@ using System.Web;
 
 namespace DMS_WebAPI.Utilities
 {
+    // Тут собраны действия, которые пользователь пожет делать со своей учеткой
     internal partial class WebAPIService
     {
 
@@ -32,18 +33,16 @@ namespace DMS_WebAPI.Utilities
 
         }
 
-        public void SetUserLanguage(string languageCode)
+        public void SetUserLanguage(string userId, string languageCode)
         {
             var languages = DmsResolver.Current.Get<ILanguages>();
             var langId = languages.GetLanguageIdByCode(languageCode);
-            SetUserLanguage(langId);
+            SetUserLanguage(userId, langId);
         }
 
-        public void SetUserLanguage(int languageId)
+        public void SetUserLanguage(string userId, int languageId)
         {
-            var userContexts = DmsResolver.Current.Get<UserContexts>();
-            var ctx = userContexts.Get();
-            var user = GetUserById(ctx.User.Id);
+            var user = GetUserById(userId);
 
             user.LanguageId = languageId;
             user.LastChangeDate = DateTime.UtcNow;
@@ -52,15 +51,42 @@ namespace DMS_WebAPI.Utilities
 
             if (!result.Succeeded) throw new UserParmsCouldNotBeChanged(result.Errors);
 
-            userContexts.UpdateLanguageId(ctx.User.Id, languageId);
+            var userContexts = DmsResolver.Current.Get<UserContexts>();
+            userContexts.UpdateLanguageId(userId, languageId);
         }
 
+
+        public async Task SetUserPasswordAsync(string userId, SetUserPassword model)
+        {
+            IdentityResult result = await UserManager.AddPasswordAsync(userId, model.NewPassword);
+
+            if (!result.Succeeded) throw new UserParmsCouldNotBeChanged(result.Errors);
+        }
+
+        public async Task ChangeUserPasswordAsync(string userId, ChangeUserPassword model)
+        {
+            IdentityResult result = await UserManager.ChangePasswordAsync(userId, model.OldPassword, model.NewPassword);
+
+            if (!result.Succeeded) throw new UserParmsCouldNotBeChanged(result.Errors);
+
+            AspNetUsers user = await GetUserByIdAsync(userId);
+
+            user.IsChangePasswordRequired = false;
+            user.LastChangeDate = DateTime.UtcNow;
+
+            result = await UserManager.UpdateAsync(user);
+
+            if (!result.Succeeded) throw new UserParmsCouldNotBeChanged(result.Errors);
+
+            var user_context = DmsResolver.Current.Get<UserContexts>();
+            user_context.UpdateChangePasswordRequired(userId, false);
+        }
 
         public void ChangeControlQuestion(ModifyAspNetUserControlQuestion model)
         {
             var userContexts = DmsResolver.Current.Get<UserContexts>();
-            var userContext = userContexts.Get();
-            var user = GetUserById(userContext.User.Id);
+            var context = userContexts.Get();
+            var user = GetUserById(context.User.Id);
 
             user.ControlQuestionId = model.QuestionId;
             user.ControlAnswer = model.Answer;

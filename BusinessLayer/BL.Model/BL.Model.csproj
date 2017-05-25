@@ -689,6 +689,8 @@
     <Compile Include="WebAPI\FrontModel\FrontSystemSession.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetUserControlQuestion.cs" />
     <Compile Include="WebAPI\IncomingModel\SetClientServer.cs" />
+    <Compile Include="WebAPI\IncomingModel\ChangeUserPassword.cs" />
+    <Compile Include="WebAPI\IncomingModel\SetUserPassword.cs" />
     <Compile Include="WebAPI\IncomingModel\SetUserLanguage.cs" />
     <Compile Include="WebAPI\IncomingModel\UserAuth.cs" />
     <Compile Include="WebAPI\IncomingModel\AddAspNetClient.cs" />

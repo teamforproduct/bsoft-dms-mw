@@ -479,7 +479,6 @@
     <Compile Include="Utilities\WebAPIService_Employee.cs" />
     <Compile Include="Utilities\WebAPIService_UserContexts.cs" />
     <Compile Include="Utilities\WebAPIService_UserFinger.cs" />
-    <Compile Include="Utilities\WebAPIService_UserAct - Копировать.cs" />
     <Compile Include="Utilities\WebAPIService_UserAct.cs" />
     <Compile Include="Utilities\WebAPIService_Admin.cs" />
     <Compile Include="Utilities\WebAPIService.cs" />
