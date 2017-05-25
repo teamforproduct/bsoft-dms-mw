@@ -317,6 +317,15 @@ namespace BL.Model.Exception
         public EmployeeIsDeactivated(string UserName) : base() { Parameters = new List<string> { UserName }; }
         public EmployeeIsDeactivated(System.Exception ex) : base(ex) { }
     }
+
+    public class EmployeeIsLockoutByAdmin : DmsExceptions
+    {
+        public EmployeeIsLockoutByAdmin(string UserName) : base() { Parameters = new List<string> { UserName }; }
+        public EmployeeIsLockoutByAdmin(System.Exception ex) : base(ex) { }
+    }
+
+    
+
     public class UserIsLockout : DmsExceptions
     {
         public UserIsLockout() : base() { }

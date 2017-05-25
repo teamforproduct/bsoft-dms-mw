@@ -959,9 +959,6 @@ namespace BL.Database.Dictionaries
                     //PassportNumber = x.Agent.AgentPeople.PassportNumber,
                     //PassportText = x.Agent.AgentPeople.PassportText,
 
-                    LanguageId = x.Agent.AgentUser.LanguageId,
-                    LanguageCode = x.Agent.AgentUser.Language.Code,
-                    LanguageName = x.Agent.AgentUser.Language.Name,
 
                 }).FirstOrDefault();
 
@@ -1284,6 +1281,26 @@ namespace BL.Database.Dictionaries
                 dbContext.SafeAttach(dbModel);
                 var entity = dbContext.Entry(dbModel);
                 entity.Property(x => x.LastPositionChose).IsModified = true;
+                entity.Property(x => x.LastChangeDate).IsModified = true;
+                entity.Property(x => x.LastChangeUserId).IsModified = true;
+                dbContext.SaveChanges();
+
+                transaction.Complete();
+            }
+        }
+
+        public void SetAgentUserLockout(IContext ctx, InternalDictionaryAgentUser User)
+        {
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
+            {
+                var dbModel = DictionaryModelConverter.GetDbAgentUser(ctx, User);
+
+                dbContext.SafeAttach(dbModel);
+                var entity = dbContext.Entry(dbModel);
+                entity.Property(x => x.IsLockout).IsModified = true;
+                entity.Property(x => x.LastChangeDate).IsModified = true;
+                entity.Property(x => x.LastChangeUserId).IsModified = true;
                 dbContext.SaveChanges();
 
                 transaction.Complete();
@@ -1318,6 +1335,7 @@ namespace BL.Database.Dictionaries
                 var entity = dbContext.Entry(dbModel);
                 entity.Property(x => x.UserName).IsModified = true;
                 entity.Property(x => x.LastChangeDate).IsModified = true;
+                entity.Property(x => x.LastChangeUserId).IsModified = true;
                 dbContext.SaveChanges();
 
                 transaction.Complete();
@@ -1334,7 +1352,9 @@ namespace BL.Database.Dictionaries
                 var res = qry.Select(x => new InternalDictionaryAgentUser
                 {
                     Id = x.Id,
-                    UserId = x.UserId
+                    UserId = x.UserId,
+                    IsLockout = x.IsLockout,
+                    
                 }).FirstOrDefault();
 
                 transaction.Complete();

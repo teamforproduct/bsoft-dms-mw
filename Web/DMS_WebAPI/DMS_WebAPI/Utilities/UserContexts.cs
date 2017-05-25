@@ -193,23 +193,20 @@ namespace DMS_WebAPI.Utilities
             };
 
             var context = new UserContext(intContext);
-            var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(context, user.Id);
+            var employee = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(context, user.Id);
 
-            if (agentUser != null)
+            if (employee != null)
             {
+                if (employee.IsLockout) throw new EmployeeIsLockoutByAdmin(employee.Name);
+
                 // проверка активности сотрудника
-                if (!agentUser.IsActive)
-                {
-                    throw new EmployeeIsDeactivated(agentUser.Name);
-                }
+                if (!employee.IsActive) throw new EmployeeIsDeactivated(employee.Name);
 
-                if (agentUser.PositionExecutorsCount == 0)
-                {
-                    throw new EmployeeNotExecuteAnyPosition(agentUser.Name);
-                }
 
-                intContext.Employee.Id = agentUser.Id;
-                intContext.Employee.Name = agentUser.Name;
+                if (employee.AssigmentsCount == 0) throw new EmployeeNotExecuteAnyPosition(employee.Name);
+
+                intContext.Employee.Id = employee.Id;
+                intContext.Employee.Name = employee.Name;
             }
             else
             {
@@ -247,7 +244,7 @@ namespace DMS_WebAPI.Utilities
             intContext.CurrentPositionsAccessLevel = DmsResolver.Current.Get<IAdminService>().GetCurrentPositionsAccessLevel(context);
             context.CurrentPositionsAccessLevel = intContext.CurrentPositionsAccessLevel;
 
-            DmsResolver.Current.Get<IDictionaryService>().SetDictionaryAgentUserLastPositionChose(context, positionsIdList);
+            DmsResolver.Current.Get<IDictionaryService>().SetAgentUserLastPositionChose(context, context.Employee.Id, positionsIdList);
             // Контекст полностью сформирован и готов к работе
             intContext.IsFormed = true;
         }
@@ -465,6 +462,29 @@ namespace DMS_WebAPI.Utilities
             try
             {
                 keys = _cacheContexts.Where(x => x.Value.StoreObject is IContext && ((IContext)x.Value.StoreObject).User.Id == userId && ((IContext)x.Value.StoreObject).Client.Id == clientId).Select(x => x.Key).ToList();
+            }
+            finally
+            {
+                locker.ExitReadLock();
+            }
+            foreach (var key in keys)
+            {
+                Remove(key);
+            }
+        }
+
+        /// <summary>
+        /// Удаляет пользовательские контексты по clientId
+        /// </summary>
+        /// <param name="clientId"></param>
+        /// <param name="employeeId"></param>
+        public void RemoveByClientId(int clientId, int employeeId)
+        {
+            List<string> keys;
+            locker.EnterReadLock();
+            try
+            {
+                keys = _cacheContexts.Where(x => x.Value.StoreObject is IContext && ((IContext)x.Value.StoreObject).Employee.Id == employeeId && ((IContext)x.Value.StoreObject).Client.Id == clientId).Select(x => x.Key).ToList();
             }
             finally
             {

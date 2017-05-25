@@ -149,7 +149,17 @@ namespace BL.Logic.DictionaryCore
 
         public FrontAgentEmployee GetDictionaryAgentEmployee(IContext context, int id)
         {
-            return _dictDb.GetAgentEmployee(context, id);
+            var res = _dictDb.GetAgentEmployee(context, id);
+
+            //var adminService = DmsResolver.Current.Get<APIWebService>();
+
+            // Язык перенес в центральную базу. На фронте требуются изменения.
+            // Чтобы ничего сейчас не ломать пишу всем русский
+            res.LanguageId = 570;
+            res.LanguageCode = "ru_RU";
+            res.LanguageName = "Русский";
+
+            return res;
         }
 
         public IEnumerable<ListItem> GetAgentEmployeeList(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging)
@@ -200,9 +210,11 @@ namespace BL.Logic.DictionaryCore
             return user.UserId;
         }
 
-        public void SetAgentUserUserId(IContext context, InternalDictionaryAgentUser User)
+        public void SetAgentUserUserId(IContext context, int agentId, string userId)
         {
-            _dictDb.SetAgentUserUserId(context, User);
+            var agentUser = new InternalDictionaryAgentUser { Id = agentId, UserId = userId };
+            CommonDocumentUtilities.SetLastChange(context, agentUser);
+            _dictDb.SetAgentUserUserId(context, agentUser);
         }
         #endregion DictionaryAgentEmployees
 
@@ -317,10 +329,19 @@ namespace BL.Logic.DictionaryCore
 
         #region DictionaryAgentUser
 
-        public void SetDictionaryAgentUserLastPositionChose(IContext context, List<int> positionsIdList)
+
+        public void SetAgentUserLockout(IContext context, int agentId, bool isLockout)
         {
-            _dictDb.SetAgentUserLastPositionChose(context,
-                new InternalDictionaryAgentUser { Id = context.CurrentAgentId, LastPositionChose = string.Join(",", positionsIdList) });
+            var agentUser = new InternalDictionaryAgentUser { Id = agentId, IsLockout = isLockout };
+            CommonDocumentUtilities.SetLastChange(context, agentUser);
+            _dictDb.SetAgentUserLockout(context, agentUser);
+        }
+
+        public void SetAgentUserLastPositionChose(IContext context, int agentId, List<int> positionsIdList)
+        {
+            var agentUser = new InternalDictionaryAgentUser { Id = agentId, LastPositionChose = string.Join(",", positionsIdList) };
+            CommonDocumentUtilities.SetLastChange(context, agentUser);
+            _dictDb.SetAgentUserLastPositionChose(context, agentUser);
         }
 
         #endregion DictionaryAgentUser

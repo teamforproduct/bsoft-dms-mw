@@ -1,7 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using BL.Database.DBModel.Dictionary;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BL.Database.DBModel.Admin
 {
@@ -26,7 +25,5 @@ namespace BL.Database.DBModel.Admin
 
         public virtual ICollection<AdminLanguageValues> LanguageValues { get; set; }
 
-        [ForeignKey("LanguageId")]
-        public virtual ICollection<DictionaryAgentUsers> AgentUsers { get; set; }
     }
 }

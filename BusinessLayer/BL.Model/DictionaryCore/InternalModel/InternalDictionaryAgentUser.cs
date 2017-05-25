@@ -16,7 +16,7 @@ namespace BL.Model.DictionaryCore.InternalModel
         public InternalDictionaryAgentUser(InternalDictionaryAgentEmployee model)
         {
             Id = model.Id;
-            IsActive = model.IsActive;
+            //IsLockout = model.IsLockout;
             LanguageId = model.LanguageId;
             UserId = model.UserId;
             UserName = model.UserName;
@@ -39,9 +39,9 @@ namespace BL.Model.DictionaryCore.InternalModel
         public string UserName { get; set; }
 
         /// <summary>
-        /// Признак активности
+        /// Признак блокировки
         /// </summary>
-        public bool IsActive { get; set; }
+        public bool IsLockout { get; set; }
 
         /// <summary>
         /// Основной имейл, на который высылается письмо с приглашением
