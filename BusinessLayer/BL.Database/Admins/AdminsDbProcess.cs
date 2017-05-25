@@ -338,15 +338,16 @@ namespace BL.Database.Admins
             {
                 var now = DateTime.UtcNow;
 
-                // для авторизации 
+                // для контекста пользователя 
                 var res = dbContext.DictionaryAgentUsersSet.Where(x => x.Agent.ClientId == ctx.Client.Id).Where(x => x.UserId.Equals(userId))
                     .Select(x => new Employee
                     {
                         Id = x.Id,
                         Name = x.Agent.Name,
                         //LanguageId = x.Agent.AgentUser.LanguageId,
+                        IsLockout = x.Agent.AgentUser.IsLockout,
                         IsActive = x.Agent.AgentEmployee.IsActive,
-                        PositionExecutorsCount = x.Agent.AgentEmployee.PositionExecutors.Where(y => y.AgentId == x.Id & y.IsActive == true & now >= y.StartDate & now <= y.EndDate).Count(), //IS THAT CORRECT?? 
+                        AssigmentsCount = x.Agent.AgentEmployee.PositionExecutors.Where(y => y.AgentId == x.Id & y.IsActive == true & now >= y.StartDate & now <= y.EndDate).Count(), //IS THAT CORRECT?? 
                     }).FirstOrDefault();
                 transaction.Complete();
                 return res;

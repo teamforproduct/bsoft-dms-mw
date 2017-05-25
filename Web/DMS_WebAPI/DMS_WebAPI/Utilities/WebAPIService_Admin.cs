@@ -1,44 +1,15 @@
-﻿using BL.CrossCutting.Context;
-using BL.CrossCutting.DependencyInjection;
-using BL.CrossCutting.Extensions;
-using BL.CrossCutting.Helpers;
+﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
-using BL.Logic.ClientCore.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Logic.SystemServices.MailWorker;
-using BL.Logic.SystemServices.TempStorage;
-using BL.Model.AdminCore.Clients;
-using BL.Model.AdminCore.WebUser;
 using BL.Model.Common;
-using BL.Model.Context;
-using BL.Model.DictionaryCore.FrontModel.Employees;
-using BL.Model.DictionaryCore.IncomingModel;
-using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.Users;
-using BL.Model.WebAPI.Filters;
-using BL.Model.WebAPI.FrontModel;
-using BL.Model.WebAPI.IncomingModel;
-using DMS_WebAPI.DatabaseContext;
-using DMS_WebAPI.DBModel;
-using DMS_WebAPI.Infrastructure;
-using DMS_WebAPI.Models;
-using DMS_WebAPI.Providers;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin.Security.OAuth;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
-using BL.Logic.SystemServices.TaskManagerService;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -46,11 +17,8 @@ namespace DMS_WebAPI.Utilities
     {
 
         // Администратор меняет логин - жуть
-        public async Task ChangeLoginAgentUser(ChangeLoginAgentUser model)
+        public async Task ChangeLoginAgentUserAsync(IContext context, ChangeLoginAgentUser model)
         {
-            var userContexts = DmsResolver.Current.Get<UserContexts>();
-
-            var context = userContexts.Get();
 
             var user = GetUser(context, model.Id);
             if (user == null) throw new UserIsNotDefined();
@@ -70,24 +38,49 @@ namespace DMS_WebAPI.Utilities
             }
             else throw new UserLoginCouldNotBeChanged(model.NewEmail, result.Errors);
 
+
             // выкидываю пользователя из системы
+            var userContexts = DmsResolver.Current.Get<UserContexts>();
             userContexts.RemoveByUserId(user.Id);
 
-            await ConfirmEmailAgentUser(model.Id);
+            await ConfirmEmailAgentUser(context, model.Id);
 
         }
 
 
-        public async Task ChangePasswordAgentUserAsync(ChangePasswordAgentUser model)
+        public async Task SetMustChangePasswordAgentUserAsync(IContext context, MustChangePasswordAgentUser model)
         {
-            var userContexts = DmsResolver.Current.Get<UserContexts>();
+            var user = GetUser(context, model.Id);
 
-            var ctx = userContexts.Get();
+            if (user == null) throw new UserIsNotDefined();
 
-            var admService = DmsResolver.Current.Get<IAdminService>();
-            admService.ExecuteAction(EnumAdminActions.ChangePassword, ctx, model.Id);
+            user.IsChangePasswordRequired = model.MustChangePassword;
+            user.LastChangeDate = DateTime.UtcNow;
 
-            var user = await GetUserAsync(ctx, model.Id);
+            var result = await UserManager.UpdateAsync(user);
+
+            if (!result.Succeeded) throw new UserParmsCouldNotBeChanged(result.Errors);
+        }
+
+        public void ChangeLokoutAgentUserAsync(IContext context, ChangeLockoutAgentUser model)
+        {
+            var user = GetUser(context, model.Id);
+
+            if (user == null) throw new UserIsNotDefined();
+
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            tmpService.SetAgentUserLockout(context, model.Id, model.IsLockout);
+
+            if (model.IsLockout)
+            {
+                var userContexts = DmsResolver.Current.Get<UserContexts>();
+                userContexts.RemoveByClientId(context.Client.Id, model.Id);
+            }
+        }
+
+        public async Task ChangePasswordAgentUserAsync(IContext context, ChangePasswordAgentUser model)
+        {
+            var user = await GetUserAsync(context, model.Id);
 
             if (user == null) throw new UserIsNotDefined();
 
@@ -95,25 +88,26 @@ namespace DMS_WebAPI.Utilities
 
             var result = await UserManager.ResetPasswordAsync(user.Id, token, model.NewPassword);
 
-            if (!result.Succeeded) throw new DatabaseError(result.Errors);
+            if (!result.Succeeded) throw new UserParmsCouldNotBeChanged(result.Errors);
 
             user.IsChangePasswordRequired = model.IsChangePasswordRequired;//true;
             user.LastChangeDate = DateTime.UtcNow;
 
             result = await UserManager.UpdateAsync(user);
 
-            if (!result.Succeeded) throw new DatabaseError(result.Errors);
+            if (!result.Succeeded) throw new UserParmsCouldNotBeChanged(result.Errors);
 
             if (model.IsKillSessions)
-                userContexts.RemoveByClientId(ctx.Client.Id, user.Id);
+            {
+                var userContexts = DmsResolver.Current.Get<UserContexts>();
+                userContexts.RemoveByClientId(context.Client.Id, model.Id);
+            }
 
         }
 
 
-        public async Task ConfirmEmailAgentUser(int agentId)
+        public async Task ConfirmEmailAgentUser(IContext context, int agentId)
         {
-            var context = DmsResolver.Current.Get<UserContexts>().Get();
-
             var user = GetUser(context, agentId);
             if (user == null) throw new UserIsNotDefined();
             user.EmailConfirmed = false;
@@ -137,7 +131,7 @@ namespace DMS_WebAPI.Utilities
 
             var languages = DmsResolver.Current.Get<ILanguages>();
 
-            mailService.SendMessage(context, MailServers.Noreply, user.Email, languages.GetTranslation("##l@EmailSubject:EmailConfirmation@l##"), htmlContent);
+            mailService.SendMessage(context, MailServers.Noreply, user.Email, languages.GetTranslation(user.LanguageId, "##l@EmailSubject:EmailConfirmation@l##"), htmlContent);
         }
 
         public async Task SwitchOffFingerprint(IContext context, Item model)

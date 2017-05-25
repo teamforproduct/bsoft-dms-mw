@@ -70,7 +70,7 @@ namespace BL.CrossCutting.Context
                     Id = ctx.Employee.Id,
                     Name = ctx.Employee.Name,
                     IsActive = ctx.Employee.IsActive,
-                    PositionExecutorsCount = ctx.Employee.PositionExecutorsCount,
+                    AssigmentsCount = ctx.Employee.AssigmentsCount,
                 };
                 Client = new Client
                 {

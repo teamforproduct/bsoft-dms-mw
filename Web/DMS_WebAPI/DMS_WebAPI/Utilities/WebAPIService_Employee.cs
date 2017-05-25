@@ -39,6 +39,7 @@ using System.Web;
 using BL.Logic.SystemServices.TaskManagerService;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using BL.Logic.Common;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -86,11 +87,7 @@ namespace DMS_WebAPI.Utilities
                     });
 
                     // обновляю сотрудника 
-                    tmpService.SetAgentUserUserId(context, new InternalDictionaryAgentUser
-                    {
-                        Id = employeeId,
-                        UserId = user.Id
-                    });
+                    tmpService.SetAgentUserUserId(context, employeeId, user.Id);
 
                 }
 

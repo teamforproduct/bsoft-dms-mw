@@ -21,7 +21,8 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #region DictionaryAgents
         FrontDictionaryAgent GetAgent(IContext context, int id);
         IEnumerable<AutocompleteItem> GetShortListAgentExternal(IContext context, UIPaging paging);
-        void SetDictionaryAgentUserLastPositionChose(IContext context, List<int> positionsIdList);
+        void SetAgentUserLockout(IContext context, int agentId, bool isLockout);
+        void SetAgentUserLastPositionChose(IContext context, int agentId, List<int> positionsIdList);
         IEnumerable<FrontDictionaryAgent> GetAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging);
         void DeleteAgentIfNoAny(IContext context, List<int> list);
 
@@ -72,7 +73,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
 
         IEnumerable<ListItem> GetAgentEmployeeList(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
 
-        void SetAgentUserUserId(IContext context, InternalDictionaryAgentUser User);
+        void SetAgentUserUserId(IContext context, int agentId, string userId);
         #endregion DictionaryAgentEmployees
 
         #region DictionaryAgentAdress

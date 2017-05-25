@@ -105,7 +105,7 @@ namespace DMS_WebAPI.ControllersV3.User
             var employee = tmpService.GetDictionaryAgentEmployee(context, context.CurrentAgentId);
 
             employee.ImageId = model.ImageId;
-            employee.LanguageId = model.LanguageId;
+            //employee.LanguageId = model.LanguageId;
 
             employee.FirstName = model.FirstName;
             employee.MiddleName = model.MiddleName;

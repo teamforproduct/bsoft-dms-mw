@@ -1,5 +1,4 @@
-﻿using BL.Database.DBModel.Admin;
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -19,17 +18,17 @@ namespace BL.Database.DBModel.Dictionary
         //[Index("IX_UserName", 1, IsUnique = true)]
         public string UserName { get; set; }
 
-        public int LanguageId { get; set; }
+        //public int LanguageId { get; set; }
         [MaxLength(2000)]
         public string LastPositionChose { get; set; }
-        public bool IsSendEMail { get; set; }
+        public bool IsLockout { get; set; }
         public int LastChangeUserId { get; set; }
         public DateTime LastChangeDate { get; set; }
 
         [ForeignKey("Id")]
         public virtual DictionaryAgents Agent { get; set; }
 
-        [ForeignKey("LanguageId")]
-        public virtual AdminLanguages Language { get; set; }
+        //[ForeignKey("LanguageId")]
+        //public virtual AdminLanguages Language { get; set; }
     }
 }

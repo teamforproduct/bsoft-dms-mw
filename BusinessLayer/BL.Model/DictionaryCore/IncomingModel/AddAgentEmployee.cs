@@ -25,10 +25,10 @@ namespace BL.Model.DictionaryCore.IncomingModel
         /// </summary>
         public int PersonnelNumber { get; set; }
 
-        /// <summary>
-        /// Профиль пользователя. Язык интерфейса.
-        /// </summary>
-        [Required]
+        ///// <summary>
+        ///// Профиль пользователя. Язык интерфейса.
+        ///// </summary>
+        //[Required]
         public int LanguageId { get; set; }
 
         /// <summary>

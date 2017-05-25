@@ -320,7 +320,7 @@ namespace BL.Database.Common
                 UserName = item.UserName,
                 //LanguageId = item.LanguageId,
                 LastPositionChose = item.LastPositionChose,
-                //IsActive = item.IsActive,
+                IsLockout = item.IsLockout,
                 LastChangeDate = item.LastChangeDate,
                 LastChangeUserId = item.LastChangeUserId,
             };

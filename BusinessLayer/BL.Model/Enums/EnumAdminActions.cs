@@ -179,11 +179,11 @@
         #endregion
 
         #region [+] Action over AgentUser
-        ChangePassword = 221001,
-        ChangeLockout = 221002,
-        KillSessions = 221003,
+        //ChangePassword = 221001,
+        //ChangeLockout = 221002,
+        //KillSessions = 221003,
         ChangeLogin = 221004,
-        MustChangePassword = 221005,
+        //MustChangePassword = 221005,
 
         #endregion
 

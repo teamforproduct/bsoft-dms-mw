@@ -103,6 +103,7 @@ namespace DMS_WebAPI.Utilities
 
         public bool ExistsUserInClient(AspNetUsers user, int clientId)
         {
+            if (user == null) return false;
             return (GetUserClient(user.Id, clientId) != null);
         }
 
@@ -121,6 +122,7 @@ namespace DMS_WebAPI.Utilities
 
             return ExistsUserInClient(user, clientId);
         }
+
 
         // Пользователь запрашивает информацию о себе внутри докума
         public FrontAgentEmployeeUser GetUserInfo(IContext context)

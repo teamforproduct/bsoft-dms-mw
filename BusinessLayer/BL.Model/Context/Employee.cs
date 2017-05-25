@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace BL.Model.Context
+﻿namespace BL.Model.Context
 {
     /// <summary>
     /// класс сотрудника
@@ -12,23 +10,27 @@ namespace BL.Model.Context
         /// ИД сотрудника
         /// </summary>
         public int Id { get; set; }
+
         /// <summary>
-        /// ФИО
+        /// Фамилия И.О.
         /// </summary>
         public string Name { get; set; }
 
-        //public int ClientId { get; set; }
-        //public string ClientCode { get; set; }
 
         /// <summary>
-        /// деактивированный сотрудник не может войти в систему
+        /// деактивированный сотрудник(помеченный на удаление) не может войти в систему + не участвует в выборках
         /// </summary>
         public bool IsActive { get; set; }
 
         /// <summary>
-        /// Количество должностей исполняемых на данный момент
+        /// сотрудник заблокирован администратором - не может войти в систему
         /// </summary>
-        public int PositionExecutorsCount { get; set; }
+        public bool IsLockout { get; set; }
+
+        /// <summary>
+        /// Количество актуальных назначений на данный момент
+        /// </summary>
+        public int AssigmentsCount { get; set; }
 
     }
 }

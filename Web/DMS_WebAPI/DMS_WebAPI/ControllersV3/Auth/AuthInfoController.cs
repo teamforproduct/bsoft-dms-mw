@@ -76,8 +76,9 @@ namespace DMS_WebAPI.ControllersV3.Auth
 
             if (!stopWatch.IsRunning) stopWatch.Restart();
 
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            await webService.ChangeLoginAgentUser(model);
+            await webService.ChangeLoginAgentUserAsync(context, model);
 
             var res = new JsonResult(null, this);
             res.SpentTime = stopWatch;
@@ -97,8 +98,9 @@ namespace DMS_WebAPI.ControllersV3.Auth
 
             if (!stopWatch.IsRunning) stopWatch.Restart();
 
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            await webService.ConfirmEmailAgentUser(model.Id);
+            await webService.ConfirmEmailAgentUser(context, model.Id);
 
             var res = new JsonResult(null, this);
             res.SpentTime = stopWatch;
@@ -120,9 +122,9 @@ namespace DMS_WebAPI.ControllersV3.Auth
 
             if (!stopWatch.IsRunning) stopWatch.Restart();
 
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
             var webService = DmsResolver.Current.Get<WebAPIService>();
-
-            await webService.ChangePasswordAgentUserAsync(model);
+            await webService.ChangePasswordAgentUserAsync(context, model);
 
             var res = new JsonResult(null, this);
             res.SpentTime = stopWatch;
@@ -136,25 +138,15 @@ namespace DMS_WebAPI.ControllersV3.Auth
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Info + "/ChangeLockout")]
-        public async Task<IHttpActionResult> ChangeLockout([FromBody]ChangeLockoutAgentUser model)
+        public IHttpActionResult ChangeLockout([FromBody]ChangeLockoutAgentUser model)
         {
             if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
 
             if (!stopWatch.IsRunning) stopWatch.Restart();
 
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
             var webService = DmsResolver.Current.Get<WebAPIService>();
-
-            if (model.IsLockout)
-            {
-                var userContexts = DmsResolver.Current.Get<UserContexts>();
-
-                var user = webService.GetUser(ctx, model.Id);
-
-                if (user == null) throw new UserIsNotDefined();
-
-                userContexts.RemoveByClientId(ctx.Client.Id, user.Id);
-            }
+            webService.ChangeLokoutAgentUserAsync(context, model);
 
             var res = new JsonResult(null, this);
             res.SpentTime = stopWatch;
@@ -172,16 +164,10 @@ namespace DMS_WebAPI.ControllersV3.Auth
         public IHttpActionResult KillSessions([FromBody]Item model)
         {
             if (!stopWatch.IsRunning) stopWatch.Restart();
+            var contexts = DmsResolver.Current.Get<UserContexts>();
+            var context = contexts.Get();
 
-            var webService = DmsResolver.Current.Get<WebAPIService>();
-            var userContexts = DmsResolver.Current.Get<UserContexts>();
-            var ctx = userContexts.Get();
-
-            var user = webService.GetUser(ctx, model.Id);
-
-            if (user == null) throw new UserIsNotDefined();
-
-            userContexts.RemoveByClientId(ctx.Client.Id, user.Id);
+            contexts.RemoveByClientId(context.Client.Id, model.Id);
 
             var res = new JsonResult(null, this);
             res.SpentTime = stopWatch;
@@ -200,28 +186,10 @@ namespace DMS_WebAPI.ControllersV3.Auth
         {
             if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
 
-            var mngContext = DmsResolver.Current.Get<UserContexts>();
+            var context = DmsResolver.Current.Get<UserContexts>().Get();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            await webService.SetMustChangePasswordAgentUserAsync(context, model);
 
-            var ctx = mngContext.Get();
-
-            var admService = DmsResolver.Current.Get<IAdminService>();
-            var userId = (string)admService.ExecuteAction(EnumAdminActions.MustChangePassword, ctx, model.Id);
-
-            var userManager = HttpContext.Current.GetOwinContext().GetUserManager<ApplicationUserManager>();
-
-            AspNetUsers user = await userManager.FindByIdAsync(userId);
-
-            if (user == null) throw new UserIsNotDefined();
-
-            user.IsChangePasswordRequired = model.MustChangePassword;//true;
-
-            var result = await userManager.UpdateAsync(user);
-
-            if (!result.Succeeded)
-            {
-                return new JsonResult(result, false, string.Join(" ", result.Errors), this);
-                //return GetErrorResult(result);
-            }
             return new JsonResult(null, this);
         }
 
