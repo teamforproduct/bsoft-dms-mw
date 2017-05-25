@@ -249,7 +249,7 @@ namespace BL.Model.Exception
 
     public class ClientIsNotContainUser : DmsExceptions
     {
-        public ClientIsNotContainUser() : base() { }
+        public ClientIsNotContainUser(string ClientName) : base() { base.Parameters = new List<string> { ClientName }; }
         public ClientIsNotContainUser(System.Exception ex) : base(ex) { }
     }
 

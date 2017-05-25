@@ -1,6 +1,7 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.Common;
+using BL.Model.DictionaryCore.FrontModel;
 using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
@@ -10,8 +11,6 @@ using System;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using BL.Model.DictionaryCore.FrontModel.Employees;
-using BL.Model.DictionaryCore.FrontModel;
 
 namespace DMS_WebAPI.ControllersV3.User
 {
@@ -33,6 +32,7 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontFile))]
         public async Task<IHttpActionResult> Get()
         {
+            // Тут нужно возвращать сам файл
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
@@ -47,6 +47,7 @@ namespace DMS_WebAPI.ControllersV3.User
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
+        // Сейчас установка аватарки происходит вместе с остальными параметрами 
         [HttpPut]
         [Route(Features.Image)]
         public async Task<IHttpActionResult> Put([FromBody]ModifyDictionaryAgentImage model)

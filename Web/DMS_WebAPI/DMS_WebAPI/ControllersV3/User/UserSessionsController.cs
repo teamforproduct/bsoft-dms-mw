@@ -1,8 +1,8 @@
-﻿using BL.CrossCutting.Context;
-using BL.CrossCutting.DependencyInjection;
+﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
+using BL.Model.WebAPI.FrontModel;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using System.Collections.Generic;
@@ -10,7 +10,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using BL.Model.WebAPI.FrontModel;
 
 namespace DMS_WebAPI.ControllersV3.User
 {

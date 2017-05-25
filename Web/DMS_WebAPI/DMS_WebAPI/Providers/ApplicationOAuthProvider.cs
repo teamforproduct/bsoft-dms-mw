@@ -86,7 +86,7 @@ namespace DMS_WebAPI.Providers
             if (user == null) throw new UserIsNotDefined();
 
             // Проверяю принадлежность пользователя к клиенту
-            if (!webService.ExistsUserInClient(user, clientId)) throw new ClientIsNotContainUser();
+            if (!webService.ExistsUserInClient(user, clientId)) throw new ClientIsNotContainUser(clientCode);
 
 
             // Пользователь может быть заблокирован по двум причинам:

@@ -89,40 +89,6 @@ namespace DMS_WebAPI.ControllersV3.User
         }
 
         /// <summary>
-        /// Корректирует реквизиты пользователя
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpPut]
-        [Route(Features.Info)]
-        public IHttpActionResult Put([FromBody]ModifyAgentUser model)
-        {
-            //!ASYNC
-            var contexts = DmsResolver.Current.Get<UserContexts>();
-            var context = contexts.Get();
-            var webSeevice = DmsResolver.Current.Get<WebAPIService>();
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-
-            var employee = tmpService.GetDictionaryAgentEmployee(context, context.CurrentAgentId);
-
-            employee.ImageId = model.ImageId;
-            //employee.LanguageId = model.LanguageId;
-
-            employee.FirstName = model.FirstName;
-            employee.MiddleName = model.MiddleName;
-            employee.LastName = model.LastName;
-            employee.TaxCode = model.TaxCode;
-            employee.IsMale = model.IsMale;
-            employee.BirthDate = model.BirthDate;
-
-            webSeevice.UpdateUserEmployee(context, employee);
-
-            webSeevice.SetUserLanguage(context.User.Id, model.LanguageId);
-
-            return GetById(context);
-        }
-
-        /// <summary>
         /// Возвращает набор прав в терминах: module, feature, CRUD
         /// </summary>
         /// <returns></returns>
@@ -168,15 +134,40 @@ namespace DMS_WebAPI.ControllersV3.User
         }
 
         /// <summary>
-        /// Устанавливает новый логин
+        /// Корректирует реквизиты пользователя
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route(Features.ChangeLogin)]
-        public async Task<IHttpActionResult> ChangeLogin([FromBody]ChangeLogin model)
+        [Route(Features.Info)]
+        public IHttpActionResult Put([FromBody]ModifyAgentUser model)
         {
-            throw new NotImplementedException();
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            webService.UpdateUserParms(User.Identity.GetUserId(), model);
+
+            //!ASYNC
+            var contexts = DmsResolver.Current.Get<UserContexts>();
+            var context = contexts.Get();
+            var webSeevice = DmsResolver.Current.Get<WebAPIService>();
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+
+            var employee = tmpService.GetDictionaryAgentEmployee(context, context.CurrentAgentId);
+
+            employee.ImageId = model.ImageId;
+            //employee.LanguageId = model.LanguageId;
+
+            employee.FirstName = model.FirstName;
+            employee.MiddleName = model.MiddleName;
+            employee.LastName = model.LastName;
+            employee.TaxCode = model.TaxCode;
+            employee.IsMale = model.IsMale;
+            employee.BirthDate = model.BirthDate;
+
+            webSeevice.UpdateUserEmployee(context, employee);
+
+            webSeevice.SetUserLanguage(context.User.Id, model.LanguageId);
+
+            return GetById(context);
         }
 
         /// <summary>

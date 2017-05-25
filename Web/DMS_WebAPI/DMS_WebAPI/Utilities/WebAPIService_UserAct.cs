@@ -19,10 +19,12 @@ namespace DMS_WebAPI.Utilities
     internal partial class WebAPIService
     {
 
-        public async Task ChangeFingerprintEnabled(bool parm)
+        public void UpdateUserParms(string userId,)
+            { }
+
+        public async Task ChangeFingerprintEnabled(string userId, bool parm)
         {
-            var userContext = DmsResolver.Current.Get<UserContexts>().Get();
-            var user = GetUserById(userContext.User.Id);
+            var user = GetUserById(userId);
 
             user.IsFingerprintEnabled = parm;
             user.LastChangeDate = DateTime.UtcNow;
@@ -82,11 +84,9 @@ namespace DMS_WebAPI.Utilities
             user_context.UpdateChangePasswordRequired(userId, false);
         }
 
-        public void ChangeControlQuestion(ModifyAspNetUserControlQuestion model)
+        public void ChangeControlQuestion(string userId, ModifyAspNetUserControlQuestion model)
         {
-            var userContexts = DmsResolver.Current.Get<UserContexts>();
-            var context = userContexts.Get();
-            var user = GetUserById(context.User.Id);
+            var user = GetUserById(userId);
 
             user.ControlQuestionId = model.QuestionId;
             user.ControlAnswer = model.Answer;
