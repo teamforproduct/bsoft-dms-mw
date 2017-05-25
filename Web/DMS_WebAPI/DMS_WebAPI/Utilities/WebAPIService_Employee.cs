@@ -307,8 +307,6 @@ namespace DMS_WebAPI.Utilities
             {
                 if (assignmentId > 0) dicService.ExecuteAction(EnumDictionaryActions.DeleteExecutor, context, assignmentId);
 
-                if (res != null) DeleteUserEmployee(context, res.EmployeeId);
-
                 // Если создавали новую должность
                 if (!model.PositionId.HasValue && posId > 0) dicService.ExecuteAction(EnumDictionaryActions.DeletePosition, context, posId);
 
@@ -317,6 +315,8 @@ namespace DMS_WebAPI.Utilities
 
                 // Если создавали новую организацию
                 if (!model.OrgId.HasValue && orgId > 0) dicService.ExecuteAction(EnumDictionaryActions.DeleteOrg, context, orgId);
+
+                if (res != null) DeleteUserEmployee(context, res.EmployeeId);
 
                 throw;
             }

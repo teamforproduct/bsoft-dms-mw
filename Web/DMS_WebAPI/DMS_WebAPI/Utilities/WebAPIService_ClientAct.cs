@@ -185,6 +185,12 @@ namespace DMS_WebAPI.Utilities
             // сервер может определяться более сложным образом: с учетом нагрузки, количества клиентов
             var settings = DmsResolver.Current.Get<ISettingValues>();
             var dbName = settings.GetCurrentServerName();
+            var languages = DmsResolver.Current.Get<ILanguages>();
+
+            // Если не указан язык, беру язык по умолчанию 
+            var languageId = string.IsNullOrEmpty(model.Language)
+                ? languages.GetLanguageIdByHttpContext()
+                : languages.GetLanguageIdByCode(model.Language);
 
             var db = _webDb.GetServers(new FilterAdminServers { ServerNameExact = dbName }).FirstOrDefault();
 
@@ -206,6 +212,7 @@ namespace DMS_WebAPI.Utilities
                 {
                     Name = model.ClientCode,
                     Code = model.ClientCode,
+                    LanguageId = languageId,
                 });
 
 
@@ -225,13 +232,8 @@ namespace DMS_WebAPI.Utilities
             dbAdmin.ClientCode = model.ClientCode;
 
             var ctx = new AdminContext(dbAdmin);
+            ctx.User.LanguageId = languageId;
 
-            var languages = DmsResolver.Current.Get<ILanguages>();
-
-            // Если не указан язык, беру язык по умолчанию 
-            ctx.User.LanguageId = string.IsNullOrEmpty(model.Language)
-                ? languages.GetLanguageIdByHttpContext()
-                : languages.GetLanguageIdByCode(model.Language);
 
             var clientService = DmsResolver.Current.Get<IClientService>();
 
