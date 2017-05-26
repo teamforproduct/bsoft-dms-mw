@@ -106,8 +106,6 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<AdminSubordinations> AdminSubordinationsSet { get; set; }
         public virtual DbSet<AdminRegistrationJournalPositions> AdminRegistrationJournalPositionsSet { get; set; }
 
-        public virtual DbSet<AdminLanguages> AdminLanguagesSet { get; set; }
-        public virtual DbSet<AdminLanguageValues> AdminLanguageValuesSet { get; set; }
 
         public virtual DbSet<DictionaryAgents> DictionaryAgentsSet { get; set; }
 

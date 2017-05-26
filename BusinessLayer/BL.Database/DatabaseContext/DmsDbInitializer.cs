@@ -6,8 +6,6 @@ namespace BL.Database.DatabaseContext
     {
         protected override void Seed(DmsContext context)
         {
-            context.AdminLanguagesSet.AddRange(DmsDbImportData.GetAdminLanguages());
-            //context.AdminLanguageValuesSet.AddRange(DmsDbImportData.GetAdminLanguageValues());
 
             // ModuleFeatures последовательность вызовов важна!!!
             DmsDbImportData.InitPermissions();

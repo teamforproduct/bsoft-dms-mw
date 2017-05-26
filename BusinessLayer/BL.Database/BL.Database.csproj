@@ -146,8 +146,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Admins\Interfaces\ILanguagesDbProcess.cs" />
-    <Compile Include="Admins\LanguagesDbProcess.cs" />
     <Compile Include="Common\DateTimeKindAttribute.cs" />
     <Compile Include="Common\SystemModelConverter.cs" />
     <Compile Include="Common\CommonFilterUtilites.cs" />
@@ -224,10 +222,8 @@
     <Compile Include="DBModel\System\SystemModules.cs" />
     <Compile Include="DBModel\System\SystemActions.cs" />
     <Compile Include="DBModel\System\SystemFields.cs" />
-    <Compile Include="DBModel\Admin\AdminLanguageValues.cs" />
     <Compile Include="DBModel\System\SystemLogs.cs" />
     <Compile Include="DBModel\System\SystemObjects.cs" />
-    <Compile Include="DBModel\Admin\AdminLanguages.cs" />
     <Compile Include="DBModel\System\SystemFormulas.cs" />
     <Compile Include="DBModel\System\SystemFormats.cs" />
     <Compile Include="DBModel\System\SystemSettings.cs" />
@@ -340,6 +336,10 @@
     <Compile Include="Migrations\201705251911418_LokoutAgentUser.cs" />
     <Compile Include="Migrations\201705251911418_LokoutAgentUser.Designer.cs">
       <DependentUpon>201705251911418_LokoutAgentUser.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201705261136145_DeleteLangStructInClient.cs" />
+    <Compile Include="Migrations\201705261136145_DeleteLangStructInClient.Designer.cs">
+      <DependentUpon>201705261136145_DeleteLangStructInClient.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -459,6 +459,9 @@
     <EmbeddedResource Include="Migrations\201705251911418_LokoutAgentUser.resx">
       <DependentUpon>201705251911418_LokoutAgentUser.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705261136145_DeleteLangStructInClient.resx">
+      <DependentUpon>201705261136145_DeleteLangStructInClient.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>ReportRegistrationCardIncomingDocument.cs</LastGenOutput>
@@ -482,6 +485,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{C0C07587-41A7-46C8-8FBD-3F9C8EBE2DDC}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Admins\Interfaces\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -145,8 +145,6 @@
     <Compile Include="AdminCore\AdminCommandFactory.cs" />
     <Compile Include="AdminCore\Interfaces\IAdminService.cs" />
     <Compile Include="AdminCore\Interfaces\ILanguages.cs" />
-    <Compile Include="AdminCore\Interfaces\ILanguageService.cs" />
-    <Compile Include="AdminCore\LanguageService.cs" />
     <Compile Include="AdminCore\DepartmentAdmin\AddDepartmentAdminCommand.cs" />
     <Compile Include="AdminCore\DepartmentAdmin\BaseDepartmentAdminCommand.cs" />
     <Compile Include="AdminCore\DepartmentAdmin\DeleteDepartmentAdminCommand.cs" />

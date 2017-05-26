@@ -61,7 +61,6 @@ namespace BL.Logic.DependencyInjection
             Bind<ICommandService>().To<CommandService>().InSingletonScope();
             Bind<IAdminService>().To<AdminService>().InSingletonScope();
             Bind<IClientService>().To<ClientService>().InSingletonScope();
-            Bind<ILanguageService>().To<LanguageService>().InSingletonScope();
             Bind<IFullTextSearchService>().To<FullTextSearchService>().InSingletonScope();
             Bind<IQueueWorkerService>().To<QueueWorkerService>().InSingletonScope();
             Bind<ITempStorageService>().To<TempStorageService>().InSingletonScope();

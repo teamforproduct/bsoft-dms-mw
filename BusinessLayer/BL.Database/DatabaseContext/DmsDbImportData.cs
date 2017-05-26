@@ -501,21 +501,6 @@ namespace BL.Database.DatabaseContext
         }
 
 
-        public static List<AdminLanguages> GetAdminLanguages()
-        {
-            var items = new List<AdminLanguages>();
-            // Эту функциюнужно синхронизить с ApplicationDbImportData.GetAdminLanguages
-            items.Add(new AdminLanguages { Id = 570, Code = "ru_RU", Name = "Русский", IsDefault = true });
-            items.Add(new AdminLanguages { Id = 045, Code = "en_US", Name = "English", IsDefault = false });
-            items.Add(new AdminLanguages { Id = 720, Code = "uk_UA", Name = "Українська", IsDefault = false });
-            items.Add(new AdminLanguages { Id = 090, Code = "be_BY", Name = "Беларуский", IsDefault = false });
-            items.Add(new AdminLanguages { Id = 790, Code = "cs_CZ", Name = "Čeština", IsDefault = false });
-            items.Add(new AdminLanguages { Id = 481, Code = "de_DE", Name = "Deutsch", IsDefault = false });
-            items.Add(new AdminLanguages { Id = 745, Code = "fr_FR", Name = "Français", IsDefault = false });
-            items.Add(new AdminLanguages { Id = 740, Code = "pl_PL", Name = "Polszczyzna", IsDefault = false });
-
-            return items;
-        }
 
 
 
