@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Lucene.Net.Analysis;
 using Lucene.Net.Documents;
 using Lucene.Net.Index;
 using Lucene.Net.Search;
@@ -10,13 +9,12 @@ using System.Linq;
 using BL.Model.Enums;
 using BL.Model.FullTextSearch;
 using Directory = Lucene.Net.Store.Directory;
-using Version = Lucene.Net.Util.LuceneVersion;
 using BL.Model.SystemCore;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Extensions;
-using Lucene.Net.Analysis.Standard;
 using Lucene.Net.Queries;
 using Lucene.Net.QueryParsers.Classic;
+using Lucene.Net.Util;
 
 namespace BL.Logic.SystemServices.FullTextSearch
 {
@@ -40,7 +38,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         private IndexWriter _writer;
         private readonly Directory _directory;
-        private readonly Analyzer _analyzer;
+        private readonly CaseInsensitiveWhitespaceAnalyzer _analyzer;
         private IndexReader _indexReader;
         private IndexSearcher _searcher;
         private IndexWriterConfig _cfg;
@@ -55,17 +53,17 @@ namespace BL.Logic.SystemServices.FullTextSearch
             {
                 var di = System.IO.Directory.CreateDirectory(dir);
                 Directory directory = FSDirectory.Open(di);
-                var analyzer = new CaseInsensitiveWhitespaceAnalyzer();
+                var analyzer = new CaseInsensitiveWhitespaceAnalyzer(LuceneVersion.LUCENE_48);
                 //IndexWriter writer = new IndexWriter(directory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
                 //var analyzer = new StandardAnalyzer(Version.LUCENE_48);
-                _cfg = new IndexWriterConfig(Version.LUCENE_48, analyzer);
+                _cfg = new IndexWriterConfig(LuceneVersion.LUCENE_48, analyzer);
                 var writer = new IndexWriter(directory, _cfg);
                 writer.Commit();
                 writer.Dispose();
                 _cfg = null;
             }
             _directory = FSDirectory.Open(new DirectoryInfo(dir));
-            _analyzer = new CaseInsensitiveWhitespaceAnalyzer();  //new StandardAnalyzer(Version.LUCENE_48);
+            _analyzer = new CaseInsensitiveWhitespaceAnalyzer(LuceneVersion.LUCENE_48);  //new StandardAnalyzer(Version.LUCENE_48);
             _indexReader = DirectoryReader.Open(_directory);
             _searcher = new IndexSearcher(_indexReader);
         }
@@ -148,8 +146,8 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
         public void StartUpdate()
         {
-            var analyzer = new CaseInsensitiveWhitespaceAnalyzer();  //new StandardAnalyzer(Version.LUCENE_48);
-            _cfg = new IndexWriterConfig(Version.LUCENE_48, analyzer);
+            var analyzer = new CaseInsensitiveWhitespaceAnalyzer(LuceneVersion.LUCENE_48);  //new StandardAnalyzer(Version.LUCENE_48);
+            _cfg = new IndexWriterConfig(LuceneVersion.LUCENE_48, analyzer);
             _writer = new IndexWriter(_directory, _cfg);
         }
 
@@ -175,24 +173,24 @@ namespace BL.Logic.SystemServices.FullTextSearch
             arr.ForEach(x => x.Trim());
             arr.RemoveAll(string.IsNullOrEmpty);
             var qryString = arr.Aggregate("", (current, elem) => current + (string.IsNullOrEmpty(current) ? $"*{elem}*" : $" AND *{elem}*"));
-            var parser = new QueryParser(Version.LUCENE_48, FIELD_BODY, _analyzer) { AllowLeadingWildcard = true };
+            var parser = new QueryParser(LuceneVersion.LUCENE_48, FIELD_BODY, _analyzer) { AllowLeadingWildcard = true };
             var textQry = parser.Parse(qryString);
             boolQry.Add(textQry, Occur.MUST);
 
             if (filter.Accesses != null && filter.Accesses.Any())
             {
-                var localParser = new QueryParser(Version.LUCENE_48, FIELD_SECURITY, _analyzer);
+                var localParser = new QueryParser(LuceneVersion.LUCENE_48, FIELD_SECURITY, _analyzer);
                 var boolLocalQry = new BooleanQuery();
                 foreach (var item in filter.Accesses)
                 {
-                    var localQry = localParser.Parse(item);
+                    var localQry = localParser.Parse(item.ToLower());
                     boolLocalQry.Add(localQry, Occur.SHOULD);
                 }
                 boolQry.Add(boolLocalQry, Occur.MUST);
             }
             if (filter.Filters != null && filter.Filters.Any())
             {
-                var localParser = new QueryParser(Version.LUCENE_48, FIELD_FILTERS, _analyzer) { AllowLeadingWildcard = true };
+                var localParser = new QueryParser(LuceneVersion.LUCENE_48, FIELD_FILTERS, _analyzer) { AllowLeadingWildcard = true };
                 var boolLocalQry = new BooleanQuery();
                 foreach (var item in filter.Filters)
                 {
