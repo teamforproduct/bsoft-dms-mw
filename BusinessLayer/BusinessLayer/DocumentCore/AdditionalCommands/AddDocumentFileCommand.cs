@@ -54,15 +54,14 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             Model.ForEach(x =>
             {
                 if (x.TmpFileId.HasValue)
-                    x.File = tempStorageService.GetStoreObject(x.TmpFileId.Value) as BaseFile;
-                else if (x.CopyingFileId.HasValue)
+                    x.File = new InternalDocumentFile { File = tempStorageService.GetStoreObject(x.TmpFileId.Value) as BaseFile };
+                else if ((x.CopyingFileId ?? x.MovingFileId).HasValue)
                 {
-                    var file = _fileDb.GetDocumentFileInternal(_context, x.CopyingFileId.Value);
-                    _fStore.GetFile(_context, file);
-                    x.File = file.File;
+                    x.File = _fileDb.GetDocumentFileInternal(_context, (x.CopyingFileId ?? x.MovingFileId).Value);
+                    _fStore.GetFile(_context, x.File);
                 }
             });
-            if (Model.Any(x => x.File == null))
+            if (Model.Where(x => (x.TmpFileId ?? x.CopyingFileId ?? x.MovingFileId).HasValue).Any(x => x.File.File == null))
                 throw new CannotAccessToFile();
             _adminProc.VerifyAccess(_context, CommandType);
             _document = _fileDb.AddDocumentFilePrepare(_context, Model.Select(x => x.DocumentId).FirstOrDefault());
@@ -75,19 +74,23 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                  if (m.OrderInDocument.HasValue)
                  {
                      var mainFile = _document.DocumentFiles.FirstOrDefault(x => x.OrderInDocument == m.OrderInDocument);
-                     if (mainFile == null || m.Type != mainFile.Type
-                         || (m.Type == EnumFileTypes.Main && (m.IsMainVersion ?? false) && _document.ExecutorPositionId != _context.CurrentPositionId)
-                         || (m.Type == EnumFileTypes.Additional && (m.IsMainVersion ?? false) && mainFile.ExecutorPositionId != _context.CurrentPositionId)
+                     if (mainFile == null 
+                         || (mainFile.Type == EnumFileTypes.Main && (m.IsMainVersion ?? false) && _document.ExecutorPositionId != _context.CurrentPositionId)
+                         || (mainFile.Type == EnumFileTypes.Additional && (m.IsMainVersion ?? false) && mainFile.ExecutorPositionId != _context.CurrentPositionId)
+                         || (m.MovingFileId.HasValue && m.File.ExecutorPositionId != _context.CurrentPositionId)
                          )
                      {
                          throw new CouldNotPerformOperation();
                      }
+                     m.Type = mainFile.Type;
                      m.ExecutorPositionId = mainFile.ExecutorPositionId;
                  }
                  else
                  {
+                     if (m.MovingFileId.HasValue)
+                         throw new CouldNotPerformOperation();
                      m.IsMainVersion = true;
-                     if (m.Type == EnumFileTypes.Main && _document.ExecutorPositionId != _context.CurrentPositionId)
+                     if (!m.Type.HasValue || (m.Type == EnumFileTypes.Main && _document.ExecutorPositionId != _context.CurrentPositionId))
                      {
                          throw new CouldNotPerformOperation();
                      }
@@ -106,7 +109,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                             {
                                 if (x.LinkingFileId.HasValue && x.EventId.HasValue)
                                 {
-                                    _file = new InternalDocumentFile { Id = x.LinkingFileId.Value, EventId = x.EventId.Value, };
+                                    _file = new InternalDocumentFile { Id = x.LinkingFileId.Value, EventId = x.EventId.Value, IsLinkOnly = true, };
                                 }
                                 else
                                 {
@@ -125,6 +128,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                                     {
                                         _file.OrderInDocument = _fileDb.GetNextFileOrderNumber(_context, x.DocumentId);
                                     }
+                                    if (x.MovingFileId.HasValue)
+                                        _file.Id = x.MovingFileId.Value;
                                     _fStore.SaveFile(_context, _file);
                                     if (_document.IsRegistered.HasValue && !_file.EventId.HasValue && _file.File != null)
                                     {
@@ -132,7 +137,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                                             EnumEventTypes.AddDocumentFile, null, null, $"{_file.File.FileName} v.{_file.Version}");
                                     }
                                 }
-                                res.Add(_fileDb.AddNewFileOrVersion(_context, _file));
+                                res.Add(_fileDb.AddDocumentFile(_context, _file));
 
                                 _queueWorkerService.AddNewTask(admContext, () =>
                                 {

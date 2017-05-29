@@ -2934,7 +2934,7 @@ namespace BL.Database.Common
             fileStore.SaveFile(context, att);
             FileLogger.AppendTextToFile(DateTime.Now.ToString(CultureInfo.InvariantCulture) + " GetDocumentCertificateSignPdf SaveFile ", @"C:\TEMPLOGS\sign.log");
 
-            operationDb.AddNewFileOrVersion(context, att);
+            operationDb.AddDocumentFile(context, att);
             FileLogger.AppendTextToFile(DateTime.Now.ToString(CultureInfo.InvariantCulture) + " GetDocumentCertificateSignPdf AddNewFileOrVersion ", @"C:\TEMPLOGS\sign.log");
 
             return new FilterDocumentFileIdentity { DocumentId = att.DocumentId, OrderInDocument = att.OrderInDocument, Version = att.Version };

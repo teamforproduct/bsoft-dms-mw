@@ -13,7 +13,7 @@ namespace BL.Database.Documents.Interfaces
         FrontDocumentFile GetDocumentFile(IContext ctx, int id);
         int CheckFileForDocument(IContext ctx, int documentId, string fileName, string fileExt);
         InternalDocument AddDocumentFilePrepare(IContext ctx, int documentId);
-        int AddNewFileOrVersion(IContext ctx, InternalDocumentFile docFile);
+        int AddDocumentFile(IContext ctx, InternalDocumentFile docFile);
         void UpdateFileOrVersion(IContext ctx, InternalDocument doc);
         void UpdateFilePdfView(IContext ctx, InternalDocumentFile docFile);
         IEnumerable<InternalDocumentFile> GetOldPdfForAttachedFiles(IContext ctx, int pdfAge);

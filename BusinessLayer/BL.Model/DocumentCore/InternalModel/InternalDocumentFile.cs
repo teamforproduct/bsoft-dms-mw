@@ -42,6 +42,10 @@ namespace BL.Model.DocumentCore.InternalModel
         /// Версия вложения
         /// </summary>
         public int Version { get; set; }
+        /// <summary>
+        /// Признак удаленый файл или нет
+        /// </summary>
+        public bool IsLinkOnly { get; set; }
 
         /// <summary>
         /// Дата создания файла

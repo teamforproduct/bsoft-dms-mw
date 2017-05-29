@@ -160,7 +160,7 @@ namespace BL.Database.Documents
                     });
                 var res = qryFE.ToList();
 
-               res.ForEach(x => CommonQueries.SetRegistrationFullNumber(x));
+                res.ForEach(x => CommonQueries.SetRegistrationFullNumber(x));
                 CommonQueries.SetFileInfo(context, res, filter?.File);
                 //var events = res.Select(x => x.Event).ToList();
                 //CommonQueries.SetAccessGroups(context, events);
@@ -220,13 +220,15 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var res = CommonQueries.GetDocumentFileQuery(ctx, new FilterDocumentFile { FileId = new List<int> { fileId }, IsAllDeleted = true })
+                var res = CommonQueries.GetDocumentFileQuery(ctx, new FilterDocumentFile { FileId = new List<int> { fileId } })
                     .Select(x => new InternalDocumentFile
                     {
                         Id = x.Id,
                         ClientId = x.ClientId,
                         EntityTypeId = x.EntityTypeId,
                         DocumentId = x.DocumentId,
+                        OrderInDocument = x.OrderNumber,
+                        ExecutorPositionId = x.ExecutorPositionId,
                         File = new BaseFile
                         {
                             Extension = x.Extension,
@@ -302,7 +304,7 @@ namespace BL.Database.Documents
 
                 if (doc == null) return null;
 
-                doc.DocumentFiles = CommonQueries.GetDocumentFileQuery(ctx, new FilterDocumentFile { DocumentId = new List<int> { documentId }, OrderInDocument = new List<int> { orderNumber} })
+                doc.DocumentFiles = CommonQueries.GetDocumentFileQuery(ctx, new FilterDocumentFile { DocumentId = new List<int> { documentId }, OrderInDocument = new List<int> { orderNumber } })
                         .Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
                             (d, a) => new { fl = d, agName = a.Name })
                         .Select(x => new InternalDocumentFile
@@ -365,7 +367,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public int AddNewFileOrVersion(IContext ctx, InternalDocumentFile docFile)
+        public int AddDocumentFile(IContext ctx, InternalDocumentFile docFile)
         {
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
@@ -384,7 +386,16 @@ namespace BL.Database.Documents
                     docFile.Id = fl.Id;
                     docFile.EventId = fl.EventId;
                 }
-                if (docFile.Id>0 && docFile.EventId.HasValue)
+                else if (!docFile.IsLinkOnly)
+                {
+                    var fl = ModelConverter.GetDbDocumentFile(docFile);
+                    dbContext.SafeAttach(fl);
+                    dbContext.Entry(fl).State = EntityState.Modified;
+                    dbContext.SaveChanges();
+                    docFile.Id = fl.Id;
+                    docFile.EventId = fl.EventId;
+                }
+                if (docFile.Id > 0 && docFile.EventId.HasValue)
                 {
                     dbContext.DocumentFileLinksSet.Add(new DocumentFileLinks { FileId = docFile.Id, EventId = docFile.EventId });
                     dbContext.SaveChanges();

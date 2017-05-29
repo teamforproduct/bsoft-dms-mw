@@ -585,7 +585,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var qry = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { documentId } }, false);
+                var qry = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { documentId }, IsIgnoreRegistered = true, }, false);
                 var accs = CommonQueries.GetDocumentAccessesQuery(context, null)
                         .Where(x => x.DocumentId == documentId)
                         .Select(acc => new FrontDocumentAccess
@@ -1528,6 +1528,8 @@ namespace BL.Database.Documents
                 dbContext.DocumentPapersSet.Where(x => x.ClientId == context.Client.Id)
                     .Where(x => x.DocumentId == id)
                     .Update(x => new DocumentPapers { LastPaperEventId = null });
+                dbContext.DocumentFileLinksSet.RemoveRange(dbContext.DocumentFileLinksSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.Event.DocumentId == id));
+                dbContext.DocumentFileLinksSet.RemoveRange(dbContext.DocumentFileLinksSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.File.DocumentId == id));
                 dbContext.DocumentFilesSet.RemoveRange(dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == id));
                 dbContext.DocumentEventAccessesSet.RemoveRange(dbContext.DocumentEventAccessesSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.DocumentId == id));
                 dbContext.DocumentEventAccessGroupsSet.RemoveRange(
