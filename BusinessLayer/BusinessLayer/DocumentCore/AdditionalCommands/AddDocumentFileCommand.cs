@@ -69,7 +69,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            Model.Where(x => x.TmpFileId.HasValue || x.CopyingFileId.HasValue).ToList().ForEach(m =>
+            Model.Where(x => x.TmpFileId.HasValue || x.CopyingFileId.HasValue || x.MovingFileId.HasValue).ToList().ForEach(m =>
              {
                  if (m.OrderInDocument.HasValue)
                  {
@@ -138,7 +138,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                                     }
                                 }
                                 res.Add(_fileDb.AddDocumentFile(_context, _file));
-
+                                if (x.MovingFileId.HasValue)
+                                    _fStore.DeleteFileVersion(_context, x.File);
                                 _queueWorkerService.AddNewTask(admContext, () =>
                                 {
                                     if (_fStore.CreatePdfFile(admContext, _file))

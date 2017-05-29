@@ -393,7 +393,7 @@ namespace BL.Database.FileWorker
             {
                 //TODO CurrentAgentId
                 var path = GetStorePath();
-                path = Path.Combine(new[] { path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, templateId.ToString() });
+                path = Path.Combine(new[] { path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, ctx.Client.Id.ToString(), templateId.ToString() });
                 if (Directory.Exists(path))
                     Directory.Delete(path, true);
             }
@@ -417,7 +417,7 @@ namespace BL.Database.FileWorker
                 //TODO CurrentAgentId
 
                 var path = GetStorePath();
-                path = Path.Combine(new[] { path, SettingConstants.FILE_STORE_DOCUMENT_FOLDER, documentId.ToString() });
+                path = Path.Combine(new[] { path, SettingConstants.FILE_STORE_DOCUMENT_FOLDER, ctx.Client.Id.ToString(), documentId.ToString() });
                 if (Directory.Exists(path))
                     Directory.Delete(path, true);
             }
@@ -474,7 +474,7 @@ namespace BL.Database.FileWorker
             try
             {
                 var path = GetStorePath();
-                path = Path.Combine(new[] { path, (attFile is InternalDocumentFile ? SettingConstants.FILE_STORE_DOCUMENT_FOLDER : SettingConstants.FILE_STORE_TEMPLATE_FOLDER), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
+                path = Path.Combine(new[] { path, (attFile is InternalDocumentFile ? SettingConstants.FILE_STORE_DOCUMENT_FOLDER : SettingConstants.FILE_STORE_TEMPLATE_FOLDER), ctx.Client.Id.ToString(), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
 
                 Directory.Delete(path, true);
             }
@@ -574,7 +574,7 @@ namespace BL.Database.FileWorker
                     break;
             }
 
-            path = Path.Combine(new[] { path, SettingConstants.FILE_STORE_TEMPLATE_REPORTS_FOLDER, templateReportFile });
+            path = Path.Combine(new[] { path, SettingConstants.FILE_STORE_TEMPLATE_REPORTS_FOLDER, ctx.Client.Id.ToString(), templateReportFile });
             return path;
         }
     }

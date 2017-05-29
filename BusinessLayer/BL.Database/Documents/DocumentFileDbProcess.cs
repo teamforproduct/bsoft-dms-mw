@@ -228,6 +228,8 @@ namespace BL.Database.Documents
                         EntityTypeId = x.EntityTypeId,
                         DocumentId = x.DocumentId,
                         OrderInDocument = x.OrderNumber,
+                        Version = x.Version,
+                        Hash = x.Hash,
                         ExecutorPositionId = x.ExecutorPositionId,
                         File = new BaseFile
                         {
@@ -264,13 +266,13 @@ namespace BL.Database.Documents
                                             DocumentId = x.DocumentId,
                                             OrderInDocument = x.OrderNumber,
                                             Version = x.Version,
+                                            Hash = x.Hash,
                                             EventId = x.EventId,
                                             SourcePositionId = x.Event.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
                                             ExecutorPositionId = x.ExecutorPositionId,
                                             IsWorkedOut = x.IsWorkedOut,
                                             Type = (EnumFileTypes)x.TypeId,
                                             IsMainVersion = x.IsMainVersion,
-                                            Hash = x.Hash,
                                             Description = x.Description,
                                             IsDeleted = x.IsDeleted,
                                             File = new BaseFile
@@ -316,6 +318,7 @@ namespace BL.Database.Documents
                             DocumentId = x.fl.DocumentId,
                             OrderInDocument = x.fl.OrderNumber,
                             Version = x.fl.Version,
+                            Hash = x.fl.Hash,
                             ExecutorPositionId = x.fl.ExecutorPositionId,
                             IsWorkedOut = x.fl.IsWorkedOut,
                             IsMainVersion = x.fl.IsMainVersion,
@@ -354,6 +357,8 @@ namespace BL.Database.Documents
                             ExecutorPositionId = y.ExecutorPositionId,
                             Type = (EnumFileTypes)y.TypeId,
                             OrderInDocument = y.OrderNumber,
+                            Version = y.Version,
+                            Hash = y.Hash,
                             File = new BaseFile
                             {
                                 Name = y.Name,
@@ -560,6 +565,7 @@ namespace BL.Database.Documents
                             Type = (EnumFileTypes)x.TypeId,
                             IsMainVersion = x.IsMainVersion,
                             Version = x.Version,
+                            Hash= x.Hash,
                             IsDeleted = x.IsDeleted,
                             File = new BaseFile
                             {

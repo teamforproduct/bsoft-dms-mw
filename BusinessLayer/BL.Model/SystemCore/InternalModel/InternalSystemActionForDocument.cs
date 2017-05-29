@@ -12,7 +12,7 @@ namespace BL.Model.SystemCore.InternalModel
         public string ObjectCode { get; set; }
         public string Description { get; set; }
         public EnumActionCategories? Category { get; set; }
-        public string CategoryName { get; set; }
+        //public string CategoryName { get; set; }
         public List<InternalActionRecord> ActionRecords { get; set; }
         
     }

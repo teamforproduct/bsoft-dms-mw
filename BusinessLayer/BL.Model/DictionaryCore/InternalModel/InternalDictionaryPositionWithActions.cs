@@ -1,5 +1,6 @@
 ﻿using BL.Model.SystemCore.InternalModel;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace BL.Model.DictionaryCore.InternalModel
 {
@@ -12,6 +13,9 @@ namespace BL.Model.DictionaryCore.InternalModel
         public int? ExecutorAgentId { get; set; }
         public string DepartmentName { get; set; }
         public string ExecutorAgentName { get; set; }
+        [IgnoreDataMember]
         public List<InternalSystemActionForDocument> Actions { get; set; }
+        public List<InternalSystemActionCategoryForDocument> Categories { get; set; }
+
     }
 }

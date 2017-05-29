@@ -16,7 +16,7 @@ namespace BL.Model.DocumentCore.IncomingModel
     public class AddDocumentFile : CurrentPosition
     {
         /// <summary>
-        /// Ид. документа, с которым связана работа с файлом
+        /// ИД документа, с которым связана работа с файлом
         /// </summary>
         public int DocumentId { get; set; }
         /// <summary>
@@ -32,14 +32,14 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// </summary>        
         public int? MovingFileId { get; set; }
         /// <summary>
-        /// ИД файла, на который нужно сделать ссылку, в создаваемом евенте (или TmpFileId, или CopyingFileId, или LinkingFileId)
+        /// ИД файла, на который нужно сделать ссылку, в создаваемом евенте
         /// </summary>        
         public int? LinkingFileId { get; set; }
         /// <summary>
         /// При добавлении файла порядковый номер файла в списке файлов документа, 
         /// если указан, то файл будет добавлен как версия, 
         /// если нет, то добавлен как новый файл. 
-        /// для MovingFileId обязателен
+        /// для MovingFileId обязателен!
         /// </summary>
         public int? OrderInDocument { get; set; }
         /// <summary>

@@ -77,11 +77,17 @@ namespace BL.Database.Common
             var dbContext = context.DbContext as DmsContext;
             var ids = items.Where(x => x != null).Select(x => x.Id).ToList();
             if (!ids.Any()) return;
-            var qry = CommonQueries.GetDocumentFileQuery(context, new FilterDocumentFile { EventId = ids });
-            var files = qry.GroupBy(x => x.EventId).Select(x => new
-            {
-                EventId = x.Key,
-                Files = x.OrderByDescending(y => y.LastChangeDate)
+            var qry = CommonQueries.GetDocumentFileQuery(context, new FilterDocumentFile { EventId = ids, IsAllVersion = true, IsAllDeleted = true }, true);
+
+            var filterContains = PredicateBuilder.New<DocumentFileLinks>(false);
+            filterContains = ids.Aggregate(filterContains, (current, value) => current.Or(e => e.EventId == value).Expand());
+            var qryFL = dbContext.DocumentFileLinksSet.Where(filterContains);
+
+            var filesQry = qryFL.Join(qry, x => x.FileId, y => y.Id, (x, y) => new { FileLink = x, File = y })
+                .GroupBy(x => x.FileLink.EventId).Select(x => new
+                {
+                    EventId = x.Key,
+                    Files = x.Select(y => y.File).OrderByDescending(y => y.LastChangeDate)
                     .Join(dbContext.DictionaryAgentsSet, o => o.LastChangeUserId, i => i.Id,
                             (file, agent) => new { file, agent, source = file.Event.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source && file.ExecutorPositionId != y.PositionId) })
                     .Select(y => new FrontDocumentFile
@@ -116,7 +122,8 @@ namespace BL.Database.Common
                         }
                     }
                 ).ToList(),
-            }).ToList();
+                });
+            var files = filesQry.ToList();
             items.ForEach(x => x.Files = files.Where(y => y.EventId == x.Id).Select(y => y.Files).FirstOrDefault());
         }
         public static void SetAccessGroups(IContext context, List<FrontDocumentSendList> items)
@@ -999,7 +1006,8 @@ namespace BL.Database.Common
                 if (filter.EventId?.Count > 0)
                 {
                     var filterContains = PredicateBuilder.New<DocumentFiles>(false);
-                    filterContains = filter.EventId.Aggregate(filterContains, (current, value) => current.Or(e => e.EventId == value).Expand());
+                    filterContains = filter.EventId.Aggregate(filterContains, (current, value) =>
+                        current.Or(e => e.FileLinks.Any(y => y.EventId == value)).Expand());
                     qry = qry.Where(filterContains);
                 }
 

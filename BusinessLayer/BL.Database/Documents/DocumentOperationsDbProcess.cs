@@ -437,7 +437,7 @@ namespace BL.Database.Documents
                         ObjectCode = a.Object.Code,
                         Description = a.Description,
                         Category = (EnumActionCategories)a.CategoryId,
-                        CategoryName = "##l@EnumActionCategories:" + ((EnumActionCategories)a.CategoryId).ToString() + "@l##"
+                        
                     });
                     var actLst = qryActLst.ToList();
                     res.Add(posId, actLst);
