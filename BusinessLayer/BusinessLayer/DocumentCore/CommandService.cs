@@ -111,7 +111,7 @@ namespace BL.Logic.DocumentCore
                x.Categories = x.Actions?.GroupBy(y => y.Category).Select(y => new InternalSystemActionCategoryForDocument
                {
                    Category = y.Key,
-                   CategoryName = "##l@EnumActionCategories:" + ((EnumActionCategories)y.Key).ToString() + "@l##",
+                   CategoryName = y.Key.HasValue ? "##l@EnumActionCategories:" + ((EnumActionCategories)y.Key).ToString() + "@l##" : null,
                    Actions = y.ToList()
                }).ToList()
             );
