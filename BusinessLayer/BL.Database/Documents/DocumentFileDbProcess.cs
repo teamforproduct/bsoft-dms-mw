@@ -215,12 +215,12 @@ namespace BL.Database.Documents
             }
         }
 
-        public InternalDocumentFile GetDocumentFileInternal(IContext ctx, int fileId)
+        public InternalDocumentFile GetDocumentFileInternal(IContext ctx, int fileId, bool isIncludeOtherFileVersions = false)
         {
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var res = CommonQueries.GetDocumentFileQuery(ctx, new FilterDocumentFile { FileId = new List<int> { fileId } })
+                var res = CommonQueries.GetDocumentFileQuery(ctx, new FilterDocumentFile { FileId = new List<int> { fileId }, IsAllVersion = true })
                     .Select(x => new InternalDocumentFile
                     {
                         Id = x.Id,
@@ -240,6 +240,33 @@ namespace BL.Database.Documents
                         },
 
                     }).FirstOrDefault();
+                if (res != null && isIncludeOtherFileVersions)
+                    res.OtherFileVersions = CommonQueries.GetDocumentFileQuery(ctx, new FilterDocumentFile
+                    {
+                        DocumentId = new List<int> { res.DocumentId },
+                        OrderInDocument = new List<int> { res.OrderInDocument },
+                        IsAllVersion = true,
+                    })
+                    .Where(x=>x.Version!=res.Version)
+                    .Select(x => new InternalDocumentFile
+                    {
+                        Id = x.Id,
+                        ClientId = x.ClientId,
+                        EntityTypeId = x.EntityTypeId,
+                        DocumentId = x.DocumentId,
+                        OrderInDocument = x.OrderNumber,
+                        Version = x.Version,
+                        Hash = x.Hash,
+                        ExecutorPositionId = x.ExecutorPositionId,
+                        File = new BaseFile
+                        {
+                            Extension = x.Extension,
+                            FileType = x.FileType,
+                            FileSize = x.FileSize,
+                            Name = x.Name,
+                        },
+
+                    }).ToList(); 
                 transaction.Complete();
                 return res;
             }

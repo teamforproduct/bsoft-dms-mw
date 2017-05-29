@@ -64,5 +64,6 @@ namespace BL.Model.DocumentCore.InternalModel
         /// </summary>
         public int? EventId { get; set; }
         public InternalDocumentEvent Event { get; set; }
+        public List<InternalDocumentFile> OtherFileVersions { get; set; }
     }
 }

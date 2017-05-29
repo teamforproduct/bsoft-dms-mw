@@ -15,6 +15,7 @@ using BL.Model.Common;
 using BL.CrossCutting.DependencyInjection;
 using BL.Logic.SystemServices.TempStorage;
 using BL.CrossCutting.Helpers;
+using BL.CrossCutting.Interfaces;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
@@ -23,12 +24,14 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         private readonly IDocumentFileDbProcess _fileDb;
         private readonly IFileStore _fStore;
         private readonly IQueueWorkerService _queueWorkerService;
+        private readonly ITempStorageService _tempStorageService;
         private InternalDocumentFile _file;
-        public AddDocumentFileCommand(IDocumentFileDbProcess operationDb, IFileStore fStore, IQueueWorkerService queueWorkerService)
+        public AddDocumentFileCommand(IDocumentFileDbProcess operationDb, IFileStore fStore, IQueueWorkerService queueWorkerService, ITempStorageService tempStorageService)
         {
             _fileDb = operationDb;
             _fStore = fStore;
             _queueWorkerService = queueWorkerService;
+            _tempStorageService = tempStorageService;
         }
 
         private List<AddDocumentFile> Model
@@ -48,19 +51,44 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             return false;
         }
 
-        public override bool CanExecute()
+        private void FillModel(IContext ctx, List<AddDocumentFile> files)
         {
-            var tempStorageService = DmsResolver.Current.Get<ITempStorageService>();
-            Model.ForEach(x =>
+            files.ForEach(x =>
             {
                 if (x.TmpFileId.HasValue)
-                    x.File = new InternalDocumentFile { File = tempStorageService.GetStoreObject(x.TmpFileId.Value) as BaseFile };
+                    x.File = new InternalDocumentFile { File = _tempStorageService.GetStoreObject(x.TmpFileId.Value) as BaseFile };
                 else if ((x.CopyingFileId ?? x.MovingFileId).HasValue)
                 {
-                    x.File = _fileDb.GetDocumentFileInternal(_context, (x.CopyingFileId ?? x.MovingFileId).Value);
+                    x.File = _fileDb.GetDocumentFileInternal(_context, (x.CopyingFileId ?? x.MovingFileId).Value, x.IsAllVersionsProcessing ?? false);
                     _fStore.GetFile(_context, x.File);
                 }
             });
+        }
+
+        public override bool CanExecute()
+        {
+            FillModel(_context, Model);
+            var addModel = Model.Where(x => (x.CopyingFileId ?? x.MovingFileId).HasValue && (x.IsAllVersionsProcessing ?? false))
+                .Select(x => x.File.OtherFileVersions.Select(y => new { Model = x, File = y }))
+                .SelectMany(x => x.ToList()).Select(x => new AddDocumentFile
+                {
+                    TmpFileId = null,
+                    LinkingFileId = null,
+                    CopyingFileId = x.Model.CopyingFileId.HasValue ? x.File.Id : (int?)null,
+                    MovingFileId = x.Model.MovingFileId.HasValue ? x.File.Id : (int?)null,
+                    Description = x.Model.Description,
+                    CurrentPositionId = x.Model.CurrentPositionId,
+                    DocumentId = x.Model.DocumentId,
+                    EventId = x.Model.EventId,
+                    ExecutorPositionId = x.Model.ExecutorPositionId,
+                    File = x.File,
+                    IsAllVersionsProcessing = false,
+                    Type = x.Model.Type,
+                    OrderInDocument = -x.Model.File.Id, //для добавленных файлов оставляем ссылку на файл радотель, чтобы узнать номер файла, если его нет, а потом сгенерировать версию 
+                    IsMainVersion = false,
+                }).ToList();
+            addModel.ForEach(x => _fStore.GetFile(_context, x.File));
+            Model.AddRange(addModel);
             if (Model.Where(x => (x.TmpFileId ?? x.CopyingFileId ?? x.MovingFileId).HasValue).Any(x => x.File.File == null))
                 throw new CannotAccessToFile();
             _adminProc.VerifyAccess(_context, CommandType);
@@ -71,10 +99,10 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             }
             Model.Where(x => x.TmpFileId.HasValue || x.CopyingFileId.HasValue || x.MovingFileId.HasValue).ToList().ForEach(m =>
              {
-                 if (m.OrderInDocument.HasValue)
+                 if (m.OrderInDocument.HasValue && m.OrderInDocument.Value > 0)
                  {
                      var mainFile = _document.DocumentFiles.FirstOrDefault(x => x.OrderInDocument == m.OrderInDocument);
-                     if (mainFile == null 
+                     if (mainFile == null
                          || (mainFile.Type == EnumFileTypes.Main && (m.IsMainVersion ?? false) && _document.ExecutorPositionId != _context.CurrentPositionId)
                          || (mainFile.Type == EnumFileTypes.Additional && (m.IsMainVersion ?? false) && mainFile.ExecutorPositionId != _context.CurrentPositionId)
                          || (m.MovingFileId.HasValue && m.File.ExecutorPositionId != _context.CurrentPositionId)
@@ -85,7 +113,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                      m.Type = mainFile.Type;
                      m.ExecutorPositionId = mainFile.ExecutorPositionId;
                  }
-                 else
+                 else if (!m.OrderInDocument.HasValue)
                  {
                      if (m.MovingFileId.HasValue)
                          throw new CouldNotPerformOperation();
@@ -113,8 +141,14 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                                 }
                                 else
                                 {
-                                    var executorPositionId = x.Type == EnumFileTypes.Main ? _document.ExecutorPositionId : (x.OrderInDocument.HasValue ? x.ExecutorPositionId : _context.CurrentPositionId);
-                                    var executorPositionExecutor = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, executorPositionId);
+                                    if ((x.OrderInDocument ?? 0) < 0)
+                                    {
+                                        var parModel = Model.Where(y => y.File.Id == -x.OrderInDocument.Value).FirstOrDefault();
+                                        x.OrderInDocument = parModel.OrderInDocument;
+                                        x.ExecutorPositionId = parModel.ExecutorPositionId;
+                                    }
+                                    x.ExecutorPositionId = x.Type == EnumFileTypes.Main ? _document.ExecutorPositionId : (x.OrderInDocument.HasValue ? x.ExecutorPositionId : _context.CurrentPositionId);
+                                    var executorPositionExecutor = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, x.ExecutorPositionId);
                                     if (!executorPositionExecutor?.ExecutorAgentId.HasValue ?? true)
                                     {
                                         throw new ExecutorAgentForPositionIsNotDefined();
@@ -126,7 +160,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                                     }
                                     else
                                     {
-                                        _file.OrderInDocument = _fileDb.GetNextFileOrderNumber(_context, x.DocumentId);
+                                        x.OrderInDocument = _file.OrderInDocument = _fileDb.GetNextFileOrderNumber(_context, x.DocumentId);
                                     }
                                     if (x.MovingFileId.HasValue)
                                         _file.Id = x.MovingFileId.Value;
