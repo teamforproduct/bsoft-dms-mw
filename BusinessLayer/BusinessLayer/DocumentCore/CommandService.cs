@@ -139,8 +139,9 @@ namespace BL.Logic.DocumentCore
             var model = _operationDb.GetDocumentFileActionsModelPrepare(ctx, documentId, id);
 
             MenuFormation(ctx, model, id.HasValue);
+            model.PositionWithActions = model.PositionWithActions.Where(x => x.Actions != null && x.Actions.Any()).ToList();
             MenuCategoryGrouping(ctx, model);
-            return model.PositionWithActions.Where(x => x.Actions != null && x.Actions.Any()).ToList();
+            return model.PositionWithActions;
         }
 
         public IEnumerable<InternalDictionaryPositionWithActions> GetDocumentPaperActions(IContext ctx, int documentId)
