@@ -1405,7 +1405,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { model.Id }, IsExecutorPosition = true, IsInWork = true })
+                var doc = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { model.Id }, IsIgnoreRegistered = true, IsExecutorPosition = true, IsInWork = true })
                     .Select(x => new InternalDocument
                     {
                         Id = x.Id,
