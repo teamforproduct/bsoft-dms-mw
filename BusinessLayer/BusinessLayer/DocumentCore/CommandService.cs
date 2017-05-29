@@ -107,8 +107,8 @@ namespace BL.Logic.DocumentCore
         }
         private static void MenuCategoryGrouping(IContext ctx, DocumentActionsModel model)
         {
-            model.PositionWithActions.ForEach(x =>
-               x.Categories = x.Actions.GroupBy(y => y.Category).Select(y => new InternalSystemActionCategoryForDocument
+            model.PositionWithActions?.ForEach(x =>
+               x.Categories = x.Actions?.GroupBy(y => y.Category).Select(y => new InternalSystemActionCategoryForDocument
                {
                    Category = y.Key,
                    CategoryName = "##l@EnumActionCategories:" + ((EnumActionCategories)y.Key).ToString() + "@l##",
