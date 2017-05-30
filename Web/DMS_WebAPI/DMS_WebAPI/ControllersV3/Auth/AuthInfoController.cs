@@ -46,9 +46,10 @@ namespace DMS_WebAPI.ControllersV3.Auth
 
             var authInfo = new FrontAuthInfo();
 
+            // Если пользователь ответил на приглашение и зарегистрировался в системе
             if (!string.IsNullOrEmpty(agentUser.UserId))
             {
-                AspNetUsers user = await webService.GetUserAsync(agentUser.UserId);
+                AspNetUsers user = await webService.GetUserByIdAsync(agentUser.UserId);
 
                 if (user == null) throw new UserIsNotDefined();
 
@@ -159,7 +160,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
 
             var context = DmsResolver.Current.Get<UserContexts>().Get();
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            webService.ChangeLokoutAgentUserAsync(context, model);
+            webService.ChangeLokoutAgentUser(context, model);
 
             var res = new JsonResult(null, this);
             res.SpentTime = stopWatch;
