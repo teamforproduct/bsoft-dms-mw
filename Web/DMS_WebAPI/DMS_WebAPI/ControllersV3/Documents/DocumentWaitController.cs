@@ -85,7 +85,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.ControlOn, model, model.CurrentPositionId);
-                   var res = new JsonResult(true, this);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }
@@ -102,7 +102,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.AskPostponeDueDate, model);
-                   var res = new JsonResult(true, this);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }
@@ -120,7 +120,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.MarkExecution, model);
-                   var res = new JsonResult(true, this);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }
@@ -140,7 +140,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.CancelPostponeDueDate, model);
-                   var res = new JsonResult(true, this);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }
@@ -158,7 +158,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.RejectResult, model);
-                   var res = new JsonResult(true, this);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }
@@ -176,7 +176,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.AcceptResult, model);
-                   var res = new JsonResult(true, this);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }
@@ -194,7 +194,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.CancelExecution, model);
-                   var res = new JsonResult(true, this);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }
@@ -214,7 +214,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.ControlOff, model);
-                   var res = new JsonResult(true, this);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }
@@ -232,7 +232,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.ControlChange, model);
-                   var res = new JsonResult(true, this);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }
@@ -249,7 +249,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.SendForExecutionChange, model);
-                   var res = new JsonResult(true, this);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }
@@ -265,7 +265,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.SendForResponsibleExecutionChange, model);
-                   var res = new JsonResult(true, this);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }
@@ -282,7 +282,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.ControlTargetChange, model);
-                   var res = new JsonResult(true, this);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }

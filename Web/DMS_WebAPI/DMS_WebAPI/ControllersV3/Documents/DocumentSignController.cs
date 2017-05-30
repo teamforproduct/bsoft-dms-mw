@@ -59,7 +59,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.RejectSigning, model);
-                   var res = new JsonResult(true, this);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }
@@ -76,7 +76,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.RejectVisaing, model);
-                   var res = new JsonResult(true, this);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }
@@ -93,7 +93,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.RejectАgreement, model);
-                   var res = new JsonResult(true, this);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }
@@ -110,7 +110,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.RejectАpproval, model);
-                   var res = new JsonResult(true, this);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }
@@ -128,7 +128,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.WithdrawSigning, model);
-                   var res = new JsonResult(true, this);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }
@@ -145,7 +145,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.WithdrawVisaing, model);
-                   var res = new JsonResult(true, this);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }
@@ -162,7 +162,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.WithdrawАgreement, model);
-                   var res = new JsonResult(true, this);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }
@@ -179,7 +179,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.WithdrawАpproval, model);
-                   var res = new JsonResult(true, this);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }
@@ -197,7 +197,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.AffixSigning, model);
-                   var res = new JsonResult(true, this);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }
@@ -214,7 +214,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.AffixVisaing, model);
-                   var res = new JsonResult(true, this);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }
@@ -231,7 +231,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.AffixАgreement, model);
-                   var res = new JsonResult(true, this);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }
@@ -248,7 +248,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.AffixАpproval, model);
-                   var res = new JsonResult(true, this);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }
@@ -266,7 +266,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    Action.Execute(context, EnumDocumentActions.SelfAffixSigning, model, model.CurrentPositionId);
-                   var res = new JsonResult(true, this);
+                   var res = new JsonResult(null, this);
                    return res;
                });
         }

@@ -191,7 +191,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDocumentActions.AcceptDocumentFile, model);
-                var res = new JsonResult(true, this);
+                var res = new JsonResult(null, this);
                 return res;
             });
         }
@@ -208,7 +208,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDocumentActions.AcceptMainVersionDocumentFile, model);
-                var res = new JsonResult(true, this);
+                var res = new JsonResult(null, this);
                 return res;
             });
         }
@@ -225,7 +225,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDocumentActions.RejectDocumentFile, model);
-                var res = new JsonResult(true, this);
+                var res = new JsonResult(null, this);
                 return res;
             });
         }
