@@ -48,7 +48,7 @@ namespace DMS_WebAPI.ControllersV3.SendLists
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-                var tmpItems = tmpService.GetMainStandartSendLists(context, ftSearch, filter, SearchInPositionsOnly ?? false);
+                var tmpItems = tmpService.GetMainStandartSendList(context, ftSearch, filter, SearchInPositionsOnly ?? false);
                 var res = new JsonResult(tmpItems, this);
                 return res;
             });

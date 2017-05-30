@@ -27,5 +27,10 @@ namespace BL.Model.DictionaryCore.FilterModel
         [IgnoreDataMember]
         public int? AgentId { get; set; }
 
+        /// <summary>
+        /// Если flse 
+        /// </summary>
+        public bool? IsShowAll { get; set; }
+
     }
 }
