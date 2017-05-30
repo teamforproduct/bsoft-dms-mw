@@ -33,8 +33,13 @@ namespace BL.Model.DictionaryCore.FrontModel
         /// Дата, жл которой в последний раз был заблокирован пользователь в результате подбора пароля
         /// </summary>
         public DateTime? LockoutEndDate { get { return _LockoutEndDate; } set { _LockoutEndDate = value.ToUTC(); } }
+
+        
+
         private DateTime? _LockoutEndDate;
 
+
+        public bool IsLockoutByAdmin { get; set; }
 
         //Id = user.Id, UserName = user.Email, IsLockout = user.IsLockout, Email = user.Email, EmailConfirmed = user.EmailConfirmed, IsEmailConfirmRequired = user.IsEmailConfirmRequired, IsChangePasswordRequired = user.IsChangePasswordRequired,  AccessFailedCount = user.AccessFailedCount
     }

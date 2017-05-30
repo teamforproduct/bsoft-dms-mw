@@ -1354,7 +1354,7 @@ namespace BL.Database.Dictionaries
                     Id = x.Id,
                     UserId = x.UserId,
                     IsLockout = x.IsLockout,
-                    
+                    UserName = x.UserName,
                 }).FirstOrDefault();
 
                 transaction.Complete();

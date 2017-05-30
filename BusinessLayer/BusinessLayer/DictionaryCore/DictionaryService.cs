@@ -203,11 +203,16 @@ namespace BL.Logic.DictionaryCore
         /// <param name="context"></param>
         /// <param name="employeeId"></param>
         /// <returns></returns>
-        public string GetDictionaryAgentUserId(IContext context, int employeeId)
+        public string GetAgentUserId(IContext context, int employeeId)
         {
             var user = _dictDb.GetInternalAgentUser(context, employeeId);
 
             return user.UserId;
+        }
+
+        public InternalDictionaryAgentUser GetAgentUser(IContext context, int employeeId)
+        {
+            return _dictDb.GetInternalAgentUser(context, employeeId);
         }
 
         public void SetAgentUserUserId(IContext context, int agentId, string userId)

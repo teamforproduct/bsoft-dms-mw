@@ -57,7 +57,7 @@ namespace DMS_WebAPI.Utilities
         {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             // Пользователь может быть еще не залинкован с сотрудником
-            var userId = tmpService.GetDictionaryAgentUserId(context, agentId);
+            var userId = tmpService.GetAgentUserId(context, agentId);
 
             if (string.IsNullOrEmpty(userId)) return null;
 
@@ -96,7 +96,7 @@ namespace DMS_WebAPI.Utilities
         {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             // Пользователь может быть еще не залинкован с сотрудником
-            var userId = tmpService.GetDictionaryAgentUserId(context, agentId);
+            var userId = tmpService.GetAgentUserId(context, agentId);
 
             if (string.IsNullOrEmpty(userId)) return null;
 
