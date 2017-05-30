@@ -55,6 +55,7 @@ namespace DMS_WebAPI.Utilities
                         ClientId = (x.Value.StoreObject as IContext).Client.Id,
                         IsActive = true,
                         IsSuccess = true,
+                        Host = "_.ostrean.com"
                     });
                 return res;
             }

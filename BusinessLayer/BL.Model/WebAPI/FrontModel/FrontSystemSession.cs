@@ -36,10 +36,6 @@ namespace BL.Model.WebAPI.FrontModel
         /// </summary>
         public int? AgentId { get; set; }
         /// <summary>
-        /// Тип лога
-        /// </summary>
-        public int? LogLevel { get; set; }
-        /// <summary>
         /// ФИО
         /// </summary>
         public string Name { get; set; }
@@ -52,6 +48,8 @@ namespace BL.Model.WebAPI.FrontModel
         /// Активная сессия
         /// </summary>
         public bool IsActive { get; set; }
+
+        public string Host { get; set; }
 
     }
 }
