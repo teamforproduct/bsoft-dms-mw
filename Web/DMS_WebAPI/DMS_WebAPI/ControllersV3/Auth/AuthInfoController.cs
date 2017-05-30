@@ -1,18 +1,15 @@
 ﻿using BL.CrossCutting.DependencyInjection;
-using BL.Logic.AdminCore.Interfaces;
+using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.Common;
 using BL.Model.DictionaryCore.FrontModel;
-using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Model.Users;
 using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using Microsoft.AspNet.Identity.Owin;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
 
@@ -41,20 +38,36 @@ namespace DMS_WebAPI.ControllersV3.Auth
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
 
+            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+            // Пользователь может быть еще не залинкован с сотрудником
+            var agentUser = tmpService.GetAgentUser(ctx, Id);
+
             var webService = DmsResolver.Current.Get<WebAPIService>();
 
-            AspNetUsers user = await webService.GetUserAsync(ctx, Id);
+            var authInfo = new FrontAuthInfo();
 
-            if (user == null) throw new UserIsNotDefined();
-
-            var authInfo = new FrontAuthInfo
+            if (!string.IsNullOrEmpty(agentUser.UserId))
             {
-                Id = Id,
-                Email = user.Email,
-                Login = user.Email,
-                EmailConfirmed = user.EmailConfirmed,
-                LockoutEndDate = user.LockoutEndDateUtc
-            };
+                AspNetUsers user = await webService.GetUserAsync(agentUser.UserId);
+
+                if (user == null) throw new UserIsNotDefined();
+
+                authInfo.Id = Id;
+                authInfo.Email = user.Email;
+                authInfo.Login = user.Email;
+                authInfo.EmailConfirmed = user.EmailConfirmed;
+                authInfo.LockoutEndDate = user.LockoutEndDateUtc;
+                authInfo.IsLockoutByAdmin = agentUser.IsLockout;
+            }
+            else
+            {
+                authInfo.Id = Id;
+                authInfo.Email = agentUser.UserName;
+                authInfo.Login = agentUser.UserName;
+                authInfo.EmailConfirmed = false;
+                authInfo.LockoutEndDate = null;
+                authInfo.IsLockoutByAdmin = agentUser.IsLockout;
+            }
 
             var res = new JsonResult(authInfo, this);
             res.SpentTime = stopWatch;
@@ -62,28 +75,28 @@ namespace DMS_WebAPI.ControllersV3.Auth
         }
 
 
-        /// <summary>
-        /// Администратор меняет логин - жуть
-        /// Выбрасывает пользователя из всех его клиентов
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpPut]
-        [Route(Features.Info + "/ChangeLogin")]
-        public async Task<IHttpActionResult> ChangeLogin([FromBody]ChangeLoginAgentUser model)
-        {
-            if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
+        ///// <summary>
+        ///// Администратор меняет логин - жуть
+        ///// Выбрасывает пользователя из всех его клиентов
+        ///// </summary>
+        ///// <param name="model"></param>
+        ///// <returns></returns>
+        //[HttpPut]
+        //[Route(Features.Info + "/ChangeLogin")]
+        //public async Task<IHttpActionResult> ChangeLogin([FromBody]ChangeLoginAgentUser model)
+        //{
+        //    if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
 
-            if (!stopWatch.IsRunning) stopWatch.Restart();
+        //    if (!stopWatch.IsRunning) stopWatch.Restart();
 
-            var context = DmsResolver.Current.Get<UserContexts>().Get();
-            var webService = DmsResolver.Current.Get<WebAPIService>();
-            await webService.ChangeLoginAgentUserAsync(context, model);
+        //    var context = DmsResolver.Current.Get<UserContexts>().Get();
+        //    var webService = DmsResolver.Current.Get<WebAPIService>();
+        //    await webService.ChangeLoginAgentUserAsync(context, model);
 
-            var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
-            return res;
-        }
+        //    var res = new JsonResult(null, this);
+        //    res.SpentTime = stopWatch;
+        //    return res;
+        //}
 
         /// <summary>
         /// Высылает письмо для подтверждения email
@@ -109,27 +122,27 @@ namespace DMS_WebAPI.ControllersV3.Auth
 
 
 
-        /// <summary>
-        /// Администратор мененяет пароль пользователю, жуть - чтобы под ним зайти наверное
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpPut]
-        [Route(Features.Info + "/ChangePassword")]
-        public async Task<IHttpActionResult> ChangePassword([FromBody]ChangePasswordAgentUser model)
-        {
-            if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
+        ///// <summary>
+        ///// Администратор мененяет пароль пользователю, жуть - чтобы под ним зайти наверное
+        ///// </summary>
+        ///// <param name="model"></param>
+        ///// <returns></returns>
+        //[HttpPut]
+        //[Route(Features.Info + "/ChangePassword")]
+        //public async Task<IHttpActionResult> ChangePassword([FromBody]ChangePasswordAgentUser model)
+        //{
+        //    if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
 
-            if (!stopWatch.IsRunning) stopWatch.Restart();
+        //    if (!stopWatch.IsRunning) stopWatch.Restart();
 
-            var context = DmsResolver.Current.Get<UserContexts>().Get();
-            var webService = DmsResolver.Current.Get<WebAPIService>();
-            await webService.ChangePasswordAgentUserAsync(context, model);
+        //    var context = DmsResolver.Current.Get<UserContexts>().Get();
+        //    var webService = DmsResolver.Current.Get<WebAPIService>();
+        //    await webService.ChangePasswordAgentUserAsync(context, model);
 
-            var res = new JsonResult(null, this);
-            res.SpentTime = stopWatch;
-            return res;
-        }
+        //    var res = new JsonResult(null, this);
+        //    res.SpentTime = stopWatch;
+        //    return res;
+        //}
 
         /// <summary>
         /// Управляет блокировкой пользователя (управляет возможностью войти в систему)
