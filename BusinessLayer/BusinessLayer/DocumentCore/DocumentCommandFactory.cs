@@ -150,9 +150,10 @@ namespace BL.Logic.DocumentCore
                     cmd = DmsResolver.Current.Get<RenameDocumentFileCommand>();
                     break;
                 case EnumDocumentActions.DeleteDocumentFileVersion:
-//                case EnumDocumentActions.DeleteDocumentFileVersionRecord:
-                    //cmd = DmsResolver.Current.Get<DeleteDocumentFileVersionCommand>();
-                    //break;
+                case EnumDocumentActions.DeleteDocumentFileVersionFinal:
+                //                case EnumDocumentActions.DeleteDocumentFileVersionRecord:
+                //cmd = DmsResolver.Current.Get<DeleteDocumentFileVersionCommand>();
+                //break;
                 case EnumDocumentActions.DeleteDocumentFile:
                     cmd = DmsResolver.Current.Get<DeleteDocumentFileCommand>();
                     break;

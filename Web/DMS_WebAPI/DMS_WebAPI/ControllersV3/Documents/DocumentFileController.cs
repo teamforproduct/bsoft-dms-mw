@@ -265,6 +265,22 @@ namespace DMS_WebAPI.ControllersV3.Documents
                 return res;
             });
         }
+        /// <summary>
+        /// Удаляет версию файла (окончательно)
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route(Features.Files + "/{Id:int}" + "/DeleteDocumentFileVersionFinal")]
+        public async Task<IHttpActionResult> DeleteDocumentFileVersionFinal([FromUri]int Id)
+        {
+            return await SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                Action.Execute(context, EnumDocumentActions.DeleteDocumentFileVersionFinal, Id);
+                var res = new JsonResult(null, this);
+                return res;
+            });
+        }
 
         /// <summary>
         /// Восстанавливает версию файла (снимается отметка)

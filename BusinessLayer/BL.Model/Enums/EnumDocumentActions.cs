@@ -357,7 +357,10 @@
         /// </summary>
         AcceptMainVersionDocumentFile = 104016,
 
-
+        /// <summary>
+        /// Удалить версию файл
+        /// </summary>
+        DeleteDocumentFileVersionFinal = 104018,
         /// <summary>
         /// Добавить связь между документами
         /// </summary>

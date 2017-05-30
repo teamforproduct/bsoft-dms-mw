@@ -568,7 +568,7 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentFileQuery(ctx, new FilterDocumentFile { FileId = new List<int> { id }, IsAllVersion =  true})
+                var doc = CommonQueries.GetDocumentFileQuery(ctx, new FilterDocumentFile { FileId = new List<int> { id }, IsAllVersion =  true, IsAllDeleted = true})
                     .Select(x => new InternalDocument
                     {
                         Id = x.Document.Id,
@@ -589,7 +589,7 @@ namespace BL.Database.Documents
                             Version = x.Version,
                             Hash= x.Hash,
                             IsDeleted = x.IsDeleted,
-                            
+                            IsContentDeleted = x.IsContentDeleted,
                             File = new BaseFile
                             {
                                 Name = x.Name,
@@ -603,7 +603,7 @@ namespace BL.Database.Documents
         }
 
         /// <summary>
-        /// Delete of hole file one or all versions
+        /// Delete of file one or all versions
         /// </summary>
         /// <param name="ctx">Context</param>
         /// <param name="docFile"> should be filled IsMainVersion, DocumentId and OrderInDocument fields</param>
@@ -631,6 +631,32 @@ namespace BL.Database.Documents
                     new DocumentFiles { IsDeleted = true, LastChangeDate = docFile.LastChangeDate, LastChangeUserId = docFile.LastChangeUserId });
                 dbContext.SaveChanges();
                 CommonQueries.AddFullTextCacheInfo(ctx, docFile.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
+                transaction.Complete();
+            }
+        }
+
+        public void DeleteDocumentFileFinal(IContext ctx, InternalDocumentFile docFile)
+        {
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
+            {
+                dbContext.DocumentFilesSet.Where(x => x.Id == docFile.Id && x.IsDeleted && !x.IsContentDeleted).Update(x =>
+                    new DocumentFiles { IsContentDeleted = true, IsWorkedOut = false, LastChangeDate = docFile.LastChangeDate, LastChangeUserId = docFile.LastChangeUserId });
+                dbContext.SaveChanges();
+                transaction.Complete();
+            }
+        }
+
+        public void DeleteDocumentFileFinal(IContext ctx, int days)
+        {
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
+            {
+                var dateNow = DateTime.UtcNow;
+                var date = dateNow.AddDays(-days);
+                dbContext.DocumentFilesSet.Where(x => x.LastChangeDate < date && x.IsDeleted && !x.IsContentDeleted).Update(x =>
+                    new DocumentFiles { IsContentDeleted = true, IsWorkedOut = false, LastChangeDate = dateNow, LastChangeUserId = ctx.CurrentAgentId });
+                dbContext.SaveChanges();
                 transaction.Complete();
             }
         }

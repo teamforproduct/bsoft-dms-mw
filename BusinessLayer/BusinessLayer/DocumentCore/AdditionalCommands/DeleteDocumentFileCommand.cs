@@ -42,6 +42,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 qry = qry.Where(x => x.IsMainVersion);
             else if (CommandType == EnumDocumentActions.DeleteDocumentFileVersion)
                 qry = qry.Where(x => !x.IsMainVersion);
+            else if (CommandType == EnumDocumentActions.DeleteDocumentFileVersionFinal)
+                qry = qry.Where(x => x.IsDeleted && !x.IsContentDeleted);
             else return false;
             _actionRecords = qry.Select(x => new InternalActionRecord
                               {
@@ -83,12 +85,19 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override object Execute()
         {
             CommonDocumentUtilities.SetLastChange(_context, _file);
-            if (_document.IsRegistered.HasValue)
+            if (_file.IsDeleted)
             {
-                _file.Event = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _file.DocumentId,
-                    _file.IsMainVersion ? EnumEventTypes.DeleteDocumentFile : EnumEventTypes.DeleteDocumentFileVersion, null, null, _file.File.FileName);
+                _operationDb.DeleteDocumentFileFinal(_context, _file);
             }
-            _operationDb.DeleteDocumentFile(_context, _file);
+            else
+            {
+                if (_document.IsRegistered.HasValue)
+                {
+                    _file.Event = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _file.DocumentId,
+                        _file.IsMainVersion ? EnumEventTypes.DeleteDocumentFile : EnumEventTypes.DeleteDocumentFileVersion, null, null, _file.File.FileName);
+                }
+                _operationDb.DeleteDocumentFile(_context, _file);
+            }
             return null;
         }
     }

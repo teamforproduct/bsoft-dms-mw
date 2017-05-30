@@ -23,6 +23,9 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument DeleteDocumentFilePrepare(IContext ctx, int id);
         InternalDocument RestoreDocumentFilePrepare(IContext ctx, int id);
         void DeleteDocumentFile(IContext ctx, InternalDocumentFile docFile);
+        void DeleteDocumentFileFinal(IContext ctx, InternalDocumentFile docFile);
+        void DeleteDocumentFileFinal(IContext ctx, int days);
+
         void RestoreDocumentFile(IContext ctx, InternalDocumentFile docFile);
 
         int GetNextFileOrderNumber(IContext ctx, int documentId);

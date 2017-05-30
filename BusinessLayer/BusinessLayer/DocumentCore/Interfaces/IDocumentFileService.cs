@@ -12,5 +12,6 @@ namespace BL.Logic.DocumentCore.Interfaces
         FrontDocumentFile GetUserFile(IContext ctx, int id);
         FrontDocumentFile GetUserFilePdf(IContext ctx, int id);
         FrontDocumentFile GetUserFilePreview(IContext ctx, int id);
+        void DeleteDocumentFileFinal(IContext ctx);
     }
 }

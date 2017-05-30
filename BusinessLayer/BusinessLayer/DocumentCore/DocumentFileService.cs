@@ -69,5 +69,11 @@ namespace BL.Logic.DocumentCore
             return GetDocumentFile(ctx, id, EnumDocumentFileType.PdfPreview);
         }
 
+        public void DeleteDocumentFileFinal(IContext ctx)
+        {
+            var days = DmsResolver.Current.Get<ISettingValues>().GetClearTrashFilesTimeoutDayForClear(ctx);
+            _dbProcess.DeleteDocumentFileFinal(ctx, days);
+        }
+
     }
 }

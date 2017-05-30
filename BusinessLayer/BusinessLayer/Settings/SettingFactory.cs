@@ -88,7 +88,11 @@ namespace BL.Logic.Settings
                     res.ValueType = EnumValueTypes.Number;
                     res.SettingTypeId = 2;
                     break;
-
+                case EnumSystemSettings.CLEARTRASHFILES_TIMEOUT_DAY_FOR_CLEAR:
+                    res.Value = "14";
+                    res.ValueType = EnumValueTypes.Number;
+                    res.SettingTypeId = 2;
+                    break;                    
                 case EnumSystemSettings.OLDPDFDELETEPERIOD:
                     res.Value = "30";
                     res.ValueType = EnumValueTypes.Number;
