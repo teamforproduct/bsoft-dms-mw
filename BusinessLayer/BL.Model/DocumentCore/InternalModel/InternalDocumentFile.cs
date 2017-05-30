@@ -35,6 +35,10 @@ namespace BL.Model.DocumentCore.InternalModel
         /// </summary>
         public bool IsDeleted { get; set; }
         /// <summary>
+        /// Признак полность удаленый файл или нет
+        /// </summary>
+        public bool IsContentDeleted { get; set; }
+        /// <summary>
         /// Признак принята ли версия файла
         /// </summary>
         public bool? IsWorkedOut { get; set; }

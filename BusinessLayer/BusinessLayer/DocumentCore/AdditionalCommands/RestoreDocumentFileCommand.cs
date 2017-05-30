@@ -9,18 +9,14 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
-
-    /// <summary>
-    /// TODO DELETE???
-    /// </summary>
-    public class DeleteDocumentFileVersionCommand : BaseDocumentCommand
+    public class RestoreDocumentFileCommand : BaseDocumentCommand
     {
         private readonly IDocumentFileDbProcess _operationDb;
         private readonly IFileStore _fStore;
 
         private InternalDocumentFile _file;
 
-        public DeleteDocumentFileVersionCommand(IDocumentFileDbProcess operationDb, IFileStore fStore)
+        public RestoreDocumentFileCommand(IDocumentFileDbProcess operationDb, IFileStore fStore)
         {
             _operationDb = operationDb;
             _fStore = fStore;
@@ -40,8 +36,9 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
-            _actionRecords = _document.DocumentFiles.Where( x => !x.IsMainVersion && !x.IsDeleted && x.ExecutorPositionId == positionId)
-                              .Select(x => new InternalActionRecord
+            
+            var qry = _document.DocumentFiles.Where(x => x.IsDeleted && !x.IsContentDeleted && x.ExecutorPositionId == positionId);
+            _actionRecords = qry.Select(x => new InternalActionRecord
                               {
                                   FileId = x.Id,
                               });
@@ -54,8 +51,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
-
-            _document = _operationDb.DeleteDocumentFilePrepare(_context, Model);
+            _document = _operationDb.RestoreDocumentFilePrepare(_context, Model);
             if (_document == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
@@ -65,9 +61,10 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 throw new UnknownDocumentFile();
             }
 
-            _file = _document.DocumentFiles.First(x => x.Id == Model);
+            _file = _document.DocumentFiles.Where(x => x.Id == Model).First();
 
             _context.SetCurrentPosition(_file.ExecutorPositionId);
+
             _adminProc.VerifyAccess(_context, CommandType);
 
             if (!CanBeDisplayed(_context.CurrentPositionId))
@@ -81,10 +78,11 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override object Execute()
         {
             CommonDocumentUtilities.SetLastChange(_context, _file);
-            //if (_document.IsRegistered.HasValue)
-            //{
-            //    docFile.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, docFile.DocumentId, EnumEventTypes.DeleteDocumentFileVersion, null, null, _file.Name + "." + _file.Extension);
-            //}
+            if (_document.IsRegistered.HasValue)
+            {
+                _file.Event = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _file.DocumentId,
+                    _file.IsMainVersion ? EnumEventTypes.DeleteDocumentFile : EnumEventTypes.DeleteDocumentFileVersion, null, null, _file.File.FileName);
+            }
             _operationDb.DeleteDocumentFile(_context, _file);
             return null;
         }

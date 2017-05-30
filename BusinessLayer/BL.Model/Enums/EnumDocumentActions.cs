@@ -348,9 +348,9 @@
         /// </summary>
         DeleteDocumentFileVersion = 104014,
         /// <summary>
-        /// Удалить запись о версим файла
+        /// Восстановить версию файла из корзину
         /// </summary>
-        DeleteDocumentFileVersionRecord = 104015,
+        RestoreDocumentFileVersion = 104015,
 
         /// <summary>
         /// Сделать основной версией

@@ -21,7 +21,8 @@ namespace BL.Database.Documents.Interfaces
         InternalDocument ModifyDocumentFilePrepare(IContext ctx, int fileId);
         InternalDocument RenameDocumentFilePrepare(IContext ctx, int documentId, int orderNumber);
         InternalDocument DeleteDocumentFilePrepare(IContext ctx, int id);
-        void DeleteAttachedFile(IContext ctx, InternalDocumentFile docFile);
+        InternalDocument RestoreDocumentFilePrepare(IContext ctx, int id);
+        void DeleteDocumentFile(IContext ctx, InternalDocumentFile docFile);
         int GetNextFileOrderNumber(IContext ctx, int documentId);
         int GetFileNextVersion(IContext ctx, int documentId, int fileOrder);
         InternalDocumentFile GetDocumentFileInternal(IContext ctx, int fileId, bool isIncludeOtherFileVersions = false);

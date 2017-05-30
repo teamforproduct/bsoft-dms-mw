@@ -158,6 +158,8 @@ namespace BL.Logic.DependencyInjection
 
             Bind<IDocumentCommand>().To<AddDocumentFileCommand>();
             Bind<IDocumentCommand>().To<DeleteDocumentFileCommand>();
+            Bind<IDocumentCommand>().To<RestoreDocumentFileCommand>();
+
             Bind<IDocumentCommand>().To<ModifyDocumentFileCommand>();
 
             Bind<IDocumentCommand>().To<AcceptDocumentFileCommand>();

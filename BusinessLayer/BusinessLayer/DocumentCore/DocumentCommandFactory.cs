@@ -130,9 +130,7 @@ namespace BL.Logic.DocumentCore
                     cmd = DmsResolver.Current.Get<ModifyDocumentTagsCommand>();
                     break;
 
-                case EnumDocumentActions.DeleteDocumentFile:
-                    cmd = DmsResolver.Current.Get<DeleteDocumentFileCommand>();
-                    break;
+
 //                case EnumDocumentActions.AddDocumentFileUseMainNameFile:
                 case EnumDocumentActions.AddDocumentFile:
                     cmd = DmsResolver.Current.Get<AddDocumentFileCommand>();
@@ -153,9 +151,14 @@ namespace BL.Logic.DocumentCore
                     break;
                 case EnumDocumentActions.DeleteDocumentFileVersion:
 //                case EnumDocumentActions.DeleteDocumentFileVersionRecord:
-                    cmd = DmsResolver.Current.Get<DeleteDocumentFileVersionCommand>();
+                    //cmd = DmsResolver.Current.Get<DeleteDocumentFileVersionCommand>();
+                    //break;
+                case EnumDocumentActions.DeleteDocumentFile:
+                    cmd = DmsResolver.Current.Get<DeleteDocumentFileCommand>();
                     break;
-
+                case EnumDocumentActions.RestoreDocumentFileVersion:
+                    cmd = DmsResolver.Current.Get<RestoreDocumentFileCommand>();
+                    break;
                 case EnumDocumentActions.SendForInformationExternal:
                     cmd = DmsResolver.Current.Get<SendForInformationDocumentCommand>();
                     break;

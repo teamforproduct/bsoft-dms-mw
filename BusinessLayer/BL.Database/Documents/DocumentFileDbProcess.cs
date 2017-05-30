@@ -568,7 +568,7 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentFileQuery(ctx, new FilterDocumentFile { FileId = new List<int> { id } })
+                var doc = CommonQueries.GetDocumentFileQuery(ctx, new FilterDocumentFile { FileId = new List<int> { id }, IsAllVersion =  true})
                     .Select(x => new InternalDocument
                     {
                         Id = x.Document.Id,
@@ -576,12 +576,7 @@ namespace BL.Database.Documents
                         EntityTypeId = x.Document.EntityTypeId,
                         IsRegistered = x.Document.IsRegistered,
                         ExecutorPositionId = x.Document.ExecutorPositionId,
-                        FileOrderNumber = x.OrderNumber,
-                    }).FirstOrDefault();
-                if (doc == null) return null;
-
-                doc.DocumentFiles = CommonQueries.GetDocumentFileQuery(ctx, new FilterDocumentFile { DocumentId = new List<int> { doc.Id }, OrderInDocument = new List<int> { doc.FileOrderNumber.Value } })
-                        .Select(x => new InternalDocumentFile
+                        DocumentFiles = new List<InternalDocumentFile> { new InternalDocumentFile
                         {
                             Id = x.Id,
                             ClientId = x.ClientId,
@@ -594,23 +589,25 @@ namespace BL.Database.Documents
                             Version = x.Version,
                             Hash= x.Hash,
                             IsDeleted = x.IsDeleted,
+                            
                             File = new BaseFile
                             {
                                 Name = x.Name,
                                 Extension = x.Extension,
                             }
-                        }).ToList();
+                        } }
+                    }).FirstOrDefault();
                 transaction.Complete();
                 return doc;
             }
         }
 
         /// <summary>
-        /// Delete of hole file with all versions
+        /// Delete of hole file one or all versions
         /// </summary>
         /// <param name="ctx">Context</param>
-        /// <param name="docFile"> should be filled DocumentId and OrderInDocument fields</param>
-        public void DeleteAttachedFile(IContext ctx, InternalDocumentFile docFile)
+        /// <param name="docFile"> should be filled IsMainVersion, DocumentId and OrderInDocument fields</param>
+        public void DeleteDocumentFile(IContext ctx, InternalDocumentFile docFile)
         {
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
@@ -621,39 +618,61 @@ namespace BL.Database.Documents
                     dbContext.DocumentEventsSet.Add(dbEvent);
                     dbContext.SaveChanges();
                 }
-
-                var docFileQry = CommonQueries.GetDocumentFileQuery(ctx, new FilterDocumentFile { DocumentId = new List<int> { docFile.Id }, OrderInDocument = new List<int> { docFile.OrderInDocument } });
-
-                if (docFile.Version > 0)
+                ExpressionStarter<DocumentFiles> filter;
+                if (docFile.IsMainVersion)
                 {
-                    docFileQry = docFileQry.Where(x => x.Version == docFile.Version);
+                    filter = PredicateBuilder.New<DocumentFiles>(x=>x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument);
                 }
-
-                foreach (var fileId in docFileQry.Select(x => x.Id).ToList())   //TODO REFACKTORING!!!
+                else
                 {
-                    var file = new DBModel.Document.DocumentFiles
-                    {
-                        Id = fileId,
-                        IsDeleted = true,
-                    };
-                    dbContext.SafeAttach(file);
-                    var entry = dbContext.Entry(file);
-
-                    if (docFile.Version > 0 && docFile.IsDeleted)
-                    {
-                        entry.State = System.Data.Entity.EntityState.Deleted;
-                    }
-                    else
-                    {
-                        entry.Property(x => x.IsDeleted).IsModified = true;
-                    }
+                    filter = PredicateBuilder.New<DocumentFiles>(x => x.Id == docFile.Id);
                 }
+                dbContext.DocumentFilesSet.Where(x => !x.IsDeleted).Where(filter).Update(x => 
+                    new DocumentFiles { IsDeleted = true, LastChangeDate = docFile.LastChangeDate, LastChangeUserId = docFile.LastChangeUserId });
                 dbContext.SaveChanges();
                 CommonQueries.AddFullTextCacheInfo(ctx, docFile.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
 
+        public InternalDocument RestoreDocumentFilePrepare(IContext ctx, int id)
+        {
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
+            {
+                var doc = CommonQueries.GetDocumentFileQuery(ctx, new FilterDocumentFile { FileId = new List<int> { id }, IsAllVersion = true, IsAllDeleted = true })
+                    .Select(x => new InternalDocument
+                    {
+                        Id = x.Document.Id,
+                        ClientId = x.Document.ClientId,
+                        EntityTypeId = x.Document.EntityTypeId,
+                        IsRegistered = x.Document.IsRegistered,
+                        ExecutorPositionId = x.Document.ExecutorPositionId,
+                        DocumentFiles = new List<InternalDocumentFile> { new InternalDocumentFile
+                        {
+                            Id = x.Id,
+                            ClientId = x.ClientId,
+                            EntityTypeId = x.EntityTypeId,
+                            DocumentId = x.DocumentId,
+                            OrderInDocument = x.OrderNumber,
+                            ExecutorPositionId = x.ExecutorPositionId,
+                            Type = (EnumFileTypes)x.TypeId,
+                            IsMainVersion = x.IsMainVersion,
+                            Version = x.Version,
+                            Hash= x.Hash,
+                            IsDeleted = x.IsDeleted,
+                            IsContentDeleted = x.IsContentDeleted,
+                            File = new BaseFile
+                            {
+                                Name = x.Name,
+                                Extension = x.Extension,
+                            }
+                        } }
+                    }).FirstOrDefault();
+                transaction.Complete();
+                return doc;
+            }
+        }
         public int CheckFileForDocument(IContext ctx, int documentId, string fileName, string fileExt)
         {
             var res = 0;

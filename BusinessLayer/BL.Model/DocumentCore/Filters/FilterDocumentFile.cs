@@ -89,6 +89,19 @@ namespace BL.Model.DocumentCore.Filters
         /// </summary>
         public bool IsAllDeleted { get; set; }
         /// <summary>
+        /// true - Получить только полность удаленные файлы
+        /// false - Получить только не полность удаленные файлы
+        /// По умолчанию false
+        /// </summary>
+        public bool IsContentDeleted { get; set; }
+        /// <summary>
+        /// true - Игнорировать фильтр IsContentDeleted
+        /// false - Применять фильтр IsContentDeleted
+        /// По умолчанию false
+        /// </summary>
+        public bool IsAllContentDeleted { get; set; }
+        
+        /// <summary>
         /// true - Получить только основные версии файлов
         /// false - Получить не основные версии файлов
         /// По умолчанию true
