@@ -62,12 +62,8 @@ namespace DMS_WebAPI.Utilities
             if (!result.Succeeded) throw new UserParmsCouldNotBeChanged(result.Errors);
         }
 
-        public void ChangeLokoutAgentUserAsync(IContext context, ChangeLockoutAgentUser model)
+        public void ChangeLokoutAgentUser(IContext context, ChangeLockoutAgentUser model)
         {
-            var user = GetUser(context, model.Id);
-
-            if (user == null) throw new UserIsNotDefined();
-
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
             tmpService.SetAgentUserLockout(context, model.Id, model.IsLockout);
 
