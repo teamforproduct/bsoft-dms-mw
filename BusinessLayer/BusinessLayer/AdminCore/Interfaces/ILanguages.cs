@@ -13,10 +13,8 @@ namespace BL.Logic.AdminCore.Interfaces
         string GetTranslation(string languageName, string text);
         string GetTranslation(IContext Context, string text);
         IEnumerable<InternalAdminLanguage> GetLanguages(FilterAdminLanguage filter);
-        IEnumerable<InternalAdminLanguageValue> GetLanguageValues(FilterAdminLanguageValue filter);
         string GetTranslation(string text);
 
-        string GetLanguageCodeById(int languageId);
         int GetLanguageIdByCode(string languageCode);
 
         int GetLanguageIdByHttpContext();

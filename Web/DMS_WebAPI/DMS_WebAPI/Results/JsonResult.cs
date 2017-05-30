@@ -67,10 +67,6 @@ namespace DMS_WebAPI.Results
             }
 
             var settings = GlobalConfiguration.Configuration.Formatters.JsonFormatter.SerializerSettings;
-            //settings.DateFormatString = "yyyy'-'MM'-'dd'T'HH':'mm':'ss";
-            // По наблюдениям: Если задать  DateTimeZoneHandling.Utc то локальная дата будет переведена в utc и будет отображена c буквой Z:
-            //settings.DateTimeZoneHandling = DateTimeZoneHandling.Utc;
-            // Если форматом отрезать милисекунды, то Z перестает отображаться
             var json = JsonConvert.SerializeObject(new { success = _success, data = _data, msg = _msg, meta = _meta, paging = _paging, spentTime = spentTimeStr }, settings);
 
             // ВНИМАНИЕ!!! Здесь достаточно опасно модифицировать готовый json. 
