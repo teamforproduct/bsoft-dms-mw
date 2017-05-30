@@ -59,9 +59,11 @@ namespace BL.Logic.Logging
         public IEnumerable<FrontSystemSession> GetSystemSessions(IContext context, IQueryable<FrontSystemSession> sessions, FilterSystemSession filter, UIPaging paging)
         {
             List<FrontSystemSession> res;
+
             if (filter?.IsOnlyActive ?? false)
             {
                 var qry = sessions;
+
                 if (filter != null)
                 {
                     if (filter.ExecutorAgentIDs?.Count > 0)
@@ -144,6 +146,7 @@ namespace BL.Logic.Logging
                         Name = x.ExecutorAgent,
                         ClientId = x.ClientId ?? 0,
                         IsSuccess = x.LogLevel == 0,
+                        Host = "*.ostrean.com"
                     }).ToList();
                 res.Where(x => !string.IsNullOrEmpty(x.LogException) && x.LogException.StartsWith("DmsExceptions:")).ToList()
                     .ForEach(x => { x.TypeException = x.LogException; x.LogException = "##l@" + x.LogException + "@l##"; });
