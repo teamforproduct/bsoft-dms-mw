@@ -5,6 +5,7 @@ using BL.Model.SystemCore.Filters;
 using BL.Model.WebAPI.FrontModel;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using Microsoft.AspNet.Identity;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -74,6 +75,31 @@ namespace DMS_WebAPI.ControllersV3.User
             });
         }
 
+        /// <summary>
+        /// Выход на всех устройствах
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route(Features.Sessions + "/KillAll")]
+        public async Task<IHttpActionResult> KillAll()
+        {
+            var ctxs = DmsResolver.Current.Get<UserContexts>();
+            ctxs.RemoveByUserId(User.Identity.GetUserId());
+            return new JsonResult(null, this);
+        }
+
+        /// <summary>
+        /// Выход на всех устройствах, кроме текущего
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Route(Features.Sessions + "/KillAllButThis")]
+        public async Task<IHttpActionResult> KillAllButThis()
+        {
+            var ctxs = DmsResolver.Current.Get<UserContexts>();
+            ctxs.RemoveByUserId(User.Identity.GetUserId());
+            return new JsonResult(null, this);
+        }
 
     }
 }
