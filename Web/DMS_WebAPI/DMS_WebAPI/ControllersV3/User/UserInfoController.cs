@@ -1,5 +1,4 @@
-﻿using BL.CrossCutting.Context;
-using BL.CrossCutting.DependencyInjection;
+﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
@@ -8,16 +7,14 @@ using BL.Model.DictionaryCore.IncomingModel;
 using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
 using BL.Model.Users;
+using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
-using DMS_WebAPI.DBModel;
-using DMS_WebAPI.Models;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Cookies;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
@@ -25,8 +22,6 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using System.Web.Http.Description;
-using BL.Model.WebAPI.FrontModel;
-using BL.Model.Exception;
 
 namespace DMS_WebAPI.ControllersV3.User
 {

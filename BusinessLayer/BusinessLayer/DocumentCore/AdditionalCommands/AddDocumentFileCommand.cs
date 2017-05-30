@@ -172,13 +172,22 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                                     }
                                 }
                                 res.Add(_fileDb.AddDocumentFile(_context, _file));
-                                if (x.MovingFileId.HasValue)
-                                    _fStore.DeleteFileVersion(_context, x.File);
+                                if (x.MovingFileId.HasValue) _fStore.DeleteFileVersion(_context, x.File);
+
+                                var internalFile = new InternalDocumentFile
+                                {
+                                    Id = _file.Id,
+                                    File = _file.File,
+                                    Version = _file.Version,
+                                    OrderInDocument = _file.OrderInDocument,
+                                    ClientId = _file.ClientId,
+                                    DocumentId = _file.DocumentId
+                                };
                                 _queueWorkerService.AddNewTask(admContext, () =>
                                 {
-                                    if (_fStore.CreatePdfFile(admContext, _file))
+                                    if (_fStore.CreatePdfFile(admContext, internalFile))
                                     {
-                                        _fileDb.UpdateFilePdfView(admContext, _file);
+                                        _fileDb.UpdateFilePdfView(admContext, internalFile);
                                     }
                                 });
                             });

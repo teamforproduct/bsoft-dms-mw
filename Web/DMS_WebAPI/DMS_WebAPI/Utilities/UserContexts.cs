@@ -391,6 +391,7 @@ namespace DMS_WebAPI.Utilities
 
                 if (removeFromBase)
                 {
+                    // TODO нужно овиновскую сессию тоже останавливать
                     //HttpContext.Current.GetOwinContext().Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
 
                     var webService = DmsResolver.Current.Get<WebAPIService>();
@@ -500,18 +501,28 @@ namespace DMS_WebAPI.Utilities
         /// Удаляет пользовательские контексты по userId
         /// </summary>
         /// <param name="userId"></param>
-        public void RemoveByUserId(string userId)
+        /// <param name="exceptCurrent"></param>
+        public void RemoveByUserId(string userId, bool exceptCurrent = false)
         {
             List<string> keys;
             locker.EnterReadLock();
             try
             {
-                keys = _cacheContexts.Where(x => x.Value.StoreObject is IContext && ((IContext)x.Value.StoreObject).User.Id == userId).Select(x => x.Key).ToList();
+                var qry = _cacheContexts.Where(x => x.Value.StoreObject is IContext && ((IContext)x.Value.StoreObject).User.Id == userId);
+
+                if (exceptCurrent)
+                {
+                    qry = qry.Where(x => x.Key != TokenLower);
+                }
+
+                keys = qry.Select(x => x.Key).ToList();
             }
             finally
             {
                 locker.ExitReadLock();
             }
+
+
             foreach (var key in keys)
             {
                 Remove(key);

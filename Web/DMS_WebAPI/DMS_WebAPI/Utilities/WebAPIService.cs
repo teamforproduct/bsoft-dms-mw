@@ -66,7 +66,15 @@ namespace DMS_WebAPI.Utilities
 
         public AspNetUsers GetUser(string userName)
         {
-            return UserManager.FindByName(userName);
+            AspNetUsers res = null;
+
+            try
+            {
+                res =  UserManager.FindByName(userName);
+            }
+            catch { }
+
+            return res;
         }
 
         public async Task<AspNetUsers> GetUser(string userName, string userPassword)
@@ -91,7 +99,7 @@ namespace DMS_WebAPI.Utilities
             var userId = tmpService.GetDictionaryAgentUserId(context, agentId);
 
             if (string.IsNullOrEmpty(userId)) return null;
-            
+
             return await GetUserByIdAsync(userId);
         }
 
@@ -123,6 +131,12 @@ namespace DMS_WebAPI.Utilities
             return ExistsUserInClient(user, clientId);
         }
 
+        public int GetUserLanguageId(string userName)
+        {
+            var user = GetUser(userName);
+            if (user == null) return -1;
+            return user.LanguageId;
+        }
 
         // Пользователь запрашивает информацию о себе внутри докума
         public FrontAgentEmployeeUser GetUserInfo(IContext context)
@@ -149,7 +163,7 @@ namespace DMS_WebAPI.Utilities
                 MiddleName = employee.MiddleName,
 
                 IsMale = employee.IsMale,
-                
+
                 TaxCode = employee.TaxCode,
                 PersonnelNumber = employee.PersonnelNumber,
                 BirthDate = employee.BirthDate,
@@ -170,7 +184,7 @@ namespace DMS_WebAPI.Utilities
             };
         }
 
-        
+
 
         private AspNetUsers AddUser(string firstName, string lastName, string userName, string userPassword, int languageId, string userEmail, string userPhone = "",
             bool emailConfirmed = false, bool isChangePasswordRequired = true)
@@ -305,7 +319,7 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        
+
 
         //private string LogIn(string userName, string userPassword)
         //{
@@ -329,7 +343,7 @@ namespace DMS_WebAPI.Utilities
         //        new UserLoginInfo(externalData.LoginProvider, externalData.ProviderKey));
         //}
 
-       
+
 
         public IEnumerable<ListItem> GetControlQuestions(string language)
         {
@@ -337,9 +351,9 @@ namespace DMS_WebAPI.Utilities
         }
 
 
-      
 
-        
+
+
         public FrontAspNetClientLicence GetClientLicenceActive(int clientId)
         {
             return _webDb.GetClientLicenceActive(clientId);
@@ -349,6 +363,9 @@ namespace DMS_WebAPI.Utilities
         {
             string message = HttpContext.Current.Request.Browser.Info();
             var clientCode = await context.Request.Body.GetClientCodeAsync();
+
+            if (string.IsNullOrEmpty(clientCode) || clientCode == "-") throw ex;
+
             var webService = DmsResolver.Current.Get<WebAPIService>();
             var server = webService.GetClientServer(clientCode);
 
