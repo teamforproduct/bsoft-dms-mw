@@ -1279,6 +1279,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetDictionaryEventType(EnumEventTypes.RanameDocumentFile, EnumImportanceEventTypes.ImportantEvents, null));
             items.Add(GetDictionaryEventType(EnumEventTypes.ModifyDocumentFile, EnumImportanceEventTypes.ImportantEvents, null));
             items.Add(GetDictionaryEventType(EnumEventTypes.DeleteDocumentFileVersion, EnumImportanceEventTypes.DocumentMoovement, null));
+            items.Add(GetDictionaryEventType(EnumEventTypes.RestoreDocumentFileVersion, EnumImportanceEventTypes.DocumentMoovement, null));
             items.Add(GetDictionaryEventType(EnumEventTypes.DeleteDocumentFile, EnumImportanceEventTypes.DocumentMoovement, null));
             items.Add(GetDictionaryEventType(EnumEventTypes.RejectDocumentFile, EnumImportanceEventTypes.DocumentMoovement, null));
             items.Add(GetDictionaryEventType(EnumEventTypes.AcceptDocumentFile, EnumImportanceEventTypes.DocumentMoovement, null));

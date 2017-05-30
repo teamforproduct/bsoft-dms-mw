@@ -657,7 +657,7 @@ namespace BL.Database.Documents
                             OrderInDocument = x.OrderNumber,
                             ExecutorPositionId = x.ExecutorPositionId,
                             Type = (EnumFileTypes)x.TypeId,
-                            IsMainVersion = x.IsMainVersion,
+                            IsMainVersion = !x.Document.Files.Any(y=>y.IsMainVersion && !y.IsDeleted && y.OrderNumber == x.OrderNumber), //определяем есть ли живая основная версия файла
                             Version = x.Version,
                             Hash= x.Hash,
                             IsDeleted = x.IsDeleted,
@@ -673,6 +673,31 @@ namespace BL.Database.Documents
                 return doc;
             }
         }
+
+        /// <summary>
+        /// Restore file version
+        /// </summary>
+        /// <param name="ctx">Context</param>
+        /// <param name="docFile"> should be filled IsMainVersion, DocumentId and OrderInDocument fields</param>
+        public void RestoreDocumentFile(IContext ctx, InternalDocumentFile docFile)
+        {
+            var dbContext = ctx.DbContext as DmsContext;
+            using (var transaction = Transactions.GetTransaction())
+            {
+                if (docFile.Event != null)
+                {
+                    var dbEvent = ModelConverter.GetDbDocumentEvent(docFile.Event);
+                    dbContext.DocumentEventsSet.Add(dbEvent);
+                    dbContext.SaveChanges();
+                }
+                dbContext.DocumentFilesSet.Where(x =>  x.Id == docFile.Id && !x.IsContentDeleted && x.IsDeleted).Update(x =>
+                    new DocumentFiles { IsDeleted = false, IsMainVersion = docFile.IsMainVersion, LastChangeDate = docFile.LastChangeDate, LastChangeUserId = docFile.LastChangeUserId });
+                dbContext.SaveChanges();
+                CommonQueries.AddFullTextCacheInfo(ctx, docFile.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
+                transaction.Complete();
+            }
+        }
+
         public int CheckFileForDocument(IContext ctx, int documentId, string fileName, string fileExt)
         {
             var res = 0;

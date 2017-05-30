@@ -157,6 +157,7 @@
         DeleteDocumentFileVersion = 118,
         // Удален файл
         DeleteDocumentFile = 119,
+        RestoreDocumentFileVersion = 120,
         // 
         RejectDocumentFile = 121,
         // 
