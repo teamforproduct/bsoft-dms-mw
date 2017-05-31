@@ -616,11 +616,13 @@ namespace BL.Database.Common
             }
             #endregion Filter
 
+            if (context.IsAdmin) return qry;
+
             IQueryable<DocumentAccesses> qryAcc = null;
 
             #region Filter access
             var isAccFilter = filter != null && (filter.IsInWork.HasValue || filter.IsFavourite.HasValue || filter.IsExecutorPosition.HasValue || filter.AccessLevelId?.Count() > 0);
-            if (!context.IsAdmin && (!isDontVerifyAccess || isAccFilter))
+            if (!isDontVerifyAccess || isAccFilter)
             {
                 qryAcc = GetDocumentAccessesQuery(context, new FilterDocumentAccess
                 {
@@ -638,7 +640,7 @@ namespace BL.Database.Common
             if (dbContext.AdminRegistrationJournalPositionsSet
                 .Where(filterPositionsIdList).Where(x => x.RegJournalAccessTypeId == (int)EnumRegistrationJournalAccessTypes.View)
                 .Select(x => x.RegJournalId).Any()
-                && !isAccFilter && !context.IsAdmin)
+                && !isAccFilter)
             {
                 var qryRJA = qry.Where(x => x.RegistrationJournalId.HasValue
                                 && dbContext.AdminRegistrationJournalPositionsSet
@@ -650,8 +652,8 @@ namespace BL.Database.Common
                 qry = dbContext.DocumentsSet    //Without security restrictions
                     .Where(x => qryAll.Any(y => y.Id == x.Id)); //Without duplicates
             }
-            //else
-            //    qry = qry.Where(x => qryAcc.Select(a => a.DocumentId).Contains(x.Id));
+            else
+                qry = qry.Where(x => qryAcc.Select(a => a.DocumentId).Contains(x.Id));
 
             return qry;
         }
