@@ -7,6 +7,7 @@ using BL.Model.Common;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.Users;
+using DMS_WebAPI.Models;
 using System;
 using System.Threading.Tasks;
 using System.Web;
@@ -121,7 +122,13 @@ namespace DMS_WebAPI.Utilities
 
             callbackurl += String.Format("?userId={0}&code={1}", user.Id, HttpUtility.UrlEncode(emailConfirmationCode));
 
-            var htmlContent = callbackurl.RenderPartialViewToString(RenderPartialView.ChangeLogin);
+            var m = new ChangeLoginModel
+            {
+                Url = callbackurl,
+                FirstName = user.FirstName,
+            };
+
+            var htmlContent = m.RenderPartialViewToString(RenderPartialView.ChangeLogin);
 
             var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
 

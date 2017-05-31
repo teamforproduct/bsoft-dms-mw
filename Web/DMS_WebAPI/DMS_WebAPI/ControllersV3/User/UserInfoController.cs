@@ -183,22 +183,22 @@ namespace DMS_WebAPI.ControllersV3.User
 
        
 
-        /// <summary>
-        /// Устанавливает новый пароль
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpPut]
-        [Route("SetPassword")]
-        public async Task<IHttpActionResult> SetPassword(SetUserPassword model)
-        { 
-            if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
+        ///// <summary>
+        ///// Устанавливает новый пароль
+        ///// </summary>
+        ///// <param name="model"></param>
+        ///// <returns></returns>
+        //[HttpPut]
+        //[Route("SetPassword")]
+        //public async Task<IHttpActionResult> SetPassword(SetUserPassword model)
+        //{ 
+        //    if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
 
-            var webService = DmsResolver.Current.Get<WebAPIService>();
-            await webService.SetUserPasswordAsync(User.Identity.GetUserId(), model);
+        //    var webService = DmsResolver.Current.Get<WebAPIService>();
+        //    await webService.SetUserPasswordAsync(User.Identity.GetUserId(), model);
 
-            return new JsonResult(null, this);
-        }
+        //    return new JsonResult(null, this);
+        //}
 
         /// <summary>
         /// Изменяет текущий пароль
