@@ -1,14 +1,10 @@
-﻿using System;
-
-
-
-namespace BL.Database.Common
+﻿namespace BL.Database.Common
 {
     public static class CommonFilterUtilites
     {
         public static string[] GetWhereExpressions(string SearchExpression)
         {
-            var res = SearchExpression.Trim();
+            var res = SearchExpression.Trim().ToLower();
 
             while (res.Contains("  "))
             {
