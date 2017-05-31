@@ -1,6 +1,5 @@
 ﻿using BL.Model.DocumentCore.Filters;
 using BL.Model.SystemCore;
-using BL.Model.FullTextSearch;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {

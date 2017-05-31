@@ -2,8 +2,6 @@
 using BL.Model.SystemCore.Filters;
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
-using System.Xml.Serialization;
 
 namespace BL.Model.DocumentCore.Filters
 {

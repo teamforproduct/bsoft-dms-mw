@@ -63,21 +63,7 @@ namespace BL.Logic.SystemServices.FileService
             return Task.Factory.StartNew(() =>
             {
                 FrontDocumentFile item;
-
-                switch (fileType)
-                {
-                    case EnumDocumentFileType.UserFile:
-                        item = _fileService.GetUserFile(ctx, id);
-                        break;
-                    case EnumDocumentFileType.PdfFile:
-                        item = _fileService.GetUserFilePdf(ctx, id);
-                        break;
-                    case EnumDocumentFileType.PdfPreview:
-                        item = _fileService.GetUserFilePreview(ctx, id);
-                        break;
-                    default:
-                        throw new ArgumentOutOfRangeException();
-                }
+                item = _fileService.GetDocumentFile(ctx, id, fileType);
                 return item;
             });
         }

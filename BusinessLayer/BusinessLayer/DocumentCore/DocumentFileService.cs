@@ -11,7 +11,6 @@ using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
-using BL.Logic.SystemServices.FileService;
 using BL.CrossCutting.DependencyInjection;
 
 namespace BL.Logic.DocumentCore
@@ -32,7 +31,7 @@ namespace BL.Logic.DocumentCore
             return _dbProcess.GetDocumentFiles(ctx, filter, paging);
         }
 
-        private FrontDocumentFile GetDocumentFile(IContext ctx, int id, EnumDocumentFileType fileType)
+        public FrontDocumentFile GetDocumentFile(IContext ctx, int id, EnumDocumentFileType fileType)
         {
             var fl = _dbProcess.GetDocumentFile(ctx, id);
             if (fl == null)
@@ -57,17 +56,7 @@ namespace BL.Logic.DocumentCore
         public FrontDocumentFile GetUserFile(IContext ctx, int id)
         {
             return GetDocumentFile(ctx, id, EnumDocumentFileType.UserFile);
-        }
-
-        public FrontDocumentFile GetUserFilePdf(IContext ctx, int id)
-        {
-            return GetDocumentFile(ctx, id, EnumDocumentFileType.PdfFile);
-        }
-
-        public FrontDocumentFile GetUserFilePreview(IContext ctx, int id)
-        {
-            return GetDocumentFile(ctx, id, EnumDocumentFileType.PdfPreview);
-        }
+        } 
 
         public void DeleteDocumentFileFinal(IContext ctx)
         {
