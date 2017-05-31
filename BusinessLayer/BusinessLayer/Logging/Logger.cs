@@ -78,21 +78,21 @@ namespace BL.Logic.Logging
                     {
                         qry = qry.Where(x => x.CreateDate <= filter.CreateDateTo.Value);
                     }
-                    if (!String.IsNullOrEmpty(filter.LoginLogInfo))
+                    if (!string.IsNullOrEmpty(filter.LoginLogInfo))
                     {
                         var filterContains = PredicateBuilder.New<FrontSystemSession>(false);
                         filterContains = CommonFilterUtilites.GetWhereExpressions(filter.LoginLogInfo)
                                     .Aggregate(filterContains, (current, value) => current.Or(e => e.LoginLogInfo.Contains(value)).Expand());
                         qry = qry.Where(filterContains);
                     }
-                    if (!String.IsNullOrEmpty(filter.ExecutorAgentName))
+                    if (!string.IsNullOrEmpty(filter.ExecutorAgentName))
                     {
                         var filterContains = PredicateBuilder.New<FrontSystemSession>(false);
                         filterContains = CommonFilterUtilites.GetWhereExpressions(filter.ExecutorAgentName)
                                     .Aggregate(filterContains, (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
                         qry = qry.Where(filterContains);
                     }
-                    if (!String.IsNullOrEmpty(filter.FullTextSearchString))
+                    if (!string.IsNullOrEmpty(filter.FullTextSearchString))
                     {
                         var filterContains = PredicateBuilder.New<FrontSystemSession>(true);
                         filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullTextSearchString)

@@ -9,10 +9,10 @@ namespace BL.Database.Common
         public static string[] GetWhereExpressions(string SearchExpression)
         {
             var res = SearchExpression.Trim();
-             
+
             while (res.Contains("  "))
             {
-                res =  res.Replace("  ", " ");
+                res = res.Replace("  ", " ");
             }
 
             return res.Split(' ');

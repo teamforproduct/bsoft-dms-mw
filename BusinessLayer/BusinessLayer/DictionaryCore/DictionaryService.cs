@@ -1146,7 +1146,7 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetStandartSendListsShortList(ctx, filter, paging);
         }
 
-        public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, bool SearchInPositionsOnly = false)
+        public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendListBase(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, bool SearchInPositionsOnly = false)
         {
 
             if (filter == null) filter = new FilterDictionaryStandartSendList();
@@ -1181,7 +1181,7 @@ namespace BL.Logic.DictionaryCore
 
             filter.AgentId = context.CurrentAgentId;
 
-            var res = GetMainStandartSendLists(context, ftSearch, filter);
+            var res = GetMainStandartSendListBase(context, ftSearch, filter);
 
             //res = res.ToList();
 
@@ -1210,6 +1210,68 @@ namespace BL.Logic.DictionaryCore
 
                 res = res.OrderBy(x => x.Name).ToList();
             }
+
+            return res;
+        }
+
+        public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendList(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, bool SearchInPositionsOnly = false)
+        {
+            if (filter == null) filter = new FilterDictionaryStandartSendList();
+
+            filter.AgentId = context.CurrentAgentId;
+
+            var res = GetMainStandartSendListBase(context, ftSearch, filter, SearchInPositionsOnly);
+
+            if (filter.IsShowAll.HasValue && filter.IsShowAll.Value)
+            {
+                var filterPos = new FilterDictionaryPosition();
+
+                filterPos.NotContainsIDs = res.Select(x => x.Id).ToList();
+                filterPos.IsActive = true;
+
+                if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString) && SearchInPositionsOnly)
+                {
+                    var service = DmsResolver.Current.Get<IFullTextSearchService>();
+                    var list = new List<int>();
+                    bool IsNotAll;
+
+                    list = service.SearchItemParentId(out IsNotAll, context, ftSearch.FullTextSearchString, new FullTextSearchFilter { Module = Modules.Position });
+
+                    if (!list.Any()) filterPos.IDs = new List<int> { -1 };
+
+                    filterPos.IDs = list;
+
+                }
+
+                // Тонкий момент, проверяю не является ли сотрудник локальным администратором.
+                // Если не локальный значит, надеюсь, что глобальный и отображаю все
+                var adminService = DmsResolver.Current.Get<IAdminService>();
+                var employeeDepartments = adminService.GetInternalEmployeeDepartments(context, context.Employee.Id);
+
+                if (employeeDepartments != null)
+                {
+                    filterPos.DepartmentIDs = employeeDepartments;
+                }
+
+                var l = _dictDb.GetPositions(context, filterPos);
+
+                if (l.Count() > 0)
+                {
+                    res = res.Concat(l.Select(x => new FrontMainDictionaryStandartSendList
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        ExecutorName = x.ExecutorAgentName,
+                        //???ExecutorTypeSuffix = null,
+                        DepartmentIndex = x.DepartmentCode,
+                        DepartmentName = x.DepartmentName,
+                    }));
+
+                    res = res.OrderBy(x => x.Name).ToList();
+                }
+
+            }
+
 
             return res;
         }
