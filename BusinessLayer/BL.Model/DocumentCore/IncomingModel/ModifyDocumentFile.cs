@@ -1,4 +1,5 @@
-﻿using BL.Model.Extensions;
+﻿using BL.Model.Enums;
+using BL.Model.Extensions;
 using BL.Model.Users;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Добавляемый или редактируемый файл документа
     /// </summary>
-    public class ModifyDocumentFile : CurrentPosition
+    public class ModifyDocumentFile
     {
         /// <summary>
         /// ИД файла
@@ -19,10 +20,10 @@ namespace BL.Model.DocumentCore.IncomingModel
         [Required]
         public int FileId { get; set; }
         /// <summary>
-        /// Порядковый номер файла в списке файлов документа
-        /// Только для изменения файла и для добавления версию файла к файлу
+        /// <summary>
+        /// Тип файла дополнительный или основной (менять можно только для основной версии!).
         /// </summary>
-        //public int OrderInDocument { get; set; }
+        public EnumFileTypes? Type { get; set; }
         /// <summary>
         /// Описание файла
         /// </summary>

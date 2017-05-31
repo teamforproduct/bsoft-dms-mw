@@ -150,12 +150,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route(Features.Files + "/ChangeDescription")]
+        [Route(Features.Files + "/Modify")]
         public async Task<IHttpActionResult> Put([FromBody]ModifyDocumentFile model)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumDocumentActions.ModifyDocumentFile, model, model.CurrentPositionId);
+                var tmpItem = Action.Execute(context, EnumDocumentActions.ModifyDocumentFile, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -172,7 +172,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumDocumentActions.RenameDocumentFile, model, model.CurrentPositionId);
+                var tmpItem = Action.Execute(context, EnumDocumentActions.RenameDocumentFile, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });

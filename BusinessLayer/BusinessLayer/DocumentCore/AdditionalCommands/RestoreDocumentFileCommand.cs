@@ -81,7 +81,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             if (_document.IsRegistered.HasValue)
             {
                 _file.Event = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _file.DocumentId,
-                    EnumEventTypes.RestoreDocumentFileVersion, null, null, _file.File.FileName);
+                    EnumEventTypes.RestoreDocumentFileVersion, null, null, _file.File.FileName, _file.EventId);
             }
             _operationDb.RestoreDocumentFile(_context, _file);
             return null;

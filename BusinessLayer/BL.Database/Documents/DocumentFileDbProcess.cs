@@ -590,6 +590,7 @@ namespace BL.Database.Documents
                             Hash= x.Hash,
                             IsDeleted = x.IsDeleted,
                             IsContentDeleted = x.IsContentDeleted,
+                            EventId = x.EventId,
                             File = new BaseFile
                             {
                                 Name = x.Name,
@@ -688,6 +689,7 @@ namespace BL.Database.Documents
                             Hash= x.Hash,
                             IsDeleted = x.IsDeleted,
                             IsContentDeleted = x.IsContentDeleted,
+                            EventId = x.EventId,
                             File = new BaseFile
                             {
                                 Name = x.Name,
@@ -744,7 +746,7 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var res = CommonQueries.GetDocumentFileQuery(ctx, new FilterDocumentFile { DocumentId = new List<int> { documentId } }, true)
+                var res = CommonQueries.GetDocumentFileQuery(ctx, new FilterDocumentFile { DocumentId = new List<int> { documentId }, IsAllDeleted = true, IsAllContentDeleted = true }, true)
                     .OrderByDescending(x => x.OrderNumber).Select(x => x.OrderNumber).FirstOrDefault() + 1;
                 transaction.Complete();
                 return res;
@@ -756,7 +758,7 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var res = CommonQueries.GetDocumentFileQuery(ctx, new FilterDocumentFile { DocumentId = new List<int> { documentId }, OrderInDocument = new List<int> { fileOrder } }, true)
+                var res = CommonQueries.GetDocumentFileQuery(ctx, new FilterDocumentFile { DocumentId = new List<int> { documentId }, OrderInDocument = new List<int> { fileOrder }, IsAllDeleted = true, IsAllContentDeleted = true }, true)
                     .OrderByDescending(x => x.Version).Select(x => x.Version).FirstOrDefault() + 1;
                 transaction.Complete();
                 return res;

@@ -42,10 +42,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         {
             _actionRecords =
                    _document.DocumentFiles
-                   .Where(x => !x.IsDeleted)
-                        .Where(
-                       x =>
-                           x.ExecutorPositionId == positionId)
+                   .Where(x => !x.IsDeleted && x.ExecutorPositionId == positionId)
                                                    .Select(x => new InternalActionRecord
                                                    {
                                                        FileId = x.Id,
@@ -59,10 +56,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
-            _adminProc.VerifyAccess(_context, CommandType);
-
-            //TODO potential two user could add same new version in same time. Probably need to implement CheckOut flag in future
-            //TODO REDISIGN!!!!!!!!!
             _document = _operationDb.ModifyDocumentFilePrepare(_context, Model.FileId);
             if (_document == null)
             {
@@ -73,7 +66,9 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 throw new UnknownDocumentFile();
             }
             _file = _document.DocumentFiles.First();
-
+            _context.SetCurrentPosition(_file.ExecutorPositionId);
+            _adminProc.VerifyAccess(_context, CommandType);
+            if (Model.Type != null && Model.Type == EnumFileTypes.Main && _file.ExecutorPositionId != _file.ExecutorPositionId)
             if (!CanBeDisplayed(_context.CurrentPositionId))
             {
                 throw new CouldNotPerformOperation();

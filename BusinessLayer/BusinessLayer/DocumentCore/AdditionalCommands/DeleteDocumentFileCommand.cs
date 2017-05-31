@@ -94,7 +94,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
                 if (_document.IsRegistered.HasValue)
                 {
                     _file.Event = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _file.DocumentId,
-                        _file.IsMainVersion ? EnumEventTypes.DeleteDocumentFile : EnumEventTypes.DeleteDocumentFileVersion, null, null, _file.File.FileName);
+                        _file.IsMainVersion ? EnumEventTypes.DeleteDocumentFile : EnumEventTypes.DeleteDocumentFileVersion, null, null, _file.File.FileName, _file.EventId);
                 }
                 _operationDb.DeleteDocumentFile(_context, _file);
             }
