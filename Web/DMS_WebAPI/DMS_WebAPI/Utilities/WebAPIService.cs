@@ -361,35 +361,35 @@ namespace DMS_WebAPI.Utilities
 
         public async Task ThrowErrorGrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context, Exception ex)
         {
-            string message = HttpContext.Current.Request.Browser.Info();
-            var clientCode = await context.Request.Body.GetClientCodeAsync();
+            //string message = HttpContext.Current.Request.Browser.Info();
+            //var clientCode = await context.Request.Body.GetClientCodeAsync();
 
-            if (string.IsNullOrEmpty(clientCode) || clientCode == "-") throw ex;
+            //if (string.IsNullOrEmpty(clientCode) || clientCode == "-") throw ex;
 
-            var webService = DmsResolver.Current.Get<WebAPIService>();
-            var server = webService.GetClientServer(clientCode);
+            //var webService = DmsResolver.Current.Get<WebAPIService>();
+            //var server = webService.GetClientServer(clientCode);
 
-            var ctx = new AdminContext(server);
-            var logger = DmsResolver.Current.Get<ILogger>();
-            var errorInfo = new AuthError
-            {
-                ClientCode = clientCode,
-                EMail = context.UserName,
-                FingerPrint = await context.Request.Body.GetFingerprintAsync()
-            };
-            int? agentId = null;
-            var dbService = DmsResolver.Current.Get<WebAPIService>();
+            //var ctx = new AdminContext(server);
+            //var logger = DmsResolver.Current.Get<ILogger>();
+            //var errorInfo = new AuthError
+            //{
+            //    ClientCode = clientCode,
+            //    EMail = context.UserName,
+            //    FingerPrint = await context.Request.Body.GetFingerprintAsync()
+            //};
+            //int? agentId = null;
+            //var dbService = DmsResolver.Current.Get<WebAPIService>();
 
-            var user = await dbService.GetUserAsync(errorInfo.EMail);
+            //var user = await dbService.GetUserAsync(errorInfo.EMail);
 
-            if (user != null)
-            {
-                var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(ctx, user.Id);
-                agentId = agentUser?.Id;
-            }
+            //if (user != null)
+            //{
+            //    var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(ctx, user.Id);
+            //    agentId = agentUser?.Id;
+            //}
 
-            var exceptionText = ExceptionHandling.GetExceptionText(ex);
-            var loginLogId = logger.Error(ctx, message, exceptionText, objectId: (int)EnumObjects.System, actionId: (int)EnumSystemActions.Login, logObject: errorInfo, agentId: agentId);
+            //var exceptionText = ExceptionHandling.GetExceptionText(ex);
+            //var loginLogId = logger.Error(ctx, message, exceptionText, objectId: (int)EnumObjects.System, actionId: (int)EnumSystemActions.Login, logObject: errorInfo, agentId: agentId);
 
             // Эти исключения отлавливает Application_Error в Global.asax
             throw ex;

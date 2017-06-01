@@ -12,6 +12,7 @@ using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.FrontModel;
 using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Providers;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,8 +29,25 @@ namespace DMS_WebAPI.Utilities
     {
         private readonly Dictionary<string, StoreInfo> _cacheContexts = new Dictionary<string, StoreInfo>();
         private const string _TOKEN_KEY = "Authorization";
+        private const string _HOST = "Host";
         private const int _TIME_OUT_MIN = 15;
         private string Token { get { return HttpContext.Current.Request.Headers[_TOKEN_KEY]; } }
+        private string ClientCode
+        {
+            get
+            {
+                var host = HttpContext.Current.Request.Headers[_HOST];
+                if (host.Contains("localhost"))
+                {
+                    return "docum";
+                }
+
+                var uri = new Uri(host);
+
+                // TODO определить доменное имя 3 уровня
+                return uri.Host.Substring(0, host.IndexOf('.'));
+            }
+        }
         private ReaderWriterLockSlim locker = new ReaderWriterLockSlim();
         private string TokenLower { get { return string.IsNullOrEmpty(Token) ? string.Empty : Token.ToLower(); } }
 
@@ -80,6 +98,11 @@ namespace DMS_WebAPI.Utilities
             if (restoreToken && !Contains(token))
             {
                 Restore(token);
+
+                if (!Contains(token))
+                {
+                    Create();
+                }
             }
 
             if (!Contains(token)) throw new UserUnauthorized();
@@ -104,6 +127,49 @@ namespace DMS_WebAPI.Utilities
             if (keepAlive) KeepAlive(token);
 
             return request_ctx;
+        }
+
+        private void Create()
+        {
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+
+            var clientId = webService.GetClientId(ClientCode);
+
+            if (clientId <= 0) throw new ClientIsNotFound();
+
+            var user = webService.GetUserById(HttpContext.Current.User.Identity.GetUserId());
+            if (user == null) throw new UserIsNotDefined();
+
+
+            // Тут нужно проерить нет ли приглашений пользователя и добавить линку клиент-пользователь
+
+            // Проверяю принадлежность пользователя к клиенту
+            if (!webService.ExistsUserInClient(user, clientId)) throw new ClientIsNotContainUser(ClientCode);
+
+            var server = webService.GetClientServer(ClientCode);
+            if (server == null) throw new DatabaseIsNotFound();
+
+            // Получаю информацию о браузере
+            var brInfo = HttpContext.Current.Request.Browser.Info();
+
+            var fingerPrint = await context.Request.Body.GetFingerprintAsync();
+
+            #region Подпорка для соапа
+            if (string.IsNullOrEmpty(fingerPrint))
+            {
+                var scope = await context.Request.Body.GetScopeAsync();
+
+                if (scope == "fingerprint") fingerPrint = "SoapUI finger";
+
+            }
+            #endregion
+
+            var userContexts = DmsResolver.Current.Get<UserContexts>();
+
+            // Создаю пользовательский контекст
+            var ctx = userContexts.Set(token, user, clientCode, server, brInfo, fingerPrint);
+
+
         }
 
 

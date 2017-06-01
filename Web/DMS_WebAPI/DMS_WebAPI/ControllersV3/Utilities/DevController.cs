@@ -50,10 +50,10 @@ namespace DMS_WebAPI.ControllersV3.Utilities
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [Route("Request")]
+        [Route("Request/Headers/Host")]
         public IHttpActionResult GetRequest()
         {
-            return new JsonResult(HttpContext.Current.Request, this);
+            return new JsonResult(HttpContext.Current.Request.Headers["Host"], this);
         }
 
         /// <summary>
