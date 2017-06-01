@@ -130,7 +130,7 @@ namespace DMS_WebAPI.Providers
                 var rememberFingerprint = await context.Request.Body.GetRememberFingerprintAsync();
 
 
-                if (string.IsNullOrEmpty(fingerprint?.Trim())) await webService.ThrowErrorGrantResourceOwnerCredentials(context, new FingerprintRequired());
+                if (string.IsNullOrEmpty(fingerprint?.Trim())) throw new FingerprintRequired();
 
                 if (!string.IsNullOrEmpty(answer))  // переданы расширенные параметры получения токена с ответом на секретный вопрос
                 {
