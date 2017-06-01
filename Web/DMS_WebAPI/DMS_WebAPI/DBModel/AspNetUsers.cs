@@ -29,8 +29,7 @@ namespace DMS_WebAPI.DBModel
         public virtual ICollection<AspNetUserContexts> Contexts { get; set; }
 
         [MaxLength(2000)]
-        public string LastName { get; set; }
-        [MaxLength(2000)]
+        [Column("FullName")]
         public string FirstName { get; set; }
 
         public int LanguageId { get; set; }

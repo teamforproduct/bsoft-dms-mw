@@ -186,15 +186,14 @@ namespace DMS_WebAPI.Utilities
 
 
 
-        private AspNetUsers AddUser(string firstName, string lastName, string userName, string userPassword, int languageId, string userEmail, string userPhone = "",
+        private AspNetUsers AddUser(string fullName, string lastName, string userName, string userPassword, int languageId, string userEmail, string userPhone = "",
             bool emailConfirmed = false, bool isChangePasswordRequired = true)
         {
             var now = DateTime.UtcNow;
 
             var user = new AspNetUsers
             {
-                FirstName = firstName?.Trim(),
-                LastName = lastName?.Trim(),
+                FirstName = fullName?.Trim(),
                 UserName = userName?.Trim(),
                 Email = userEmail?.Trim(),
                 LanguageId = languageId,
