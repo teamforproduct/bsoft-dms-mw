@@ -152,7 +152,7 @@ namespace DMS_WebAPI.Utilities
             // Получаю информацию о браузере
             var brInfo = HttpContext.Current.Request.Browser.Info();
 
-            var fingerPrint = await context.Request.Body.GetFingerprintAsync();
+            var fingerPrint = context.Request.Body.GetFingerprintAsync();
 
             #region Подпорка для соапа
             if (string.IsNullOrEmpty(fingerPrint))
