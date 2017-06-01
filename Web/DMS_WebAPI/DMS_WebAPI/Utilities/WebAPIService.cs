@@ -186,7 +186,7 @@ namespace DMS_WebAPI.Utilities
 
 
 
-        private AspNetUsers AddUser(string firstName, string lastName, string userName, string userPassword, int languageId, string userEmail, string userPhone = "",
+        private AspNetUsers AddUser(string fullName, string userName, string userPassword, int languageId, string userEmail, string userPhone = "",
             bool emailConfirmed = false, bool isChangePasswordRequired = true)
         {
             var now = DateTime.UtcNow;
@@ -230,7 +230,7 @@ namespace DMS_WebAPI.Utilities
             {
                 if (isNew)
                 {
-                    user = AddUser(model.FirstName, model.LastName, model.Email, model.Password, model.LanguageId, model.Email, model.Phone,
+                    user = AddUser(model.FullName,  model.Email, model.Password, model.LanguageId, model.Email, model.Phone,
                         model.EmailConfirmed, model.IsChangePasswordRequired);
 
                 }

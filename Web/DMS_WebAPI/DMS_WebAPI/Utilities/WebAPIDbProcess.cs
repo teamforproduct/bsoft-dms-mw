@@ -1406,9 +1406,18 @@ namespace DMS_WebAPI.Utilities
                     qry = qry.Where(filterContains);
                 }
 
-                if (!string.IsNullOrEmpty(filter.TokenExact))
+                if (!string.IsNullOrEmpty(filter.ClientCodeExact))
                 {
-                    qry = qry.Where(x => filter.TokenExact.Equals(x.Token, StringComparison.OrdinalIgnoreCase));
+                    qry = qry.Where(x => filter.ClientCodeExact.Equals(x.Client.Code, StringComparison.OrdinalIgnoreCase));
+                }
+
+                if (filter.KeyExact?.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.New<AspNetUserContexts>(false);
+                    filterContains = filter.KeyExact.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Key == value).Expand());
+
+                    qry = qry.Where(filterContains);
                 }
 
                 if (filter.LastUsegeDateLess.HasValue)
@@ -1469,26 +1478,17 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public void UpdateUserContextLastChangeDate(string token, DateTime date)
+        public void UpdateUserContextLastChangeDate(string key, DateTime date)
         {
             using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetUserContextQuery(dbContext, new FilterAspNetUserContext { TokenExact = token });
+                var qry = GetUserContextQuery(dbContext, new FilterAspNetUserContext { KeyExact = new List<string> { key } });
 
                 qry.Update(x => new AspNetUserContexts { LastChangeDate = date });
 
                 transaction.Complete();
             }
 
-        }
-
-        public void DeleteUserContext(string token)
-        {
-            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
-            {
-                dbContext.AspNetUserContextsSet.Where(x => x.Token == token).Delete();
-                transaction.Complete();
-            }
         }
 
         public void DeleteUserContexts(FilterAspNetUserContext filter)

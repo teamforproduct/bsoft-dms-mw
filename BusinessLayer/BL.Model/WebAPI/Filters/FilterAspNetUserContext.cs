@@ -7,10 +7,11 @@ namespace BL.Model.WebAPI.Filters
 {
     public class FilterAspNetUserContext : BaseFilter
     {
+        public List<string> KeyExact {get; set; }
         public List<string> UserIDs { get; set; }
 
         [IgnoreDataMember]
-        public string TokenExact { get; set; }
+        public string ClientCodeExact { get; set; }
 
         [IgnoreDataMember]
         public List<int> ClientIDs { get; set; }

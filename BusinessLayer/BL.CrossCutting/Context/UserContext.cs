@@ -55,13 +55,11 @@ namespace BL.CrossCutting.Context
                 {
                     CurrentDB = null;
                 }
-                Token = ctx.Token;
                 DbContext = ctx.DbContext;
                 User = new User
                 {
                    Id = ctx.User.Id,
                    Name = ctx.User.Name,
-                   Fingerprint = ctx.User.Fingerprint,
                    IsChangePasswordRequired = ctx.User.IsChangePasswordRequired,
                    LanguageId = ctx.User.LanguageId,
                 };
@@ -81,7 +79,6 @@ namespace BL.CrossCutting.Context
                 ClientLicence = ctx.ClientLicence;
                 IsFormed = ctx.IsFormed;
                 LoginLogId = ctx.LoginLogId;
-                LoginLogInfo = ctx.LoginLogInfo;
 
                 // тут поднимается коннекшн к базе
                 DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
@@ -100,11 +97,7 @@ namespace BL.CrossCutting.Context
             }
         }
 
-        /// <summary>
-        /// Токен из авторизации
-        /// </summary>
-        public string Token { get; set; }
-
+        public string Key { get; set; }
 
         public Employee Employee { get; set; }
 
@@ -219,10 +212,9 @@ namespace BL.CrossCutting.Context
 
         public DateTime CreateDate { get; } = DateTime.UtcNow;
         public DateTime LastChangeDate { get; set; } = DateTime.UtcNow;
-
+        public DateTime LastUsage { get; set; } = DateTime.UtcNow;
         public int? LoginLogId { get; set; }
 
-        public string LoginLogInfo { get; set; }
         public IDmsDatabaseContext DbContext { get; set; }
 
     }

@@ -19,18 +19,18 @@ namespace DMS_WebAPI.Utilities
 
             var model = new AspNetUserContexts
             {
-                Token = context.Token,
+                Key = context.Key,
+                UserId = context.User.Id,
                 ClientId = context.Client.Id,
                 CurrentPositionsIdList = string.Join(",", context.CurrentPositionsIdList),
-                UserId = context.User.Id,
-                LastChangeDate = DateTime.UtcNow,
-                Fingerprint = context.User.Fingerprint,
+                LastChangeDate = context.LastChangeDate,
+                LogId = context.LoginLogId,
             };
 
 
             var uc = _webDb.GetUserContexts(new FilterAspNetUserContext
             {
-                TokenExact = model.Token
+                KeyExact = new List<string> { model.Key }
             }).FirstOrDefault();
 
             if (uc == null)
@@ -43,14 +43,14 @@ namespace DMS_WebAPI.Utilities
             return model.Id;
         }
 
-        public void UpdateUserContextLastChangeDate(string token, DateTime date)
+        public void UpdateUserContextLastChangeDate(string key, DateTime date)
         {
-            _webDb.UpdateUserContextLastChangeDate(token, date);
+            _webDb.UpdateUserContextLastChangeDate(key, date);
         }
 
-        public void DeleteUserContext(string token)
+        public void DeleteUserContexts(FilterAspNetUserContext filter)
         {
-            _webDb.DeleteUserContext(token);
+            _webDb.DeleteUserContexts(filter);
         }
 
     }

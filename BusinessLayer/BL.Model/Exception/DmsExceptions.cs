@@ -302,6 +302,8 @@ namespace BL.Model.Exception
     public class UserPasswordIsIncorrect : DmsExceptions
     {
         public UserPasswordIsIncorrect() : base() { }
+
+        public UserPasswordIsIncorrect(IEnumerable<string> Errors) : base() { base.Errors = Errors; }
         public UserPasswordIsIncorrect(System.Exception ex) : base(ex) { }
     }
 
