@@ -168,7 +168,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Files + "/Rename")]
-        public async Task<IHttpActionResult> RenameFile([FromBody]ModifyDocumentFile model)
+        public async Task<IHttpActionResult> RenameFile([FromBody]RenameDocumentFile model)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {

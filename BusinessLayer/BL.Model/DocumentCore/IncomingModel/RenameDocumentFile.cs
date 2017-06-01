@@ -12,22 +12,18 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Добавляемый или редактируемый файл документа
     /// </summary>
-    public class ModifyDocumentFile
+    public class RenameDocumentFile
     {
         /// <summary>
         /// ИД файла
         /// </summary>
         [Required]
         public int FileId { get; set; }
-        /// <summary>
-        /// <summary>
-        /// Тип файла дополнительный или основной (менять можно только для основной версии!).
+         /// <summary>
+        /// Название файла
+        /// Только для изменения имени файла
         /// </summary>
-        public EnumFileTypes? Type { get; set; }
-        /// <summary>
-        /// Описание файла
-        /// </summary>
-        public string Description { get; set; }
+        public string FileName { get; set; }
         /// <summary>
         /// Дата события
         /// </summary>

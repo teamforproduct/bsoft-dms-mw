@@ -171,7 +171,7 @@ namespace BL.Database.FileWorker
             }
         }
 
-        public bool RenameFile(IContext ctx, InternalTemplateDocumentFile attFile, string newName)
+        public bool RenameFile(IContext ctx, InternalTemplateDocumentFile attFile, string newFileName)
         {
             try
             {
@@ -183,7 +183,7 @@ namespace BL.Database.FileWorker
                     Directory.CreateDirectory(path);
                 }
                 var localFilePath = path + "\\" + attFile.File.FileName;
-                var localFilePathNew = path + "\\" + newName + "." + attFile.File.Extension;
+                var localFilePathNew = path + "\\" + newFileName;
 
                 if (File.Exists(localFilePath))
                 {
@@ -199,7 +199,7 @@ namespace BL.Database.FileWorker
 
                 if (attFile.PdfCreated)
                 {
-
+                    var newName = Path.GetFileNameWithoutExtension(newFileName);
                     var pdfFileName = path + "\\" + attFile.File.Name + ".pdf";
                     var pdfFilePathNew = path + "\\" + newName + ".pdf";
 

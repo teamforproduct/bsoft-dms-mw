@@ -36,7 +36,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
-            
+            if ((_document.Accesses?.Count() ?? 0) != 0 && !_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork))
+                return false;
             var qry = _document.DocumentFiles.Where(x => x.IsDeleted && !x.IsContentDeleted && x.ExecutorPositionId == positionId);
             _actionRecords = qry.Select(x => new InternalActionRecord
                               {

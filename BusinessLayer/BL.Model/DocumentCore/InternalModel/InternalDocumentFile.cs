@@ -25,11 +25,26 @@ namespace BL.Model.DocumentCore.InternalModel
             OrderInDocument = doc.OrderInDocument??0;
             File = doc.File;
         }
-
+        /// <summary>
+        /// Изменение имени файла
+        /// </summary>
+        public bool IsFileNameChange { get; set; }
+        /// <summary>
+        /// Признак изменения базовых реквизитов (описание, тип)
+        /// </summary>
+        public bool IsBaseChange { get; set; }
+        /// <summary>
+        /// Признак изменения типа  файла
+        /// </summary>
+        public bool IsTypeChange { get; set; }
         /// <summary>
         /// Признак основная версия файла
         /// </summary>
         public bool IsMainVersion { get; set; }
+        /// <summary>
+        /// Признак изменения основной версии файла
+        /// </summary>
+        public bool IsMainVersionChange { get; set; }
         /// <summary>
         /// Признак удаленый файл или нет
         /// </summary>
@@ -39,7 +54,11 @@ namespace BL.Model.DocumentCore.InternalModel
         /// </summary>
         public bool IsContentDeleted { get; set; }
         /// <summary>
-        /// Признак принята ли версия файла
+        /// Изменение признака отработки версия файла
+        /// </summary>
+        public bool IsWorkedOutChange { get; set; }
+        /// <summary>
+        /// Признак отработки версия файла
         /// </summary>
         public bool? IsWorkedOut { get; set; }
         /// <summary>

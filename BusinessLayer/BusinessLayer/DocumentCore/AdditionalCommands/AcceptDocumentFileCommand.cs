@@ -37,6 +37,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
+            if ((_document.Accesses?.Count() ?? 0) != 0 && !_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork))
+                return false;
             if (CommandType == EnumDocumentActions.AcceptDocumentFile)
             {
                 _actionRecords =
@@ -95,13 +97,15 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         public override object Execute()
         {
             _file.IsWorkedOut = true;
+            _file.IsWorkedOutChange = true;
             _file.IsMainVersion = true;
+            _file.IsMainVersionChange = true;
             CommonDocumentUtilities.SetLastChange(_context, _file);
             var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _file.DocumentId, EnumEventTypes.AcceptDocumentFile, Model.EventDate, 
                 Model.Description, $"{_file.File.FileName} v.{_file.Version}", _file.EventId, null, Model.TargetAccessGroups);
             CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
             _document.Events = new List<InternalDocumentEvent> { newEvent };
-            _operationDb.UpdateFileOrVersion(_context, _document);
+            _operationDb.ModifyDocumentFile(_context, _document);
             return _file.Id;
         }
     }

@@ -277,7 +277,7 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentFileQuery(ctx, new FilterDocumentFile { FileId = new List<int> { fileId } })
+                var doc = CommonQueries.GetDocumentFileQuery(ctx, new FilterDocumentFile { FileId = new List<int> { fileId }} )
                                     .Select(x => new InternalDocument
                                     {
                                         Id = x.Id,
@@ -295,7 +295,6 @@ namespace BL.Database.Documents
                                             Version = x.Version,
                                             Hash = x.Hash,
                                             EventId = x.EventId,
-                                            SourcePositionId = x.Event.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
                                             ExecutorPositionId = x.ExecutorPositionId,
                                             IsWorkedOut = x.IsWorkedOut,
                                             Type = (EnumFileTypes)x.TypeId,
@@ -441,34 +440,42 @@ namespace BL.Database.Documents
             }
         }
 
-        public void UpdateFileOrVersion(IContext ctx, InternalDocument doc)
+        public void ModifyDocumentFile(IContext ctx, InternalDocument doc)
         {
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
                 var docFile = doc.DocumentFiles.First();
-                if (docFile.IsMainVersion)
+                if (docFile.IsMainVersionChange)
+                {
+                    dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.Client.Id)  //Without security restrictions
+                        .Where(x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument && x.Id != docFile.Id && x.IsMainVersion)
+                        .Update(x => new DocumentFiles { IsMainVersion = false, LastChangeDate = docFile.LastChangeDate, LastChangeUserId = docFile.LastChangeUserId });
+                }
+                if (docFile.IsWorkedOutChange)
+                {
+                    dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.Client.Id)  //Without security restrictions
+                        .Where(x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument && x.Id == docFile.Id)
+                        .Update(x => new DocumentFiles { IsMainVersion = docFile.IsMainVersion,  IsWorkedOut = docFile.IsWorkedOut, LastChangeDate = docFile.LastChangeDate, LastChangeUserId = docFile.LastChangeUserId });
+                }
+                if (docFile.IsTypeChange)
                 {
                     dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.Client.Id)  //Without security restrictions
                         .Where(x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument && x.Id != docFile.Id)
-                        .Update(x => new DocumentFiles { IsMainVersion = false });
+                        .Update(x => new DocumentFiles { TypeId = (int)docFile.Type, LastChangeDate = docFile.LastChangeDate, LastChangeUserId = docFile.LastChangeUserId });
                 }
-                var fl = ModelConverter.GetDbDocumentFile(docFile);
-                dbContext.SafeAttach(fl);
-                var entry = dbContext.Entry(fl);
-                entry.Property(x => x.Name).IsModified = true;
-                entry.Property(x => x.Description).IsModified = true;
-                entry.Property(x => x.Extension).IsModified = true;
-                entry.Property(x => x.FileType).IsModified = true;
-                entry.Property(x => x.FileSize).IsModified = true;
-                entry.Property(x => x.TypeId).IsModified = true;
-                entry.Property(x => x.LastChangeDate).IsModified = true;
-                entry.Property(x => x.LastChangeUserId).IsModified = true;
-                entry.Property(x => x.Hash).IsModified = true;
-                entry.Property(x => x.IsWorkedOut).IsModified = true;
-                entry.Property(x => x.IsMainVersion).IsModified = true;
-                //entry.Property(x => x.Date).IsModified = true;//we do not update that
-                dbContext.SaveChanges();
+                if (docFile.IsBaseChange)
+                {
+                    dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.Client.Id)  //Without security restrictions
+                        .Where(x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument && x.Id == docFile.Id)
+                        .Update(x => new DocumentFiles { TypeId = (int)docFile.Type, Description = docFile.Description, LastChangeDate = docFile.LastChangeDate, LastChangeUserId = docFile.LastChangeUserId });
+                }
+                if (docFile.IsFileNameChange)
+                {
+                    dbContext.DocumentFilesSet.Where(x => x.ClientId == ctx.Client.Id)  //Without security restrictions
+                        .Where(x => x.DocumentId == docFile.DocumentId && x.OrderNumber == docFile.OrderInDocument && x.Id == docFile.Id)
+                        .Update(x => new DocumentFiles { Name = docFile.File.Name, Extension = docFile.File.Extension, LastChangeDate = docFile.LastChangeDate, LastChangeUserId = docFile.LastChangeUserId });
+                }              
                 if (doc.Events?.Any() ?? false)
                 {
                     var dbEvents = ModelConverter.GetDbDocumentEvents(doc.Events);
@@ -480,7 +487,7 @@ namespace BL.Database.Documents
                     dbContext.DocumentAccessesSet.AddRange(CommonQueries.GetDbDocumentAccesses(ctx, doc.Accesses, doc.Id).ToList());
                     dbContext.SaveChanges();
                 }
-                CommonQueries.AddFullTextCacheInfo(ctx, fl.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
+                CommonQueries.AddFullTextCacheInfo(ctx, docFile.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -529,36 +536,6 @@ namespace BL.Database.Documents
                 entry.Property(x => x.PdfAcceptable).IsModified = true;
                 entry.Property(x => x.LastPdfAccessDate).IsModified = true;
                 dbContext.SaveChanges();
-                transaction.Complete();
-            }
-        }
-
-        public void RenameFile(IContext ctx, IEnumerable<InternalDocumentFile> docFiles, IEnumerable<InternalDocumentEvent> docFileEvents)
-        {
-            var dbContext = ctx.DbContext as DmsContext;
-            using (var transaction = Transactions.GetTransaction())
-            {
-                int? documentId = null;
-                foreach (var docFile in docFiles)
-                {
-                    documentId = docFile.DocumentId;
-                    var fl = ModelConverter.GetDbDocumentFile(docFile);
-                    dbContext.SafeAttach(fl);
-                    var entry = dbContext.Entry(fl);
-                    entry.Property(x => x.Name).IsModified = true;
-                    entry.Property(x => x.LastChangeDate).IsModified = true;
-                    entry.Property(x => x.LastChangeUserId).IsModified = true;
-                    dbContext.SaveChanges();
-                }
-                //entry.Property(x => x.Date).IsModified = true;//we do not update that
-                if (docFileEvents != null && docFileEvents.Any(x => x.Id == 0))
-                {
-                    var dbEvents = ModelConverter.GetDbDocumentEvents(docFileEvents.Where(x => x.Id == 0)).ToList();
-                    dbContext.DocumentEventsSet.AddRange(dbEvents);
-                    dbContext.SaveChanges();
-                }
-                if (documentId.HasValue)
-                    CommonQueries.AddFullTextCacheInfo(ctx, documentId.Value, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
         }
@@ -630,7 +607,6 @@ namespace BL.Database.Documents
                 }
                 dbContext.DocumentFilesSet.Where(x => !x.IsDeleted).Where(filter).Update(x => 
                     new DocumentFiles { IsDeleted = true, LastChangeDate = docFile.LastChangeDate, LastChangeUserId = docFile.LastChangeUserId });
-                dbContext.SaveChanges();
                 CommonQueries.AddFullTextCacheInfo(ctx, docFile.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }
@@ -643,7 +619,6 @@ namespace BL.Database.Documents
             {
                 dbContext.DocumentFilesSet.Where(x => x.Id == docFile.Id && x.IsDeleted && !x.IsContentDeleted).Update(x =>
                     new DocumentFiles { IsContentDeleted = true, IsWorkedOut = false, LastChangeDate = docFile.LastChangeDate, LastChangeUserId = docFile.LastChangeUserId });
-                dbContext.SaveChanges();
                 transaction.Complete();
             }
         }
@@ -657,7 +632,6 @@ namespace BL.Database.Documents
                 var date = dateNow.AddDays(-days);
                 dbContext.DocumentFilesSet.Where(x => x.LastChangeDate < date && x.IsDeleted && !x.IsContentDeleted).Update(x =>
                     new DocumentFiles { IsContentDeleted = true, IsWorkedOut = false, LastChangeDate = dateNow, LastChangeUserId = ctx.CurrentAgentId });
-                dbContext.SaveChanges();
                 transaction.Complete();
             }
         }
@@ -720,7 +694,6 @@ namespace BL.Database.Documents
                 }
                 dbContext.DocumentFilesSet.Where(x =>  x.Id == docFile.Id && !x.IsContentDeleted && x.IsDeleted).Update(x =>
                     new DocumentFiles { IsDeleted = false, IsMainVersion = docFile.IsMainVersion, LastChangeDate = docFile.LastChangeDate, LastChangeUserId = docFile.LastChangeUserId });
-                dbContext.SaveChanges();
                 CommonQueries.AddFullTextCacheInfo(ctx, docFile.DocumentId, EnumObjects.Documents, EnumOperationType.UpdateFull);
                 transaction.Complete();
             }

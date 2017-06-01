@@ -111,7 +111,7 @@ namespace BL.Logic.DocumentCore.Commands
 
             if (Model.IsWorkGroup)
             {
-                if (_document.Waits?.Any() ?? false)
+                if (_document.Waits?.Any() ?? false)    //TODO мультиполучатели?
                 {
                     var waitRespExecutor = _document.Waits.FirstOrDefault();
                     waitTarget.ParentId = waitRespExecutor.Id;

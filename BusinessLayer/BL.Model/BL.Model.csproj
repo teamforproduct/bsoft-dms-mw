@@ -172,6 +172,7 @@
     <Compile Include="DocumentCore\FrontModel\FrontDocumentSendListAccessGroup.cs" />
     <Compile Include="DocumentCore\FrontModel\FrontDocumentEventAccessGroup.cs" />
     <Compile Include="DocumentCore\IncomingModel\AccessGroup.cs" />
+    <Compile Include="DocumentCore\IncomingModel\RenameDocumentFile.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentSendListAccessGroup.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentEventAccessGroup.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalDocumentEventAccess.cs" />

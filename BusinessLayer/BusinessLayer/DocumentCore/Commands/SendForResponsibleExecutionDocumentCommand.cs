@@ -107,7 +107,7 @@ namespace BL.Logic.DocumentCore.Commands
             CommonDocumentUtilities.SetLastChange(_context, Model);
             _document.SendLists = new List<InternalDocumentSendList> { Model };
 
-            if (_document.Events?.Any() ?? false)
+            if (_document.Events?.Any() ?? false)   //TODO мультиполучатели?
             {
                 var eventControler = _document.Events.First();
                 var accessSource = waitTarget.OnEvent.Accesses.First(x => x.AccessType == EnumEventAccessTypes.Source);

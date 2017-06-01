@@ -40,9 +40,9 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
-            _actionRecords =
-                   _document.DocumentFiles
-                   .Where(x => !x.IsDeleted && x.ExecutorPositionId == positionId)
+            if ((_document.Accesses?.Count() ?? 0) != 0 && !_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork))
+                return false;
+            _actionRecords = _document.DocumentFiles.Where(x => !x.IsDeleted && x.ExecutorPositionId == positionId)
                                                    .Select(x => new InternalActionRecord
                                                    {
                                                        FileId = x.Id,
@@ -68,8 +68,8 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _file = _document.DocumentFiles.First();
             _context.SetCurrentPosition(_file.ExecutorPositionId);
             _adminProc.VerifyAccess(_context, CommandType);
-            if (Model.Type != null && Model.Type == EnumFileTypes.Main && _file.ExecutorPositionId != _file.ExecutorPositionId)
-            if (!CanBeDisplayed(_context.CurrentPositionId))
+            if ((Model.Type != null && Model.Type == EnumFileTypes.Main && _file.ExecutorPositionId != _file.ExecutorPositionId)
+                || !CanBeDisplayed(_context.CurrentPositionId))
             {
                 throw new CouldNotPerformOperation();
             }
@@ -79,14 +79,20 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override object Execute()
         {
+            if (Model.Type.HasValue && _file.Type != Model.Type)
+            {
+                _file.IsTypeChange = true;
+                _file.Type = Model.Type.Value;
+            }
             _file.Description = Model.Description;
+            _file.IsBaseChange = true;
 
             CommonDocumentUtilities.SetLastChange(_context, _file);
             var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _file.DocumentId, EnumEventTypes.ModifyDocumentFile, Model.EventDate, Model.Description, null, _file.EventId, null, Model.TargetAccessGroups);
             CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
             _document.Events = new List<InternalDocumentEvent> { newEvent };
 
-            _operationDb.UpdateFileOrVersion(_context, _document);
+            _operationDb.ModifyDocumentFile(_context, _document);
             return _file.Id;
         }
     }
