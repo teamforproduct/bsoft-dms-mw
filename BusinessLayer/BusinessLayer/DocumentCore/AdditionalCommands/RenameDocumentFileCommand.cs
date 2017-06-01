@@ -87,7 +87,7 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             CommonDocumentUtilities.SetLastChange(_context, _file);
 
             CommonDocumentUtilities.SetLastChange(_context, _file);
-            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _file.DocumentId, EnumEventTypes.RanameDocumentFile, Model.EventDate, $"{oldFileName} -> {_file.File.FileName}", null, _file.EventId, null, Model.TargetAccessGroups);
+            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _file.DocumentId, EnumEventTypes.RenameDocumentFile, Model.EventDate, $"{oldFileName} -> {_file.File.FileName}", null, _file.EventId, null, Model.TargetAccessGroups);
             CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
             _document.Events = new List<InternalDocumentEvent> { newEvent };
 

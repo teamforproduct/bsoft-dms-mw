@@ -150,7 +150,7 @@
         // Добавлен файл
         AddDocumentFile = 115,
         // Переименован файл
-        RanameDocumentFile = 116,
+        RenameDocumentFile = 116,
         // Изменен файл
         ModifyDocumentFile = 117,
 

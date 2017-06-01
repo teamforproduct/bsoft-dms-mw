@@ -277,7 +277,7 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                var doc = CommonQueries.GetDocumentFileQuery(ctx, new FilterDocumentFile { FileId = new List<int> { fileId }} )
+                var doc = CommonQueries.GetDocumentFileQuery(ctx, new FilterDocumentFile { FileId = new List<int> { fileId }, IsAllVersion = true } )
                                     .Select(x => new InternalDocument
                                     {
                                         Id = x.Id,
