@@ -64,6 +64,8 @@ namespace DMS_WebAPI.DatabaseContext
         
         public virtual DbSet<AspNetClientLicences> AspNetClientLicencesSet { get; set; }
         public virtual DbSet<AspNetClientServers> AspNetClientServersSet { get; set; }
+        public virtual DbSet<AspNetClientInvitations> AspNetClientInvitationsSet { get; set; }
+
         public virtual DbSet<AspNetUserClients> AspNetUserClientServerSet { get; set; }
         public virtual DbSet<AspNetUserFingerprints> AspNetUserFingerprintsSet { get; set; }
         public virtual DbSet<AspNetUserContexts> AspNetUserContextsSet { get; set; }

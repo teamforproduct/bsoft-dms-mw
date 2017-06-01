@@ -322,6 +322,16 @@ namespace BL.Database.FileWorker
 
                 attFile.File.FileContent = fileContent;
 
+                switch (fileType)
+                {
+                    case EnumDocumentFileType.PdfFile:
+                        attFile.File.Extension = "pdf";
+                        break;
+                    case EnumDocumentFileType.PdfPreview:
+                        attFile.File.Extension = "jpg";
+                        break;
+                }
+
                 if (fileType != EnumDocumentFileType.UserFile) return fileContent;
 
                 attFile.WasChangedExternal = attFile.Hash != FileToSha512(localFilePath);
@@ -393,7 +403,7 @@ namespace BL.Database.FileWorker
             {
                 //TODO CurrentAgentId
                 var path = GetStorePath();
-                path = Path.Combine(new[] { path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, ctx.Client.Id.ToString(), templateId.ToString() });
+                path = Path.Combine(new[] {path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, ctx.Client.Id.ToString(), templateId.ToString()});
                 if (Directory.Exists(path))
                     Directory.Delete(path, true);
             }
@@ -417,7 +427,7 @@ namespace BL.Database.FileWorker
                 //TODO CurrentAgentId
 
                 var path = GetStorePath();
-                path = Path.Combine(new[] { path, SettingConstants.FILE_STORE_DOCUMENT_FOLDER, ctx.Client.Id.ToString(), documentId.ToString() });
+                path = Path.Combine(new[] {path, SettingConstants.FILE_STORE_DOCUMENT_FOLDER, ctx.Client.Id.ToString(), documentId.ToString()});
                 if (Directory.Exists(path))
                     Directory.Delete(path, true);
             }
@@ -439,9 +449,7 @@ namespace BL.Database.FileWorker
             try
             {
                 var docFile = attFile as InternalDocumentFile;
-                var path = docFile == null
-                    ? GetFullDocumentFilePath(ctx, attFile)
-                    : GetFullDocumentFilePath(ctx, docFile);
+                var path = docFile == null ? GetFullDocumentFilePath(ctx, attFile) : GetFullDocumentFilePath(ctx, docFile);
 
                 var localPdfFilePath = path + "\\" + attFile.File.Name + ".pdf";
                 var localPreviewFilePathNew = path + "\\" + attFile.File.Name + ".jpg";
@@ -474,7 +482,7 @@ namespace BL.Database.FileWorker
             try
             {
                 var path = GetStorePath();
-                path = Path.Combine(new[] { path, (attFile is InternalDocumentFile ? SettingConstants.FILE_STORE_DOCUMENT_FOLDER : SettingConstants.FILE_STORE_TEMPLATE_FOLDER), ctx.Client.Id.ToString(), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString() });
+                path = Path.Combine(new[] {path, (attFile is InternalDocumentFile ? SettingConstants.FILE_STORE_DOCUMENT_FOLDER : SettingConstants.FILE_STORE_TEMPLATE_FOLDER), ctx.Client.Id.ToString(), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString()});
 
                 Directory.Delete(path, true);
             }
@@ -574,7 +582,7 @@ namespace BL.Database.FileWorker
                     break;
             }
 
-            path = Path.Combine(new[] { path, SettingConstants.FILE_STORE_TEMPLATE_REPORTS_FOLDER, ctx.Client.Id.ToString(), templateReportFile });
+            path = Path.Combine(new[] {path, SettingConstants.FILE_STORE_TEMPLATE_REPORTS_FOLDER, ctx.Client.Id.ToString(), templateReportFile});
             return path;
         }
     }

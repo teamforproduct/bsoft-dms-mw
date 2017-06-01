@@ -8,8 +8,9 @@ namespace DMS_WebAPI.DBModel
     {
         public AspNetClients()
         {
-            this.ClientLicences = new HashSet<AspNetClientLicences>();
-            this.ClientServers = new HashSet<AspNetClientServers>();
+            this.Licences = new HashSet<AspNetClientLicences>();
+            this.Servers = new HashSet<AspNetClientServers>();
+            this.Invitations = new HashSet<AspNetClientInvitations>();
         }
         public int Id { get; set; }
         [MaxLength(2000)]
@@ -29,11 +30,14 @@ namespace DMS_WebAPI.DBModel
         public virtual AdminLanguages Language { get; set; }
 
         [ForeignKey("ClientId")]
-        public virtual ICollection<AspNetClientLicences> ClientLicences { get; set; }
+        public virtual ICollection<AspNetClientLicences> Licences { get; set; }
 
         [ForeignKey("ClientId")]
-        public virtual ICollection<AspNetClientServers> ClientServers { get; set; }
+        public virtual ICollection<AspNetClientServers> Servers { get; set; }
 
-        
+        [ForeignKey("ClientId")]
+        public virtual ICollection<AspNetClientInvitations> Invitations { get; set; }
+
+
     }
 }

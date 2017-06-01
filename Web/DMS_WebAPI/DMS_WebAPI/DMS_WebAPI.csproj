@@ -375,6 +375,7 @@
     <Compile Include="Controllers\WebAPI\ClientLicencesController.cs" />
     <Compile Include="Controllers\WebAPI\ServersController.cs" />
     <Compile Include="DatabaseContext\ApplicationDbImportData.cs" />
+    <Compile Include="DBModel\AspNetClientInvitations.cs" />
     <Compile Include="DBModel\AspNetClientRequests.cs" />
     <Compile Include="DBModel\AspNetClientServers.cs" />
     <Compile Include="DBModel\AspNetUserContexts.cs" />
@@ -436,6 +437,10 @@
     <Compile Include="Migrations\201705210026511_UserClients.cs" />
     <Compile Include="Migrations\201705210026511_UserClients.Designer.cs">
       <DependentUpon>201705210026511_UserClients.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706010335544_UserInvitations.cs" />
+    <Compile Include="Migrations\201706010335544_UserInvitations.Designer.cs">
+      <DependentUpon>201706010335544_UserInvitations.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="DBModel\AspNetUsers.cs" />
@@ -664,6 +669,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705210026511_UserClients.resx">
       <DependentUpon>201705210026511_UserClients.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706010335544_UserInvitations.resx">
+      <DependentUpon>201706010335544_UserInvitations.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
