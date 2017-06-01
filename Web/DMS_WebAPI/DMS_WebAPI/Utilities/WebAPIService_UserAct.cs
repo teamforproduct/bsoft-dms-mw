@@ -132,7 +132,7 @@ namespace DMS_WebAPI.Utilities
 
             var m = new RestorePasswordModel()
             {
-                FirstName = user.FirstName,
+                FirstName = user.FullName,
                 // сылка на восстановление пароля
                 Url = builder.ToString(),
             };

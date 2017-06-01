@@ -125,7 +125,7 @@ namespace DMS_WebAPI.Utilities
             var m = new ChangeLoginModel
             {
                 Url = callbackurl,
-                FirstName = user.FirstName,
+                FirstName = user.FullName,
             };
 
             var htmlContent = m.RenderPartialViewToString(RenderPartialView.ChangeLogin);

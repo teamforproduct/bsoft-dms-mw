@@ -193,8 +193,7 @@ namespace DMS_WebAPI.Utilities
 
             var user = new AspNetUsers
             {
-                FirstName = firstName?.Trim(),
-                LastName = lastName?.Trim(),
+                FullName = fullName?.Trim(),
                 UserName = userName?.Trim(),
                 Email = userEmail?.Trim(),
                 LanguageId = languageId,
