@@ -9,6 +9,7 @@ using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.CrossCutting.Helpers;
 using BL.Model.AdminCore;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -57,7 +58,11 @@ namespace BL.Logic.DocumentCore.Commands
         public override object Execute()
         {
             var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task);
-            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.AddNote, Model.EventDate, Model.Description, null, Model.ParentEventId, taskId, Model.TargetCopyAccessGroups);
+            var evAcceesses = (Model.TargetCopyAccessGroups ?? new List<AccessGroup>())
+                .Concat(CommonDocumentUtilities.GetAccessGroupsFileExecutors(_context, _document.Id, Model.AddDocumentFiles))
+                .ToList();
+            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.AddNote, Model.EventDate, 
+                                                                        Model.Description, null, Model.ParentEventId, taskId, evAcceesses);
             CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);            
             _document.Events = new List<InternalDocumentEvent> { newEvent };
             using (var transaction = Transactions.GetTransaction())

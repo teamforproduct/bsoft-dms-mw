@@ -95,6 +95,7 @@ namespace BL.Logic.DocumentCore.Commands
             newWait.AttentionDate = _eventType == EnumEventTypes.ControlChange ? Model.AttentionDate : _docWait.AttentionDate;
             var evAcceesses = (Model.TargetCopyAccessGroups?.Where(x => x.AccessType == EnumEventAccessTypes.TargetCopy) ?? new List<AccessGroup>())
                 .Concat(new List<AccessGroup> { new AccessGroup { AccessType = EnumEventAccessTypes.Target, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = _docWait.OnEvent.TargetPositionId } })
+                .Concat(CommonDocumentUtilities.GetAccessGroupsFileExecutors(_context, _document.Id, Model.AddDocumentFiles))
                 .ToList();
             var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, addDescripton,
                 null, //TODO SET PARENT EVENT ON DBLEVEL!!!

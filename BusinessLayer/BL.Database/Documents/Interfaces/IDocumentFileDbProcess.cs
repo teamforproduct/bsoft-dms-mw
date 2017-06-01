@@ -13,12 +13,13 @@ namespace BL.Database.Documents.Interfaces
         FrontDocumentFile GetDocumentFile(IContext ctx, int id);
         int CheckFileForDocument(IContext ctx, int documentId, string fileName, string fileExt);
         InternalDocument AddDocumentFilePrepare(IContext ctx, int documentId);
+        List<int> GetDocumentFileExecutors(IContext ctx, int documentId, List<int> orderNumbers);
+
         int AddDocumentFile(IContext ctx, InternalDocumentFile docFile);
         void ModifyDocumentFile(IContext ctx, InternalDocument doc);
         void UpdateFilePdfView(IContext ctx, InternalDocumentFile docFile);
         IEnumerable<InternalDocumentFile> GetOldPdfForAttachedFiles(IContext ctx, int pdfAge);
         InternalDocument ModifyDocumentFilePrepare(IContext ctx, int fileId);
-        InternalDocument RenameDocumentFilePrepare(IContext ctx, int documentId, int orderNumber);
         InternalDocument DeleteDocumentFilePrepare(IContext ctx, int id);
         InternalDocument RestoreDocumentFilePrepare(IContext ctx, int id);
         void DeleteDocumentFile(IContext ctx, InternalDocumentFile docFile);

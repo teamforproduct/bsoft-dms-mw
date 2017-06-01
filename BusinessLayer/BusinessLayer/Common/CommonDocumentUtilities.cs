@@ -1067,7 +1067,6 @@ namespace BL.Logic.Common
             return new List<FrontDocumentSendListStage>();
         }
 
-
         public static void CorrectModel(IContext context, AddTemplateDocumentSendList model)
         {
             if (model.SendType == EnumSendTypes.SendForInformation || model.SendType == EnumSendTypes.SendForConsideration)
@@ -1099,8 +1098,7 @@ namespace BL.Logic.Common
         {
             if (positionId.HasValue)
             {
-                var dict = DmsResolver.Current.Get<DictionariesDbProcess>();
-                return dict.GetExecutorAgentIdByPositionId(context, positionId.Value);
+                return DmsResolver.Current.Get<DictionariesDbProcess>().GetExecutorAgentIdByPositionId(context, positionId.Value);
             }
             else
                 return null;
@@ -1194,6 +1192,14 @@ namespace BL.Logic.Common
             };
         }
 
+        public static List<AccessGroup> GetAccessGroupsFileExecutors(IContext context, int documentId,List<AddDocumentFile> addDocumentFiles)
+        {
+            if (!addDocumentFiles?.Any(x => x.OrderInDocument.HasValue) ?? false) return new List<AccessGroup>();
+            return DmsResolver.Current.Get<IDocumentFileDbProcess>()
+                .GetDocumentFileExecutors(context, documentId, addDocumentFiles.Where(x => x.OrderInDocument.HasValue).Select(x => x.OrderInDocument.Value).ToList())
+                .Select(x => new AccessGroup { AccessType = EnumEventAccessTypes.TargetCopy, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = x }).ToList() ;
+
+        }
         #endregion Misc
 
         #region RegistrationNumber

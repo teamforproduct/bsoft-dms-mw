@@ -95,8 +95,10 @@ namespace BL.Logic.DocumentCore.Commands
             _docWait.ResultTypeId = (int)EnumResultTypes.CloseByRejecting;
             var evAcceesses = (Model.TargetCopyAccessGroups?.Where(x => x.AccessType == EnumEventAccessTypes.TargetCopy) ?? new List<AccessGroup>())
                 .Concat(new List<AccessGroup> { new AccessGroup { AccessType = EnumEventAccessTypes.Target, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = _docWait.OnEvent.SourcePositionId } })
+                .Concat(CommonDocumentUtilities.GetAccessGroupsFileExecutors(_context, _document.Id, Model.AddDocumentFiles))
                 .ToList();
-            var newEvent = _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, EnumEventTypes.CancelPostponeDueDate, Model.EventDate, Model.Description, null, Model.EventId, _docWait.OnEvent.TaskId, evAcceesses);
+            var newEvent = _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, EnumEventTypes.CancelPostponeDueDate, Model.EventDate, 
+                                                                                            Model.Description, null, Model.EventId, _docWait.OnEvent.TaskId, evAcceesses);
             CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
             _document.Waits = new List<InternalDocumentWait> { _docWait };

@@ -8,6 +8,7 @@ using BL.Model.Exception;
 using BL.Model.AdminCore;
 using System.Collections.Generic;
 using BL.CrossCutting.Helpers;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -83,7 +84,11 @@ namespace BL.Logic.DocumentCore.Commands
                 _docWait.TargetDescription = Model.TargetDescription;
                 _docWait.AttentionDate = Model.TargetAttentionDate;
                 CommonDocumentUtilities.SetLastChange(_context, _docWait);
-                var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, EnumEventTypes.ControlTargetChange, Model.EventDate, Model.TargetDescription, addDescripton, Model.EventId, _docWait.OnEvent.TaskId, Model.TargetCopyAccessGroups);
+                var evAcceesses = (Model.TargetCopyAccessGroups ?? new List<AccessGroup>())
+                                    .Concat(CommonDocumentUtilities.GetAccessGroupsFileExecutors(_context, _document.Id, Model.AddDocumentFiles))
+                                    .ToList();
+                var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, EnumEventTypes.ControlTargetChange, Model.EventDate,
+                                                                            Model.TargetDescription, addDescripton, Model.EventId, _docWait.OnEvent.TaskId, evAcceesses);
                 CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
                 _document.Events = new List<InternalDocumentEvent> { newEvent };
                 using (var transaction = Transactions.GetTransaction())
