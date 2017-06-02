@@ -4,11 +4,9 @@ using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalDocumentSendListAccessGroup : LastChangeInfo
+    public class InternalTemplateDocumentSendListAccessGroup : LastChangeInfo
     {
         public int Id { get; set; }
-        public int ClientId { get; set; }
-        public int EntityTypeId { get; set; }
         public int DocumentId { get; set; }
         public int SendListId { get; set; }
         public EnumEventAccessTypes AccessType { get; set; }   // получатель, копия, досылка
@@ -18,6 +16,9 @@ namespace BL.Model.DocumentCore.InternalModel
         public int? PositionId { get; set; }
         public int? AgentId { get; set; }
         public int? StandartSendListId { get; set; }
+
+
+
         public bool IsActive { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using BL.Model.Enums;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DocumentCore.IncomingModel
@@ -73,5 +74,9 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// </summary>
         [Required]
         public EnumAccessLevels AccessLevel { get; set; }
+        /// <summary>
+        /// группы получателей
+        /// </summary>
+        public List<AccessGroup> TargetAccessGroups { get; set; }
     }
 }

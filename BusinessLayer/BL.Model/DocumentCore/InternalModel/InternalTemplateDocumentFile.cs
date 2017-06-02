@@ -26,8 +26,7 @@ namespace BL.Model.DocumentCore.InternalModel
         /// ИД.
         /// </summary>
         public int Id { get; set; }
-        public int ClientId { get; set; }
-        public int EntityTypeId { get; set; }
+
         /// <summary>
         /// ИД Документа
         /// </summary>

@@ -70,7 +70,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override object Execute()
         {
-            var att = CommonDocumentUtilities.GetNewTemplateDocumentFile(_context, (int)EnumEntytiTypes.Document, Model, _file);
+            var att = CommonDocumentUtilities.GetNewTemplateDocumentFile(_context, Model, _file);
             att.OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, Model.DocumentId);
             _fStore.SaveFile(_context, att);
             _operationDb.AddNewFile(_context, att);

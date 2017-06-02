@@ -350,8 +350,6 @@ namespace BL.Database.Documents
                 doc.Files = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.Client.Id).Where(x => x.DocumentId == id)
                     .Select(x => new InternalTemplateDocumentFile
                     {
-                        ClientId = x.Document.ClientId,
-                        EntityTypeId = x.Document.EntityTypeId,
                         DocumentId = x.DocumentId,
                         OrderInDocument = x.OrderNumber,
                         Type = (EnumFileTypes)x.TypeId,
@@ -1409,8 +1407,6 @@ namespace BL.Database.Documents
                         .Select(x => new InternalTemplateDocumentFile
                         {
                             Id = x.Id,
-                            ClientId = x.Document.ClientId,
-                            EntityTypeId = x.Document.EntityTypeId,
                             DocumentId = x.DocumentId,
                             OrderInDocument = x.OrderNumber,
                             Type = (EnumFileTypes)x.TypeId,
@@ -1472,8 +1468,6 @@ namespace BL.Database.Documents
                         .Select(x => new InternalTemplateDocumentFile
                         {
                             Id = x.Id,
-                            ClientId = x.Document.ClientId,
-                            EntityTypeId = x.Document.EntityTypeId,
                             DocumentId = x.DocumentId,
                             OrderInDocument = x.OrderNumber
                         }).FirstOrDefault();

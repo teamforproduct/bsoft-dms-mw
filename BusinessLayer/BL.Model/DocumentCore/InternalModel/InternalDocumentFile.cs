@@ -25,6 +25,8 @@ namespace BL.Model.DocumentCore.InternalModel
             OrderInDocument = doc.OrderInDocument??0;
             File = doc.File;
         }
+        public int ClientId { get; set; }
+        public int EntityTypeId { get; set; }
         /// <summary>
         /// Изменение имени файла
         /// </summary>

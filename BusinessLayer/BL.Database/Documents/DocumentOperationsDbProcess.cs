@@ -788,7 +788,7 @@ namespace BL.Database.Documents
                         TargetDescription = x.TargetDescription,
                         //TargetAttentionDate = x.TargetAttentionDate,
                         IsClosed = x.OffEvent != null,
-
+                        IsOverDue = !x.OffEventId.HasValue && x.DueDate.HasValue && x.DueDate.Value <= DateTime.UtcNow,
                         DocumentDate = (x.Document.LinkId.HasValue || isNeedRegistrationFullNumber) ? x.Document.RegistrationDate ?? x.Document.CreateDate : (DateTime?)null,
                         RegistrationNumber = x.Document.RegistrationNumber,
                         RegistrationNumberPrefix = x.Document.RegistrationNumberPrefix,
@@ -2636,12 +2636,6 @@ namespace BL.Database.Documents
                 entry.Property(e => e.Stage).IsModified = true;
                 entry.Property(e => e.StageTypeId).IsModified = true;
                 entry.Property(e => e.SendTypeId).IsModified = true;
-                //entry.Property(e => e.SourcePositionExecutorAgentId).IsModified = true;
-                //entry.Property(e => e.SourcePositionExecutorTypeId).IsModified = true;
-                //entry.Property(e => e.TargetPositionId).IsModified = true;
-                //entry.Property(e => e.TargetPositionExecutorAgentId).IsModified = true;
-                //entry.Property(e => e.TargetPositionExecutorTypeId).IsModified = true;
-                //entry.Property(e => e.TargetAgentId).IsModified = true;
                 entry.Property(e => e.TaskId).IsModified = true;
                 entry.Property(e => e.IsWorkGroup).IsModified = true;
                 entry.Property(e => e.IsAddControl).IsModified = true;

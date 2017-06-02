@@ -2,6 +2,7 @@
 using BL.Model.Common;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.Enums;
+using System.Collections.Generic;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
@@ -26,14 +27,10 @@ namespace BL.Model.DocumentCore.InternalModel
         public EnumStageTypes? StageType { get; set; }
         public int? DueDay { get; set; }
         public EnumAccessLevels AccessLevel { get; set; }
+        public IEnumerable<InternalTemplateDocumentSendListAccessGroup> AccessGroups { get; set; }
 
         public InternalTemplateDocumentSendList()
         {
-        }
-
-        public InternalTemplateDocumentSendList(AddTemplateDocumentSendList model)
-        {
-            SetInternalTemplateDocumentSendList(model);
         }
 
         public InternalTemplateDocumentSendList(ModifyTemplateDocumentSendList model)
@@ -55,7 +52,6 @@ namespace BL.Model.DocumentCore.InternalModel
             SelfDescription = model.SelfDescription;
             SelfDueDay = model.SelfDueDay;
             SelfAttentionDay = model.SelfAttentionDay;
-
             Description = model.Description;
             Stage = model.Stage;
             DueDay = model.DueDay;
