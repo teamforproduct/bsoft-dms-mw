@@ -104,6 +104,7 @@ namespace BL.Database.Documents
                 if (paging.Sort == EnumSort.IncomingIds && filter?.Document?.DocumentId?.Count() > 0)
                 {
                     #region IncomingIds
+                    qry = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = filter.Document.DocumentId });
 
                     var sortDocIds = filter.Document.DocumentId.Select((x, i) => new { DocId = x, Index = i }).ToList();
                     var docIds = qry.Select(x => x.Id).ToList();
@@ -294,7 +295,7 @@ namespace BL.Database.Documents
 
                     #region main qry
 
-                    qry = CommonQueries.GetDocumentQuery(context, filter?.Document, false);
+                    qry = CommonQueries.GetDocumentQuery(context, filter?.Document);
 
                     if (filter?.File != null)
                     {
