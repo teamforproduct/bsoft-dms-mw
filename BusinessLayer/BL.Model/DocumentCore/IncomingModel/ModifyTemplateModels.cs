@@ -10,7 +10,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
-    public class ModifyTemplateDocument : AddTemplateDocument
+    public class ModifyTemplate : AddTemplate
     {
         /// <summary>
         /// ИД шаблона
@@ -19,7 +19,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         public int Id { get; set; }
     }
 
-    public class ModifyTemplateDocumentTask : AddTemplateDocumentTask
+    public class ModifyTemplateTask : AddTemplateTask
     {
         /// <summary>
         /// ИД задачи
@@ -28,7 +28,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         public int Id { get; set; }
     }
 
-    public class ModifyTemplateDocumentPaper : AddTemplateDocumentPaper
+    public class ModifyTemplatePaper : AddTemplatePaper
     {
         /// <summary>
         /// ИД бн
@@ -40,7 +40,7 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Модель для добавления/изменения записи плана работы для шаблона
     /// </summary>
-    public class ModifyTemplateDocumentSendList : AddTemplateDocumentSendList
+    public class ModifyTemplateSendList : AddTemplateSendList
     {
         /// <summary>
         /// ИД бн
@@ -49,7 +49,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         public int Id { get; set; }
     }
 
-    public class ModifyTemplateDocumentRestrictedSendList : AddTemplateDocumentRestrictedSendList
+    public class ModifyTemplateRestrictedSendList : AddTemplateRestrictedSendList
     {
         /// <summary>
         /// 
@@ -58,7 +58,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         public int Id { get; set; }
     }
 
-    public class ModifyTemplateDocumentAccess : AddTemplateDocumentAccess
+    public class ModifyTemplateAccess : AddTemplateAccess
     {
         /// <summary>
         /// 
@@ -70,7 +70,7 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Изменение файла, прикрепленного к шаблону документа
     /// </summary>
-    public class ModifyTemplateAttachedFile : AddTemplateAttachedFile
+    public class ModifyTemplateFile : AddTemplateFile
     {
         /// <summary>
         /// 

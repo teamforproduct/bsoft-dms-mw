@@ -18,7 +18,7 @@ namespace BL.Database.Documents.Interfaces
         int AddDocumentFile(IContext ctx, InternalDocumentFile docFile);
         void ModifyDocumentFile(IContext ctx, InternalDocument doc);
         void UpdateFilePdfView(IContext ctx, InternalDocumentFile docFile);
-        IEnumerable<InternalDocumentFile> GetOldPdfForAttachedFiles(IContext ctx, int pdfAge);
+        IEnumerable<InternalDocumentFile> GetOldPdfForFiles(IContext ctx, int pdfAge);
         InternalDocument ModifyDocumentFilePrepare(IContext ctx, int fileId);
         InternalDocument DeleteDocumentFilePrepare(IContext ctx, int id);
         InternalDocument RestoreDocumentFilePrepare(IContext ctx, int id);

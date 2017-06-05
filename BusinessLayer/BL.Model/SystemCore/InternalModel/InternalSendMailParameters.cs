@@ -45,9 +45,9 @@ namespace BL.Model.SystemCore.InternalModel
         /// </summary>
         public string DisplayFromName { get; set; }
         /// <summary>
-        /// List of path to attached files.
+        /// List of path to files.
         /// </summary>
-        public string[] AttachedFiles { get; set; }
+        public string[] Files { get; set; }
 
 
 

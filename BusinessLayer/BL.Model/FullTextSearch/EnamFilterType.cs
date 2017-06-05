@@ -19,7 +19,7 @@
         /// </summary>
         //Dependant = -3,
 
-        TemplateDocumentDocumentTypeId = 103,
+        TemplateDocumentTypeId = 103,
         ExecutorPositionExecutorAgentId = 105,
         RegistrationJournalId = 110,
         RegistrationJournalDepartmentId = 115,

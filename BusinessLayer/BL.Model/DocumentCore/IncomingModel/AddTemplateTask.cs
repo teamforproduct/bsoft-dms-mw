@@ -2,7 +2,7 @@
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
-    public class AddTemplateDocumentTask
+    public class AddTemplateTask
     {
         [Required]
         public int DocumentId { get; set; }

@@ -5,28 +5,28 @@ using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalTemplateDocumentAccess : LastChangeInfo
+    public class InternalTemplateAccess : LastChangeInfo
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }
         public int? PositionId { get; set; }
 
-        public InternalTemplateDocumentAccess()
+        public InternalTemplateAccess()
         {
         }
 
-        public InternalTemplateDocumentAccess(AddTemplateDocumentAccess model)
+        public InternalTemplateAccess(AddTemplateAccess model)
         {
-            SetInternalTemplateDocumentAccess(model);
+            SetInternalTemplateAccess(model);
         }
 
-        public InternalTemplateDocumentAccess(ModifyTemplateDocumentAccess model)
+        public InternalTemplateAccess(ModifyTemplateAccess model)
         {
             Id = model.Id;
-            SetInternalTemplateDocumentAccess(model);
+            SetInternalTemplateAccess(model);
         }
 
-        private void SetInternalTemplateDocumentAccess(AddTemplateDocumentAccess model)
+        private void SetInternalTemplateAccess(AddTemplateAccess model)
         {
             DocumentId = model.DocumentId;
             PositionId = model.PositionId;

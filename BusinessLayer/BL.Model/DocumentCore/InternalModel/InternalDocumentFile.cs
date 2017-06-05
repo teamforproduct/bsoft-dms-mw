@@ -7,7 +7,7 @@ namespace BL.Model.DocumentCore.InternalModel
     /// <summary>
     /// Класс приатаченного к документу файла для внутреннего использования
     /// </summary>
-    public class InternalDocumentFile : InternalTemplateDocumentFile
+    public class InternalDocumentFile : InternalTemplateFile
     {
         public InternalDocumentFile()
         {

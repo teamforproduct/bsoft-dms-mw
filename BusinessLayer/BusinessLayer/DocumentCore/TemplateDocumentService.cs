@@ -20,15 +20,15 @@ using BL.Logic.SystemCore;
 
 namespace BL.Logic.DocumentCore
 {
-    public class TemplateDocumentService : ITemplateDocumentService
+    public class TemplateService : ITemplateService
     {
-        private readonly ITemplateDocumentsDbProcess _templateDb;
+        private readonly ITemplateDbProcess _templateDb;
         private readonly ICommandService _commandService;
         private readonly IFileStore _fStore;
         private readonly ISystemDbProcess _systemDb;
 
 
-        public TemplateDocumentService(ITemplateDocumentsDbProcess templateDb, IAdminService admin,
+        public TemplateService(ITemplateDbProcess templateDb, IAdminService admin,
             IFileStore fStore, ICommandService commandService, ISystemDbProcess systemDb)
         {
             _templateDb = templateDb;
@@ -46,28 +46,28 @@ namespace BL.Logic.DocumentCore
             return null;
         }
 
-        #region TemplateDocuments
+        #region Template
 
-        public IEnumerable<FrontTemplateDocument> GetTemplateDocuments(IContext context, FilterTemplateDocument filter, UIPaging paging)
+        public IEnumerable<FrontTemplate> GetTemplates(IContext context, FilterTemplate filter, UIPaging paging)
         {
-            return _templateDb.GetTemplateDocument(context, filter, paging);
+            return _templateDb.GetTemplate(context, filter, paging);
         }
 
-        public IEnumerable<FrontMainTemplateDocument> GetMainTemplateDocument(IContext context, FullTextSearch ftSearch, FilterTemplateDocument filter, UIPaging paging)
+        public IEnumerable<FrontMainTemplate> GetMainTemplate(IContext context, FullTextSearch ftSearch, FilterTemplate filter, UIPaging paging)
         {
-            return FTS.Get(context, Modules.Templates, ftSearch, filter, paging, null, _templateDb.GetMainTemplateDocument, _templateDb.GetTemplateDocumentIDs);
+            return FTS.Get(context, Modules.Templates, ftSearch, filter, paging, null, _templateDb.GetMainTemplate, _templateDb.GetTemplateIDs);
         }
 
-        public FrontTemplateDocument GetTemplateDocument(IContext context, int templateDocumentId)
+        public FrontTemplate GetTemplate(IContext context, int templateId)
         {
-            return _templateDb.GetTemplateDocument(context, templateDocumentId);
+            return _templateDb.GetTemplate(context, templateId);
         }
 
-        public IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontTemplateDocument templateDoc)
+        public IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontTemplate templateDoc)
         {
-            var uiElements = _systemDb.GetSystemUIElements(ctx, new FilterSystemUIElement { ActionId = new List<int> { (int)EnumDocumentActions.ModifyTemplateDocument } }).ToList();
-            uiElements = CommonDocumentUtilities.VerifyTemplateDocument(ctx, templateDoc, uiElements).ToList();
-            var uiPropertyElements = CommonSystemUtilities.GetPropertyUIElements(ctx, EnumObjects.TemplateDocument, CommonDocumentUtilities.GetFilterTemplateByTemplateDocument(templateDoc).ToArray());
+            var uiElements = _systemDb.GetSystemUIElements(ctx, new FilterSystemUIElement { ActionId = new List<int> { (int)EnumDocumentActions.ModifyTemplate } }).ToList();
+            uiElements = CommonDocumentUtilities.VerifyTemplate(ctx, templateDoc, uiElements).ToList();
+            var uiPropertyElements = CommonSystemUtilities.GetPropertyUIElements(ctx, EnumObjects.Template, CommonDocumentUtilities.GetFilterTemplateByTemplate(templateDoc).ToArray());
             uiElements.AddRange(uiPropertyElements);
             var addProp = uiPropertyElements.Where(x => x.PropertyLinkId.HasValue && !templateDoc.Properties.Select(y => y.PropertyLinkId).ToList().Contains(x.PropertyLinkId.Value) )
                 .Select(x => new FrontPropertyValue { PropertyLinkId = x.PropertyLinkId.Value, Value = string.Empty, PropertyCode = x.Code }).ToList();
@@ -75,91 +75,91 @@ namespace BL.Logic.DocumentCore
             return uiElements;
         }
 
-        #endregion TemplateDocuments
+        #endregion Template
 
-        #region TemplateDocumentsSendList
+        #region TemplateSendList
 
-        public IEnumerable<FrontTemplateDocumentSendList> GetTemplateDocumentSendLists(IContext context, FilterTemplateDocumentSendList filter)
+        public IEnumerable<FrontTemplateSendList> GetTemplateSendLists(IContext context, FilterTemplateSendList filter)
         {
-            return _templateDb.GetTemplateDocumentSendLists(context, filter);
+            return _templateDb.GetTemplateSendLists(context, filter);
         }
 
-        public FrontTemplateDocumentSendList GetTemplateDocumentSendList(IContext context, int id)
+        public FrontTemplateSendList GetTemplateSendList(IContext context, int id)
         {
-            return _templateDb.GetTemplateDocumentSendList(context, id);
+            return _templateDb.GetTemplateSendList(context, id);
         }
-        #endregion TemplateDocumentsSendList
+        #endregion TemplateSendList
 
-        #region TemplateDocumentsRestrictedSendList
+        #region TemplateRestrictedSendList
 
-        public IEnumerable<FrontTemplateDocumentRestrictedSendList> GetTemplateDocumentRestrictedSendLists(IContext context, FilterTemplateDocumentRestrictedSendList filter)
+        public IEnumerable<FrontTemplateRestrictedSendList> GetTemplateRestrictedSendLists(IContext context, FilterTemplateRestrictedSendList filter)
         {
-            return _templateDb.GetTemplateDocumentRestrictedSendLists(context, filter);
-        }
-
-
-        public FrontTemplateDocumentRestrictedSendList GetTemplateDocumentRestrictedSendList(IContext context, int id)
-        {
-            return _templateDb.GetTemplateDocumentRestrictedSendList(context, id);
-        }
-
-        #endregion TemplateDocumentsRestrictedSendList
-
-        #region TemplateDocumentsAccess
-
-        public IEnumerable<FrontTemplateDocumentAccess> GetTemplateDocumentAccesses(IContext context, FilterTemplateDocumentAccess filter)
-        {
-            return _templateDb.GetTemplateDocumentAccesses(context, filter);
+            return _templateDb.GetTemplateRestrictedSendLists(context, filter);
         }
 
 
-        public FrontTemplateDocumentAccess GetTemplateDocumentAccess(IContext context, int id)
+        public FrontTemplateRestrictedSendList GetTemplateRestrictedSendList(IContext context, int id)
         {
-            return _templateDb.GetTemplateDocumentAccess(context, id);
+            return _templateDb.GetTemplateRestrictedSendList(context, id);
         }
 
-        #endregion TemplateDocumentsAccess
+        #endregion TemplateRestrictedSendList
 
-        #region TemplateDocumentTasks
+        #region TemplateAccess
 
-        public IEnumerable<FrontTemplateDocumentTask> GetTemplateDocumentTasks(IContext context, FilterTemplateDocumentTask filter)
+        public IEnumerable<FrontTemplateAccess> GetTemplateAccesses(IContext context, FilterTemplateAccess filter)
         {
-            return _templateDb.GetTemplateDocumentTasks(context, filter);
-        }
-
-
-        public FrontTemplateDocumentTask GetTemplateDocumentTask(IContext context, int id)
-        {
-            return _templateDb.GetTemplateDocumentTask(context, id);
-        }
-
-        #endregion TemplateDocumentTasks
-
-        #region TemplateDocumentPapers
-
-        public IEnumerable<FrontTemplateDocumentPaper> GetTemplateDocumentPapers(IContext context, FilterTemplateDocumentPaper filter)
-        {
-            return _templateDb.GetTemplateDocumentPapers(context, filter);
+            return _templateDb.GetTemplateAccesses(context, filter);
         }
 
 
-        public FrontTemplateDocumentPaper GetTemplateDocumentPaper(IContext context, int id)
+        public FrontTemplateAccess GetTemplateAccess(IContext context, int id)
         {
-            return _templateDb.GetTemplateDocumentPaper(context, id);
+            return _templateDb.GetTemplateAccess(context, id);
         }
 
-        #endregion TemplateDocumentPapers
+        #endregion TemplateAccess
 
-        #region TemplateAttachedFiles
+        #region TemplateTask
 
-        public IEnumerable<FrontTemplateDocumentFile> GetTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter)
+        public IEnumerable<FrontTemplateTask> GetTemplateTasks(IContext context, FilterTemplateTask filter)
         {
-            return _templateDb.GetTemplateAttachedFiles(ctx, filter);
+            return _templateDb.GetTemplateTasks(context, filter);
         }
 
-        private FrontTemplateDocumentFile GetTemplateAttachedFile(IContext ctx, int id, EnumDocumentFileType fileType)
+
+        public FrontTemplateTask GetTemplateTask(IContext context, int id)
         {
-            var fl = _templateDb.GetTemplateAttachedFile(ctx, id);
+            return _templateDb.GetTemplateTask(context, id);
+        }
+
+        #endregion TemplateTask
+
+        #region TemplatePaper
+
+        public IEnumerable<FrontTemplatePaper> GetTemplatePapers(IContext context, FilterTemplatePaper filter)
+        {
+            return _templateDb.GetTemplatePapers(context, filter);
+        }
+
+
+        public FrontTemplatePaper GetTemplatePaper(IContext context, int id)
+        {
+            return _templateDb.GetTemplatePaper(context, id);
+        }
+
+        #endregion TemplatePaper
+
+        #region TemplateFile
+
+        public IEnumerable<FrontTemplateFile> GetTemplateFiles(IContext ctx, FilterTemplateFile filter)
+        {
+            return _templateDb.GetTemplateFiles(ctx, filter);
+        }
+
+        private FrontTemplateFile GetTemplateFile(IContext ctx, int id, EnumDocumentFileType fileType)
+        {
+            var fl = _templateDb.GetTemplateFile(ctx, id);
             if (fl == null)
             {
                 throw new UnknownDocumentFile();
@@ -174,27 +174,27 @@ namespace BL.Logic.DocumentCore
                 fl.PdfCreated = true;
                 fl.PdfAcceptable = true;
                 fl.LastPdfAccess = DateTime.Now;
-                _templateDb.UpdateFilePdfView(ctx,fl);
+                _templateDb.ModifyTemplateFilePdfView(ctx,fl);
             }
             return fl;
         }
 
-        public FrontTemplateDocumentFile GetTemplateAttachedFile(IContext ctx, int id)
+        public FrontTemplateFile GetTemplateFile(IContext ctx, int id)
         {
-            return GetTemplateAttachedFile(ctx, id, EnumDocumentFileType.UserFile);
+            return GetTemplateFile(ctx, id, EnumDocumentFileType.UserFile);
         }
 
-        public FrontTemplateDocumentFile GetTemplateAttachedFilePdf(IContext ctx, int id)
+        public FrontTemplateFile GetTemplateFilePdf(IContext ctx, int id)
         {
-            return GetTemplateAttachedFile(ctx, id, EnumDocumentFileType.PdfFile);
+            return GetTemplateFile(ctx, id, EnumDocumentFileType.PdfFile);
         }
 
-        public FrontTemplateDocumentFile GetTemplateAttachedFilePreview(IContext ctx, int id)
+        public FrontTemplateFile GetTemplateFilePreview(IContext ctx, int id)
         {
-            return GetTemplateAttachedFile(ctx, id, EnumDocumentFileType.PdfPreview);
+            return GetTemplateFile(ctx, id, EnumDocumentFileType.PdfPreview);
         }
 
-        #endregion TemplateAttachedFiles
+        #endregion TemplateFile
 
     }
 }

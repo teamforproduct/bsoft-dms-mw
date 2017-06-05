@@ -351,72 +351,72 @@ namespace BL.Logic.DocumentCore
                     cmd = DmsResolver.Current.Get<ReportDocumentForDigitalSignature>();
                     break;
 
-                case EnumDocumentActions.AddTemplateDocument:
+                case EnumDocumentActions.AddTemplate:
                     cmd = DmsResolver.Current.Get<AddTemplateCommand>();
                     break;
-                case EnumDocumentActions.CopyTemplateDocument:
+                case EnumDocumentActions.CopyTemplate:
                     cmd = DmsResolver.Current.Get<CopyTemplateCommand>();
                     break;
-                case EnumDocumentActions.DeleteTemplateDocument:
+                case EnumDocumentActions.DeleteTemplate:
                     cmd = DmsResolver.Current.Get<DeleteTemplateCommand>();
                     break;
-                case EnumDocumentActions.ModifyTemplateDocument:
+                case EnumDocumentActions.ModifyTemplate:
                     cmd = DmsResolver.Current.Get<ModifyTemplateCommand>();
                     break;
-                case EnumDocumentActions.AddTemplateDocumentSendList:
+                case EnumDocumentActions.AddTemplateSendList:
                     cmd = DmsResolver.Current.Get<AddTemplateSendListCommand>();
                     break;
-                case EnumDocumentActions.DeleteTemplateDocumentSendList:
+                case EnumDocumentActions.DeleteTemplateSendList:
                     cmd = DmsResolver.Current.Get<DeleteTemplateSendListCommand>();
                     break;
-                case EnumDocumentActions.ModifyTemplateDocumentSendList:
+                case EnumDocumentActions.ModifyTemplateSendList:
                     cmd = DmsResolver.Current.Get<ModifyTemplateSendListCommand>();
                     break;
-                case EnumDocumentActions.AddTemplateDocumentRestrictedSendList:
+                case EnumDocumentActions.AddTemplateRestrictedSendList:
                     cmd = DmsResolver.Current.Get<AddTemplateRestrictedSendListCommand>();
                     break;
-                case EnumDocumentActions.DeleteTemplateDocumentRestrictedSendList:
+                case EnumDocumentActions.DeleteTemplateRestrictedSendList:
                     cmd = DmsResolver.Current.Get<DeleteTemplateRestrictedSendListCommand>();
                     break;
-                case EnumDocumentActions.ModifyTemplateDocumentRestrictedSendList:
+                case EnumDocumentActions.ModifyTemplateRestrictedSendList:
                     cmd = DmsResolver.Current.Get<ModifyTemplateRestrictedSendListCommand>();
                     break;
-                case EnumDocumentActions.AddTemplateDocumentAccess:
+                case EnumDocumentActions.AddTemplateAccess:
                     cmd = DmsResolver.Current.Get<AddTemplateAccessCommand>();
                     break;
-                case EnumDocumentActions.DeleteTemplateDocumentAccess:
+                case EnumDocumentActions.DeleteTemplateAccess:
                     cmd = DmsResolver.Current.Get<DeleteTemplateAccessCommand>();
                     break;
-                case EnumDocumentActions.ModifyTemplateDocumentAccess:
+                case EnumDocumentActions.ModifyTemplateAccess:
                     cmd = DmsResolver.Current.Get<ModifyTemplateAccessCommand>();
                     break;
 
-                case EnumDocumentActions.AddTemplateDocumentTask:
+                case EnumDocumentActions.AddTemplateTask:
                     cmd = DmsResolver.Current.Get<AddTemplateTaskCommand>();
                     break;
-                case EnumDocumentActions.DeleteTemplateDocumentTask:
+                case EnumDocumentActions.DeleteTemplateTask:
                     cmd = DmsResolver.Current.Get<DeleteTemplateTaskCommand>();
                     break;
-                case EnumDocumentActions.ModifyTemplateDocumentTask:
+                case EnumDocumentActions.ModifyTemplateTask:
                     cmd = DmsResolver.Current.Get<ModifyTemplateTaskCommand>();
                     break;
-                case EnumDocumentActions.AddTemplateDocumentPaper:
+                case EnumDocumentActions.AddTemplatePaper:
                     cmd = DmsResolver.Current.Get<AddTemplatePaperCommand>();
                     break;
-                case EnumDocumentActions.DeleteTemplateDocumentPaper:
+                case EnumDocumentActions.DeleteTemplatePaper:
                     cmd = DmsResolver.Current.Get<DeleteTemplatePaperCommand>();
                     break;
-                case EnumDocumentActions.ModifyTemplateDocumentPaper:
+                case EnumDocumentActions.ModifyTemplatePaper:
                     cmd = DmsResolver.Current.Get<ModifyTemplatePaperCommand>();
                     break;
 
-                case EnumDocumentActions.AddTemplateAttachedFile:
+                case EnumDocumentActions.AddTemplateFile:
                     cmd = DmsResolver.Current.Get<AddTemplateFileCommand>();
                     break;
-                case EnumDocumentActions.DeleteTemplateAttachedFile:
+                case EnumDocumentActions.DeleteTemplateFile:
                     cmd = DmsResolver.Current.Get<DeleteTemplateFileCommand>();
                     break;
-                case EnumDocumentActions.ModifyTemplateAttachedFile:
+                case EnumDocumentActions.ModifyTemplateFile:
                     cmd = DmsResolver.Current.Get<ModifyTemplateFileCommand>();
                     break;
 

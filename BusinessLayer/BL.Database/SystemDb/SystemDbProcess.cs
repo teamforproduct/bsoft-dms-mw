@@ -1548,7 +1548,7 @@ namespace BL.Database.SystemDb
 
         #region PropertyValues
 
-        public IEnumerable<FrontPropertyValue> GetPropertyValuesToDocumentFromTemplateDocument(IContext ctx, FilterPropertyLink filter)
+        public IEnumerable<FrontPropertyValue> GetPropertyValuesToDocumentFromTemplate(IContext ctx, FilterPropertyLink filter)
         {
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())

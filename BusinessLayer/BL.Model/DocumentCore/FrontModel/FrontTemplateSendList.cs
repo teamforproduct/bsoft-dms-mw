@@ -1,6 +1,8 @@
-﻿namespace BL.Model.DocumentCore.FrontModel
+﻿using System.Collections.Generic;
+
+namespace BL.Model.DocumentCore.FrontModel
 {
-    public class FrontTemplateDocumentSendList
+    public class FrontTemplateSendList
     {
         /// <summary>
         /// ИД записи плана
@@ -26,34 +28,6 @@
         /// Название типа этапа
         /// </summary>
         public string StageTypeName { get; set; }
-        /// <summary>
-        /// ИД одтела должности, кому направлена рассылка
-        /// </summary>
-        public int? TargetPositionDepartmentId { get; set; }
-        /// <summary>
-        /// Название отдела должности, кому направлена рассылка
-        /// </summary>
-        public string TargetPositionDepartmentName { get; set; }
-        /// <summary>
-        /// ИД должности кому направлена рассылка
-        /// </summary>
-        public int? TargetPositionId { get; set; }
-        /// <summary>
-        /// Название должности кому направлена рассылка
-        /// </summary>
-        public string TargetPositionName { get; set; }
-        /// <summary>
-        /// Имя кому направлена рассылка
-        /// </summary>
-        public string TargetPositionExecutorAgentName { get; set; }
-        /// <summary>
-        /// ИД внешнего агента кому направлена рассылка
-        /// </summary>
-        public int? TargetAgentId { get; set; }
-        /// <summary>
-        /// Название внешнего агента кому направлена рассылка
-        /// </summary>
-        public string TargetAgentName { get; set; }
         /// <summary>
         /// Комментарий
         /// </summary>
@@ -100,8 +74,12 @@
         public int? SelfDueDay { get; set; }
         /// <summary>
         /// Дни для определения даты постоянного внимания для самоконтроля
-        /// </sumпmary>
+        /// </summary>
         public int? SelfAttentionDay { get; set; }
+        /// <summary>
+        /// Группы получателей
+        /// </summary>
+        public IEnumerable<FrontTemplateSendListAccessGroup> AccessGroups { get; set; }
 
     }
 }

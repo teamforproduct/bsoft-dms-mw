@@ -8,7 +8,7 @@ namespace BL.Model.DocumentCore.Filters
     /// <summary>
     ///Фильтр для задач в шаблонах документов
     /// </summary>
-    public class FilterTemplateDocumentPaper : BaseFilter
+    public class FilterTemplatePaper : BaseFilter
     {
         /// <summary>
         /// ссылка на шаблон

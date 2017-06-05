@@ -9,7 +9,7 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Изменение файла, прикрепленного к шаблону документа
     /// </summary>
-    public class AddTemplateAttachedFile
+    public class AddTemplateFile
     {
         /// <summary>
         /// Ид. шаблона документа, которому принадлежит файл

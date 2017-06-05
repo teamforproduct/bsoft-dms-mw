@@ -27,7 +27,7 @@ namespace BL.Database.FileWorker
             return path;
         }
 
-        private string GetFullDocumentFilePath(IContext ctx, FrontTemplateDocumentFile attFile)
+        private string GetFullDocumentFilePath(IContext ctx, FrontTemplateFile attFile)
         {
             var path = GetStorePath();
             path = Path.Combine(path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, ctx.Client.Id.ToString(), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString());
@@ -41,7 +41,7 @@ namespace BL.Database.FileWorker
             return path;
         }
 
-        private string GetFullDocumentFilePath(IContext ctx, InternalTemplateDocumentFile attFile)
+        private string GetFullDocumentFilePath(IContext ctx, InternalTemplateFile attFile)
         {
             var path = GetStorePath();
             path = Path.Combine(path, SettingConstants.FILE_STORE_TEMPLATE_FOLDER, ctx.Client.Id.ToString(), attFile.DocumentId.ToString(), attFile.OrderInDocument.ToString());
@@ -81,7 +81,7 @@ namespace BL.Database.FileWorker
             throw new FileNotExists();
         }
 
-        public string SaveFile(IContext ctx, InternalTemplateDocumentFile attFile, bool isOverride = true)
+        public string SaveFile(IContext ctx, InternalTemplateFile attFile, bool isOverride = true)
         {
             try
             {
@@ -116,7 +116,7 @@ namespace BL.Database.FileWorker
             }
         }
 
-        public bool CreatePdfFile(IContext ctx, InternalTemplateDocumentFile attFile, bool isOverride = true)
+        public bool CreatePdfFile(IContext ctx, InternalTemplateFile attFile, bool isOverride = true)
         {
             try
             {
@@ -171,7 +171,7 @@ namespace BL.Database.FileWorker
             }
         }
 
-        public bool RenameFile(IContext ctx, InternalTemplateDocumentFile attFile, string newFileName)
+        public bool RenameFile(IContext ctx, InternalTemplateFile attFile, string newFileName)
         {
             try
             {
@@ -266,7 +266,7 @@ namespace BL.Database.FileWorker
             }
         }
 
-        public byte[] GetFile(IContext ctx, FrontTemplateDocumentFile attFile, EnumDocumentFileType fileType = EnumDocumentFileType.UserFile)
+        public byte[] GetFile(IContext ctx, FrontTemplateFile attFile, EnumDocumentFileType fileType = EnumDocumentFileType.UserFile)
         {
             try
             {
@@ -277,7 +277,7 @@ namespace BL.Database.FileWorker
 
                 if (fileType != EnumDocumentFileType.UserFile && !File.Exists(localFilePath)) // если просят ПДФ или превью а оно не создано
                 {
-                    var doc = new InternalTemplateDocumentFile(attFile);
+                    var doc = new InternalTemplateFile(attFile);
                     if (!CreatePdfFile(ctx, doc))
                     {
                         throw new FilePdfNotExists();
@@ -356,7 +356,7 @@ namespace BL.Database.FileWorker
             }
         }
 
-        public byte[] GetFile(IContext ctx, InternalTemplateDocumentFile attFile, EnumDocumentFileType fileType = EnumDocumentFileType.UserFile)
+        public byte[] GetFile(IContext ctx, InternalTemplateFile attFile, EnumDocumentFileType fileType = EnumDocumentFileType.UserFile)
         {
             try
             {
@@ -444,7 +444,7 @@ namespace BL.Database.FileWorker
         /// </summary>
         /// <param name="ctx"></param>
         /// <param name="attFile"></param>
-        public void DeletePdfCopy(IContext ctx, InternalTemplateDocumentFile attFile)
+        public void DeletePdfCopy(IContext ctx, InternalTemplateFile attFile)
         {
             try
             {
@@ -477,7 +477,7 @@ namespace BL.Database.FileWorker
         /// </summary>
         /// <param name="ctx"></param>
         /// <param name="attFile"></param>
-        public void DeleteFile(IContext ctx, InternalTemplateDocumentFile attFile)
+        public void DeleteFile(IContext ctx, InternalTemplateFile attFile)
         {
             try
             {
@@ -514,7 +514,7 @@ namespace BL.Database.FileWorker
             }
         }
 
-        public void CopyFile(IContext ctx, InternalTemplateDocumentFile fromTempl, InternalTemplateDocumentFile toTempl)
+        public void CopyFile(IContext ctx, InternalTemplateFile fromTempl, InternalTemplateFile toTempl)
         {
             try
             {

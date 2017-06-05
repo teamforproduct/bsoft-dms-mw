@@ -10,24 +10,24 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 {
     public class AddTemplateTaskCommand : BaseDocumentCommand
     {
-        private readonly ITemplateDocumentsDbProcess _operationDb;
+        private readonly ITemplateDbProcess _operationDb;
 
 
-        public AddTemplateTaskCommand(ITemplateDocumentsDbProcess operationDb)
+        public AddTemplateTaskCommand(ITemplateDbProcess operationDb)
         {
             _operationDb = operationDb;
 
         }
 
-        private AddTemplateDocumentTask Model
+        private AddTemplateTask Model
         {
             get
             {
-                if (!(_param is AddTemplateDocumentTask))
+                if (!(_param is AddTemplateTask))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (AddTemplateDocumentTask)_param;
+                return (AddTemplateTask)_param;
             }
         }
 
@@ -49,7 +49,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override object Execute()
         {
-            var tmp = new InternalTemplateDocumentTask(Model);
+            var tmp = new InternalTemplateTask(Model);
             CommonDocumentUtilities.SetLastChange(_context, tmp);
             return _operationDb.AddOrUpdateTemplateTask(_context, tmp);
 

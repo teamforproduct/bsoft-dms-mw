@@ -12,23 +12,23 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 {
     public class ModifyTemplateRestrictedSendListCommand : BaseDocumentCommand
     {
-        private readonly ITemplateDocumentsDbProcess _operationDb;
+        private readonly ITemplateDbProcess _operationDb;
 
-        public ModifyTemplateRestrictedSendListCommand(ITemplateDocumentsDbProcess operationDb)
+        public ModifyTemplateRestrictedSendListCommand(ITemplateDbProcess operationDb)
         {
             _operationDb = operationDb;
 
         }
 
-        private ModifyTemplateDocumentRestrictedSendList Model
+        private ModifyTemplateRestrictedSendList Model
         {
             get
             {
-                if (!(_param is ModifyTemplateDocumentRestrictedSendList))
+                if (!(_param is ModifyTemplateRestrictedSendList))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyTemplateDocumentRestrictedSendList)_param;
+                return (ModifyTemplateRestrictedSendList)_param;
             }
         }
 
@@ -40,7 +40,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
         public override bool CanExecute()
         {
             _adminProc.VerifyAccess(_context, CommandType, false);
-            if (_operationDb.ExistsTemplateDocumentRestrictedSendLists(_context, new FilterTemplateDocumentRestrictedSendList { TemplateId = Model.DocumentId, PositionId = Model.PositionId, NotContainsIDs = new List<int> { Model.Id} }))
+            if (_operationDb.ExistsTemplateRestrictedSendLists(_context, new FilterTemplateRestrictedSendList { TemplateId = Model.DocumentId, PositionId = Model.PositionId, NotContainsIDs = new List<int> { Model.Id} }))
             {
                 throw new RecordNotUnique();
             }
@@ -49,7 +49,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override object Execute()
         {
-            var model = new InternalTemplateDocumentRestrictedSendList(Model);
+            var model = new InternalTemplateRestrictedSendList(Model);
             CommonDocumentUtilities.SetLastChange(_context, model);
             return _operationDb.AddOrUpdateTemplateRestrictedSendList(_context, model);
         }

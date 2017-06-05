@@ -8,14 +8,14 @@ using BL.Model.DocumentCore.IncomingModel;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalTemplateDocumentPaper : LastChangeInfo
+    public class InternalTemplatePaper : LastChangeInfo
     {
 
-        public InternalTemplateDocumentPaper()
+        public InternalTemplatePaper()
         {
         }
 
-        public InternalTemplateDocumentPaper(ModifyTemplateDocumentPaper model)
+        public InternalTemplatePaper(ModifyTemplatePaper model)
         {
             Id = model.Id;
             DocumentId = model.DocumentId;

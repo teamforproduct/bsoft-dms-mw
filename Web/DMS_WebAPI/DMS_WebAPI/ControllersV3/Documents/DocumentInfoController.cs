@@ -210,7 +210,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Info)]
-        public async Task<IHttpActionResult> Post([FromBody] AddDocumentByTemplateDocument model)
+        public async Task<IHttpActionResult> Post([FromBody] AddDocumentByTemplate model)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {

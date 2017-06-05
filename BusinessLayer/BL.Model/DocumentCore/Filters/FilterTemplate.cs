@@ -8,7 +8,7 @@ namespace BL.Model.DocumentCore.Filters
     /// <summary>
     ///Фильтр для шаблонов документов
     /// </summary>
-    public class FilterTemplateDocument : BaseFilter
+    public class FilterTemplate : BaseFilter
     {
         /// <summary>
         /// Массив ИД направлений документов

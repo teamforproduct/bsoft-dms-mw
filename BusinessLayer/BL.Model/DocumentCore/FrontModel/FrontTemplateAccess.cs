@@ -3,7 +3,7 @@ using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
-    public class FrontTemplateDocumentAccess
+    public class FrontTemplateAccess
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }

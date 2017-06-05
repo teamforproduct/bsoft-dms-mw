@@ -6,7 +6,7 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Доступ к шаблону документа
     /// </summary>
-    public class AddTemplateDocumentAccess
+    public class AddTemplateAccess
     {
         /// <summary>
         /// Ссылка на шаблон

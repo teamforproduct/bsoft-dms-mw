@@ -75,7 +75,7 @@ namespace BL.Logic.DependencyInjection
         private void LoadDocumentModule()
         {
             Bind<IDocumentService>().To<DocumentService>().InSingletonScope();
-            Bind<ITemplateDocumentService>().To<TemplateDocumentService>().InSingletonScope();
+            Bind<ITemplateService>().To<TemplateService>().InSingletonScope();
             Bind<IDictionaryService>().To<DictionaryService>().InSingletonScope();
             Bind<IDocumentFileService>().To<DocumentFileService>().InSingletonScope();
 

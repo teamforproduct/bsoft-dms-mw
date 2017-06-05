@@ -10,26 +10,26 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 {
     public class ModifyTemplateFileCommand : BaseDocumentCommand
     {
-        private readonly ITemplateDocumentsDbProcess _operationDb;
+        private readonly ITemplateDbProcess _operationDb;
         private readonly IFileStore _fStore;
 
-        private InternalTemplateDocumentFile _docFile;
+        private InternalTemplateFile _docFile;
 
-        public ModifyTemplateFileCommand(ITemplateDocumentsDbProcess operationDb, IFileStore fStore)
+        public ModifyTemplateFileCommand(ITemplateDbProcess operationDb, IFileStore fStore)
         {
             _operationDb = operationDb;
             _fStore = fStore;
         }
 
-        private ModifyTemplateAttachedFile Model
+        private ModifyTemplateFile Model
         {
             get
             {
-                if (!(_param is ModifyTemplateAttachedFile))
+                if (!(_param is ModifyTemplateFile))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyTemplateAttachedFile)_param;
+                return (ModifyTemplateFile)_param;
             }
         }
 
@@ -41,7 +41,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
         public override bool CanExecute()
         {
             _adminProc.VerifyAccess(_context, CommandType, false);
-            _docFile = _operationDb.UpdateFilePrepare(_context, Model.Id);
+            _docFile = _operationDb.ModifyTemplateFilePrepare(_context, Model.Id);
             if (_docFile == null)
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
@@ -66,9 +66,9 @@ namespace BL.Logic.DocumentCore.TemplateCommands
             //}
             CommonDocumentUtilities.SetLastChange(_context, _docFile);
 
-            _operationDb.UpdateFile(_context, _docFile);
+            _operationDb.ModifyTemplateFile(_context, _docFile);
 
-            return new FrontTemplateDocumentFile(_docFile);
+            return new FrontTemplateFile(_docFile);
         }
 
 

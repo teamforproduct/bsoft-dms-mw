@@ -8,13 +8,13 @@ namespace BL.Model.DocumentCore.InternalModel
     /// <summary>
     /// Внутренний класс для работы с файлами, прикрепленными к шаблону документа
     /// </summary>
-    public class InternalTemplateDocumentFile : LastChangeInfo
+    public class InternalTemplateFile : LastChangeInfo
     {
-        public InternalTemplateDocumentFile()
+        public InternalTemplateFile()
         {
         }
 
-        public InternalTemplateDocumentFile(FrontTemplateDocumentFile doc)
+        public InternalTemplateFile(FrontTemplateFile doc)
         {
             Description = doc.Description;
             DocumentId = doc.DocumentId;

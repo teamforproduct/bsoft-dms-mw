@@ -12,81 +12,83 @@ using BL.Model.Common;
 
 namespace BL.Database.Documents.Interfaces
 {
-    public interface ITemplateDocumentsDbProcess
+    public interface ITemplateDbProcess
     {
-        #region TemplateDocument
+        #region Template
 //        IQueryable<TemplateDocuments> GetTemplateDocumentQuery(IContext ctx, FilterTemplateDocument filter);
-        bool ExistsTemplateDocuments(IContext context, FilterTemplateDocument filter);
-        IEnumerable<FrontMainTemplateDocument> GetMainTemplateDocument(IContext ctx, IBaseFilter filter, UIPaging paging, UISorting sotring);
-        List<int> GetTemplateDocumentIDs(IContext ctx, IBaseFilter filter, UISorting sotring);
-        IEnumerable<FrontTemplateDocument> GetTemplateDocument(IContext ctx, FilterTemplateDocument filter, UIPaging paging);
-        FrontTemplateDocument GetTemplateDocument(IContext ctx, int templateDocumentId);
-        FrontTemplateDocument GetTemplateDocumentByDocumentId(IContext ctx, int documentId);
-        int AddOrUpdateTemplate(IContext ctx, InternalTemplateDocument template);
-        InternalTemplateDocument DeleteTemplatePrepare(IContext ctx, int id);
-        InternalTemplateDocument CopyTemplatePrepare(IContext ctx, int id);
+        bool ExistsTemplates(IContext context, FilterTemplate filter);
+        IEnumerable<FrontMainTemplate> GetMainTemplate(IContext ctx, IBaseFilter filter, UIPaging paging, UISorting sotring);
+        List<int> GetTemplateIDs(IContext ctx, IBaseFilter filter, UISorting sotring);
+        IEnumerable<FrontTemplate> GetTemplate(IContext ctx, FilterTemplate filter, UIPaging paging);
+        FrontTemplate GetTemplate(IContext ctx, int templateDocumentId);
+        FrontTemplate GetTemplateByDocumentId(IContext ctx, int documentId);
+        int AddOrUpdateTemplate(IContext ctx, InternalTemplate template);
+        InternalTemplate DeleteTemplatePrepare(IContext ctx, int id);
+        InternalTemplate CopyTemplatePrepare(IContext ctx, int id);
         void DeleteTemplate(IContext ctx, int id);
-        bool CanModifyTemplate(IContext ctx, ModifyTemplateDocument template);
-        bool CanAddTemplate(IContext ctx, AddTemplateDocument template);
+        bool CanModifyTemplate(IContext ctx, ModifyTemplate template);
+        bool CanAddTemplate(IContext ctx, AddTemplate template);
         bool CanModifyTemplate(IContext ctx, int templateId);
-        #endregion TemplateDocument
+        #endregion Template
 
-        #region TemplateDocumentSendList
-        IEnumerable<FrontTemplateDocumentSendList> GetTemplateDocumentSendLists(IContext ctx,FilterTemplateDocumentSendList filter);
-        FrontTemplateDocumentSendList GetTemplateDocumentSendList(IContext ctx, int templateDocumentId);
-        int AddOrUpdateTemplateSendList(IContext ctx, InternalTemplateDocumentSendList template);
+        #region TemplateSendList
+        IEnumerable<FrontTemplateSendList> GetTemplateSendLists(IContext ctx,FilterTemplateSendList filter);
+        FrontTemplateSendList GetTemplateSendList(IContext ctx, int templateDocumentId);
+        int ModifyTemplateSendList(IContext ctx, InternalTemplateSendList template);
+        int AddTemplateSendList(IContext ctx, InternalTemplateSendList template);
+
         void DeleteTemplateSendList(IContext ctx, int id);
-        #endregion TemplateDocumentSendList
+        #endregion TemplateSendList
 
-        #region TemplateDocumentRestrictedSendList
-        IEnumerable<FrontTemplateDocumentRestrictedSendList> GetTemplateDocumentRestrictedSendLists(IContext ctx, FilterTemplateDocumentRestrictedSendList filter);
-        bool ExistsTemplateDocumentRestrictedSendLists(IContext ctx, FilterTemplateDocumentRestrictedSendList filter);
-        FrontTemplateDocumentRestrictedSendList GetTemplateDocumentRestrictedSendList(IContext ctx, int id);
-        int AddOrUpdateTemplateRestrictedSendList(IContext ctx, InternalTemplateDocumentRestrictedSendList template);
+        #region TemplateRestrictedSendList
+        IEnumerable<FrontTemplateRestrictedSendList> GetTemplateRestrictedSendLists(IContext ctx, FilterTemplateRestrictedSendList filter);
+        bool ExistsTemplateRestrictedSendLists(IContext ctx, FilterTemplateRestrictedSendList filter);
+        FrontTemplateRestrictedSendList GetTemplateRestrictedSendList(IContext ctx, int id);
+        int AddOrUpdateTemplateRestrictedSendList(IContext ctx, InternalTemplateRestrictedSendList template);
         void DeleteTemplateRestrictedSendList(IContext ctx, int id);
-        #endregion TemplateDocumentRestrictedSendList
+        #endregion TemplateRestrictedSendList
 
-        #region TemplateDocumentAccess
-        IEnumerable<FrontTemplateDocumentAccess> GetTemplateDocumentAccesses(IContext ctx, FilterTemplateDocumentAccess filter);
-        bool ExistsTemplateDocumentAccesses(IContext ctx, FilterTemplateDocumentAccess filter);
-        FrontTemplateDocumentAccess GetTemplateDocumentAccess(IContext ctx, int id);
-        int AddOrUpdateTemplateAccess(IContext ctx, InternalTemplateDocumentAccess template);
+        #region TemplateAccess
+        IEnumerable<FrontTemplateAccess> GetTemplateAccesses(IContext ctx, FilterTemplateAccess filter);
+        bool ExistsTemplateAccesses(IContext ctx, FilterTemplateAccess filter);
+        FrontTemplateAccess GetTemplateAccess(IContext ctx, int id);
+        int AddOrUpdateTemplateAccess(IContext ctx, InternalTemplateAccess template);
         void DeleteTemplateAccess(IContext ctx, int id);
-        #endregion TemplateDocumentAccess
+        #endregion TemplateAccess
 
-        #region TemplateDocumentPapers
-        IEnumerable<FrontTemplateDocumentPaper> GetTemplateDocumentPapers(IContext ctx, FilterTemplateDocumentPaper filter);
-        bool ExistsTemplateDocumentPapers(IContext ctx, FilterTemplateDocumentPaper filter);
-        FrontTemplateDocumentPaper GetTemplateDocumentPaper(IContext ctx, int id);
-        IEnumerable<int> AddTemplateDocumentPapers(IContext context, IEnumerable<InternalTemplateDocumentPaper> papers);
-        InternalTemplateDocument ModifyTemplatePaperPrepare(IContext ctx, int? id, AddTemplateDocumentPaper Paper);
-        void ModifyTemplatePaper(IContext context, InternalTemplateDocumentPaper item);
+        #region TemplatePaper
+        IEnumerable<FrontTemplatePaper> GetTemplatePapers(IContext ctx, FilterTemplatePaper filter);
+        bool ExistsTemplatePapers(IContext ctx, FilterTemplatePaper filter);
+        FrontTemplatePaper GetTemplatePaper(IContext ctx, int id);
+        IEnumerable<int> AddTemplatePapers(IContext context, IEnumerable<InternalTemplatePaper> papers);
+        InternalTemplate ModifyTemplatePaperPrepare(IContext ctx, int? id, AddTemplatePaper Paper);
+        void ModifyTemplatePaper(IContext context, InternalTemplatePaper item);
         void DeleteTemplatePaper(IContext ctx, int id);
-        #endregion TemplateDocumentPapers
+        #endregion TemplatePaper
 
-        #region TemplateDocumentTasks
-        IEnumerable<FrontTemplateDocumentTask> GetTemplateDocumentTasks(IContext ctx, FilterTemplateDocumentTask filter);
-        FrontTemplateDocumentTask GetTemplateDocumentTask(IContext ctx, int id);
-        int AddOrUpdateTemplateTask(IContext ctx, InternalTemplateDocumentTask template);
-        bool CanAddTemplateTask(IContext ctx, AddTemplateDocumentTask task);
+        #region TemplateTask
+        IEnumerable<FrontTemplateTask> GetTemplateTasks(IContext ctx, FilterTemplateTask filter);
+        FrontTemplateTask GetTemplateTask(IContext ctx, int id);
+        int AddOrUpdateTemplateTask(IContext ctx, InternalTemplateTask template);
+        bool CanAddTemplateTask(IContext ctx, AddTemplateTask task);
         void DeleteTemplateTask(IContext ctx, int id);
-        #endregion TemplateDocumentTasks
+        #endregion TemplateTask
 
-        #region TemplateAttachedFiles
-        IEnumerable<FrontTemplateDocumentFile> GetTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter);
-        bool ExistsTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter);
+        #region TemplateFile
+        IEnumerable<FrontTemplateFile> GetTemplateFiles(IContext ctx, FilterTemplateFile filter);
+        bool ExistsTemplateFiles(IContext ctx, FilterTemplateFile filter);
 
-        FrontTemplateDocumentFile GetTemplateAttachedFile(IContext ctx, int id);
+        FrontTemplateFile GetTemplateFile(IContext ctx, int id);
         int GetNextFileOrderNumber(IContext ctx, int templateId);
-        int AddNewFile(IContext ctx, InternalTemplateDocumentFile docFile);
-        void UpdateFile(IContext ctx, InternalTemplateDocumentFile docFile);
-        void UpdateFilePdfView(IContext ctx, InternalTemplateDocumentFile docFile);
-        InternalTemplateDocumentFile UpdateFilePrepare(IContext ctx, int id);
-        void DeleteTemplateAttachedFile(IContext ctx, int id);
-        InternalTemplateDocumentFile DeleteTemplateAttachedFilePrepare(IContext ctx, int id);
-        bool CanAddTemplateAttachedFile(IContext ctx, AddTemplateAttachedFile model, BaseFile file);
+        int AddTemplateFile(IContext ctx, InternalTemplateFile docFile);
+        void ModifyTemplateFile(IContext ctx, InternalTemplateFile docFile);
+        void ModifyTemplateFilePdfView(IContext ctx, InternalTemplateFile docFile);
+        InternalTemplateFile ModifyTemplateFilePrepare(IContext ctx, int id);
+        void DeleteTemplateFile(IContext ctx, int id);
+        InternalTemplateFile DeleteTemplateFilePrepare(IContext ctx, int id);
+        bool CanAddTemplateFile(IContext ctx, AddTemplateFile model, BaseFile file);
 
-        #endregion TemplateAttachedFiles
+        #endregion TemplateFile
 
 
     }

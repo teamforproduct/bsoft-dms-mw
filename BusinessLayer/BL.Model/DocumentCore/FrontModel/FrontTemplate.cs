@@ -9,7 +9,7 @@ namespace BL.Model.DocumentCore.FrontModel
     /// <summary>
     /// Модель шаблона документа для фронта
     /// </summary>
-    public class FrontTemplateDocument : ModifyTemplateDocument
+    public class FrontTemplate : ModifyTemplate
     {
         
         /// <summary>

@@ -31,7 +31,7 @@ namespace BL.Model.DocumentCore.FrontModel
                 Addressee = model.Addressee;
                 if (model.AccessLevel != null) AccessLevelId = (int)model.AccessLevel;
 
-                TemplateDocumentId = model.TemplateDocumentId;
+                TemplateDocumentId = model.TemplateId;
                 ExecutorPositionId = model.ExecutorPositionId;
                 CreateDate = model.CreateDate;
                 IsRegistered = model.IsRegistered;
@@ -198,7 +198,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public int? SendListStageMax { get; set; }
         //public IEnumerable<FrontDocumentEvent> Events { get; set; }
         public IEnumerable<FrontDocumentAccess> Accesses { get; set; }
-//        public IEnumerable<FrontDocumentAttachedFile> DocumentFiles { get; set; }
+//        public IEnumerable<FrontDocumentFile> DocumentFiles { get; set; }
         public IEnumerable<FrontDocument> LinkedDocuments { get; set; }
         public IEnumerable<FrontDocumentLink> Links { get; set; }
 //        public IEnumerable<FrontDocumentTask> DocumentTasks { get; set; }

@@ -7,7 +7,7 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Модель для добавления/изменения записи плана работы для шаблона
     /// </summary>
-    public class AddTemplateDocumentSendList 
+    public class AddTemplateSendList 
     {
         /// <summary>
         /// ИД шаблона
@@ -19,14 +19,6 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// </summary>
         [Required]
         public EnumSendTypes SendType { get; set; }
-        /// <summary>
-        /// ИД должности кому направлена рассылка
-        /// </summary>
-        public int? TargetPositionId { get; set; }
-        /// <summary>
-        /// ИД внешнего агента кому направлена рассылка
-        /// </summary>
-        public int? TargetAgentId { get; set; }
         /// <summary>
         /// ИД Задачи
         /// </summary>

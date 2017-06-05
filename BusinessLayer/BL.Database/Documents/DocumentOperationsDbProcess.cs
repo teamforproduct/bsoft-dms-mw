@@ -2406,7 +2406,7 @@ namespace BL.Database.Documents
                         ClientId = x.ClientId,
                         EntityTypeId = x.EntityTypeId,
                         ExecutorPositionId = x.ExecutorPositionId,
-                        TemplateDocumentId = x.TemplateDocument.Id,
+                        TemplateId = x.TemplateDocument.Id,
                         IsHard = x.TemplateDocument.IsHard,
                         IsLaunchPlan = x.IsLaunchPlan
                     }).FirstOrDefault();
@@ -2433,7 +2433,7 @@ namespace BL.Database.Documents
                         StageType = (EnumStageTypes?)x.StageTypeId,
                         Stage = x.Stage,
                         SourcePositionId = x.AccessGroups.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
-                        SourceAgentId = x.AccessGroups.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).AgentId ?? 0,
+                        //SourceAgentId = x.AccessGroups.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).AgentId ?? 0,
                         //TargetAgentId = x.TargetAgentId
 
                     }).ToList();
@@ -2455,24 +2455,24 @@ namespace BL.Database.Documents
                     }).ToList();
                 if (doc.IsHard)
                 {
-                    doc.TemplateDocument = new InternalTemplateDocument();
+                    doc.Template = new InternalTemplate();
 
-                    doc.TemplateDocument.RestrictedSendLists = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == context.Client.Id)
-                        .Where(x => x.DocumentId == doc.TemplateDocumentId)
-                        .Select(x => new InternalTemplateDocumentRestrictedSendList
+                    doc.Template.RestrictedSendLists = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == context.Client.Id)
+                        .Where(x => x.DocumentId == doc.TemplateId)
+                        .Select(x => new InternalTemplateRestrictedSendList
                         {
                             Id = x.Id,
                             PositionId = x.PositionId
                         }).ToList();
 
-                    doc.TemplateDocument.SendLists = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == context.Client.Id)
-                        .Where(x => x.DocumentId == doc.TemplateDocumentId)
-                        .Select(x => new InternalTemplateDocumentSendList
-                        {
-                            Id = x.Id,
-                            TargetPositionId = x.TargetPositionId,
-                            SendType = (EnumSendTypes)x.SendTypeId
-                        }).ToList();
+                    //doc.TemplateDocument.SendLists = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == context.Client.Id)
+                    //    .Where(x => x.DocumentId == doc.TemplateDocumentId)
+                    //    .Select(x => new InternalTemplateDocumentSendList
+                    //    {
+                    //        Id = x.Id,
+                    //        TargetPositionId = x.TargetPositionId,
+                    //        SendType = (EnumSendTypes)x.SendTypeId
+                    //    }).ToList();
                 }
 
                 if (id != 0)

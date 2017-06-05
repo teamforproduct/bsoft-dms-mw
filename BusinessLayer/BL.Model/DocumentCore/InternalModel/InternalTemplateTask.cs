@@ -8,25 +8,25 @@ using BL.Model.DocumentCore.IncomingModel;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalTemplateDocumentTask : LastChangeInfo
+    public class InternalTemplateTask : LastChangeInfo
     {
 
-        public InternalTemplateDocumentTask()
+        public InternalTemplateTask()
         {
         }
 
-        public InternalTemplateDocumentTask(AddTemplateDocumentTask model)
+        public InternalTemplateTask(AddTemplateTask model)
         {
-            SetInternalTemplateDocumentTask(model);
+            SetInternalTemplateTask(model);
         }
 
-        public InternalTemplateDocumentTask(ModifyTemplateDocumentTask model)
+        public InternalTemplateTask(ModifyTemplateTask model)
         {
             Id = model.Id;
-            SetInternalTemplateDocumentTask(model);
+            SetInternalTemplateTask(model);
         }
 
-        private void SetInternalTemplateDocumentTask(AddTemplateDocumentTask model)
+        private void SetInternalTemplateTask(AddTemplateTask model)
         {
             DocumentId = model.DocumentId;
             Task = model.Task;

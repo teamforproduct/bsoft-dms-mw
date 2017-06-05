@@ -13,55 +13,6 @@ namespace BL.Model.DocumentCore.InternalModel
         public InternalDocument()
         {
         }
-        /*
-                public InternalDocument(FrontDocument model)
-                {
-                    if (model != null)
-                    {
-                        Id = model.Id;
-                        DocumentSubjectId = model.DocumentSubjectId;
-                        Description = model.Description;
-                        SenderAgentId = model.SenderAgentId;
-                        SenderAgentPersonId = model.SenderAgentPersonId;
-                        SenderNumber = model.SenderNumber;
-                        SenderDate = model.SenderDate;
-                        Addressee = model.Addressee;
-                        AccessLevel = model.AccessLevel;
-
-                        TemplateDocumentId = model.TemplateDocumentId;
-                        ExecutorPositionId = model.ExecutorPositionId;
-                        CreateDate = model.CreateDate.Value;
-                        IsRegistered = model.IsRegistered;
-                        RegistrationJournalId = model.RegistrationJournalId;
-                        NumerationPrefixFormula = model.NumerationPrefixFormula;
-                        RegistrationNumber = model.RegistrationNumber;
-                        RegistrationNumberSuffix = model.RegistrationNumberSuffix;
-                        RegistrationNumberPrefix = model.RegistrationNumberPrefix;
-                        RegistrationDate = model.RegistrationDate;
-                        LastChangeUserId = model.LastChangeUserId.Value;
-                        LastChangeDate = model.LastChangeDate.Value;
-                        LinkId = model.LinkId;
-
-                        IsHard = model.IsHard;
-                        DocumentDirection = model.DocumentDirection;
-                        DocumentTypeId = model.DocumentTypeId;
-
-                        IsFavourite = model.IsFavourite;
-                        IsInWork = model.IsInWork;
-
-                        DocumentDate = model.DocumentDate;
-
-                        //RegistrationFullNumber = model.RegistrationFullNumber;
-
-                       // EventsCount = model.EventsCount;
-                       // NewEventCount = model.NewEventCount;
-                       // AttachedFilesCount = model.AttachedFilesCount;
-                       // LinkedDocumentsCount = model.LinkedDocumentsCount;
-
-
-                    }
-                }
-        */
         /// <summary>
         /// ИД Документа
         /// </summary>
@@ -100,7 +51,7 @@ namespace BL.Model.DocumentCore.InternalModel
         /// </summary>
         public EnumAccessLevels? AccessLevel { get; set; }
 
-        public int TemplateDocumentId { get; set; }
+        public int TemplateId { get; set; }
         public int? ExecutorPositionId { get; set; }
         public int ExecutorPositionExecutorAgentId { get; set; }
         public int? ExecutorPositionExecutorTypeId { get; set; }
@@ -138,7 +89,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public int? AccessesCount { get; set; }
         // public int EventsCount { get; set; }
         // public int NewEventCount { get; set; }
-        // public int AttachedFilesCount { get; set; }
+        // public int FilesCount { get; set; }
         public int LinkedDocumentsCount { get; set; }
 
 
@@ -148,7 +99,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public string CertificateSign { get; set; }
         public int? OldLinkId { get; set; }
         public int? NewLinkId { get; set; }
-        public InternalTemplateDocument TemplateDocument { get; set; }
+        public InternalTemplate Template { get; set; }
         public IEnumerable<InternalDocumentRestrictedSendList> RestrictedSendLists { get; set; }
         public IEnumerable<InternalDocumentSendList> SendLists { get; set; }
         public IEnumerable<InternalDocumentSendListStage> SendListStages { get; set; }

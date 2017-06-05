@@ -89,7 +89,7 @@ namespace BL.Database.SystemDb
                 {
                     case EnamFilterType.Main:
                         break;
-                    case EnamFilterType.TemplateDocumentDocumentTypeId:
+                    case EnamFilterType.TemplateDocumentTypeId:
                         qry = qry.Where(x=>x.Main.TemplateDocument.DocumentType!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.DocumentTypeId.Value});
                         break;
                     case EnamFilterType.ExecutorPositionExecutorAgentId:
@@ -434,7 +434,7 @@ namespace BL.Database.SystemDb
             #endregion Documents
 
             #region TemplateDocuments
-            { EnumObjects.TemplateDocument, (ctx,dbContext,filterType) =>
+            { EnumObjects.Template, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.TemplateDocumentsSet.Where(x => x.ClientId == ctx.Client.Id)
@@ -444,7 +444,7 @@ namespace BL.Database.SystemDb
                 {
                     case EnamFilterType.Main:
                         break;
-                    case EnamFilterType.TemplateDocumentDocumentTypeId:
+                    case EnamFilterType.TemplateDocumentTypeId:
                         qry = qry.Where(x=>x.Main.DocumentType!=null).Select(x=>new { Main = x.Main, FilterId = x.Main.DocumentTypeId});
                         break;
                     case EnamFilterType.RegistrationJournalId:
@@ -467,8 +467,8 @@ namespace BL.Database.SystemDb
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
                     ClientId = ctx.Client.Id,FilterId = x.FilterId,ModuleId = moduleId, FeatureId = featureId,
-                    ObjectId = x.Main.Id, ObjectType = EnumObjects.TemplateDocument,
-                    ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.TemplateDocument,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.Template,
+                    ParentObjectId = x.Main.Id, ParentObjectType = EnumObjects.Template,
                     Access = x.Main.Accesses.Where(y=>y.PositionId.HasValue).Select(y=>new FullTextIndexItemAccessInfo {Key = y.PositionId.Value }).ToList(),
                     ObjectText = x.Main.Name + " " + x.Main.RegistrationJournal.Name + " " + x.Main.RegistrationJournal.Department.Name + " "
                                 + x.Main.DocumentType.Name + " " + x.Main.Description + " " + x.Main.DocumentSubject + " "
@@ -477,7 +477,7 @@ namespace BL.Database.SystemDb
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
                 return res;
             } },
-            { EnumObjects.TemplateDocumentAttachedFiles, (ctx,dbContext,filterType) =>
+            { EnumObjects.TemplateFiles, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == ctx.Client.Id)
@@ -497,14 +497,14 @@ namespace BL.Database.SystemDb
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
                     ClientId = ctx.Client.Id,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
-                    ObjectId = x.Main.Id, ObjectType = EnumObjects.TemplateDocumentAttachedFiles,
-                    ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.TemplateDocument,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.TemplateFiles,
+                    ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Template,
                     ObjectText = x.Main.Name + " " + x.Main.Extention + " " + x.Main.Description
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
                 return res;
             } },
-            { EnumObjects.TemplateDocumentTask, (ctx,dbContext,filterType) =>
+            { EnumObjects.TemplateTask, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == ctx.Client.Id)
@@ -524,14 +524,14 @@ namespace BL.Database.SystemDb
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
                     ClientId = ctx.Client.Id,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
-                    ObjectId = x.Main.Id, ObjectType = EnumObjects.TemplateDocumentTask,
-                    ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.TemplateDocument,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.TemplateTask,
+                    ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Template,
                     ObjectText = x.Main.Task + " " + x.Main.Description
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
                 return res;
             } },
-            { EnumObjects.TemplateDocumentSendList, (ctx,dbContext,filterType) =>
+            { EnumObjects.TemplateSendList, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == ctx.Client.Id)
@@ -553,13 +553,13 @@ namespace BL.Database.SystemDb
                     ClientId = ctx.Client.Id,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
                     ObjectId = x.Main.Id, ObjectType = EnumObjects.DocumentSendLists,
                     ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Documents,
-                    ObjectText = x.Main.Description + " " + x.Main.Task.Task + " "
-                    + x.Main.TargetPosition.Name + " "+ x.Main.TargetPosition.ExecutorAgent.Name + " "+ x.Main.TargetAgent.Name + " "
+                    ObjectText = x.Main.Description + " " + x.Main.Task.Task + " " //TODO multitarget!!!
+                    //+ x.Main.TargetPosition.Name + " "+ x.Main.TargetPosition.ExecutorAgent.Name + " "+ x.Main.TargetAgent.Name + " "
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
                 return res;
             } },
-            { EnumObjects.TemplateDocumentPaper, (ctx,dbContext,filterType) =>
+            { EnumObjects.TemplatePaper, (ctx,dbContext,filterType) =>
             {
                 var res = new List<FullTextQueryPrepare>();
                 var qry = dbContext.TemplateDocumentPapersSet.Where(x => x.Document.ClientId == ctx.Client.Id)
@@ -579,8 +579,8 @@ namespace BL.Database.SystemDb
                 var qryRes= qry.Select(x => new FullTextIndexItem
                 {
                     ClientId = ctx.Client.Id,FilterId = x.FilterId, ModuleId = moduleId, FeatureId = featureId,
-                    ObjectId = x.Main.Id, ObjectType = EnumObjects.TemplateDocumentPaper,
-                    ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.TemplateDocument,
+                    ObjectId = x.Main.Id, ObjectType = EnumObjects.TemplatePaper,
+                    ParentObjectId = x.Main.DocumentId, ParentObjectType = EnumObjects.Template,
                     ObjectText = x.Main.Name + " " + x.Main.Description
                 });
                 res.Add(new FullTextQueryPrepare { Query = qryRes, FilterType = filterType});
@@ -1490,7 +1490,7 @@ namespace BL.Database.SystemDb
                 {
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DictionaryRegistrationJournals, FilterType = EnamFilterType.DepartmentId },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.Documents, FilterType = EnamFilterType.RegistrationJournalDepartmentId },
-                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.TemplateDocument, FilterType = EnamFilterType.RegistrationJournalDepartmentId },
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.Template, FilterType = EnamFilterType.RegistrationJournalDepartmentId },
                 }
             },
             {EnumObjects.DictionaryPositions, new List<FullTextDeepUpdateItemQuery>
@@ -1529,7 +1529,7 @@ namespace BL.Database.SystemDb
             {EnumObjects.DictionaryAgentCompanies, new List<FullTextDeepUpdateItemQuery>
                 {
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.Documents, FilterType = EnamFilterType.SenderAgentId },
-                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.TemplateDocument, FilterType = EnamFilterType.SenderAgentId },
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.Template, FilterType = EnamFilterType.SenderAgentId },
                 //new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentEvents, FilterType = EnamFilterType.SourceAgentId },
                 //new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentEvents, FilterType = EnamFilterType.TargetAgentId },
                 //new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentSendLists, FilterType = EnamFilterType.SourceAgentId },
@@ -1546,7 +1546,7 @@ namespace BL.Database.SystemDb
                     //new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DocumentSendLists, FilterType = EnamFilterType.TargetAgentId },
                     //new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.TemplateDocumentSendList, FilterType = EnamFilterType.TargetAgentId },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.Documents, FilterType = EnamFilterType.SenderAgentPersonId },
-                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.TemplateDocument, FilterType = EnamFilterType.SenderAgentPersonId },
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.Template, FilterType = EnamFilterType.SenderAgentPersonId },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.DictionaryStandartSendListContent, FilterType = EnamFilterType.AgentId },
             }
             },
@@ -1568,14 +1568,14 @@ namespace BL.Database.SystemDb
             },
             { EnumObjects.DictionaryDocumentType, new List<FullTextDeepUpdateItemQuery>
                 {
-                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.Documents, FilterType = EnamFilterType.TemplateDocumentDocumentTypeId },
-                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.TemplateDocument, FilterType = EnamFilterType.TemplateDocumentDocumentTypeId },
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.Documents, FilterType = EnamFilterType.TemplateDocumentTypeId },
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.Template, FilterType = EnamFilterType.TemplateDocumentTypeId },
                 }
             },
             { EnumObjects.DictionaryRegistrationJournals, new List<FullTextDeepUpdateItemQuery>
                 {
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.Documents, FilterType = EnamFilterType.RegistrationJournalId },
-                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.TemplateDocument, FilterType = EnamFilterType.RegistrationJournalId },
+                    new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.Template, FilterType = EnamFilterType.RegistrationJournalId },
                     new FullTextDeepUpdateItemQuery { ObjectType = EnumObjects.AdminRegistrationJournalPositions, FilterType = EnamFilterType.RegistrationJournalId },
                 }
             },

@@ -7,7 +7,7 @@ namespace BL.Model.DocumentCore.Filters
     /// <summary>
     ///Фильтр для списков рассылки в шаблонах документов
     /// </summary>
-    public class FilterTemplateDocumentSendList
+    public class FilterTemplateSendList
     {
         /// <summary>
         /// ИД
@@ -19,7 +19,6 @@ namespace BL.Model.DocumentCore.Filters
         public int? TemplateId { get; set; }
         public EnumSendTypes? SendType { get; set; }
         public EnumStageTypes? StageType { get; set; }
-        public int? TargetPositionId { get; set; }
         public int? Stage { get; set; }
         public string Task { get; set; }
         

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
-    public class AddTemplateDocument
+    public class AddTemplate
     {
         /// <summary>
         /// Имя шаблона - обязательное

@@ -8,7 +8,7 @@ using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalTemplateDocument : LastChangeInfo
+    public class InternalTemplate : LastChangeInfo
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -26,29 +26,29 @@ namespace BL.Model.DocumentCore.InternalModel
         public bool IsActive { get; set; }
         public int? MaxPaperOrderNumber { get; set; }
         public int FileCount { get; set; }
-        public IEnumerable<InternalTemplateDocumentRestrictedSendList> RestrictedSendLists { get; set; }
-        public IEnumerable<InternalTemplateDocumentSendList> SendLists { get; set; }
-        public IEnumerable<InternalTemplateDocumentTask> Tasks { get; set; }
-        public IEnumerable<InternalTemplateDocumentPaper> Papers { get; set; }
+        public IEnumerable<InternalTemplateRestrictedSendList> RestrictedSendLists { get; set; }
+        public IEnumerable<InternalTemplateSendList> SendLists { get; set; }
+        public IEnumerable<InternalTemplateTask> Tasks { get; set; }
+        public IEnumerable<InternalTemplatePaper> Papers { get; set; }
         public IEnumerable<InternalPropertyValue> Properties { get; set; }
-        public IEnumerable<InternalTemplateDocumentFile> Files { get; set; }
+        public IEnumerable<InternalTemplateFile> Files { get; set; }
 
-        public InternalTemplateDocument()
+        public InternalTemplate()
         {
         }
 
-        public InternalTemplateDocument(AddTemplateDocument model)
+        public InternalTemplate(AddTemplate model)
         {
-            SetInternalTemplateDocument(model);
+            SetInternalTemplate(model);
         }
 
-        public InternalTemplateDocument(ModifyTemplateDocument model)
+        public InternalTemplate(ModifyTemplate model)
         {
             Id = model.Id;
-            SetInternalTemplateDocument(model);
+            SetInternalTemplate(model);
         }
 
-        private void SetInternalTemplateDocument(AddTemplateDocument model)
+        private void SetInternalTemplate(AddTemplate model)
         {
             Name = model.Name;
             IsHard = model.IsHard;

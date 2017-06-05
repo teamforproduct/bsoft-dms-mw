@@ -36,6 +36,7 @@ using System.Globalization;
 using BL.Database.DBModel.Admin;
 using BL.CrossCutting.Helpers;
 using BL.Model.Common;
+using BL.Database.DBModel.Template;
 
 namespace BL.Database.Common
 {
@@ -53,7 +54,7 @@ namespace BL.Database.Common
             var qryAcc = dbContext.DocumentEventAccessGroupsSet.Where(filterContains);
             var accGroups = qryAcc.GroupBy(x => x.EventId).Select(x => new
             {
-                EventId = x.Key,
+                Id = x.Key,
                 AccessGroups = x.Select(y => new FrontDocumentEventAccessGroup
                 {
                     Id = y.Id,
@@ -70,7 +71,144 @@ namespace BL.Database.Common
                     },
                 }).ToList(),
             }).ToList();
-            items.ForEach(x => x.AccessGroups = accGroups.Where(y => y.EventId == x.Id).Select(y => y.AccessGroups).FirstOrDefault());
+            items.ForEach(x => x.AccessGroups = accGroups.Where(y => y.Id == x.Id).Select(y => y.AccessGroups).FirstOrDefault());
+        }
+        public static void SetAccessGroups(IContext context, List<FrontDocumentSendList> items)
+        {
+            var dbContext = context.DbContext as DmsContext;
+            var ids = items.Where(x => x != null).Select(x => x.Id).ToList();
+            if (!ids.Any()) return;
+            var filterContains = PredicateBuilder.New<DocumentSendListAccessGroups>(false);
+            filterContains = ids.Aggregate(filterContains, (current, value) => current.Or(e => e.SendListId == value).Expand());
+            var qryAcc = dbContext.DocumentSendListAccessGroupsSet.Where(filterContains);
+            var accGroups = qryAcc.GroupBy(x => x.SendListId).Select(x => new
+            {
+                Id = x.Key,
+                AccessGroups = x.Select(y => new FrontDocumentSendListAccessGroup
+                {
+                    Id = y.Id,
+                    AccessType = (EnumEventAccessTypes)y.AccessTypeId,
+                    AccessGroupType = (EnumEventAccessGroupTypes)y.AccessGroupTypeId,
+                    RecordId = y.AgentId ?? y.CompanyId ?? y.DepartmentId ?? y.PositionId ?? y.StandartSendListId,
+                    Name = y.Agent.Name ?? y.Company.Agent.Name ?? y.Department.Name ?? y.Position.Name ?? y.StandartSendList.Name,
+                    Details = new List<string> { y.PositionId.HasValue ? (y.Position.ExecutorAgent.Name + (y.Position.ExecutorType.Suffix != null ? " (" + y.Position.ExecutorType.Suffix + ")" : null)) : null },
+                }).ToList(),
+            }).ToList();
+            items.ForEach(x => x.AccessGroups = accGroups.Where(y => y.Id == x.Id).Select(y => y.AccessGroups).FirstOrDefault());
+        }
+        public static void SetAccessGroups(IContext context, List<InternalDocumentSendList> items)
+        {
+            var dbContext = context.DbContext as DmsContext;
+            var ids = items.Where(x => x != null).Select(x => x.Id).ToList();
+            if (!ids.Any()) return;
+            var filterContains = PredicateBuilder.New<DocumentSendListAccessGroups>(false);
+            filterContains = ids.Aggregate(filterContains, (current, value) => current.Or(e => e.SendListId == value).Expand());
+            var qryAcc = dbContext.DocumentSendListAccessGroupsSet.Where(filterContains);
+            var accGroups = qryAcc.GroupBy(x => x.SendListId).Select(x => new
+            {
+                Id = x.Key,
+                AccessGroups = x.Select(y => new InternalDocumentSendListAccessGroup
+                {
+                    Id = y.Id,
+                    AccessType = (EnumEventAccessTypes)y.AccessTypeId,
+                    AccessGroupType = (EnumEventAccessGroupTypes)y.AccessGroupTypeId,
+                    AgentId = y.AgentId,
+                    CompanyId = y.CompanyId,
+                    DepartmentId = y.DepartmentId,
+                    PositionId = y.PositionId,
+                    StandartSendListId = y.StandartSendListId,
+                }).ToList(),
+            }).ToList();
+            items.ForEach(x => x.AccessGroups = accGroups.Where(y => y.Id == x.Id).Select(y => y.AccessGroups).FirstOrDefault());
+        }
+        public static void SetAccessGroupsFromTemplate(IContext context, List<InternalDocumentSendList> items)
+        {
+            var dbContext = context.DbContext as DmsContext;
+            var ids = items.Where(x => x != null).Where(x=>x.IdTemplateSendList.HasValue).Select(x => x.IdTemplateSendList.Value).ToList();
+            if (!ids.Any()) return;
+            var filterContains = PredicateBuilder.New<TemplateDocumentSendListAccessGroups>(false);
+            filterContains = ids.Aggregate(filterContains, (current, value) => current.Or(e => e.SendListId == value).Expand());
+            var qryAcc = dbContext.TemplateDocumentSendListAccessGroupsSet.Where(filterContains);
+            var accGroups = qryAcc.GroupBy(x => x.SendListId).Select(x => new
+            {
+                Id = x.Key,
+                AccessGroups = x.Select(y => new InternalDocumentSendListAccessGroup
+                {
+                    Id = y.Id,
+                    AccessType = (EnumEventAccessTypes)y.AccessTypeId,
+                    AccessGroupType = (EnumEventAccessGroupTypes)y.AccessGroupTypeId,
+                    AgentId = y.AgentId,
+                    CompanyId = y.CompanyId,
+                    DepartmentId = y.DepartmentId,
+                    PositionId = y.PositionId,
+                    StandartSendListId = y.StandartSendListId,
+                }).ToList(),
+            }).ToList();
+            items.ForEach(x => x.AccessGroups = accGroups.Where(y => x.IdTemplateSendList.HasValue && y.Id == x.IdTemplateSendList.Value).Select(y => y.AccessGroups).FirstOrDefault());
+        }
+        public static void SetAccessGroups(IContext context, List<FrontTemplateSendList> items)
+        {
+            var dbContext = context.DbContext as DmsContext;
+            var ids = items.Where(x => x != null).Select(x => x.Id).ToList();
+            if (!ids.Any()) return;
+            var filterContains = PredicateBuilder.New<TemplateDocumentSendListAccessGroups>(false);
+            filterContains = ids.Aggregate(filterContains, (current, value) => current.Or(e => e.SendListId == value).Expand());
+            var qryAcc = dbContext.TemplateDocumentSendListAccessGroupsSet.Where(filterContains);
+            var accGroups = qryAcc.GroupBy(x => x.SendListId).Select(x => new
+            {
+                Id = x.Key,
+                AccessGroups = x.Select(y => new FrontTemplateSendListAccessGroup
+                {
+                    Id = y.Id,
+                    AccessType = (EnumEventAccessTypes)y.AccessTypeId,
+                    AccessGroupType = (EnumEventAccessGroupTypes)y.AccessGroupTypeId,
+                    RecordId = y.AgentId ?? y.CompanyId ?? y.DepartmentId ?? y.PositionId ?? y.StandartSendListId,
+                    Name = y.Agent.Name ?? y.Company.Agent.Name ?? y.Department.Name ?? y.Position.Name ?? y.StandartSendList.Name,
+                    Details = new List<string> { y.PositionId.HasValue ? (y.Position.ExecutorAgent.Name + (y.Position.ExecutorType.Suffix != null ? " (" + y.Position.ExecutorType.Suffix + ")" : null)) : null },
+                }).ToList(),
+            }).ToList();
+            items.ForEach(x => x.AccessGroups = accGroups.Where(y => y.Id == x.Id).Select(y => y.AccessGroups).FirstOrDefault());
+        }
+        public static void SetAccessGroups(IContext context, List<InternalTemplateSendList> items)
+        {
+            var dbContext = context.DbContext as DmsContext;
+            var ids = items.Where(x => x != null).Select(x => x.Id).ToList();
+            if (!ids.Any()) return;
+            var filterContains = PredicateBuilder.New<TemplateDocumentSendListAccessGroups>(false);
+            filterContains = ids.Aggregate(filterContains, (current, value) => current.Or(e => e.SendListId == value).Expand());
+            var qryAcc = dbContext.TemplateDocumentSendListAccessGroupsSet.Where(filterContains);
+            var accGroups = qryAcc.GroupBy(x => x.SendListId).Select(x => new
+            {
+                Id = x.Key,
+                AccessGroups = x.Select(y => new InternalTemplateSendListAccessGroup
+                {
+                    Id = y.Id,
+                    AccessType = (EnumEventAccessTypes)y.AccessTypeId,
+                    AccessGroupType = (EnumEventAccessGroupTypes)y.AccessGroupTypeId,
+                    AgentId = y.AgentId,
+                    CompanyId = y.CompanyId,
+                    DepartmentId = y.DepartmentId,
+                    PositionId = y.PositionId,
+                    StandartSendListId = y.StandartSendListId,
+                    IsActive = y.IsActive,
+                }).ToList(),
+            }).ToList();
+            items.ForEach(x => x.AccessGroups = accGroups.Where(y => y.Id == x.Id).Select(y => y.AccessGroups).FirstOrDefault());
+        }
+        public static void SetAccesses(IContext context, List<FrontDocumentEvent> items)
+        {
+            var dbContext = context.DbContext as DmsContext;
+            foreach (var item in items.Where(x => x != null))
+                item.Accesses = dbContext.DocumentEventAccessesSet.Where(x => x.EventId == item.Id).Select(y => new FrontDocumentEventAccess
+                {
+                    Id = y.Id,
+                    AccessType = (EnumEventAccessTypes)y.AccessTypeId,
+                    RecordId = y.PositionId ?? y.AgentId,
+                    Name = y.Position.Name ?? y.Agent.Name,
+                    Details = new List<string> { y.PositionId.HasValue ? (y.Agent.Name + (y.PositionExecutorType.Suffix != null ? " (" + y.PositionExecutorType.Suffix + ")" : null)) : null },
+                    ReadDate = y.ReadDate,
+                    ReadAgentName = y.ReadAgentId <= 0 || y.ReadAgentId == y.AgentId ? null : y.ReadAgent.Name,
+                }).ToList();
         }
         public static void SetFiles(IContext context, List<FrontDocumentEvent> items)
         {
@@ -86,7 +224,7 @@ namespace BL.Database.Common
             var filesQry = qryFL.Join(qry, x => x.FileId, y => y.Id, (x, y) => new { FileLink = x, File = y })
                 .GroupBy(x => x.FileLink.EventId).Select(x => new
                 {
-                    EventId = x.Key,
+                    Id = x.Key,
                     Files = x.Select(y => y.File).OrderByDescending(y => y.LastChangeDate)
                     .Join(dbContext.DictionaryAgentsSet, o => o.LastChangeUserId, i => i.Id,
                             (file, agent) => new { file, agent, source = file.Event.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source && file.ExecutorPositionId != y.PositionId) })
@@ -124,70 +262,7 @@ namespace BL.Database.Common
                 ).ToList(),
                 });
             var files = filesQry.ToList();
-            items.ForEach(x => x.Files = files.Where(y => y.EventId == x.Id).Select(y => y.Files).FirstOrDefault());
-        }
-        public static void SetAccessGroups(IContext context, List<FrontDocumentSendList> items)
-        {
-            var dbContext = context.DbContext as DmsContext;
-            var ids = items.Where(x => x != null).Select(x => x.Id).ToList();
-            if (!ids.Any()) return;
-            var filterContains = PredicateBuilder.New<DocumentSendListAccessGroups>(false);
-            filterContains = ids.Aggregate(filterContains, (current, value) => current.Or(e => e.SendListId == value).Expand());
-            var qryAcc = dbContext.DocumentSendListAccessGroupsSet.Where(filterContains);
-            var accGroups = qryAcc.GroupBy(x => x.SendListId).Select(x => new
-            {
-                EventId = x.Key,
-                AccessGroups = x.Select(y => new FrontDocumentSendListAccessGroup
-                {
-                    Id = y.Id,
-                    AccessType = (EnumEventAccessTypes)y.AccessTypeId,
-                    AccessGroupType = (EnumEventAccessGroupTypes)y.AccessGroupTypeId,
-                    RecordId = y.AgentId ?? y.CompanyId ?? y.DepartmentId ?? y.PositionId ?? y.StandartSendListId,
-                    Name = y.Agent.Name ?? y.Company.Agent.Name ?? y.Department.Name ?? y.Position.Name ?? y.StandartSendList.Name,
-                    Details = new List<string> { y.PositionId.HasValue ? (y.Position.ExecutorAgent.Name + (y.Position.ExecutorType.Suffix != null ? " (" + y.Position.ExecutorType.Suffix + ")" : null)) : null },
-                }).ToList(),
-            }).ToList();
-            items.ForEach(x => x.AccessGroups = accGroups.Where(y => y.EventId == x.Id).Select(y => y.AccessGroups).FirstOrDefault());
-        }
-        public static void SetAccessGroups(IContext context, List<InternalDocumentSendList> items)
-        {
-            var dbContext = context.DbContext as DmsContext;
-            var ids = items.Where(x => x != null).Select(x => x.Id).ToList();
-            if (!ids.Any()) return;
-            var filterContains = PredicateBuilder.New<DocumentSendListAccessGroups>(false);
-            filterContains = ids.Aggregate(filterContains, (current, value) => current.Or(e => e.SendListId == value).Expand());
-            var qryAcc = dbContext.DocumentSendListAccessGroupsSet.Where(filterContains);
-            var accGroups = qryAcc.GroupBy(x => x.SendListId).Select(x => new
-            {
-                EventId = x.Key,
-                AccessGroups = x.Select(y => new InternalDocumentSendListAccessGroup
-                {
-                    Id = y.Id,
-                    AccessType = (EnumEventAccessTypes)y.AccessTypeId,
-                    AccessGroupType = (EnumEventAccessGroupTypes)y.AccessGroupTypeId,
-                    AgentId = y.AgentId,
-                    CompanyId = y.CompanyId,
-                    DepartmentId = y.DepartmentId,
-                    PositionId = y.PositionId,
-                    StandartSendListId = y.StandartSendListId,
-                }).ToList(),
-            }).ToList();
-            items.ForEach(x => x.AccessGroups = accGroups.Where(y => y.EventId == x.Id).Select(y => y.AccessGroups).FirstOrDefault());
-        }
-        public static void SetAccesses(IContext context, List<FrontDocumentEvent> items)
-        {
-            var dbContext = context.DbContext as DmsContext;
-            foreach (var item in items.Where(x => x != null))
-                item.Accesses = dbContext.DocumentEventAccessesSet.Where(x => x.EventId == item.Id).Select(y => new FrontDocumentEventAccess
-                {
-                    Id = y.Id,
-                    AccessType = (EnumEventAccessTypes)y.AccessTypeId,
-                    RecordId = y.PositionId ?? y.AgentId,
-                    Name = y.Position.Name ?? y.Agent.Name,
-                    Details = new List<string> { y.PositionId.HasValue ? (y.Agent.Name + (y.PositionExecutorType.Suffix != null ? " (" + y.PositionExecutorType.Suffix + ")" : null)) : null },
-                    ReadDate = y.ReadDate,
-                    ReadAgentName = y.ReadAgentId <= 0 || y.ReadAgentId == y.AgentId ? null : y.ReadAgent.Name,
-                }).ToList();
+            items.ForEach(x => x.Files = files.Where(y => y.Id == x.Id).Select(y => y.Files).FirstOrDefault());
         }
         public static void SetWaitInfo(IContext context, List<FrontDocumentEvent> events)
         {
@@ -2346,9 +2421,6 @@ namespace BL.Database.Common
                 RegistrationNumberPrefix = x.Document.RegistrationNumberPrefix,
                 RegistrationNumberSuffix = x.Document.RegistrationNumberSuffix,
                 RegistrationFullNumber = "#" + x.Document.Id,
-                //DocumentDescription = x.Document.LinkId.HasValue ? x.Document.Description : null,
-                //DocumentTypeName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentType.Name : null,
-                //DocumentDirectionName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentDirection.Name : null,
                 //TODO Owner!!!!
                 //OwnerAgentName = x.LastPaperEvent.TargetAgent.Name,
                 //OwnerPositionExecutorAgentName = x.LastPaperEvent.TargetPositionExecutorAgent.Name + (x.LastPaperEvent.TargetPositionExecutorType.Suffix != null ? " (" + x.LastPaperEvent.TargetPositionExecutorType.Suffix + ")" : null),

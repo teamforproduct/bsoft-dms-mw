@@ -5,29 +5,30 @@ using BL.Logic.Common;
 using BL.Model.DocumentCore.IncomingModel;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Exception;
+using System.Linq;
 
 namespace BL.Logic.DocumentCore.TemplateCommands
 {
     public class ModifyTemplateSendListCommand : BaseDocumentCommand
     {
-        private readonly ITemplateDocumentsDbProcess _operationDb;
-        private InternalTemplateDocumentSendList _sendList;
+        private readonly ITemplateDbProcess _operationDb;
+        private InternalTemplateSendList _sendList;
 
-        public ModifyTemplateSendListCommand(ITemplateDocumentsDbProcess operationDb)
+        public ModifyTemplateSendListCommand(ITemplateDbProcess operationDb)
         {
             _operationDb = operationDb;
 
         }
 
-        private ModifyTemplateDocumentSendList Model
+        private ModifyTemplateSendList Model
         {
             get
             {
-                if (!(_param is ModifyTemplateDocumentSendList))
+                if (!(_param is ModifyTemplateSendList))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyTemplateDocumentSendList)_param;
+                return (ModifyTemplateSendList)_param;
             }
         }
 
@@ -44,10 +45,9 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override object Execute()
         {
-            CommonDocumentUtilities.CorrectModel(_context,Model);
-            _sendList = new InternalTemplateDocumentSendList(Model);
-            CommonDocumentUtilities.SetLastChange(_context, _sendList);
-            return _operationDb.AddOrUpdateTemplateSendList(_context, _sendList);
+            CommonDocumentUtilities.CorrectModel(_context, Model);
+            _sendList = CommonDocumentUtilities.GetNewTemplateSendList(_context, Model);
+            return _operationDb.ModifyTemplateSendList(_context, _sendList);
         }
 
 

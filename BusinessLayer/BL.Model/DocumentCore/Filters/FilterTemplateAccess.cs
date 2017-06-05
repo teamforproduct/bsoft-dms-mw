@@ -1,27 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using BL.Model.Enums;
+using BL.Model.Common;
 
 namespace BL.Model.DocumentCore.Filters
 {
     /// <summary>
-    ///Фильтр для задач в шаблонах документов
+    /// Фильтр доступов в шаблонах
     /// </summary>
-    public class FilterTemplateDocumentTask
+    public class FilterTemplateAccess: BaseFilter
     {
-        /// <summary>
-        /// ИД
-        /// </summary>
-        public List<int> IDs { get; set; }
         /// <summary>
         /// Ссылка на шаблон
         /// </summary>
         public int? TemplateId { get; set; }
         /// <summary>
-        /// Фрагмент текста задачи
+        /// Ссылка на должность
         /// </summary>
-        public string Task { get; set; }
-        
-
+        public int? PositionId { get; set; }
     }
 }

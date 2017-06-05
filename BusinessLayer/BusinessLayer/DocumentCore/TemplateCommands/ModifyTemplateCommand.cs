@@ -14,25 +14,25 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 {
     public class ModifyTemplateCommand: BaseDocumentCommand
     {
-        private readonly ITemplateDocumentsDbProcess _operationDb;
+        private readonly ITemplateDbProcess _operationDb;
 
-        private InternalTemplateDocument _templateDoc;
+        private InternalTemplate _templateDoc;
 
-        public ModifyTemplateCommand(ITemplateDocumentsDbProcess operationDb)
+        public ModifyTemplateCommand(ITemplateDbProcess operationDb)
         {
             _operationDb = operationDb;
            
         }
 
-        private ModifyTemplateDocument Model
+        private ModifyTemplate Model
         {
             get
             {
-                if (!(_param is ModifyTemplateDocument))
+                if (!(_param is ModifyTemplate))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyTemplateDocument)_param;
+                return (ModifyTemplate)_param;
             }
         }
 
@@ -47,7 +47,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
             //if (!_operationDb.CanModifyTemplate(_context, Model))
             //{
-            //    throw new CouldNotModifyTemplateDocument();
+            //    throw new CouldNotModifyTemplate();
             //}
 
             return true;
@@ -56,7 +56,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
         public override object Execute()
         {
 
-            var tModel = new InternalTemplateDocument
+            var tModel = new InternalTemplate
             {
                 DocumentTypeId = Model.DocumentTypeId,
                 DocumentDirection = Model.DocumentDirection,
@@ -65,7 +65,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
             CommonDocumentUtilities.SetLastChange(_context, tModel);
 
-            var filterTemplate= CommonDocumentUtilities.GetFilterTemplateByTemplateDocument(tModel).ToArray();
+            var filterTemplate= CommonDocumentUtilities.GetFilterTemplateByTemplate(tModel).ToArray();
 
             var properties = new List<InternalPropertyValue>();
 
@@ -75,7 +75,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
                 CommonDocumentUtilities.SetLastChange(_context, properties);
 
-                var model = new InternalPropertyValues { Object = EnumObjects.TemplateDocument, PropertyValues = properties };
+                var model = new InternalPropertyValues { Object = EnumObjects.Template, PropertyValues = properties };
 
                 CommonSystemUtilities.VerifyPropertyValues(_context, model, filterTemplate);
 
@@ -83,11 +83,11 @@ namespace BL.Logic.DocumentCore.TemplateCommands
             }
             else
             {
-                var model = new InternalPropertyValues { Object = EnumObjects.TemplateDocument, PropertyValues = new List<InternalPropertyValue>() };
+                var model = new InternalPropertyValues { Object = EnumObjects.Template, PropertyValues = new List<InternalPropertyValue>() };
 
                 CommonSystemUtilities.VerifyPropertyValues(_context, model, filterTemplate);
             }
-            _templateDoc = new InternalTemplateDocument(Model) { Properties = properties };
+            _templateDoc = new InternalTemplate(Model) { Properties = properties };
             CommonDocumentUtilities.SetLastChange(_context, _templateDoc);
             return _operationDb.AddOrUpdateTemplate(_context, _templateDoc);
             

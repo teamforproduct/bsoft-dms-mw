@@ -5,12 +5,12 @@ namespace BL.Model.DocumentCore.FrontModel
     /// <summary>
     /// Класс для отображения файлов, прикрепленных к шаблону документу
     /// </summary>
-    public class FrontTemplateDocumentFile: InternalTemplateDocumentFile
+    public class FrontTemplateFile: InternalTemplateFile
     {
         /// <summary>
         /// Default constructor
         /// </summary>
-        public FrontTemplateDocumentFile()
+        public FrontTemplateFile()
         {
         }
 
@@ -18,7 +18,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// конструктор для превращения внутренней модели файла в модель отображения для пользователя
         /// </summary>
         /// <param name="doc"></param>
-        public FrontTemplateDocumentFile(InternalTemplateDocumentFile doc)
+        public FrontTemplateFile(InternalTemplateFile doc)
         {
             Id = doc.Id;
             DocumentId = doc.DocumentId;

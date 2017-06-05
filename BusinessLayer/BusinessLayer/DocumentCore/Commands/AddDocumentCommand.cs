@@ -19,7 +19,7 @@ namespace BL.Logic.DocumentCore.Commands
         private readonly IFileStore _fStore;
 
         InternalDictionaryPositionExecutorForDocument _executorPosition;
-        private IEnumerable<InternalPropertyLink> _propertyLinksByTemplateDocument;
+        private IEnumerable<InternalPropertyLink> _propertyLinksByTemplate;
         private IEnumerable<InternalPropertyLink> _propertyLinksByDocument;
 
         public AddDocumentCommand(IDocumentsDbProcess documentDb, IFileStore fStore)
@@ -28,15 +28,15 @@ namespace BL.Logic.DocumentCore.Commands
             _fStore = fStore;
         }
 
-        private AddDocumentByTemplateDocument Model
+        private AddDocumentByTemplate Model
         {
             get
             {
-                if (!(_param is AddDocumentByTemplateDocument))
+                if (!(_param is AddDocumentByTemplate))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (AddDocumentByTemplateDocument)_param;
+                return (AddDocumentByTemplate)_param;
             }
         }
 
@@ -67,10 +67,10 @@ namespace BL.Logic.DocumentCore.Commands
 
             var filterTemplateByDocument = CommonDocumentUtilities.GetFilterTemplateByDocument(_document).ToArray();
 
-            _propertyLinksByTemplateDocument = CommonSystemUtilities.GetPropertyLinks(_context, EnumObjects.TemplateDocument, filterTemplateByDocument);
+            _propertyLinksByTemplate = CommonSystemUtilities.GetPropertyLinks(_context, EnumObjects.Template, filterTemplateByDocument);
             _propertyLinksByDocument = CommonSystemUtilities.GetPropertyLinks(_context, EnumObjects.Documents, filterTemplateByDocument);
 
-            CommonSystemUtilities.VerifyPropertyLinksCompare(_propertyLinksByTemplateDocument, _propertyLinksByDocument);
+            CommonSystemUtilities.VerifyPropertyLinksCompare(_propertyLinksByTemplate, _propertyLinksByDocument);
 
             return true;
         }
@@ -86,7 +86,7 @@ namespace BL.Logic.DocumentCore.Commands
             Document.Accesses = CommonDocumentUtilities.GetNewDocumentAccesses(_context, Document.Events.First().Accesses);
 
             // prepare file list in Document. It will save it with document in DB
-            var toCopy = new Dictionary<InternalDocumentFile, InternalTemplateDocumentFile>();
+            var toCopy = new Dictionary<InternalDocumentFile, InternalTemplateFile>();
             var newOrdNum = 1;
             _document.DocumentFiles.ToList().ForEach(x =>
             {
@@ -94,7 +94,7 @@ namespace BL.Logic.DocumentCore.Commands
                 x.ExecutorPositionExecutorAgentId = _document.ExecutorPositionExecutorAgentId;
                 x.ExecutorPositionExecutorTypeId = _document.ExecutorPositionExecutorTypeId;
 
-                var fileToCopy = CommonDocumentUtilities.GetNewTemplateDocumentFile(_context,x);
+                var fileToCopy = CommonDocumentUtilities.GetNewTemplateFile(_context,x);
 
                 var newDoc = CommonDocumentUtilities.GetNewDocumentFile(_context, x, newOrdNum, 1);
                 newDoc.LastPdfAccess = DateTime.Now;

@@ -154,7 +154,7 @@ namespace BL.Logic.SystemServices.TaskManagerService
                     try
                     {
                         var pdfFilePeriod = _settingValues.GetClearOldPdfCopiesInDay(context);
-                        var fileTodelete = docFileDb.GetOldPdfForAttachedFiles(context, pdfFilePeriod);
+                        var fileTodelete = docFileDb.GetOldPdfForFiles(context, pdfFilePeriod);
                         foreach (var file in fileTodelete)
                         {
                             fileStore.DeletePdfCopy(context, file);

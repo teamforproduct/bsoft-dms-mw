@@ -17,28 +17,28 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 {
     public class AddTemplateFileCommand : BaseDocumentCommand
     {
-        private readonly ITemplateDocumentsDbProcess _operationDb;
+        private readonly ITemplateDbProcess _operationDb;
         private readonly IFileStore _fStore;
         private readonly IQueueWorkerService _queueWorkerService;
         private BaseFile _file;
         
 
-        public AddTemplateFileCommand(ITemplateDocumentsDbProcess operationDb, IFileStore fStore, IQueueWorkerService queueWorkerService)
+        public AddTemplateFileCommand(ITemplateDbProcess operationDb, IFileStore fStore, IQueueWorkerService queueWorkerService)
         {
             _operationDb = operationDb;
             _fStore = fStore;
             _queueWorkerService = queueWorkerService;
         }
 
-        private AddTemplateAttachedFile Model
+        private AddTemplateFile Model
         {
             get
             {
-                if (!(_param is AddTemplateAttachedFile))
+                if (!(_param is AddTemplateFile))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (AddTemplateAttachedFile)_param;
+                return (AddTemplateFile)_param;
             }
         }
 
@@ -54,11 +54,11 @@ namespace BL.Logic.DocumentCore.TemplateCommands
                 throw new CannotAccessToFile();
             _adminProc.VerifyAccess(_context, CommandType, false);
 
-            if (!_operationDb.CanAddTemplateAttachedFile(_context, Model, _file))
+            if (!_operationDb.CanAddTemplateFile(_context, Model, _file))
             {
                 throw new CouldNotAddTemplateFile();
             }
-            if (_operationDb.ExistsTemplateAttachedFiles(_context, new FilterTemplateAttachedFile
+            if (_operationDb.ExistsTemplateFiles(_context, new FilterTemplateFile
                 { TemplateId = Model.DocumentId, NameExactly = _file.Name, ExtentionExactly = _file.Extension }))
             {
                 throw new RecordNotUnique();
@@ -70,16 +70,16 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override object Execute()
         {
-            var att = CommonDocumentUtilities.GetNewTemplateDocumentFile(_context, Model, _file);
+            var att = CommonDocumentUtilities.GetNewTemplateFile(_context, Model, _file);
             att.OrderInDocument = _operationDb.GetNextFileOrderNumber(_context, Model.DocumentId);
             _fStore.SaveFile(_context, att);
-            _operationDb.AddNewFile(_context, att);
+            _operationDb.AddTemplateFile(_context, att);
             var admContext = new AdminContext(_context);
             _queueWorkerService.AddNewTask(admContext, () =>
             {
                 if (_fStore.CreatePdfFile(admContext, att))
                 {
-                    _operationDb.UpdateFilePdfView(admContext, att);
+                    _operationDb.ModifyTemplateFilePdfView(admContext, att);
                 }
             });
 

@@ -8,7 +8,7 @@ namespace BL.Model.DocumentCore.FrontModel
     /// <summary>
     /// Модель шаблона документа для фронта
     /// </summary>
-    public class FrontMainTemplateDocument
+    public class FrontMainTemplate
     {
         /// <summary>
         /// ИД Шаблона

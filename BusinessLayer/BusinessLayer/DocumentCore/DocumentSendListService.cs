@@ -81,11 +81,16 @@ namespace BL.Logic.DocumentCore
                     SendType = EnumSendTypes.SendForInformation,
                     SendTypeCode = EnumSendTypes.SendForInformation.ToString(),
                     SendTypeName = data.SendTypeName,
-                    TargetPositionId = x.Position.Id,
-                    TargetPositionName = x.Position.Name,
-                    TargetPositionExecutorAgentId = x.Position.ExecutorAgentId,
-                    TargetPositionExecutorAgentName = x.Position.ExecutorAgentName,
                     AccessLevel = EnumAccessLevels.PersonallyAndIOAndReferents,
+                    AccessGroups = new List<FrontDocumentSendListAccessGroup> { new FrontDocumentSendListAccessGroup
+                    {
+                        AccessGroupType = EnumEventAccessGroupTypes.Position,
+                        AccessType = EnumEventAccessTypes.Target,
+                        PositionId = x.Position.Id,
+                        Name = x.Position.Name,
+                        Details = new List<string> { x.Position.ExecutorAgentName },
+
+                    } }
                 }).ToList();
             data.Documents.ToList().ForEach(x=>x.SendLists = sendList.Where(y=>y.DocumentId == x.Id).ToList());
             var res = data.Documents.Where(x => x.SendLists.Any()).ToList();

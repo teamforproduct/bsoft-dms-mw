@@ -26,8 +26,8 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
     {
         private IHttpActionResult GetById(IContext context, int Id)
         {
-            var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpItem = tmpService.GetTemplateDocumentSendList(context, Id);
+            var tmpService = DmsResolver.Current.Get<ITemplateService>();
+            var tmpItem = tmpService.GetTemplateSendList(context, Id);
             var res = new JsonResult(tmpItem, this);
             return res;
         }
@@ -40,16 +40,16 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpGet]
         [Route("{Id:int}/" + Features.Plan)]
-        [ResponseType(typeof(List<FrontTemplateDocumentSendList>))]
-        public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterTemplateDocumentSendList filter)
+        [ResponseType(typeof(List<FrontTemplateSendList>))]
+        public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterTemplateSendList filter)
         {
-            if (filter == null) filter = new FilterTemplateDocumentSendList();
+            if (filter == null) filter = new FilterTemplateSendList();
             filter.TemplateId = Id;
 
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
-                var tmpItems = tmpService.GetTemplateDocumentSendLists(context, filter);
+                var tmpService = DmsResolver.Current.Get<ITemplateService>();
+                var tmpItems = tmpService.GetTemplateSendLists(context, filter);
                 var res = new JsonResult(tmpItems, this);
                 return res;
             });
@@ -63,7 +63,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Plan + "/{Id:int}")]
-        [ResponseType(typeof(FrontTemplateDocumentSendList))]
+        [ResponseType(typeof(FrontTemplateSendList))]
         public async Task<IHttpActionResult> Get(int Id)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
@@ -79,11 +79,11 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Plan)]
-        public async Task<IHttpActionResult> Post([FromBody]AddTemplateDocumentSendList model)
+        public async Task<IHttpActionResult> Post([FromBody]AddTemplateSendList model)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   var tmpItem = Action.Execute(context, EnumDocumentActions.AddTemplateDocumentSendList, model);
+                   var tmpItem = Action.Execute(context, EnumDocumentActions.AddTemplateSendList, model);
                    return GetById(context, tmpItem);
                });
         }
@@ -95,11 +95,11 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Plan)]
-        public async Task<IHttpActionResult> Put([FromBody]ModifyTemplateDocumentSendList model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyTemplateSendList model)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.ModifyTemplateDocumentSendList, model);
+                   Action.Execute(context, EnumDocumentActions.ModifyTemplateSendList, model);
                    return GetById(context, model.Id);
                });
         }
@@ -115,7 +115,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.DeleteTemplateDocumentSendList, Id);
+                   Action.Execute(context, EnumDocumentActions.DeleteTemplateSendList, Id);
                    var tmpItem = new FrontDeleteModel(Id);
                    var res = new JsonResult(tmpItem, this);
                    return res;

@@ -2,7 +2,7 @@
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
-    public class AddTemplateDocumentPaper
+    public class AddTemplatePaper
     {
         /// <summary>
         /// ИД документа

@@ -11,7 +11,7 @@ namespace BL.Model.DocumentCore.Filters
     /// <summary>
     /// Фильтр ограничительных списков рассылки в шаблонах
     /// </summary>
-    public class FilterTemplateDocumentRestrictedSendList: BaseFilter
+    public class FilterTemplateRestrictedSendList: BaseFilter
     {
         /// <summary>
         /// Ссылка на шаблон

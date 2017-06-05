@@ -24,7 +24,7 @@ namespace BL.Database.Common
                     EntityTypeId = document.EntityTypeId,
                     ClientId = document.ClientId,
                     DocumentSubject = document.DocumentSubject,
-                    TemplateDocumentId = document.TemplateDocumentId,
+                    TemplateDocumentId = document.TemplateId,
                     CreateDate = document.CreateDate,
                     DocumentTypeId = document.DocumentTypeId,
                     DocumentDirectionId = (int)document.DocumentDirection,
@@ -159,7 +159,30 @@ namespace BL.Database.Common
         {
             return accesses?.Any() ?? false ? accesses.Select(GetDbDocumentSendListAccessGroup) : null;
         }
-
+        public static TemplateDocumentSendListAccessGroups GetDbTemplateSendListAccessGroup(InternalTemplateSendListAccessGroup access)
+        {
+            return access == null ? null :
+                new TemplateDocumentSendListAccessGroups
+                {
+                    Id = access.Id,
+                    LastChangeDate = access.LastChangeDate,
+                    LastChangeUserId = access.LastChangeUserId,
+                    DocumentId = access.DocumentId,
+                    SendListId = access.SendListId,
+                    AccessTypeId = (int)access.AccessType,
+                    AccessGroupTypeId = (int)access.AccessGroupType,
+                    PositionId = access.PositionId,
+                    AgentId = access.AgentId,
+                    CompanyId = access.CompanyId,
+                    DepartmentId = access.DepartmentId,
+                    StandartSendListId = access.StandartSendListId,
+                    IsActive = access.IsActive,
+                };
+        }
+        public static IEnumerable<TemplateDocumentSendListAccessGroups> GetDbTemplateSendListAccessGroups(IEnumerable<InternalTemplateSendListAccessGroup> accesses)
+        {
+            return accesses?.Any() ?? false ? accesses.Select(GetDbTemplateSendListAccessGroup) : null;
+        }
         public static DocumentEvents GetDbDocumentEvent(InternalDocumentEvent evt)
         {
             return evt == null ? null :
@@ -339,14 +362,6 @@ namespace BL.Database.Common
                     IsInitial = sendList.IsInitial,
                     StartEventId = sendList.StartEventId,
                     CloseEventId = sendList.CloseEventId,
-                    //SourceAgentId = -1,
-                    //SourcePositionId = -1,
-                    //SourcePositionExecutorAgentId = sendList.SourcePositionExecutorAgentId,
-                    //SourcePositionExecutorTypeId = sendList.SourcePositionExecutorTypeId,
-                    //TargetAgentId = sendList.TargetAgentId,
-                    //TargetPositionId = sendList.TargetPositionId,
-                    //TargetPositionExecutorAgentId = sendList.TargetPositionExecutorAgentId,
-                    //TargetPositionExecutorTypeId = sendList.TargetPositionExecutorTypeId,
                     AccessGroups = isIncludeAccessGroups ? GetDbDocumentSendListAccessGroups(sendList.AccessGroups)?.ToList() : null,
                     LastChangeUserId = sendList.LastChangeUserId,
                     LastChangeDate = sendList.LastChangeDate
@@ -356,6 +371,31 @@ namespace BL.Database.Common
         public static IEnumerable<DocumentSendLists> GetDbDocumentSendLists(IEnumerable<InternalDocumentSendList> sendLists, bool isIncludeAccessGroups)
         {
             return sendLists?.Any() ?? false ? sendLists.Select(x => GetDbDocumentSendList(x, isIncludeAccessGroups)) : null;
+        }
+
+        public static TemplateDocumentSendLists GetDbTemplateSendList(InternalTemplateSendList sendList, bool isIncludeAccessGroups)
+        {
+            return sendList == null ? null :
+                new TemplateDocumentSendLists
+                {
+                    Id = sendList.Id,
+                    DocumentId = sendList.DocumentId,
+                    Stage = sendList.Stage,
+                    SendTypeId = (int)sendList.SendType,
+                    StageTypeId = (int?)sendList.StageType,
+                    TaskId = sendList.TaskId,
+                    IsWorkGroup = sendList.IsWorkGroup,
+                    IsAddControl = sendList.IsAddControl,
+                    SelfDescription = sendList.SelfDescription,
+                    SelfDueDay = sendList.SelfDueDay,
+                    SelfAttentionDay = sendList.SelfAttentionDay,
+                    Description = sendList.Description,
+                    DueDay = sendList.DueDay,
+                    AccessLevelId = (int)sendList.AccessLevel,
+                    AccessGroups = isIncludeAccessGroups ? GetDbTemplateSendListAccessGroups(sendList.AccessGroups)?.ToList() : null,
+                    LastChangeUserId = sendList.LastChangeUserId,
+                    LastChangeDate = sendList.LastChangeDate
+                };
         }
 
         public static DocumentRestrictedSendLists GetDbDocumentRestrictedSendList(InternalDocumentRestrictedSendList sendList)
@@ -451,7 +491,7 @@ namespace BL.Database.Common
             return papers?.Any() ?? false ? papers.Select(GetDbDocumentPaper) : null;
         }
 
-        public static TemplateDocumentPapers GetDbTemplateDocumentPaper(InternalTemplateDocumentPaper item)
+        public static TemplateDocumentPapers GetDbTemplateDocumentPaper(InternalTemplatePaper item)
         {
             return item == null ? null :
                 new TemplateDocumentPapers
@@ -470,7 +510,7 @@ namespace BL.Database.Common
                 };
         }
 
-        public static IEnumerable<TemplateDocumentPapers> GetDbTemplateDocumentPapers(IEnumerable<InternalTemplateDocumentPaper> papers)
+        public static IEnumerable<TemplateDocumentPapers> GetDbTemplateDocumentPapers(IEnumerable<InternalTemplatePaper> papers)
         {
             return papers?.Any() ?? false ? papers.Select(GetDbTemplateDocumentPaper) : null;
         }
@@ -489,7 +529,7 @@ namespace BL.Database.Common
                 };
         }
 
-        public static TemplateDocumentFiles GetDbTemplateFile(InternalTemplateDocumentFile docFile)
+        public static TemplateDocumentFiles GetDbTemplateFile(InternalTemplateFile docFile)
         {
             return new TemplateDocumentFiles
             {

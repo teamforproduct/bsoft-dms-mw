@@ -543,10 +543,10 @@ namespace BL.Model.Exception
         public DocumentNotFoundOrUserHasNoAccess() : base() { }
         public DocumentNotFoundOrUserHasNoAccess(System.Exception ex) : base(ex) { }
     }
-    public class TemplateDocumentNotFoundOrUserHasNoAccess : DmsExceptions
+    public class TemplateNotFoundOrUserHasNoAccess : DmsExceptions
     {
-        public TemplateDocumentNotFoundOrUserHasNoAccess() : base() { }
-        public TemplateDocumentNotFoundOrUserHasNoAccess(System.Exception ex) : base(ex) { }
+        public TemplateNotFoundOrUserHasNoAccess() : base() { }
+        public TemplateNotFoundOrUserHasNoAccess(System.Exception ex) : base(ex) { }
     }
     public class CouldNotAddTemplate : DmsExceptions
     {
@@ -573,10 +573,10 @@ namespace BL.Model.Exception
     }
 
 
-    public class TemplateDocumentIsNotValid : DmsExceptions
+    public class TemplateIsNotValid : DmsExceptions
     {
-        public TemplateDocumentIsNotValid() : base() { }
-        public TemplateDocumentIsNotValid(System.Exception ex) : base(ex) { }
+        public TemplateIsNotValid() : base() { }
+        public TemplateIsNotValid(System.Exception ex) : base(ex) { }
     }
     public class DocumentCouldNotBeRegistered : DmsExceptions
     {

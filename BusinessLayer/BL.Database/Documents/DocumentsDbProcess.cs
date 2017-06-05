@@ -1112,7 +1112,7 @@ namespace BL.Database.Documents
                     .Where(x => x.Id == templateDocumentId)
                     .Select(x => new InternalDocument
                     {
-                        TemplateDocumentId = x.Id,
+                        TemplateId = x.Id,
                         ClientId = x.ClientId,
                         EntityTypeId = x.EntityTypeId,
                         DocumentSubject = x.DocumentSubject,
@@ -1130,8 +1130,7 @@ namespace BL.Database.Documents
                     return null;
                 }
 
-                doc.Tasks =
-                    dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == context.Client.Id)
+                doc.Tasks = dbContext.TemplateDocumentTasksSet.Where(x => x.Document.ClientId == context.Client.Id)
                         .Where(y => y.DocumentId == templateDocumentId)
                         .Select(y => new InternalDocumentTask
                         {
@@ -1142,9 +1141,8 @@ namespace BL.Database.Documents
                             PositionId = y.PositionId ?? 0,
                         }).ToList();
 
-                doc.RestrictedSendLists =
-                    dbContext.TemplateDocumentRestrictedSendListsSet.Where(
-                        x => x.Document.ClientId == context.Client.Id).Where(y => y.DocumentId == templateDocumentId)
+                doc.RestrictedSendLists = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == context.Client.Id)
+                    .Where(y => y.DocumentId == templateDocumentId)
                         .Select(y => new InternalDocumentRestrictedSendList()
                         {
                             ClientId = doc.ClientId,
@@ -1153,18 +1151,15 @@ namespace BL.Database.Documents
                             AccessLevel = (EnumAccessLevels)y.AccessLevelId
                         }).ToList();
 
-                doc.SendLists =
-                    dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == context.Client.Id)
+                var sendLists = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == context.Client.Id)
                         .Where(y => y.DocumentId == templateDocumentId)
                         .Select(y => new InternalDocumentSendList()
                         {
+                            IdTemplateSendList = y.Id,
                             ClientId = doc.ClientId,
                             EntityTypeId = doc.EntityTypeId,
                             StageType = (EnumStageTypes?)y.StageTypeId,
                             SendType = (EnumSendTypes)y.SendTypeId,
-                            //SourcePositionId = y.SourcePositionId??0,
-                            TargetPositionId = y.TargetPositionId,
-                            TargetAgentId = y.TargetAgentId,
                             TaskName = y.Task.Task,
                             IsWorkGroup = y.IsWorkGroup,
                             IsAddControl = y.IsAddControl,
@@ -1175,8 +1170,10 @@ namespace BL.Database.Documents
                             Stage = y.Stage,
                             DueDay = y.DueDay,
                             AccessLevel = (EnumAccessLevels)y.AccessLevelId,
+                            SourcePositionId = y.AccessGroups.FirstOrDefault(z => z.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
                         }).ToList();
-
+                CommonQueries.SetAccessGroupsFromTemplate(context, sendLists);
+                doc.SendLists = sendLists;
                 doc.DocumentFiles =
                     dbContext.TemplateDocumentFilesSet.Where(x => x.Document.ClientId == context.Client.Id)
                         .Where(x => x.DocumentId == templateDocumentId)
@@ -1217,7 +1214,7 @@ namespace BL.Database.Documents
                     CommonQueries.GetInternalPropertyValues(context,
                         new FilterPropertyValue
                         {
-                            Object = new List<EnumObjects> { EnumObjects.TemplateDocument },
+                            Object = new List<EnumObjects> { EnumObjects.Template },
                             RecordId = new List<int> { templateDocumentId }
                         }).ToList();
                 transaction.Complete();
@@ -1235,7 +1232,7 @@ namespace BL.Database.Documents
                     {
                         ClientId = x.ClientId,
                         EntityTypeId = x.EntityTypeId,
-                        TemplateDocumentId = x.TemplateDocumentId,
+                        TemplateId = x.TemplateDocumentId,
                         DocumentTypeId = x.DocumentTypeId,
                         DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
                         DocumentSubject = x.DocumentSubject,
@@ -1262,18 +1259,16 @@ namespace BL.Database.Documents
                         PositionId = x.PositionId,
                     }
                     ).ToList();
-                doc.SendLists = dbContext.DocumentSendListsSet.Where(x => x.ClientId == context.Client.Id)
+                var sendLists = dbContext.DocumentSendListsSet.Where(x => x.ClientId == context.Client.Id)
                     .Where(x => x.DocumentId == documentId && x.IsInitial)
                     .Select(y => new InternalDocumentSendList
                     {
+                        Id = y.Id,
                         ClientId = y.ClientId,
                         EntityTypeId = y.EntityTypeId,
                         Stage = y.Stage,
                         StageType = (EnumStageTypes?)y.StageTypeId,
                         SendType = (EnumSendTypes)y.SendTypeId,
-                        //SourcePositionId = y.SourcePositionId,
-                        //TargetPositionId = y.TargetPositionId,
-                        //TargetAgentId = y.TargetAgentId,
                         TaskName = y.Task.Task,
                         IsWorkGroup = y.IsWorkGroup,
                         IsAddControl = y.IsAddControl,
@@ -1287,7 +1282,10 @@ namespace BL.Database.Documents
                         DueDay = y.DueDay,
                         AccessLevel = (EnumAccessLevels)y.AccessLevelId,
                         IsInitial = y.IsInitial,
+                        SourcePositionId = y.AccessGroups.FirstOrDefault(z => z.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
                     }).ToList();
+                CommonQueries.SetAccessGroups(context, sendLists);
+                doc.SendLists = sendLists;
                 doc.Papers = dbContext.DocumentPapersSet.Where(x => x.ClientId == context.Client.Id)
                     .Where(x => x.DocumentId == documentId)
                     .Select(y => new InternalDocumentPaper
@@ -1303,13 +1301,10 @@ namespace BL.Database.Documents
                         OrderNumber = y.OrderNumber,
                         PageQuantity = y.PageQuantity,
                     }).ToList();
-                doc.DocumentFiles =
-                    CommonQueries.GetInternalDocumentFiles(context, documentId)
-                        .Where(x => x.Type != EnumFileTypes.SubscribePdf)
-                        .ToList();
+                doc.DocumentFiles = CommonQueries.GetInternalDocumentFiles(context, documentId)
+                        .Where(x => x.Type != EnumFileTypes.SubscribePdf).ToList();
 
-                doc.Properties =
-                    CommonQueries.GetInternalPropertyValues(context,
+                doc.Properties = CommonQueries.GetInternalPropertyValues(context,
                         new FilterPropertyValue
                         {
                             Object = new List<EnumObjects> { EnumObjects.Documents },
@@ -1369,6 +1364,7 @@ namespace BL.Database.Documents
                             var taskId = doc.Tasks.Where(y => y.Task == x.TaskName).Select(y => y.Id).FirstOrDefault();
                             x.TaskId = (taskId == 0 ? null : (int?)taskId);
                         }
+                        x.AccessGroups.ToList().ForEach(y => y.DocumentId = doc.Id);
                     });
                     sendListsDb = ModelConverter.GetDbDocumentSendLists(sendLists, true).ToList();
                     dbContext.DocumentSendListsSet.AddRange(sendListsDb);
@@ -1413,7 +1409,7 @@ namespace BL.Database.Documents
                         ClientId = x.ClientId,
                         EntityTypeId = x.EntityTypeId,
                         ExecutorPositionId = x.ExecutorPositionId,
-                        TemplateDocumentId = x.TemplateDocumentId,
+                        TemplateId = x.TemplateDocumentId,
                         IsHard = x.TemplateDocument.IsHard,
                         DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
                         DocumentTypeId = x.DocumentTypeId,

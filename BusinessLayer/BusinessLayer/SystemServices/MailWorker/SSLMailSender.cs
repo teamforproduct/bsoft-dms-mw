@@ -36,10 +36,10 @@ namespace BL.Logic.SystemServices.MailWorker
             myMail.Body = mailData.Body;
             myMail.Priority = MailPriority.High;
 
-            if (mailData.AttachedFiles != null)
+            if (mailData.Files != null)
             {
                 foreach (
-                    var filePath in mailData.AttachedFiles.Where(filePath => !string.IsNullOrEmpty(filePath.Trim())))
+                    var filePath in mailData.Files.Where(filePath => !string.IsNullOrEmpty(filePath.Trim())))
                 {
                     MailAttachment MyAttachment = new MailAttachment(filePath.Trim());
                     myMail.Attachments.Add(MyAttachment);

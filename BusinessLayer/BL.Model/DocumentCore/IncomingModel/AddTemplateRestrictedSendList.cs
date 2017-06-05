@@ -6,7 +6,7 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Ограничительный список рассылки для шаблона документа
     /// </summary>
-    public class AddTemplateDocumentRestrictedSendList
+    public class AddTemplateRestrictedSendList
     {
         /// <summary>
         /// Ссылка на шаблон

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
-    public class FrontTemplateDocumentPaper
+    public class FrontTemplatePaper
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }

@@ -459,7 +459,7 @@ namespace BL.Database.Documents
             }
         }
 
-        public IEnumerable<InternalDocumentFile> GetOldPdfForAttachedFiles(IContext ctx, int pdfAge)
+        public IEnumerable<InternalDocumentFile> GetOldPdfForFiles(IContext ctx, int pdfAge)
         {
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())

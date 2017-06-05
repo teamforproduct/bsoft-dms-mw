@@ -5,29 +5,29 @@ using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore.InternalModel
 {
-    public class InternalTemplateDocumentRestrictedSendList : LastChangeInfo
+    public class InternalTemplateRestrictedSendList : LastChangeInfo
     {
         public int Id { get; set; }
         public int DocumentId { get; set; }
         public int? PositionId { get; set; }
         public EnumAccessLevels AccessLevel { get; set; }
 
-        public InternalTemplateDocumentRestrictedSendList()
+        public InternalTemplateRestrictedSendList()
         {
         }
 
-        public InternalTemplateDocumentRestrictedSendList(AddTemplateDocumentRestrictedSendList model)
+        public InternalTemplateRestrictedSendList(AddTemplateRestrictedSendList model)
         {
-            SetInternalTemplateDocumentRestrictedSendList(model);
+            SetInternalTemplateRestrictedSendList(model);
         }
 
-        public InternalTemplateDocumentRestrictedSendList(ModifyTemplateDocumentRestrictedSendList model)
+        public InternalTemplateRestrictedSendList(ModifyTemplateRestrictedSendList model)
         {
             Id = model.Id;
-            SetInternalTemplateDocumentRestrictedSendList(model);
+            SetInternalTemplateRestrictedSendList(model);
         }
 
-        private void SetInternalTemplateDocumentRestrictedSendList(AddTemplateDocumentRestrictedSendList model)
+        private void SetInternalTemplateRestrictedSendList(AddTemplateRestrictedSendList model)
         {
             DocumentId = model.DocumentId;
             PositionId = model.PositionId;

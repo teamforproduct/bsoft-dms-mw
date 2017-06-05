@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace BL.Database.DBModel.Template
 {
     [Table("TemplateDocumentAccesses")]
-    public class TemplateDocumentAccesses
+    public class TemplateAccesses
     {
         public int Id { get; set; }
         [Index("IX_DocumentPosition", 1, IsUnique = true)]

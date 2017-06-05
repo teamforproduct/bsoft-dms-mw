@@ -33,7 +33,7 @@ namespace BL.Database.DependencyInjection
             //Bind<IDictionariesDbProcess>().To<DictionariesDbProcess>().InSingletonScope();
             Bind<DictionariesDbProcess>().ToSelf().InSingletonScope();
             Bind<IDocumentsDbProcess>().To<DocumentsDbProcess>().InSingletonScope();
-            Bind<ITemplateDocumentsDbProcess>().To<TemplateDocumentsDbProcess>().InSingletonScope();
+            Bind<ITemplateDbProcess>().To<TemplateDbProcess>().InSingletonScope();
             Bind<IDocumentFileDbProcess>().To<DocumentFileDbProcess>().InSingletonScope();
 
             Bind<IDocumentSendListsDbProcess>().To<DocumentSendListsDbProcess>().InSingletonScope();

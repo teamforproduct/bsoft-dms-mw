@@ -13,7 +13,7 @@ namespace BL.Database.DBModel.Template
             this.Documents = new HashSet<Document.Documents>();
             this.SendLists = new HashSet<TemplateDocumentSendLists>();
             this.RestrictedSendLists = new HashSet<TemplateDocumentRestrictedSendLists>();
-            this.Accesses = new HashSet<TemplateDocumentAccesses>();
+            this.Accesses = new HashSet<TemplateAccesses>();
             this.DocumentFiles = new HashSet<TemplateDocumentFiles>();
             this.Tasks = new HashSet<TemplateDocumentTasks>();
             this.Papers = new HashSet<TemplateDocumentPapers>();
@@ -53,7 +53,7 @@ namespace BL.Database.DBModel.Template
         [ForeignKey("DocumentId")]
         public virtual ICollection<TemplateDocumentRestrictedSendLists> RestrictedSendLists { get; set; }
         [ForeignKey("DocumentId")]
-        public virtual ICollection<TemplateDocumentAccesses> Accesses { get; set; }
+        public virtual ICollection<TemplateAccesses> Accesses { get; set; }
         [ForeignKey("DocumentId")]
         public virtual ICollection<TemplateDocumentFiles> DocumentFiles { get; set; }
         [ForeignKey("DocumentId")]
