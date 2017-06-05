@@ -110,8 +110,8 @@ namespace BL.Logic.DocumentCore
             model.PositionWithActions?.ForEach(x =>
                x.Categories = x.Actions?.GroupBy(y => y.Category).Select(y => new InternalSystemActionCategoryForDocument
                {
-                   Category = y.Key,
-                   CategoryName = y.Key.HasValue ? "##l@EnumActionCategories:" + ((EnumActionCategories)y.Key).ToString() + "@l##" : null,
+                   Category = y.Key ?? EnumActionCategories.Actions,
+                   CategoryName = y.Key.HasValue ? "##l@EnumActionCategories:" + ((EnumActionCategories)y.Key).ToString() + "@l##" : "##l@EnumActionCategories:Actions@l##",
                    Actions = y.ToList()
                }).ToList()
             );

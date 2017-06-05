@@ -644,10 +644,10 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDocumentActions.CopyDocument, EnumObjects.Documents));
             items.Add(GetSysAct(EnumDocumentActions.ModifyDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: EnumActionCategories.Document));
             items.Add(GetSysAct(EnumDocumentActions.DeleteDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.D), category: EnumActionCategories.Document));
-            items.Add(GetSysAct(EnumDocumentActions.LaunchPlan, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.U), category: EnumActionCategories.Actions));
-            items.Add(GetSysAct(EnumDocumentActions.StopPlan, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.U), category: EnumActionCategories.Actions));
-            items.Add(GetSysAct(EnumDocumentActions.ChangeExecutor, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: EnumActionCategories.Actions));
-            items.Add(GetSysAct(EnumDocumentActions.RegisterDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.C), category: EnumActionCategories.Actions));
+            items.Add(GetSysAct(EnumDocumentActions.LaunchPlan, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.U), category: EnumActionCategories.DocumentActions));
+            items.Add(GetSysAct(EnumDocumentActions.StopPlan, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.U), category: EnumActionCategories.DocumentActions));
+            items.Add(GetSysAct(EnumDocumentActions.ChangeExecutor, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: EnumActionCategories.DocumentActions));
+            items.Add(GetSysAct(EnumDocumentActions.RegisterDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.C), category: EnumActionCategories.DocumentActions));
             items.Add(GetSysAct(EnumDocumentActions.MarkDocumentEventAsRead, EnumObjects.Documents));
 
             items.Add(GetSysAct(EnumDocumentActions.SendForInformation, EnumObjects.Documents));
@@ -686,8 +686,8 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDocumentActions.ModifyDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.U)));
             items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.D)));
 //            items.Add(GetSysAct(EnumDocumentActions.AddDocumentFileUseMainNameFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.C)));
-            items.Add(GetSysAct(EnumDocumentActions.AcceptDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.U), category: EnumActionCategories.Files));
-            items.Add(GetSysAct(EnumDocumentActions.RejectDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.U), category: EnumActionCategories.Files));
+            items.Add(GetSysAct(EnumDocumentActions.AcceptDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.U), category: EnumActionCategories.FileVersions));
+            items.Add(GetSysAct(EnumDocumentActions.RejectDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.U), category: EnumActionCategories.FileVersions));
             items.Add(GetSysAct(EnumDocumentActions.RenameDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.U)));
             items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentFileVersion, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.D)));
             items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentFileVersionFinal, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.D)));
@@ -700,7 +700,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDocumentActions.AddDocumentLink, EnumObjects.DocumentLinks, GetPermissionId(Modules.Documents, Features.Links, EnumAccessTypes.C)));
             items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentLink, EnumObjects.DocumentLinks, GetPermissionId(Modules.Documents, Features.Links, EnumAccessTypes.D)));
 
-            items.Add(GetSysAct(EnumDocumentActions.SendDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Events, EnumAccessTypes.C), category: EnumActionCategories.Actions));
+            items.Add(GetSysAct(EnumDocumentActions.SendDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Events, EnumAccessTypes.C), category: EnumActionCategories.DocumentActions));
             items.Add(GetSysAct(EnumDocumentActions.SendMessage, EnumObjects.DocumentEvents, GetPermissionId(Modules.Documents, Features.Events, EnumAccessTypes.C), category: EnumActionCategories.Informing));
             items.Add(GetSysAct(EnumDocumentActions.AddNote, EnumObjects.DocumentEvents, GetPermissionId(Modules.Documents, Features.Events, EnumAccessTypes.C), category: EnumActionCategories.Informing));
 
