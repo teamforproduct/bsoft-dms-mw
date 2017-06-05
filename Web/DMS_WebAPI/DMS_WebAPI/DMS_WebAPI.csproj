@@ -255,6 +255,7 @@
     <Compile Include="ControllersV3\Employees\EmployeeAddInOrgController.cs" />
     <Compile Include="ControllersV3\OrgPositions\PositionDocumentAccessesController.cs" />
     <Compile Include="ControllersV3\Documents\DocumentFileBinController.cs" />
+    <Compile Include="ControllersV3\System\AccountsController.cs" />
     <Compile Include="ControllersV3\System\LicencesCheckController.cs" />
     <Compile Include="ControllersV3\OrgDepartments\DepartmentAdminsController.cs" />
     <Compile Include="ControllersV3\Roles\RolePermissionsController.cs" />
@@ -472,6 +473,7 @@
     <Compile Include="Utilities\CommonTaskInitializer.cs" />
     <Compile Include="Utilities\CommonUtilities.cs" />
     <Compile Include="Utilities\GeneralSettings.cs" />
+    <Compile Include="Utilities\GoogleRecapcha.cs" />
     <Compile Include="Utilities\WebApiHelper.cs" />
     <Compile Include="Utilities\DimanicAuthorizeAttribute.cs" />
     <Compile Include="Utilities\StringExtentions.cs" />

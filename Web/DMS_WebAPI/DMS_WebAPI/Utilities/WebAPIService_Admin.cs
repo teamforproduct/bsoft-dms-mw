@@ -7,6 +7,7 @@ using BL.Model.Common;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.Users;
+using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Models;
 using System;
 using System.Threading.Tasks;
@@ -107,6 +108,7 @@ namespace DMS_WebAPI.Utilities
         {
             var user = GetUser(context, agentId);
             if (user == null) throw new UserIsNotDefined();
+
             user.EmailConfirmed = false;
             user.LastChangeDate = DateTime.UtcNow;
 
@@ -114,18 +116,26 @@ namespace DMS_WebAPI.Utilities
 
             if (!result.Succeeded) throw new UserParmsCouldNotBeChanged(result.Errors);
 
-            var emailConfirmationCode = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-
             var tmpService = DmsResolver.Current.Get<ISettingValues>();
             var addr = tmpService.GetClientAddress(context.Client.Code);
-            var callbackurl = new Uri(new Uri(addr), "email-confirmation").AbsoluteUri;
 
-            callbackurl += String.Format("?userId={0}&code={1}", user.Id, HttpUtility.UrlEncode(emailConfirmationCode));
+            await SendConfirmEmailMail(user, addr);
+
+        }
+
+        public async Task SendConfirmEmailMail(AspNetUsers User, string CallBackAddr)
+        {
+            var emailConfirmationCode = await UserManager.GenerateEmailConfirmationTokenAsync(User.Id);
+
+            var tmpService = DmsResolver.Current.Get<ISettingValues>();
+            var callbackurl = new Uri(new Uri(CallBackAddr), "email-confirmation").AbsoluteUri;
+
+            callbackurl += String.Format("?userId={0}&code={1}", User.Id, HttpUtility.UrlEncode(emailConfirmationCode));
 
             var m = new ChangeLoginModel
             {
                 Url = callbackurl,
-                FirstName = user.FirstName,
+                FirstName = User.FirstName,
             };
 
             var htmlContent = m.RenderPartialViewToString(RenderPartialView.ChangeLogin);
@@ -134,7 +144,7 @@ namespace DMS_WebAPI.Utilities
 
             var languages = DmsResolver.Current.Get<ILanguages>();
 
-            mailService.SendMessage(context, MailServers.Noreply, user.Email, languages.GetTranslation(user.LanguageId, "##l@EmailSubject:EmailConfirmation@l##"), htmlContent);
+            mailService.SendMessage(null, MailServers.Noreply, User.Email, languages.GetTranslation(User.LanguageId, "##l@EmailSubject:EmailConfirmation@l##"), htmlContent);
         }
 
         public async Task SwitchOffFingerprint(IContext context, Item model)

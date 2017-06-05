@@ -67,8 +67,7 @@ namespace DMS_WebAPI.Utilities
                 {
                     user = AddUserToClient(new AddWebUser
                     {
-                        FirstName = model.FirstName,
-                        LastName = model.LastName,
+                        FullName = model.FirstName + " " + model.LastName,
 
                         LanguageId = model.LanguageId,
 

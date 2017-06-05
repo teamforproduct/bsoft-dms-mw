@@ -35,6 +35,8 @@ namespace BL.Model.SystemCore
         public const string PaperList = "PaperList";
         public const string Licences = "Licences";
 
+        public const string Accounts = "Accounts";
+
         public static int GetId(string Name)
         {
             int res = 0;
@@ -72,6 +74,7 @@ namespace BL.Model.SystemCore
 
                 case Delegates:             res = 350; break;
                 case Clients:               res = 360; break;
+                case Accounts:              res = 370; break;
 
                 default: throw new System.Exception();
             }

@@ -9,6 +9,7 @@ using BL.Model.Common;
 using BL.Model.DictionaryCore.FrontModel.Employees;
 using BL.Model.Enums;
 using BL.Model.Exception;
+using BL.Model.Users;
 using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
@@ -70,7 +71,7 @@ namespace DMS_WebAPI.Utilities
 
             try
             {
-                res =  UserManager.FindByName(userName);
+                res = UserManager.FindByName(userName);
             }
             catch { }
 
@@ -184,10 +185,25 @@ namespace DMS_WebAPI.Utilities
             };
         }
 
+        public async Task RegisterUser(Account model)
+        {
+            var recapcha = DmsResolver.Current.Get<GoogleRecapcha>();
+            await recapcha.ValidateAsync(model.Recaptcha);
 
+            var languages = DmsResolver.Current.Get<ILanguages>();
 
-        private AspNetUsers AddUser(string fullName, string lastName, string userName, string userPassword, int languageId, string userEmail, string userPhone = "",
-            bool emailConfirmed = false, bool isChangePasswordRequired = true)
+            var languageId = languages.GetLanguageIdByCode(model.LanguageCode);
+
+            var user = await AddUserAsync(model.FullName, model.Email, model.Password, languageId, model.Email, model.PhoneNumber);
+
+            var tmpService = DmsResolver.Current.Get<ISettingValues>();
+            var addr = tmpService.GetAuthAddress();
+
+            await SendConfirmEmailMail(user, addr);
+        }
+
+        private AspNetUsers AddUser(string fullName, string userName, string userPassword, int languageId, string userEmail, string userPhone = "",
+            bool emailConfirmed = false, bool isChangePasswordRequired = false)
         {
             var now = DateTime.UtcNow;
 
@@ -204,16 +220,36 @@ namespace DMS_WebAPI.Utilities
                 LastChangeDate = now,
             };
 
-            using (var transaction = Transactions.GetTransaction())
+            var result = UserManager.Create(user, userPassword);
+
+            if (!result.Succeeded) throw new UserCouldNotBeAdded(userEmail, result.Errors);
+
+            return user;
+        }
+
+        private async Task<AspNetUsers> AddUserAsync(string fullName, string userName, string userPassword, int languageId, string userEmail, string userPhone = "",
+            bool emailConfirmed = false, bool isChangePasswordRequired = false)
+        {
+            var now = DateTime.UtcNow;
+
+            var user = new AspNetUsers
             {
-                var result = UserManager.Create(user, userPassword);
+                FirstName = fullName?.Trim(),
+                UserName = userName?.Trim(),
+                Email = userEmail?.Trim(),
+                LanguageId = languageId,
+                PhoneNumber = userPhone?.Trim(),
+                IsChangePasswordRequired = isChangePasswordRequired,
+                EmailConfirmed = emailConfirmed,
+                CreateDate = now,
+                LastChangeDate = now,
+            };
 
-                if (!result.Succeeded) throw new UserCouldNotBeAdded(userEmail, result.Errors);
+            var result = await UserManager.CreateAsync(user, userPassword);
 
-                transaction.Complete();
+            if (!result.Succeeded) throw new UserCouldNotBeAdded(userEmail, result.Errors);
 
-                return user;
-            }
+            return user;
         }
 
 
@@ -230,7 +266,7 @@ namespace DMS_WebAPI.Utilities
             {
                 if (isNew)
                 {
-                    user = AddUser(model.FirstName, model.LastName, model.Email, model.Password, model.LanguageId, model.Email, model.Phone,
+                    user = AddUser(model.FullName, model.Email, model.Password, model.LanguageId, model.Email, model.Phone,
                         model.EmailConfirmed, model.IsChangePasswordRequired);
 
                 }
