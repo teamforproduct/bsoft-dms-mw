@@ -59,17 +59,14 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 ex = new PlanPointHasAlredyBeenLaunched();
             }
-            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
-
             if (ex != null) CommonDocumentUtilities.ThrowError(_context, ex, Model);
             CommonDocumentUtilities.PlanDocumentPaperFromSendList(_context, _document, Model);
             return true;
         }
         public override object Execute()
         {
-            _document.Subscriptions = null;
             var newEvent = Model.CloseEvent = Model.StartEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
-            var ex = CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses,
+            var ex = CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent,
                 new VerifySubordination
                 {
                     SubordinationType = EnumSubordinationTypes.Informing,
@@ -79,6 +76,7 @@ namespace BL.Logic.DocumentCore.Commands
                 false, Model.AccessLevel);
             if (ex != null) CommonDocumentUtilities.ThrowError(_context, ex, Model);
             CommonDocumentUtilities.SetLastChange(_context, Model);
+            _document.Subscriptions = null;
             _document.SendLists = new List<InternalDocumentSendList> { Model };
 
             if (Model.IsAddControl)

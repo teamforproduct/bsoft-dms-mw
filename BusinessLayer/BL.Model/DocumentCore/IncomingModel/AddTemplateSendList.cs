@@ -24,10 +24,6 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// </summary>
         public int? TaskId { get; set; }
         /// <summary>
-        /// Признак "В рамках рабочей группы"
-        /// </summary>
-        public bool IsWorkGroup { get; set; }
-        /// <summary>
         /// Добавлять самоконтроль для отправителя
         /// </summary>
         public bool IsAddControl { get; set; }

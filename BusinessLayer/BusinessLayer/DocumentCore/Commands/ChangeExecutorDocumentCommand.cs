@@ -54,7 +54,6 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
             _context.SetCurrentPosition(_document.ExecutorPositionId);
             _adminProc.VerifyAccess(_context, CommandType);
             if (Model.PositionId == _context.CurrentPositionId)
@@ -102,7 +101,7 @@ namespace BL.Logic.DocumentCore.Commands
                 .Concat(new List<AccessGroup> { new AccessGroup { AccessType = EnumEventAccessTypes.Target, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = Model.PositionId } })
                 .ToList();
             var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.ChangeExecutor, Model.EventDate, Model.Description, null, null, null, evAcceesses);
-            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses, null, true, Model.AccessLevel);
+            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent, null, true, Model.AccessLevel);
             _document.Events = new List<InternalDocumentEvent> { newEvent };
             if (Model.PaperEvents?.Any() ?? false)
             {

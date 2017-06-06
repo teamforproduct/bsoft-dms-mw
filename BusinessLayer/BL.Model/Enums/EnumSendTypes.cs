@@ -2,8 +2,8 @@
 {
     public enum EnumSendTypes
     {
-        SendForResponsibleExecution = 10,
-        SendForControl = 20,
+        //SendForResponsibleExecution = 10,
+        //SendForControl = 20,
         SendForExecution = 30,
         SendForInformation = 40,
         SendForInformationExternal = 45, //Для сведения внешнему агенту

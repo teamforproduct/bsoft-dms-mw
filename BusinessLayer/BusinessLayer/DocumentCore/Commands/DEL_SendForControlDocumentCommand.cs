@@ -14,13 +14,14 @@ using BL.Model.DocumentCore.Filters;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    public class SendForControlDocumentCommand : BaseDocumentCommand
+    //TODO DEL
+    public class DEL_SendForControlDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentService _documentServ;
         private readonly IDocumentsDbProcess _documentDb;
         private readonly IDocumentOperationsDbProcess _operationDb;
 
-        public SendForControlDocumentCommand(IDocumentService documentServ, IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb)
+        public DEL_SendForControlDocumentCommand(IDocumentService documentServ, IDocumentsDbProcess documentDb, IDocumentOperationsDbProcess operationDb)
         {
             _documentServ = documentServ;
             _documentDb = documentDb;
@@ -36,10 +37,6 @@ namespace BL.Logic.DocumentCore.Commands
                     throw new WrongParameterTypeError();
                 }
                 var model = (InternalDocumentSendList)_param;
-                if (model.SendType != EnumSendTypes.SendForControl)
-                {
-                    throw new WrongParameterTypeError();
-                }
                 return (InternalDocumentSendList)_param;
             }
         }
@@ -51,6 +48,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
+            return false;
             _context.SetCurrentPosition(Model.SourcePositionId);
             _adminProc.VerifyAccess(_context, CommandType);   //TODO без позиций
             _document = _operationDb.SendForExecutionDocumentPrepare(_context, Model);
@@ -79,7 +77,6 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 ex = new ControlerHasAlreadyBeenDefined();
             }
-            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
             if (Model.TargetPositionId.HasValue
                 && !_adminProc.VerifySubordination(_context, new VerifySubordination
                 {
@@ -101,7 +98,7 @@ namespace BL.Logic.DocumentCore.Commands
             _document.Subscriptions = null;
 
             var newEvent = Model.CloseEvent = Model.StartEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, Model);
-            var ex = CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses,
+            var ex = CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent,
                 new VerifySubordination
                 {
                     SubordinationType = EnumSubordinationTypes.Informing,
@@ -115,7 +112,6 @@ namespace BL.Logic.DocumentCore.Commands
             _document.SendLists = new List<InternalDocumentSendList> { Model };
 
             var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, EnumEventTypes.ControlOn, EnumEventCorrespondentType.FromTargetToTarget, true, true); //TODO ? Can present copy
-            waitTarget.OnEvent.AddDescription = $"##l@TaskExecutor:Initiator@l## - {Model.InitiatorPositionExecutorAgentName}({Model.InitiatorPositionName})";
             _document.Waits = new List<InternalDocumentWait> { waitTarget };
             if (Model.IsAddControl)
             {

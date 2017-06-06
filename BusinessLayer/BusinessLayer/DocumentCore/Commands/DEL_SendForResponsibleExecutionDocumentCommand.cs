@@ -12,12 +12,15 @@ using BL.Model.DocumentCore.Filters;
 
 namespace BL.Logic.DocumentCore.Commands
 {
-    public class SendForResponsibleExecutionDocumentCommand : BaseDocumentCommand
+    /// <summary>
+    /// TODO DEL!!!
+    /// </summary>
+    public class DEL_SendForResponsibleExecutionDocumentCommand : BaseDocumentCommand
     {
         private readonly IDocumentService _documentServ;
         private readonly IDocumentOperationsDbProcess _operationDb;
 
-        public SendForResponsibleExecutionDocumentCommand(IDocumentService documentServ, IDocumentOperationsDbProcess operationDb)
+        public DEL_SendForResponsibleExecutionDocumentCommand(IDocumentService documentServ, IDocumentOperationsDbProcess operationDb)
         {
             _documentServ = documentServ;
             _operationDb = operationDb;
@@ -32,10 +35,6 @@ namespace BL.Logic.DocumentCore.Commands
                     throw new WrongParameterTypeError();
                 }
                 var model = (InternalDocumentSendList)_param;
-                if (model.SendType != EnumSendTypes.SendForResponsibleExecution)
-                {
-                    throw new WrongParameterTypeError();
-                }
                 return (InternalDocumentSendList)_param;
             }
         }
@@ -47,6 +46,7 @@ namespace BL.Logic.DocumentCore.Commands
 
         public override bool CanExecute()
         {
+            return false;
             _context.SetCurrentPosition(Model.SourcePositionId);
             _adminProc.VerifyAccess(_context, CommandType);   //TODO без позиций
             _document = _operationDb.SendForExecutionDocumentPrepare(_context, Model);
@@ -71,7 +71,6 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 ex = new ResponsibleExecutorHasAlreadyBeenDefined();
             }
-            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
             if (Model.TargetPositionId.HasValue
                 && !_adminProc.VerifySubordination(_context, new VerifySubordination
                 {
@@ -95,7 +94,7 @@ namespace BL.Logic.DocumentCore.Commands
 
             var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, _eventType, EnumEventCorrespondentType.FromSourceToTarget);
             var newEvent = Model.StartEvent = waitTarget.OnEvent;
-            var ex = CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses,
+            var ex = CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent,
                 new VerifySubordination
                 {
                     SubordinationType = EnumSubordinationTypes.Informing,
@@ -106,23 +105,6 @@ namespace BL.Logic.DocumentCore.Commands
             if (ex != null) CommonDocumentUtilities.ThrowError(_context, ex, Model);
             CommonDocumentUtilities.SetLastChange(_context, Model);
             _document.SendLists = new List<InternalDocumentSendList> { Model };
-
-            if (_document.Events?.Any() ?? false)   //TODO мультиполучатели?
-            {
-                var eventControler = _document.Events.First();
-                var accessSource = waitTarget.OnEvent.Accesses.First(x => x.AccessType == EnumEventAccessTypes.Source);
-                accessSource.PositionId = eventControler.TargetPositionId;
-                accessSource.AgentId = eventControler.TargetPositionExecutorAgentId;
-                accessSource.PositionExecutorTypeId = eventControler.TargetPositionExecutorTypeId;
-                if (Model.SourcePositionId != eventControler.TargetPositionId)
-                {
-                    _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model, EnumEventTypes.InfoSendForResponsibleExecutionReportingControler);
-                    waitTarget.OnEvent.AddDescription = $"##l@TaskExecutor:Initiator@l## - {Model.InitiatorPositionExecutorAgentName}({Model.InitiatorPositionName}), ##l@TaskExecutor:Controler@l## - {eventControler.TargetPositionExecutorAgentName}({eventControler.TargetPositionName})";
-                    CommonDocumentUtilities.SetLastChange(_context, waitTarget.OnEvent);
-                    if (waitTarget.OnEvent.Date == waitTarget.OnEvent.CreateDate)
-                        waitTarget.OnEvent.Date = waitTarget.OnEvent.CreateDate = waitTarget.OnEvent.LastChangeDate;
-                }
-            }
             _document.Waits = new List<InternalDocumentWait> { waitTarget };
             if (Model.IsAddControl)
             {

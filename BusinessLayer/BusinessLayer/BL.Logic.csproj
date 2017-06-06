@@ -331,8 +331,8 @@
     <Compile Include="DocumentCore\Commands\MarkExecutionDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\SendForExecutionDocumentCommand.cs" />
     <Compile Include="DocumentCore\Commands\SendForSigningDocumentCommand.cs" />
-    <Compile Include="DocumentCore\Commands\SendForResponsibleExecutionDocumentCommand.cs" />
-    <Compile Include="DocumentCore\Commands\SendForControlDocumentCommand.cs" />
+    <Compile Include="DocumentCore\Commands\DEL_SendForResponsibleExecutionDocumentCommand.cs" />
+    <Compile Include="DocumentCore\Commands\DEL_SendForControlDocumentCommand.cs" />
     <Compile Include="DocumentCore\PaperCommands\AddDocumentPaperListCommand.cs" />
     <Compile Include="DocumentCore\PaperCommands\AddDocumentPaperCommand.cs" />
     <Compile Include="DocumentCore\PaperCommands\DeleteDocumentPaperListCommand.cs" />

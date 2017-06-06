@@ -51,7 +51,6 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
             _executorPosition = CommonDocumentUtilities.GetExecutorAgentIdByPositionId(_context, _context.CurrentPositionId);
             if (_executorPosition?.ExecutorAgentId.HasValue ?? false)
             {

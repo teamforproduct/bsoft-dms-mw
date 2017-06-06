@@ -278,7 +278,7 @@ namespace BL.Database.SystemDb
                     LogDate = x.LogDate,
                     LogDate1 = x.LogDate1,
                     ObjectId = x.ObjectId,
-                    ObjectName = x.Object.Description,
+                    ObjectName = "##l@Objects:" + x.Object.Code + "@l##",
                     ActionId = x.ActionId,
                     ActionName = x.Action.Description,
                     RecordId = x.RecordId,
@@ -843,10 +843,10 @@ namespace BL.Database.SystemDb
 
                 dbContext.Database.ExecuteSqlCommand(
                 String.Format(@"INSERT INTO[DMS].[SystemObjects]
-                (Id, Code, [Description]) 
+                (Id, Code) 
                 VALUES
-                ({0},{1},{2})",
-                item.Id, "'" + item.Code + "'", "'" + item.Description + "'")
+                ({0},{1})",
+                item.Id, "'" + item.Code + "'")
                 );
 
                 dbContext.Database.ExecuteSqlCommand("SET IDENTITY_INSERT [DMS].[SystemObjects] OFF");
@@ -878,7 +878,7 @@ namespace BL.Database.SystemDb
                 {
                     Id = x.Id,
                     Code = x.Code,
-                    Description = x.Description,
+                    Description = "##l@Objects:" + x.Code + "@l##",
                 }).ToList();
 
                 transaction.Complete();
@@ -919,15 +919,6 @@ namespace BL.Database.SystemDb
                     var filterContains = PredicateBuilder.New<SystemObjects>(true);
                     filterContains = filter.NotContainsIDs.Aggregate(filterContains,
                         (current, value) => current.And(e => e.Id != value).Expand());
-                    qry = qry.Where(filterContains);
-                }
-
-                if (!string.IsNullOrEmpty(filter.Description))
-                {
-                    var filterContains = PredicateBuilder.New<SystemObjects>(false);
-                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Description).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Description.Contains(value)).Expand());
-
                     qry = qry.Where(filterContains);
                 }
             }
@@ -1005,7 +996,7 @@ namespace BL.Database.SystemDb
                     Description = x.Description,
                     ObjectId = x.ObjectId,
                     ObjectCode = x.Object.Code,
-                    ObjectDescription = x.Object.Description
+                    ObjectDescription = "##l@Objects:" + x.Object.Code + "@l##"
                 }).ToList();
 
                 transaction.Complete();
@@ -1698,7 +1689,7 @@ namespace BL.Database.SystemDb
                             new
                             {
                                 x.Stage,
-                                SendTypeId = x.SendTypeId == (int)EnumSendTypes.SendForControl ? 0 : x.SendTypeId
+                                SendTypeId = x.SendTypeId
                             })
                     .Select(x => x.Id);
 

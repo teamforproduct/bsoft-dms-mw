@@ -59,9 +59,6 @@ namespace BL.Logic.DocumentCore
                 //case EnumDocumentActions.SendForControlChange:
                 //    cmd = DmsResolver.Current.Get<ControlChangeDocumentCommand>();
                 //    break;
-                case EnumDocumentActions.SendForResponsibleExecutionChange:
-                    cmd = DmsResolver.Current.Get<ControlChangeDocumentCommand>();
-                    break;
                 case EnumDocumentActions.ControlTargetChange:
                     cmd = DmsResolver.Current.Get<ControlTargetChangeDocumentCommand>();
                     break;
@@ -168,13 +165,6 @@ namespace BL.Logic.DocumentCore
                     break;
                 case EnumDocumentActions.SendForConsideration:
                     cmd = DmsResolver.Current.Get<SendForInformationDocumentCommand>();
-                    break;
-                case EnumDocumentActions.SendForControl:
-                    cmd = DmsResolver.Current.Get<SendForControlDocumentCommand>();
-                    break;
-
-                case EnumDocumentActions.SendForResponsibleExecution:
-                    cmd = DmsResolver.Current.Get<SendForResponsibleExecutionDocumentCommand>();
                     break;
                 case EnumDocumentActions.SendForExecution:
                     cmd = DmsResolver.Current.Get<SendForExecutionDocumentCommand>();

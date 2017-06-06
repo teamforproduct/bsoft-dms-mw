@@ -51,8 +51,6 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
-            _operationDb.SetParentEventAccessesPrepare(_context, _document, Model.ParentEventId);
             return true;
         }
         public override object Execute()
@@ -63,7 +61,7 @@ namespace BL.Logic.DocumentCore.Commands
                 .ToList();
             var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.AddNote, Model.EventDate, 
                                                                         Model.Description, null, Model.ParentEventId, taskId, evAcceesses);
-            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);            
+            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent);            
             _document.Events = new List<InternalDocumentEvent> { newEvent };
             using (var transaction = Transactions.GetTransaction())
             {

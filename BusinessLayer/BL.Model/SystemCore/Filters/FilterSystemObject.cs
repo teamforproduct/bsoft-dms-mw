@@ -17,10 +17,6 @@ namespace BL.Model.SystemCore.Filters
         /// </summary>
         public List<int> NotContainsIDs { get; set; }
 
-        /// <summary>
-        /// Отрывок описания объектов системы
-        /// </summary>
-        public string Description { get; set; }
 
     }
 }

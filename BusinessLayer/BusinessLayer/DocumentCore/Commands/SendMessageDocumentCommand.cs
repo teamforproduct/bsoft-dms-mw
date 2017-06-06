@@ -51,8 +51,6 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
-            _operationDb.SetParentEventAccessesPrepare(_context, _document, Model.ParentEventId);
             return true;
         }
 
@@ -68,7 +66,7 @@ namespace BL.Logic.DocumentCore.Commands
             //{
             //    throw new NobodyIsChosen();
             //}
-            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
+            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent);
             _document.Events = new List<InternalDocumentEvent> { newEvent };
             using (var transaction = Transactions.GetTransaction())
             {

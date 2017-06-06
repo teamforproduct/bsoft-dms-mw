@@ -67,7 +67,6 @@ namespace BL.Logic.DocumentCore.SendListCommands
             {
                 throw new CouldNotPerformOperation();
             }
-
             _context.SetCurrentPosition(_sendList.SourcePositionId);
             _adminProc.VerifyAccess(_context, CommandType);
 

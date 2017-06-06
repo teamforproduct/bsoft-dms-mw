@@ -337,7 +337,6 @@ namespace BL.Database.Documents
                         SendType = (EnumSendTypes)y.SendTypeId,
                         StageType = (EnumStageTypes?)y.StageTypeId,
                         TaskName = y.Task.Task,
-                        IsWorkGroup = y.IsWorkGroup,
                         IsAddControl = y.IsAddControl,
                         SelfDescription = y.SelfDescription,
                         SelfDueDay = y.SelfDueDay,
@@ -509,7 +508,6 @@ namespace BL.Database.Documents
 
                     Description = x.Description,
                     Stage = x.Stage,
-                    IsWorkGroup = x.IsWorkGroup,
                     IsAddControl = x.IsAddControl,
                     TaskId = x.TaskId,
                     TaskName = x.Task.Task,
@@ -549,7 +547,6 @@ namespace BL.Database.Documents
                             SendTypeName = x.SendType.Name,
                             StageTypeName = x.StageType.Name,
                             AccessLevelName = x.AccessLevel.Name,
-                            IsWorkGroup = x.IsWorkGroup,
                             IsAddControl = x.IsAddControl,
                             SelfDueDay = x.SelfDueDay,
                             SelfAttentionDay = x.SelfAttentionDay,

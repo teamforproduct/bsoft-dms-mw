@@ -43,7 +43,7 @@ namespace BL.Logic.DocumentCore.Commands
                 _document.Waits.Where(
                     x =>
                         x.OnEvent.TargetPositionId == positionId &&
-                        x.OnEvent.TargetPositionId != x.OnEvent.SourcePositionId &&
+                        x.OnEvent.TargetPositionId != x.OnEvent.ControllerPositionId &&
                         x.OffEventId == null &&
                         !x.IsHasMarkExecution &&
                         //!markExecWaitId.Contains(x.Id) &&
@@ -71,8 +71,6 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new CouldNotPerformOperation();
             }
-            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
-            _operationDb.SetParentEventAccessesPrepare(_context, _document, Model.EventId);
             _context.SetCurrentPosition(_docWait.OnEvent.TargetPositionId);
             _adminProc.VerifyAccess(_context, CommandType);
             return true;
@@ -81,12 +79,12 @@ namespace BL.Logic.DocumentCore.Commands
         public override object Execute()
         {
             var evAcceesses = (Model.TargetCopyAccessGroups?.Where(x => x.AccessType == EnumEventAccessTypes.TargetCopy) ?? new List<AccessGroup>())
-                                    .Concat(new List<AccessGroup> { new AccessGroup { AccessType = EnumEventAccessTypes.Target, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = _docWait.OnEvent.SourcePositionId } })
+                                    .Concat(new List<AccessGroup> { new AccessGroup { AccessType = EnumEventAccessTypes.Target, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = _docWait.OnEvent.ControllerPositionId } })
                                     .Concat(CommonDocumentUtilities.GetAccessGroupsFileExecutors(_context, _document.Id, Model.AddDocumentFiles))
                 .ToList();
             var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, EnumEventTypes.MarkExecution, Model.EventDate, 
                                                                         Model.Description, null, Model.EventId, _docWait.OnEvent.TaskId, evAcceesses);
-            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
+            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent);
             var newWait = CommonDocumentUtilities.GetNewDocumentWait(_context, (int)EnumEntytiTypes.Document, _document.Id, newEvent);
             newWait.ParentId = _docWait.Id;
             _document.Waits = new List<InternalDocumentWait> { newWait };

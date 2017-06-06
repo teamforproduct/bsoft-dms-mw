@@ -315,6 +315,10 @@ namespace BL.Database.Admins
         public bool VerifySubordination(IContext ctx, VerifySubordination model)
         {
             var res = false;
+            if (model.TargetPosition?.Any() ?? false)
+            {
+                return true;
+            }
             if (model.SourcePositions?.Any() ?? false)
             {
                 model.SourcePositions = new List<int> { ctx.CurrentPositionId };

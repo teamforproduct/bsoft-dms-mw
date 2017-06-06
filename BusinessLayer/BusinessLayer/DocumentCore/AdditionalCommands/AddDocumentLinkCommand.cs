@@ -71,13 +71,14 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
         {
             CommonDocumentUtilities.SetLastChange(_context, _document);
             var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _document.Id, EnumEventTypes.AddLink);
-            if (!newEvent.SourcePositionExecutorAgentId.HasValue)
+            var sourceAccess = newEvent.Accesses.FirstOrDefault(x => x.AccessType == EnumEventAccessTypes.Source);
+            if (sourceAccess?.AgentId.HasValue?? false)
             {
                 throw new ExecutorAgentForPositionIsNotDefined();
             }
-            _document.ExecutorPositionId = newEvent.SourcePositionId ?? (int)EnumSystemPositions.AdminPosition;
-            _document.ExecutorPositionExecutorAgentId = newEvent.SourcePositionExecutorAgentId.Value;
-            _document.ExecutorPositionExecutorTypeId = newEvent.SourcePositionExecutorTypeId;
+            _document.ExecutorPositionId = sourceAccess.PositionId;
+            _document.ExecutorPositionExecutorAgentId = sourceAccess.AgentId.Value;
+            _document.ExecutorPositionExecutorTypeId = sourceAccess.PositionExecutorTypeId;
             _document.Events = new List<InternalDocumentEvent> { newEvent };
             _operationDb.AddDocumentLink(_context, _document);
             return null;

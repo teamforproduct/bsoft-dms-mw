@@ -67,8 +67,6 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new CouldNotPerformOperation();
             }
-            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
-            _operationDb.SetParentEventAccessesPrepare(_context, _document, Model.EventId);
             _context.SetCurrentPosition(_docWait.OnEvent.TargetPositionId);
             _adminProc.VerifyAccess(_context, CommandType);
             return true;
@@ -89,7 +87,7 @@ namespace BL.Logic.DocumentCore.Commands
                                     .ToList();
                 var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, EnumEventTypes.ControlTargetChange, Model.EventDate,
                                                                             Model.TargetDescription, addDescripton, Model.EventId, _docWait.OnEvent.TaskId, evAcceesses);
-                CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
+                CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent);
                 _document.Events = new List<InternalDocumentEvent> { newEvent };
                 using (var transaction = Transactions.GetTransaction())
                 {

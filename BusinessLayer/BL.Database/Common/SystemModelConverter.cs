@@ -27,7 +27,6 @@ namespace BL.Database.Common
             {
                 Id = item.Id,
                 Code = item.Code,
-                Description = item.Description,
             };
         }
 

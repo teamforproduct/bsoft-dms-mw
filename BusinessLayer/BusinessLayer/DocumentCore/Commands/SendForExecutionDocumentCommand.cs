@@ -59,45 +59,30 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 ex = new PlanPointHasAlredyBeenLaunched();
             }
-            else if (!Model.TargetPositionId.HasValue || Model.AccessGroups.Count(x => x.AccessType == EnumEventAccessTypes.Target) > 1)
+            else if (Model.AccessGroups.Count(x => x.AccessType == EnumEventAccessTypes.Controller) > 1 || Model.AccessGroups.Count(x => x.AccessType == EnumEventAccessTypes.Target) > 1)
             {
                 ex = new TargetIsNotDefined();
             }
-            else if (Model.IsWorkGroup && !Model.TaskId.HasValue)
-            {
-                ex = new TaskIsNotDefined();
-            }
-            else if (Model.IsWorkGroup
-                && (_document.Waits == null || !_document.Waits.Any() || _document.Waits.Count() > 1)
-                && (_document.Events == null || !_document.Events.Any() || _document.Events.Count() > 1))
-            {
-                ex = new ResponsibleExecutorIsNotDefined();
-            }
-            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
-            if (Model.TargetPositionId.HasValue
-                && !_adminProc.VerifySubordination(_context, new VerifySubordination
+
+            if (!_adminProc.VerifySubordination(_context, new VerifySubordination
                 {
                     SubordinationType = EnumSubordinationTypes.Execution,
-                    TargetPosition = new List<int> { Model.TargetPositionId.Value },
+                    TargetPosition = Model.AccessGroups.Where(x => (x.AccessType == EnumEventAccessTypes.Target || x.AccessType == EnumEventAccessTypes.Controller) && x.PositionId.HasValue).Select(x => x.PositionId.Value).ToList(),
                     SourcePositions = CommonDocumentUtilities.GetSourcePositionsForSubordinationVeification(_context, Model, _document),
                 }))
             {
                 ex = new SubordinationHasBeenViolated();
             }
-
             if (ex != null) CommonDocumentUtilities.ThrowError(_context, ex, Model);
-
             CommonDocumentUtilities.PlanDocumentPaperFromSendList(_context, _document, Model);
             return true;
         }
 
         public override object Execute()
         {
-            _document.Subscriptions = null;
-
             var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, _eventType, EnumEventCorrespondentType.FromSourceToTarget);
             var newEvent = Model.StartEvent = waitTarget.OnEvent;
-            var ex = CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses,
+            var ex = CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent,
                 new VerifySubordination
                 {
                     SubordinationType = EnumSubordinationTypes.Informing,
@@ -107,44 +92,8 @@ namespace BL.Logic.DocumentCore.Commands
                 false, Model.AccessLevel);
             if (ex != null) CommonDocumentUtilities.ThrowError(_context, ex, Model);
             CommonDocumentUtilities.SetLastChange(_context, Model);
+            _document.Subscriptions = null;
             _document.SendLists = new List<InternalDocumentSendList> { Model };
-
-            if (Model.IsWorkGroup)
-            {
-                if (_document.Waits?.Any() ?? false)    //TODO мультиполучатели?
-                {
-                    var waitRespExecutor = _document.Waits.FirstOrDefault();
-                    waitTarget.ParentId = waitRespExecutor.Id;
-                    var accessSource = waitTarget.OnEvent.Accesses.First(x => x.AccessType == EnumEventAccessTypes.Source);
-                    accessSource.PositionId = waitRespExecutor.OnEvent.TargetPositionId;
-                    accessSource.AgentId = waitRespExecutor.OnEvent.TargetPositionExecutorAgentId;
-                    accessSource.PositionExecutorTypeId = waitRespExecutor.OnEvent.TargetPositionExecutorTypeId;
-                    if (Model.SourcePositionId != waitRespExecutor.OnEvent.TargetPositionId)
-                    {
-                        _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model, EnumEventTypes.InfoSendForExecutionReportingResponsibleExecutor);
-                        waitTarget.OnEvent.AddDescription = $"##l@TaskExecutor:Initiator@l## - {Model.InitiatorPositionExecutorAgentName}({Model.InitiatorPositionName}), ##l@TaskExecutor:ResponsibleExecutor@l## - {waitRespExecutor.OnEvent.TargetPositionExecutorAgentName}({waitRespExecutor.OnEvent.TargetPositionName})";
-                        CommonDocumentUtilities.SetLastChange(_context, waitTarget.OnEvent);
-                        if (waitTarget.OnEvent.Date == waitTarget.OnEvent.CreateDate)
-                            waitTarget.OnEvent.Date = waitTarget.OnEvent.CreateDate = waitTarget.OnEvent.LastChangeDate;
-                    }
-                }
-                else if (_document.Events?.Any() ?? false)
-                {
-                    var eventControler = _document.Events.First();
-                    var accessSource = waitTarget.OnEvent.Accesses.First(x => x.AccessType == EnumEventAccessTypes.Source);
-                    accessSource.PositionId = eventControler.TargetPositionId;
-                    accessSource.AgentId = eventControler.TargetPositionExecutorAgentId;
-                    accessSource.PositionExecutorTypeId = eventControler.TargetPositionExecutorTypeId;
-                    if (Model.SourcePositionId != eventControler.TargetPositionId)
-                    {
-                        _document.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, Model, EnumEventTypes.InfoSendForResponsibleExecutionReportingControler);
-                        waitTarget.OnEvent.AddDescription = $"##l@TaskExecutor:Initiator@l## - {Model.InitiatorPositionExecutorAgentName}({Model.InitiatorPositionName}), ##l@TaskExecutor:Controler@l## - {eventControler.TargetPositionExecutorAgentName}({eventControler.TargetPositionName})";
-                        CommonDocumentUtilities.SetLastChange(_context, waitTarget.OnEvent);
-                        if (waitTarget.OnEvent.Date == waitTarget.OnEvent.CreateDate)
-                            waitTarget.OnEvent.Date = waitTarget.OnEvent.CreateDate = waitTarget.OnEvent.LastChangeDate;
-                    }
-                }
-            }
             _document.Waits = new List<InternalDocumentWait> { waitTarget };
             if (Model.IsAddControl)
             {

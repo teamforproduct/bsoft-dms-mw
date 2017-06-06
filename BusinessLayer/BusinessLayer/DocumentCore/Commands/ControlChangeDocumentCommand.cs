@@ -42,7 +42,7 @@ namespace BL.Logic.DocumentCore.Commands
             _actionRecords =
                 _document.Waits.Where(
                     x => (x.OnEvent.EventType == EnumEventTypes.AskPostponeDueDate && x.OnEvent.TargetPositionId == positionId ||
-                        x.OnEvent.EventType != EnumEventTypes.AskPostponeDueDate && x.OnEvent.SourcePositionId == positionId) &&
+                        x.OnEvent.EventType != EnumEventTypes.AskPostponeDueDate && x.OnEvent.ControllerPositionId == positionId) &&
                         x.OffEventId == null &&
                         CommonDocumentUtilities.PermissibleEventTypesForAction[CommandType]
                             .Contains(x.OnEvent.EventType != EnumEventTypes.AskPostponeDueDate ? x.OnEvent.EventType : _document.Waits.Where(y => y.Id == x.ParentId).Select(y => y.OnEvent.EventType).FirstOrDefault()))
@@ -64,17 +64,15 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _document = _operationDb.ControlChangeDocumentPrepare(_context, Model.EventId);
             _docWait = _document?.Waits?.FirstOrDefault();
-            if (_docWait?.OnEvent?.SourcePositionId == null
-                || !CanBeDisplayed(_docWait.OnEvent.SourcePositionId.Value)
+            if (_docWait?.OnEvent?.ControllerPositionId == null
+                || !CanBeDisplayed(_docWait.OnEvent.ControllerPositionId.Value)
                 )
             {
                 throw new CouldNotPerformOperation();
             }
             if (_docWait.IsHasAskPostponeDueDate)
                 _operationDb.ControlOffAskPostponeDueDateWaitPrepare(_context, _document);
-            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
-            _operationDb.SetParentEventAccessesPrepare(_context, _document, Model.EventId);
-            _context.SetCurrentPosition(_docWait.OnEvent.SourcePositionId);
+            _context.SetCurrentPosition(_docWait.OnEvent.ControllerPositionId);
             _adminProc.VerifyAccess(_context, CommandType);
             return true;
         }
@@ -100,7 +98,7 @@ namespace BL.Logic.DocumentCore.Commands
             var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, addDescripton,
                 null, //TODO SET PARENT EVENT ON DBLEVEL!!!
                 _docWait.OnEvent.TaskId, evAcceesses);
-            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
+            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent);
 
             var oldEvent = _docWait.OnEvent;
 

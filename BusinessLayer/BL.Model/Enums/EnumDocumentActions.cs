@@ -88,7 +88,7 @@
 
         SendForExecutionChange = 100024, // Изменить параметры направлен для исполнения
         //SendForControlChange = 100025, // Изменить параметры направлен для исполнения (на контроль)
-        SendForResponsibleExecutionChange = 100026, // Изменить параметры направлен для исполнения (отв. исполнитель)
+        //SendForResponsibleExecutionChange = 100026, // Изменить параметры направлен для исполнения (отв. исполнитель)
 
         /// <summary>
         /// Изменить параметры контроля для исполнителя
@@ -103,12 +103,12 @@
         /// <summary>
         /// Направить для контроля
         /// </summary>
-        SendForControl = 100030,
+        //SendForControl = 100030,
 
         /// <summary>
         /// Направить для ответственного исполнения 
         /// </summary>
-        SendForResponsibleExecution = 100031,
+        //SendForResponsibleExecution = 100031,
 
         /// <summary>
         /// Направить для исполнения

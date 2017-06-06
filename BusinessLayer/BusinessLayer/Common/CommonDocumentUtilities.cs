@@ -47,25 +47,20 @@ namespace BL.Logic.Common
 
                 { EnumDocumentActions.ControlChange, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.ControlChange } },
 
-                { EnumDocumentActions.SendForResponsibleExecutionChange, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForResponsibleExecutionChange } },
-
                 { EnumDocumentActions.SendForExecutionChange, new List<EnumEventTypes> { EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange} },
 
-                //{ EnumDocumentActions.SendForControlChange, new List<EnumEventTypes> { EnumEventTypes.SendForControl, EnumEventTypes.SendForControlChange} },
-
-                { EnumDocumentActions.ControlTargetChange, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution,
-                                                                                      EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange,
+                { EnumDocumentActions.ControlTargetChange, new List<EnumEventTypes> { EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange,
                                                                                      } },
 
-                { EnumDocumentActions.ControlOff, new List<EnumEventTypes> { EnumEventTypes.ControlOn,/* EnumEventTypes.SendForControl,*/ EnumEventTypes.ControlChange/*, EnumEventTypes.SendForControlChange*/ } },
+                { EnumDocumentActions.ControlOff, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.ControlChange } },
 
-                { EnumDocumentActions.AskPostponeDueDate, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
-                { EnumDocumentActions.CancelPostponeDueDate, new List<EnumEventTypes> { EnumEventTypes.AskPostponeDueDate, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
+                { EnumDocumentActions.AskPostponeDueDate, new List<EnumEventTypes> { EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange } },
+                { EnumDocumentActions.CancelPostponeDueDate, new List<EnumEventTypes> { EnumEventTypes.AskPostponeDueDate, EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange } },
 
-                { EnumDocumentActions.MarkExecution, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
-                { EnumDocumentActions.CancelExecution, new List<EnumEventTypes> { EnumEventTypes.MarkExecution, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
-                { EnumDocumentActions.AcceptResult, new List<EnumEventTypes> { EnumEventTypes.MarkExecution, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
-                { EnumDocumentActions.RejectResult, new List<EnumEventTypes> { EnumEventTypes.MarkExecution, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
+                { EnumDocumentActions.MarkExecution, new List<EnumEventTypes> { EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange } },
+                { EnumDocumentActions.CancelExecution, new List<EnumEventTypes> { EnumEventTypes.MarkExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange } },
+                { EnumDocumentActions.AcceptResult, new List<EnumEventTypes> { EnumEventTypes.MarkExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange } },
+                { EnumDocumentActions.RejectResult, new List<EnumEventTypes> { EnumEventTypes.MarkExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange } },
 
                 { EnumDocumentActions.RejectSigning, new List<EnumEventTypes> { EnumEventTypes.SendForSigning} },
                 { EnumDocumentActions.RejectАpproval, new List<EnumEventTypes> { EnumEventTypes.SendForАpproval } },
@@ -130,9 +125,10 @@ namespace BL.Logic.Common
                 {
                     sl.IsInitial = isInitial.Value;
                 }
-                if (sl.SourcePositionId.HasValue)
+                var sourceAccess = sl.AccessGroups.FirstOrDefault(y => y.AccessType == EnumEventAccessTypes.Source);
+                if (sourceAccess != null)
                 {
-                    sl.AccessGroups.FirstOrDefault(y => y.AccessType == EnumEventAccessTypes.Source).PositionId = context.CurrentPositionId;
+                    sourceAccess.PositionId = context.CurrentPositionId;
                 }
                 else
                 {
@@ -144,7 +140,7 @@ namespace BL.Logic.Common
                         ClientId = sl.ClientId,
                         EntityTypeId = sl.EntityTypeId,
                         IsActive = true,
-                        PositionId = context.CurrentPositionId,                        
+                        PositionId = context.CurrentPositionId,
                     });
                     sl.AccessGroups = accessGroups;
                 }
@@ -319,7 +315,6 @@ namespace BL.Logic.Common
             sendList.AccessLevel = model.AccessLevel;
             sendList.IsInitial = model.IsInitial;
             sendList.TaskId = taskId;
-            sendList.IsWorkGroup = model.IsWorkGroup;
             sendList.IsAddControl = model.IsAddControl;
             sendList.SelfDueDate = model.SelfDueDate;
             sendList.SelfDueDay = model.SelfDueDay;
@@ -559,7 +554,6 @@ namespace BL.Logic.Common
                 DueDay = model.DueDay,
                 AccessLevel = model.AccessLevel,
                 IsInitial = model.IsInitial,
-                IsWorkGroup = model.IsWorkGroup,
                 IsAddControl = model.IsAddControl,
                 SelfDueDate = model.SelfDueDate,
                 SelfDueDay = model.SelfDueDay,
@@ -590,12 +584,11 @@ namespace BL.Logic.Common
         {
             var res = new InternalTemplateSendList
             {
-                Id = model is ModifyTemplateSendList ? (model as ModifyTemplateSendList).Id: 0,
+                Id = model is ModifyTemplateSendList ? (model as ModifyTemplateSendList).Id : 0,
                 DocumentId = model.DocumentId,
                 SendType = model.SendType,
                 StageType = model.StageType,
                 TaskId = model.TaskId,
-                IsWorkGroup = model.IsWorkGroup,
                 IsAddControl = model.IsAddControl,
                 SelfDescription = model.SelfDescription,
                 SelfDueDay = model.SelfDueDay,
@@ -769,14 +762,14 @@ namespace BL.Logic.Common
                 Date = DateTime.UtcNow,
                 CreateDate = DateTime.UtcNow,
                 Description = description,
-                SourceAgentId = sourceAgentId ?? context.CurrentAgentId,
+                TargetPositionId = targetPositionId ?? context.CurrentPositionId,   //TODO multi
                 SourcePositionId = sourcePositionId ?? context.CurrentPositionId,
-                SourcePositionExecutorAgentId = IsMarkPlan ? sourcePositionExecutor.ExecutorAgentId : null,
-                SourcePositionExecutorTypeId = IsMarkPlan ? sourcePositionExecutor.ExecutorTypeId : null,
-                TargetPositionId = targetPositionId ?? context.CurrentPositionId,
-                TargetPositionExecutorAgentId = IsMarkPlan ? targetPositionExecutor.ExecutorAgentId : null,
-                TargetPositionExecutorTypeId = IsMarkPlan ? targetPositionExecutor.ExecutorTypeId : null,
-                TargetAgentId = targetAgentId,
+                //SourceAgentId = sourceAgentId ?? context.CurrentAgentId,
+                //SourcePositionExecutorAgentId = IsMarkPlan ? sourcePositionExecutor.ExecutorAgentId : null,
+                //SourcePositionExecutorTypeId = IsMarkPlan ? sourcePositionExecutor.ExecutorTypeId : null,
+                //TargetPositionExecutorAgentId = IsMarkPlan ? targetPositionExecutor.ExecutorAgentId : null,
+                //TargetPositionExecutorTypeId = IsMarkPlan ? targetPositionExecutor.ExecutorTypeId : null,
+                //TargetAgentId = targetAgentId,
                 PaperPlanAgentId = IsMarkPlan ? (int?)(sourceAgentId ?? context.CurrentAgentId) : null,
                 PaperPlanDate = IsMarkPlan ? (DateTime?)DateTime.UtcNow : null,
                 PaperSendAgentId = IsMarkRecieve ? (int?)context.CurrentAgentId : null,
@@ -1022,19 +1015,28 @@ namespace BL.Logic.Common
             return uiElements;
         }
 
-        public static DmsExceptions VerifyAndSetDocumentAccess(IContext ctx, InternalDocument document, IEnumerable<InternalDocumentEventAccess> accesses, VerifySubordination modelVerifySubordination = null, bool isThrowException = true, EnumAccessLevels accessLevel = EnumAccessLevels.PersonallyAndIOAndReferents)
+        public static DmsExceptions VerifyAndSetDocumentAccess(IContext ctx, InternalDocument document, InternalDocumentEvent newEvent, VerifySubordination modelVerifySubordination = null, bool isThrowException = true, EnumAccessLevels accessLevel = EnumAccessLevels.PersonallyAndIOAndReferents)
         {
-            if (!VerifyAccessesByRestrictedSendLists(ctx, document.RestrictedSendLists, accesses, isThrowException)) return new DocumentSendListNotFoundInDocumentRestrictedSendList();
-            var targetPosition = accesses.Where(x => x.AccessType != EnumEventAccessTypes.Source && x.PositionId.HasValue).Select(x => x.PositionId.Value).ToList();
-            if (document.ParentEventAccesses?.Any(x => x.PositionId.HasValue) ?? false)
+            var operationDb = DmsResolver.Current.Get<IDocumentOperationsDbProcess>();
+            if (!document.IsRestrictedSendListsLoaded)
             {
-                targetPosition = targetPosition.Where(x => !document.ParentEventAccesses.Where(y => y.PositionId.HasValue).Any(y => y.PositionId.Value == x)).ToList();
+                operationDb.SetRestrictedSendListsPrepare(ctx, document);
+            }
+            if (!VerifyAccessesByRestrictedSendLists(ctx, document.RestrictedSendLists, newEvent.Accesses, isThrowException)) return new DocumentSendListNotFoundInDocumentRestrictedSendList();
+            var targetPosition = newEvent.Accesses.Where(x => x.AccessType != EnumEventAccessTypes.Source && x.PositionId.HasValue).Select(x => x.PositionId.Value).ToList();
+            if (newEvent.ParentEventId.HasValue)
+            {
+                operationDb.SetParentEventAccessesPrepare(ctx, document, newEvent.ParentEventId.Value);
+                if (document.ParentEventAccesses?.Any(x => x.PositionId.HasValue) ?? false)
+                {
+                    targetPosition = targetPosition.Where(x => !document.ParentEventAccesses.Where(y => y.PositionId.HasValue).Any(y => y.PositionId.Value == x)).ToList();
+                }
             }
             if (!DmsResolver.Current.Get<IAdminService>().VerifySubordination(ctx,
                 modelVerifySubordination ?? new VerifySubordination { SubordinationType = EnumSubordinationTypes.Informing, TargetPosition = targetPosition, },
                 isThrowException))
                 return new SubordinationHasBeenViolated();
-            document.Accesses = GetNewDocumentAccesses(ctx, accesses.Where(x => x.PositionId.HasValue && targetPosition.Contains(x.PositionId.Value)), accessLevel);
+            document.Accesses = GetNewDocumentAccesses(ctx, newEvent.Accesses.Where(x => x.PositionId.HasValue && targetPosition.Contains(x.PositionId.Value)), accessLevel);
             return null;
         }
 
@@ -1070,26 +1072,26 @@ namespace BL.Logic.Common
             //    throw new DocumentSendListNotFoundInDocumentRestrictedSendList();
             //}
 
-            if (doc.IsHard)
-            {
-                if (doc.Template.RestrictedSendLists.Any()
-                    && doc.Template.RestrictedSendLists.GroupJoin(doc.RestrictedSendLists
-                        , trsl => trsl.PositionId
-                        , rsl => rsl.PositionId
-                        , (trsl, rsls) => new { trsl, rsls }).Any(x => x.rsls.Count() == 0))
-                {
-                    throw new DocumentRestrictedSendListDoesNotMatchTheTemplate();
-                }
+            //if (doc.IsHard)
+            //{
+            //    if (doc.Template.RestrictedSendLists.Any()
+            //        && doc.Template.RestrictedSendLists.GroupJoin(doc.RestrictedSendLists
+            //            , trsl => trsl.PositionId
+            //            , rsl => rsl.PositionId
+            //            , (trsl, rsls) => new { trsl, rsls }).Any(x => x.rsls.Count() == 0))
+            //    {
+            //        throw new DocumentRestrictedSendListDoesNotMatchTheTemplate();
+            //    }
 
-                if (doc.Template.SendLists.Any()
-                    && doc.Template.SendLists.GroupJoin(doc.SendLists
-                        , trsl => new { trsl.TargetPositionId, trsl.SendType }
-                        , rsl => new { rsl.TargetPositionId, rsl.SendType }
-                        , (trsl, rsls) => new { trsl, rsls }).Any(x => x.rsls.Count() == 0))
-                {
-                    throw new DocumentSendListDoesNotMatchTheTemplate();
-                }
-            }
+            //    if (doc.Template.SendLists.Any()
+            //        && doc.Template.SendLists.GroupJoin(doc.SendLists
+            //            , trsl => new { trsl.TargetPositionId, trsl.SendType }
+            //            , rsl => new { rsl.TargetPositionId, rsl.SendType }
+            //            , (trsl, rsls) => new { trsl, rsls }).Any(x => x.rsls.Count() == 0))
+            //    {
+            //        throw new DocumentSendListDoesNotMatchTheTemplate();
+            //    }
+            //}
         }
 
         public static IEnumerable<FrontDocumentSendListStage> GetSendListStage(IEnumerable<FrontDocumentSendList> sendLists)
@@ -1149,14 +1151,6 @@ namespace BL.Logic.Common
         public static List<int> GetSourcePositionsForSubordinationVeification(IContext context, InternalDocumentSendList sendList, InternalDocument document, bool isTakeSendList = false)
         {
             var res = new List<int> { sendList.SourcePositionId.Value };
-            if (document.Events?.Any() ?? false)
-            {
-                res.AddRange(document.Events.Select(x => x.SourcePositionId.Value));
-            }
-            if (document.Waits?.Any() ?? false)
-            {
-                res.AddRange(document.Waits.Select(x => x.OnEvent.SourcePositionId.Value));
-            }
             if (document.Subscriptions?.Any() ?? false)
             {
                 res.AddRange(document.Subscriptions.Select(x => x.DoneEvent.SourcePositionId.Value));

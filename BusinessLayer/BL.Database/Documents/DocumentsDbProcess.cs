@@ -1161,7 +1161,6 @@ namespace BL.Database.Documents
                             StageType = (EnumStageTypes?)y.StageTypeId,
                             SendType = (EnumSendTypes)y.SendTypeId,
                             TaskName = y.Task.Task,
-                            IsWorkGroup = y.IsWorkGroup,
                             IsAddControl = y.IsAddControl,
                             SelfDueDay = y.SelfDueDay,
                             SelfDescription = y.SelfDescription,
@@ -1170,7 +1169,6 @@ namespace BL.Database.Documents
                             Stage = y.Stage,
                             DueDay = y.DueDay,
                             AccessLevel = (EnumAccessLevels)y.AccessLevelId,
-                            SourcePositionId = y.AccessGroups.FirstOrDefault(z => z.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
                         }).ToList();
                 CommonQueries.SetAccessGroupsFromTemplate(context, sendLists);
                 doc.SendLists = sendLists;
@@ -1270,7 +1268,6 @@ namespace BL.Database.Documents
                         StageType = (EnumStageTypes?)y.StageTypeId,
                         SendType = (EnumSendTypes)y.SendTypeId,
                         TaskName = y.Task.Task,
-                        IsWorkGroup = y.IsWorkGroup,
                         IsAddControl = y.IsAddControl,
                         SelfDescription = y.SelfDescription,
                         SelfDueDate = y.SelfDueDate,
@@ -1282,10 +1279,10 @@ namespace BL.Database.Documents
                         DueDay = y.DueDay,
                         AccessLevel = (EnumAccessLevels)y.AccessLevelId,
                         IsInitial = y.IsInitial,
-                        SourcePositionId = y.AccessGroups.FirstOrDefault(z => z.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
                     }).ToList();
                 CommonQueries.SetAccessGroups(context, sendLists);
                 doc.SendLists = sendLists;
+                DmsResolver.Current.Get<IDocumentOperationsDbProcess>().SetRestrictedSendListsPrepare(context, doc);
                 doc.Papers = dbContext.DocumentPapersSet.Where(x => x.ClientId == context.Client.Id)
                     .Where(x => x.DocumentId == documentId)
                     .Select(y => new InternalDocumentPaper
@@ -1599,22 +1596,7 @@ namespace BL.Database.Documents
                     return null;
                 }
                 var strDocumentDirection = ((int)doc.DocumentDirection).ToString();
-                doc.Subscriptions = dbContext.DocumentSubscriptionsSet.Where(x => x.ClientId == context.Client.Id)
-                    .Where(x => x.DocumentId == model.DocumentId && x.SubscriptionState.IsSuccess)
-                    .Select(x => new InternalDocumentSubscription
-                    {
-                        Id = x.Id,
-                        ClientId = x.ClientId,
-                        EntityTypeId = x.EntityTypeId,
-                        SubscriptionStatesId = x.SubscriptionStateId,
-                        SubscriptionStatesIsSuccess = x.SubscriptionState.IsSuccess,
-                        DoneEvent = new InternalDocumentEvent
-                        {
-                            ClientId = x.ClientId,
-                            EntityTypeId = x.EntityTypeId,
-                            SourcePositionId = x.DoneEvent.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
-                        }
-                    }).ToList();
+                CommonQueries.SetSuccessfulSubscriptions(context,doc);
                 var regJournal =
                     dbContext.DictionaryRegistrationJournalsSet.Where(x => x.ClientId == context.Client.Id)
                         .Where(x => x.Id == model.RegistrationJournalId)
@@ -1844,6 +1826,7 @@ namespace BL.Database.Documents
                         ClientId = x.ClientId,
                         EntityTypeId = x.EntityTypeId,
                     }).ToList();
+                DmsResolver.Current.Get<IDocumentOperationsDbProcess>().SetRestrictedSendListsPrepare(context, doc);
                 transaction.Complete();
                 return doc;
             }

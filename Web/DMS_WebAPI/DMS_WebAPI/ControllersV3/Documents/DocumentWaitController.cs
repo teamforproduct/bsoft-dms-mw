@@ -253,22 +253,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
                    return res;
                });
         }
-        /// <summary>
-        /// Изменяет параметры контроля направлен для исполнения(отв. исполнитель)
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpPut]
-        [Route(Features.Waits + "/SendForResponsibleExecutionChange")]
-        public async Task<IHttpActionResult> SendForResponsibleExecutionChange([FromBody]ControlChange model)
-        {
-            return await SafeExecuteAsync(ModelState, (context, param) =>
-               {
-                   Action.Execute(context, EnumDocumentActions.SendForResponsibleExecutionChange, model);
-                   var res = new JsonResult(null, this);
-                   return res;
-               });
-        }
 
         /// <summary>
         /// Изменяет параметры контроля, регулируемые исполнителем

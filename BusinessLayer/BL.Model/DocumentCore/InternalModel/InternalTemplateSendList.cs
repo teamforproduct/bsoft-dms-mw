@@ -15,7 +15,6 @@ namespace BL.Model.DocumentCore.InternalModel
         public int? TargetAgentId { get; set; }
 
         public int? TaskId { get; set; }
-        public bool IsWorkGroup { get; set; }
         public bool IsAddControl { get; set; }
         public string SelfDescription { get; set; }
         public int? SelfDueDay { get; set; }

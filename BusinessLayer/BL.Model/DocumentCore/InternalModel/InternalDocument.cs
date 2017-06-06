@@ -99,6 +99,7 @@ namespace BL.Model.DocumentCore.InternalModel
         public string CertificateSign { get; set; }
         public int? OldLinkId { get; set; }
         public int? NewLinkId { get; set; }
+        public bool IsRestrictedSendListsLoaded { get; set; }        
         public InternalTemplate Template { get; set; }
         public IEnumerable<InternalDocumentRestrictedSendList> RestrictedSendLists { get; set; }
         public IEnumerable<InternalDocumentSendList> SendLists { get; set; }
