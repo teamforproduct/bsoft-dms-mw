@@ -1218,6 +1218,8 @@ namespace BL.Logic.DictionaryCore
         {
             if (filter == null) filter = new FilterDictionaryStandartSendList();
 
+            var fullTextSearchString = ftSearch?.FullTextSearchString;
+
             filter.AgentId = context.CurrentAgentId;
 
             var res = GetMainStandartSendListBase(context, ftSearch, filter, SearchInPositionsOnly);
@@ -1228,20 +1230,7 @@ namespace BL.Logic.DictionaryCore
 
                 filterPos.NotContainsIDs = res.Select(x => x.Id).ToList();
                 filterPos.IsActive = true;
-
-                if (!string.IsNullOrEmpty(ftSearch?.FullTextSearchString) && SearchInPositionsOnly)
-                {
-                    var service = DmsResolver.Current.Get<IFullTextSearchService>();
-                    var list = new List<int>();
-                    bool IsNotAll;
-
-                    list = service.SearchItemParentId(out IsNotAll, context, ftSearch.FullTextSearchString, new FullTextSearchFilter { Module = Modules.Position });
-
-                    if (!list.Any()) filterPos.IDs = new List<int> { -1 };
-
-                    filterPos.IDs = list;
-
-                }
+                filterPos.NameDepartmentExecutor = fullTextSearchString;
 
                 // Тонкий момент, проверяю не является ли сотрудник локальным администратором.
                 // Если не локальный значит, надеюсь, что глобальный и отображаю все

@@ -10793,64 +10793,22 @@
                 <con:default/>
                 <con:description xsi:nil="true"/>
               </con:parameter>
+              
+              
+              
               <con:parameter>
-                <con:name>CurrentPage</con:name>
+                <con:name>IsShowAll</con:name>
                 <con:value/>
                 <con:style>QUERY</con:style>
                 <con:default/>
                 <con:description xsi:nil="true"/>
               </con:parameter>
-              <con:parameter>
-                <con:name>PageSize</con:name>
-                <con:value/>
-                <con:style>QUERY</con:style>
-                <con:default/>
-                <con:description xsi:nil="true"/>
-              </con:parameter>
-              <con:parameter>
-                <con:name>IsAll</con:name>
-                <con:value/>
-                <con:style>QUERY</con:style>
-                <con:default/>
-                <con:description xsi:nil="true"/>
-              </con:parameter>
-              <con:parameter>
-                <con:name>IsOnlyCounter</con:name>
-                <con:value/>
-                <con:style>QUERY</con:style>
-                <con:default/>
-                <con:description xsi:nil="true"/>
-              </con:parameter>
-              <con:parameter>
-                <con:name>Sort</con:name>
-                <con:value/>
-                <con:style>QUERY</con:style>
-                <con:default/>
-                <con:description xsi:nil="true"/>
-              </con:parameter>
-              <con:parameter>
-                <con:name>IDs</con:name>
-                <con:value/>
-                <con:style>QUERY</con:style>
-                <con:default/>
-                <con:description xsi:nil="true"/>
-              </con:parameter>
-              <con:parameter>
-                <con:name>Name</con:name>
-                <con:value/>
-                <con:style>QUERY</con:style>
-                <con:default/>
-                <con:description xsi:nil="true"/>
-              </con:parameter>
-              <con:parameter>
-                <con:name>IsActive</con:name>
-                <con:value/>
-                <con:style>QUERY</con:style>
-                <con:default/>
-                <con:description xsi:nil="true"/>
-              </con:parameter>
-            </con:parameters>
-            <con:method name="Org/Info/Main" id="e4d02257-303d-49f0-b410-fbf2145929be" method="GET">
+              
+              
+              
+              
+            <con:parameter><con:name>SearchInPositionsOnly</con:name><con:value/><con:style>QUERY</con:style><con:default/><con:description xsi:nil="true"/></con:parameter></con:parameters>
+            <con:method name="SendLists/Info/Main" id="e4d02257-303d-49f0-b410-fbf2145929be" method="GET">
               <con:settings/>
               <con:parameters/>
               <con:representation type="RESPONSE">
@@ -10859,7 +10817,7 @@
                 <con:params/>
                 <con:element xmlns:main="http://10.88.12.22/api/v3/Org/Info/Main">main:Response</con:element>
               </con:representation>
-              <con:request name="Get Org/Info/Main" id="8da02a4b-c3e3-4592-aa6d-79aef8e4fab6" mediaType="application/json">
+              <con:request name="Get SendLists/Info/Main" id="8da02a4b-c3e3-4592-aa6d-79aef8e4fab6" mediaType="application/json">
                 <con:settings>
                   <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                 </con:settings>
@@ -10873,23 +10831,12 @@
                 <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
                 <con:jmsPropertyConfig/>
                 <con:parameters>
-                  <con:entry key="FullTextSearchString" value="Хороший"/>
-                  <con:entry key="PageSize" value="${#Project#PageSize}"/>
-                  <con:entry key="IsDontSaveSearchQueryLog" value="${#Project#IsDontSaveSearchQueryLog}"/>
-                  <con:entry key="CurrentPage" value="1"/>
-                </con:parameters>
-                <con:parameterOrder>
-                  <con:entry>FullTextSearchString</con:entry>
-                  <con:entry>IsDontSaveSearchQueryLog</con:entry>
-                  <con:entry>CurrentPage</con:entry>
-                  <con:entry>PageSize</con:entry>
-                  <con:entry>IsAll</con:entry>
-                  <con:entry>IsOnlyCounter</con:entry>
-                  <con:entry>Sort</con:entry>
-                  <con:entry>IDs</con:entry>
-                  <con:entry>Name</con:entry>
-                  <con:entry>IsActive</con:entry>
-                </con:parameterOrder>
+  <con:entry key="FullTextSearchString" value="мотыль"/>
+  <con:entry key="IsShowAll" value="true"/>
+  <con:entry key="IsDontSaveSearchQueryLog" value="${#Project#IsDontSaveSearchQueryLog}"/>
+  <con:entry key="SearchInPositionsOnly" value="true"/>
+</con:parameters>
+                <con:parameterOrder><con:entry>FullTextSearchString</con:entry><con:entry>IsDontSaveSearchQueryLog</con:entry><con:entry>IsShowAll</con:entry><con:entry>SearchInPositionsOnly</con:entry></con:parameterOrder>
               </con:request>
             </con:method>
           </con:resource>
@@ -10903,7 +10850,7 @@
                 <con:default>Id</con:default>
               </con:parameter>
             </con:parameters>
-            <con:method name="Org/Info/{Id}" id="4e911aa4-5a17-4dae-8dcd-e70eb9232562" method="GET">
+            <con:method name="SendLists/Info/{Id}" id="4e911aa4-5a17-4dae-8dcd-e70eb9232562" method="GET">
               <con:settings/>
               <con:parameters/>
               <con:representation type="RESPONSE">
@@ -10912,7 +10859,7 @@
                 <con:params/>
                 <con:element xmlns:ns="http://10.88.12.22/api/v3/Org/Info/201743120">ns:Response</con:element>
               </con:representation>
-              <con:request name="Get Org/Info/{Id}" id="49497e34-0c92-4f23-953c-00ee91564d24" mediaType="application/json">
+              <con:request name="Get SendLists/Info/{Id}" id="49497e34-0c92-4f23-953c-00ee91564d24" mediaType="application/json">
                 <con:settings>
                   <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                 </con:settings>
@@ -10930,7 +10877,7 @@
                 </con:parameters>
               </con:request>
             </con:method>
-            <con:method name="Org/Info/{Id}" id="4e911aa4-5a17-4dae-8dcd-e70eb9232562" method="DELETE">
+            <con:method name="SendLists/Info/{Id}" id="4e911aa4-5a17-4dae-8dcd-e70eb9232562" method="DELETE">
               <con:settings/>
               <con:parameters/>
               <con:representation type="RESPONSE">
@@ -10943,7 +10890,7 @@
                 <con:mediaType>application/json</con:mediaType>
                 <con:params/>
               </con:representation>
-              <con:request name="Del Org/Info" id="49497e34-0c92-4f23-953c-00ee91564d24" mediaType="application/json" postQueryString="false">
+              <con:request name="Del SendLists/Info" id="49497e34-0c92-4f23-953c-00ee91564d24" mediaType="application/json" postQueryString="false">
                 <con:settings>
                   <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
                 </con:settings>
@@ -10962,7 +10909,7 @@
               </con:request>
             </con:method>
           </con:resource>
-          <con:method name="Org/Info" id="d4747582-c1a4-42fa-97da-9199de4d3627" method="POST">
+          <con:method name="SendLists/Info" id="d4747582-c1a4-42fa-97da-9199de4d3627" method="POST">
             <con:settings/>
             <con:parameters/>
             <con:representation type="RESPONSE">
@@ -10979,7 +10926,7 @@
               <con:mediaType>application/x-www-form-urlencoded</con:mediaType>
               <con:params/>
             </con:representation>
-            <con:request name="Add Org/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
+            <con:request name="Add SendLists/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">
                   &lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
@@ -11010,7 +10957,7 @@
               <con:parameters/>
             </con:request>
           </con:method>
-          <con:method name="Org/Info" id="d4747582-c1a4-42fa-97da-9199de4d3627" method="PUT">
+          <con:method name="SendLists/Info" id="d4747582-c1a4-42fa-97da-9199de4d3627" method="PUT">
             <con:settings/>
             <con:parameters/>
             <con:representation type="REQUEST">
@@ -11029,7 +10976,7 @@
               <con:params/>
               <con:element xmlns:info="http://10.88.12.22/api/v3/Org/Info">info:Response</con:element>
             </con:representation>
-            <con:request name="Chg Org/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
+            <con:request name="Chg SendLists/Info" id="bb5a8590-eb7d-4216-97d8-4c35f316eadb" mediaType="application/json" postQueryString="false">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
