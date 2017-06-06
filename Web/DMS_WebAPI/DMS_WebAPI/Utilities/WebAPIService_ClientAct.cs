@@ -23,6 +23,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -54,6 +55,22 @@ namespace DMS_WebAPI.Utilities
         public bool ExistsClients(FilterAspNetClients filter)
         {
             return _webDb.ExistsClients(filter);
+        }
+
+        public bool ValidateClientCode(string Code)
+        {
+
+            string validPattern = @"([\-a-z0-9]{3,30})$";
+            //@"^(?!\.)(""([^""\r\\]|\\[""\r\\])*""|"
+            //+ @"([-a-z0-9!#$%&'*+/=?^_`{|}~]|(?<!\.)\.)*)(?<!\.)";
+
+            var r = new Regex(validPattern, RegexOptions.IgnoreCase);
+
+            var res = r.IsMatch(Code);
+
+            if (res && Code.Length > 30) return false;
+
+            return res;
         }
 
         public async Task<string> AddClientByEmail(AddClientFromHash model)
