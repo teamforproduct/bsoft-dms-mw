@@ -155,6 +155,7 @@
     <Compile Include="Common\BaseFilterCodeName.cs" />
     <Compile Include="Common\BaseFilterName.cs" />
     <Compile Include="Common\BaseFilterCodeNameIsActive.cs" />
+    <Compile Include="Common\CodeItem.cs" />
     <Compile Include="Common\ItemCheck.cs" />
     <Compile Include="Common\AutocompleteItem.cs" />
     <Compile Include="Context\Client.cs" />

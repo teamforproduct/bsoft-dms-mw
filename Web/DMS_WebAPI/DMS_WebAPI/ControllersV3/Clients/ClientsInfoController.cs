@@ -147,7 +147,7 @@ namespace DMS_WebAPI.ControllersV3.Clients
         {
             var tmpService = DmsResolver.Current.Get<WebAPIService>();
 
-            if (tmpService.ValidateClientCode(model.Code)) throw new ClientCodeInvalid();
+            if (!tmpService.ValidateClientCode(model.Code)) throw new ClientCodeInvalid();
 
             if (tmpService.ExistsClient(new FilterAspNetClients { Code = model.Code })) throw new ClientCodeAlreadyExists(model.Code);
 
