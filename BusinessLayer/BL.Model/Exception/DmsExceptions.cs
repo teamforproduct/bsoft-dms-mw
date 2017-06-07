@@ -233,7 +233,7 @@ namespace BL.Model.Exception
         public UserEmailCouldNotBeConfirmd(System.Exception ex) : base(ex) { }
     }
 
-    
+
 
     public class UserParmsCouldNotBeChanged : DmsExceptions
     {
@@ -302,6 +302,7 @@ namespace BL.Model.Exception
     public class UserPasswordIsIncorrect : DmsExceptions
     {
         public UserPasswordIsIncorrect() : base() { }
+        public UserPasswordIsIncorrect(IEnumerable<string> Errors) : base() { base.Errors = Errors; }
         public UserPasswordIsIncorrect(System.Exception ex) : base(ex) { }
     }
 
@@ -324,7 +325,7 @@ namespace BL.Model.Exception
         public EmployeeIsLockoutByAdmin(System.Exception ex) : base(ex) { }
     }
 
-    
+
 
     public class UserIsLockout : DmsExceptions
     {
@@ -458,7 +459,7 @@ namespace BL.Model.Exception
         public EmployeeIsNotDefined(System.Exception ex) : base(ex) { }
     }
 
-    
+
 
     public class EmployeeNotExecuteCheckPosition : DmsExceptions
     {
@@ -838,7 +839,7 @@ namespace BL.Model.Exception
         public DictionaryAgentPersonTaxCodeNotUnique(System.Exception ex) : base(ex) { }
     }
 
-    public class DictionaryAgentPersonCompanyExists: DmsExceptions
+    public class DictionaryAgentPersonCompanyExists : DmsExceptions
     {
         public DictionaryAgentPersonCompanyExists(string CompanyName) : base() { Parameters = new List<string> { CompanyName }; }
         public DictionaryAgentPersonCompanyExists(System.Exception ex) : base(ex) { }

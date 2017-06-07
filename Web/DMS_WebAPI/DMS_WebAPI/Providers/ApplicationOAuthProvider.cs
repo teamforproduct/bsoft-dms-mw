@@ -50,7 +50,7 @@ namespace DMS_WebAPI.Providers
             // Resource owner password credentials does not provide a client ID.
             if (context.ClientId == null)
             {
-               context.Validated();
+                context.Validated();
             }
 
             return Task.FromResult<object>(null);
@@ -86,8 +86,12 @@ namespace DMS_WebAPI.Providers
 
             var webService = DmsResolver.Current.Get<WebAPIService>();
 
+            var userLockoutEnabled = await userManager.GetLockoutEnabledAsync(user.Id);
+
+            var userIsLockedOut = await userManager.IsLockedOutAsync(user.Id);
+
             // Если для пользователя включена возможность самоблокировки
-            if (userManager.SupportsUserLockout && await userManager.GetLockoutEnabledAsync(user.Id) && await userManager.IsLockedOutAsync(user.Id))
+            if (userManager.SupportsUserLockout && userLockoutEnabled && userIsLockedOut)
             {
                 await webService.ThrowErrorGrantResourceOwnerCredentials(context, new UserIsLockout());
             }
@@ -95,7 +99,7 @@ namespace DMS_WebAPI.Providers
             var passwordIsValid = await userManager.CheckPasswordAsync(user, context.Password);
 
             // Если для пользователя включена возможность самоблокировки
-            if (userManager.SupportsUserLockout && await userManager.GetLockoutEnabledAsync(user.Id))
+            if (userManager.SupportsUserLockout && userLockoutEnabled)
             {
                 if (passwordIsValid)
                 {
@@ -130,7 +134,7 @@ namespace DMS_WebAPI.Providers
                 var rememberFingerprint = await context.Request.Body.GetRememberFingerprintAsync();
 
 
-                if (string.IsNullOrEmpty(fingerprint?.Trim())) await webService.ThrowErrorGrantResourceOwnerCredentials(context, new FingerprintRequired());
+                if (string.IsNullOrEmpty(fingerprint?.Trim())) throw new FingerprintRequired();
 
                 if (!string.IsNullOrEmpty(answer))  // переданы расширенные параметры получения токена с ответом на секретный вопрос
                 {

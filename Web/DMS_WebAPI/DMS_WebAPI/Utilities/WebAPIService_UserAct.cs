@@ -71,7 +71,11 @@ namespace DMS_WebAPI.Utilities
 
         public async Task ChangeUserPasswordAsync(string userId, ChangeUserPassword model)
         {
-            IdentityResult result = await UserManager.ChangePasswordAsync(userId, model.OldPassword, model.NewPassword);
+            var result = await UserManager.PasswordValidator.ValidateAsync(model.NewPassword);
+
+            if (!result.Succeeded) throw new UserPasswordIsIncorrect(result.Errors);
+
+            result = await UserManager.ChangePasswordAsync(userId, model.OldPassword, model.NewPassword);
 
             if (!result.Succeeded) throw new UserParmsCouldNotBeChanged(result.Errors);
 
@@ -161,7 +165,11 @@ namespace DMS_WebAPI.Utilities
 
         public async Task<string> ResetPassword(ResetPassword model)
         {
-            var result = await UserManager.ResetPasswordAsync(model.UserId, model.Code, model.NewPassword);
+            var result = await UserManager.PasswordValidator.ValidateAsync(model.NewPassword);
+
+            if (!result.Succeeded) throw new UserPasswordIsIncorrect(result.Errors);
+
+            result = await UserManager.ResetPasswordAsync(model.UserId, model.Code, model.NewPassword);
 
             if (!result.Succeeded) throw new ResetPasswordCodeInvalid(result.Errors);
 

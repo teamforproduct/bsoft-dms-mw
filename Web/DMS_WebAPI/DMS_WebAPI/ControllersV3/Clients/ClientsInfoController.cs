@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.Model.AdminCore.Clients;
+using BL.Model.Common;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Model.WebAPI.Filters;
@@ -133,6 +134,24 @@ namespace DMS_WebAPI.ControllersV3.Clients
             var tmpService = DmsResolver.Current.Get<WebAPIService>();
             var res = tmpService.GetClientRequest(new FilterAspNetClientRequests { HashCodeExact = Code }).FirstOrDefault();
             return new JsonResult(res, this);
+        }
+
+        /// <summary>
+        /// Проверяет код клиента
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("Validate")]
+        public IHttpActionResult ValidateCode([FromBody] CodeItem model)
+        {
+            var tmpService = DmsResolver.Current.Get<WebAPIService>();
+
+            if (!tmpService.ValidateClientCode(model.Code)) throw new ClientCodeInvalid();
+
+            if (tmpService.ExistsClient(new FilterAspNetClients { Code = model.Code })) throw new ClientCodeAlreadyExists(model.Code);
+
+            return new JsonResult(null, this);
         }
     }
 }
