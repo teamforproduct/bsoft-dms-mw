@@ -191,5 +191,12 @@ namespace DMS_WebAPI.Utilities
             return user.Email;
         }
 
+        public async Task ValidatePassword(string password)
+        {
+            var result = await UserManager.PasswordValidator.ValidateAsync(password);
+
+            if (!result.Succeeded) throw new UserPasswordIsIncorrect(result.Errors);
+        }
+
     }
 }
