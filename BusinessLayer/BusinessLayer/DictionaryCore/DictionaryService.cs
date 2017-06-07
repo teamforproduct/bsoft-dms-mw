@@ -1220,7 +1220,7 @@ namespace BL.Logic.DictionaryCore
 
             var fullTextSearchString = ftSearch?.FullTextSearchString;
 
-            filter.AgentId = context.CurrentAgentId;
+            //filter.AgentId = context.CurrentAgentId;
 
             var res = GetMainStandartSendListBase(context, ftSearch, filter, SearchInPositionsOnly);
 
