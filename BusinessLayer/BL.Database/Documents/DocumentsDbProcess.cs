@@ -665,36 +665,36 @@ namespace BL.Database.Documents
 
                 CommonQueries.SetRegistrationFullNumber(res, false);
 
-                var docIds = new List<int> { res.Id };
+                //var docIds = new List<int> { res.Id };
 
-                if (res.LinkId.HasValue)
-                {
-                    res.LinkedDocuments = GetLinkedDocuments(context, res.LinkId.Value);                    //TODO DEL!!!!
-                    var linkedDocumentsCount = res.LinkedDocuments.Count();
-                    if (linkedDocumentsCount > 1)
-                    {
-                        res.LinkedDocuments =
-                            res.LinkedDocuments.OrderBy(x => x.Id == documentId ? 0 : 1).ThenBy(x => x.DocumentDate);
-                    }
-                    res.LinkedDocumentsCount = linkedDocumentsCount < 2 ? 0 : linkedDocumentsCount - 1;
-                    docIds = res.LinkedDocuments.Select(x => x.Id).ToList();
+                //if (res.LinkId.HasValue)
+                //{
+                //    res.LinkedDocuments = GetLinkedDocuments(context, res.LinkId.Value);                    //TODO DEL!!!!
+                //    var linkedDocumentsCount = res.LinkedDocuments.Count();
+                //    if (linkedDocumentsCount > 1)
+                //    {
+                //        res.LinkedDocuments =
+                //            res.LinkedDocuments.OrderBy(x => x.Id == documentId ? 0 : 1).ThenBy(x => x.DocumentDate);
+                //    }
+                //    res.LinkedDocumentsCount = linkedDocumentsCount < 2 ? 0 : linkedDocumentsCount - 1;
+                //    docIds = res.LinkedDocuments.Select(x => x.Id).ToList();
 
-                }
-                var sendListDbProcess = DmsResolver.Current.Get<IDocumentSendListsDbProcess>();
-                res.SendLists = sendListDbProcess.GetSendLists(context, documentId);                        //TODO DEL!!!!
+                //}
+                //var sendListDbProcess = DmsResolver.Current.Get<IDocumentSendListsDbProcess>();
+                //res.SendLists = sendListDbProcess.GetSendLists(context, documentId);                        //TODO DEL!!!!
 
-                res.SendListStageMax = (res.SendLists == null) || !res.SendLists.Any()                      //TODO ????
-                    ? 0
-                    : res.SendLists.Max(x => x.Stage);
+                //res.SendListStageMax = (res.SendLists == null) || !res.SendLists.Any()                      //TODO ????
+                //    ? 0
+                //    : res.SendLists.Max(x => x.Stage);
 
-                res.RestrictedSendLists = sendListDbProcess.GetRestrictedSendLists(context, documentId);    //TODO DEL!!!!
+                //res.RestrictedSendLists = sendListDbProcess.GetRestrictedSendLists(context, documentId);    //TODO DEL!!!!
 
-                var docOperDbProcess = DmsResolver.Current.Get<IDocumentOperationsDbProcess>();             //TODO DEL!!!!
-                res.DocumentWorkGroup = docOperDbProcess.GetDocumentWorkGroup                               //TODO DEL!!!!
-                    (context, new FilterDictionaryPosition { DocumentIDs = docIds });
+                //var docOperDbProcess = DmsResolver.Current.Get<IDocumentOperationsDbProcess>();             //TODO DEL!!!!
+                //res.DocumentWorkGroup = docOperDbProcess.GetDocumentWorkGroup                               //TODO DEL!!!!
+                //    (context, new FilterDictionaryPosition { DocumentIDs = docIds });
 
-                res.DocumentTags = GetDocumentTags(context,                                                //TODO DEL!!!!
-                    new FilterDocumentTag { DocumentId = new List<int> { res.Id }/*, CurrentPositionsId = context.CurrentPositionsIdList*/ });
+                //res.DocumentTags = GetDocumentTags(context,                                                //TODO DEL!!!!
+                //    new FilterDocumentTag { DocumentId = new List<int> { res.Id }/*, CurrentPositionsId = context.CurrentPositionsIdList*/ });
                 res.Properties = CommonQueries.GetPropertyValues(context,
                     new FilterPropertyValue
                     {
