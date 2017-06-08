@@ -104,9 +104,7 @@ namespace BL.Database.SystemDb
                 transaction.Complete();
                 return res;
             }
-
         }
-
 
         public IEnumerable<FrontSystemFormat> GetSystemFormats(IContext ctx, FilterSystemFormat filter)
         {

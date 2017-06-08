@@ -658,7 +658,7 @@ namespace BL.Database.DatabaseContext
             items.Add(GetSysAct(EnumDocumentActions.SendForАpproval, EnumObjects.Documents));
             items.Add(GetSysAct(EnumDocumentActions.SendForSigning, EnumObjects.Documents));
             items.Add(GetSysAct(EnumDocumentActions.ReportRegistrationCardDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.R), category: EnumActionCategories.Document));
-            items.Add(GetSysAct(EnumDocumentActions.ReportRegisterTransmissionDocuments, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.R), category: EnumActionCategories.Reports));
+            items.Add(GetSysAct(EnumDocumentActions.ReportRegisterTransmissionDocuments, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.R), category: EnumActionCategories.ParerLists));
             items.Add(GetSysAct(EnumDocumentActions.ReportDocumentForDigitalSignature, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.R), category: EnumActionCategories.Signing));
             items.Add(GetSysAct(EnumDocumentActions.AddFavourite, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Favourite, EnumAccessTypes.U), category: EnumActionCategories.Additional));
             items.Add(GetSysAct(EnumDocumentActions.DeleteFavourite, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Favourite, EnumAccessTypes.U), category: EnumActionCategories.Additional));
@@ -1094,8 +1094,8 @@ namespace BL.Database.DatabaseContext
             return new AdminAccessLevels()
             {
                 Id = (int)id,
-                Code = null,
-                Name = name,
+                Code = id.ToString(),
+                //Name = name,
             };
         }
 
@@ -1215,12 +1215,12 @@ namespace BL.Database.DatabaseContext
 
         private static DictionaryFileTypes GetDictionaryFileType(EnumFileTypes id)
         {
-            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+//            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
             return new DictionaryFileTypes()
             {
                 Id = (int)id,
                 Code = id.ToString(),
-                Name = name,
+//                Name = name,
             };
         }
 
@@ -1263,8 +1263,7 @@ namespace BL.Database.DatabaseContext
             return new DictionaryDocumentDirections()
             {
                 Id = (int)id,
-                Code = ((int)id).ToString(),
-                Name = name,
+                Code = id.ToString(),
             };
         }
 
@@ -1339,8 +1338,8 @@ namespace BL.Database.DatabaseContext
             return new DictionaryEventTypes()
             {
                 Id = (int)id,
-                Code = null,
-                Name = name,
+                Code = id.ToString(),
+//                Name = name,
                 SourceDescription = null,
                 TargetDescription = null,
                 ImportanceEventTypeId = (int)importanceEventTypeId,
@@ -1368,8 +1367,7 @@ namespace BL.Database.DatabaseContext
             return new DictionaryImportanceEventTypes()
             {
                 Id = (int)id,
-                Code = null,
-                Name = name,
+                Code = id.ToString(),
             };
         }
 
@@ -1543,8 +1541,8 @@ namespace BL.Database.DatabaseContext
             {
                 Id = (int)id,
                 Code = id.ToString(),
-                Name = name,
-                Description = description,
+                //Name = name,
+                //Description = description,
                 Suffix = suffix,
             };
         }

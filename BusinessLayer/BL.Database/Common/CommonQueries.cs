@@ -238,7 +238,7 @@ namespace BL.Database.Common
                         Date = y.file.Date,
                         DocumentId = y.file.DocumentId,
                         Type = (EnumFileTypes)y.file.TypeId,
-                        TypeName = y.file.Type.Code,
+                        TypeName = "##l@FileTypes:" + ((EnumFileTypes)y.file.TypeId).ToString() + "@l##",
                         IsMainVersion = y.file.IsMainVersion,
                         IsDeleted = y.file.IsDeleted,
                         IsWorkedOut = y.file.IsWorkedOut ?? true,
@@ -1742,8 +1742,8 @@ namespace BL.Database.Common
                 RegistrationFullNumber = "#" + x.Document.Id,
 
                 DocumentDescription = x.Document.Description,
-                DocumentTypeName = x.Document.TemplateDocument.DocumentType.Name,
-                DocumentDirectionName = x.Document.TemplateDocument.DocumentDirection.Name,
+                DocumentTypeName = x.Document.DocumentType.Name,
+                DocumentDirectionName = "##l@DocumentDirections:" + ((EnumDocumentDirections)x.Document.DocumentDirectionId).ToString() + "@l##",
 
                 PositionId = x.PositionId,
                 PositionExecutorAgentId = x.PositionExecutorAgentId,
@@ -2746,7 +2746,7 @@ namespace BL.Database.Common
                     IsClosed = x.OffEventId != null,
                     ResultTypeName = x.ResultType.Name,
                     AttentionDate = x.AttentionDate,
-                    OnEventTypeName = x.OnEvent.EventType.Name,
+                    OnEventTypeName = "##l@EventTypes:" + ((EnumEventTypes)x.OnEvent.EventTypeId).ToString() + "@l##",
                     OffEventDate = x.OffEventId.HasValue ? x.OffEvent.CreateDate : (DateTime?)null
                 }).ToList();
 

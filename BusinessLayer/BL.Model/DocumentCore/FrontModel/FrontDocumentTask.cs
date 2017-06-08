@@ -20,15 +20,5 @@ namespace BL.Model.DocumentCore.FrontModel
         public string AgentName { get; set; }
         public string PositionExecutorAgentName { get; set; }
         public string PositionName { get; set; }
-
-        public bool IsFactExecutor { get; set; }
-        /// <summary>
-        /// ИД типа рассылки
-        /// </summary>
-        public EnumSendTypes ExecutorSendType { get; set; }
-        public string ExecutorType { get; set; }
-        public string ResponsibleExecutorPositionName { get; set; }
-        public string ResponsibleExecutorPositionExecutorAgentName { get; set; }
-
     }
 }

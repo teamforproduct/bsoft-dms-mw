@@ -115,7 +115,7 @@ namespace BL.Database.Documents
                 {
                     Id = x.Id,
                     DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
-                    DocumentDirectionName = x.DocumentDirection.Name,
+                    DocumentDirectionName = "##l@DocumentDirections:" + ((EnumDocumentDirections)x.DocumentDirectionId).ToString() + "@l##",
                     IsHard = x.IsHard,
                     IsForProject = x.IsForProject,
                     IsForDocument = x.IsForDocument,
@@ -150,7 +150,7 @@ namespace BL.Database.Documents
                 {
                     Id = x.Id,
                     DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
-                    DocumentDirectionName = x.DocumentDirection.Name,
+                    DocumentDirectionName = "##l@DocumentDirections:" + ((EnumDocumentDirections)x.DocumentDirectionId).ToString() + "@l##",
                     IsHard = x.IsHard,
                     IsForProject = x.IsForProject,
                     IsForDocument = x.IsForDocument,
@@ -217,7 +217,7 @@ namespace BL.Database.Documents
                             IsForDocument = x.IsForDocument,
                             IsActive = x.IsActive,
                             DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
-                            DocumentDirectionName = x.DocumentDirection.Name,
+                            DocumentDirectionName = "##l@DocumentDirections:" + ((EnumDocumentDirections)x.DocumentDirectionId).ToString() + "@l##",
                             DocumentTypeId = x.DocumentTypeId,
                             DocumentTypeName = x.DocumentType.Name,
                             Description = x.Description,
@@ -503,8 +503,8 @@ namespace BL.Database.Documents
                 {
                     Id = x.Id,
                     DocumentId = x.DocumentId,
-                    SendType = x.SendTypeId,
-                    StageType = x.StageTypeId,
+                    SendType = (EnumSendTypes)x.SendTypeId,
+                    StageType = (EnumStageTypes)x.StageTypeId,
 
                     Description = x.Description,
                     Stage = x.Stage,
@@ -515,10 +515,10 @@ namespace BL.Database.Documents
                     SelfDueDay = x.SelfDueDay,
                     SelfAttentionDay = x.SelfAttentionDay,
                     SelfDescription = x.SelfDescription,
-                    AccessLevel = x.AccessLevelId,
+                    AccessLevel = (EnumAccessLevels)x.AccessLevelId,
                     SendTypeName = x.SendType.Name,
                     StageTypeName = x.StageType.Name,
-                    AccessLevelName = x.AccessLevel.Name,
+                    AccessLevelName = "##l@AccessLevels:" + ((EnumAccessLevels)x.AccessLevelId).ToString() + "@l##",
                 }).ToList();
                 CommonQueries.SetAccessGroups(context, res);
                 transaction.Complete();
@@ -536,17 +536,17 @@ namespace BL.Database.Documents
                         {
                             Id = x.Id,
                             DocumentId = x.DocumentId,
-                            SendType = x.SendTypeId,
-                            StageType = x.StageTypeId,
+                            SendType = (EnumSendTypes)x.SendTypeId,
+                            StageType = (EnumStageTypes)x.StageTypeId,
                             Description = x.Description,
                             Stage = x.Stage,
                             TaskId = x.TaskId,
                             TaskName = x.Task.Task,
                             DueDay = x.DueDay,
-                            AccessLevel = x.AccessLevelId,
+                            AccessLevel = (EnumAccessLevels)x.AccessLevelId,
                             SendTypeName = x.SendType.Name,
                             StageTypeName = x.StageType.Name,
-                            AccessLevelName = x.AccessLevel.Name,
+                            AccessLevelName = "##l@AccessLevels:" + ((EnumAccessLevels)x.AccessLevelId).ToString() + "@l##",
                             IsAddControl = x.IsAddControl,
                             SelfDueDay = x.SelfDueDay,
                             SelfAttentionDay = x.SelfAttentionDay,
@@ -668,10 +668,10 @@ namespace BL.Database.Documents
                     Id = x.Id,
                     DocumentId = x.DocumentId,
                     PositionId = x.Position.Id,
-                    AccessLevel = x.AccessLevelId,
+                    AccessLevel = (EnumAccessLevels)x.AccessLevelId,
                     PositionName = x.Position.Name,
                     PositionExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null),
-                    AccessLevelName = x.AccessLevel.Name,
+                    AccessLevelName = "##l@AccessLevels:" + ((EnumAccessLevels)x.AccessLevelId).ToString() + "@l##",
                 }).ToList();
                 transaction.Complete();
                 return res;
@@ -703,7 +703,7 @@ namespace BL.Database.Documents
                             PositionId = x.Position.Id,
                             PositionName = x.Position.Name,
                             PositionExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null),
-                            AccessLevelName = x.AccessLevel.Name,
+                            AccessLevelName = "##l@AccessLevels:" + ((EnumAccessLevels)x.AccessLevelId).ToString() + "@l##",
                         }).FirstOrDefault();
                 transaction.Complete();
                 return res;
@@ -1284,7 +1284,7 @@ namespace BL.Database.Documents
                             Id = x.fl.Id,
                             DocumentId = x.fl.DocumentId,
                             Type = (EnumFileTypes)x.fl.TypeId,
-                            TypeName = x.fl.Type.Code,
+                            TypeName = "##l@FileTypes:" + ((EnumFileTypes)x.fl.TypeId).ToString() + "@l##",
                             Hash = x.fl.Hash,
                             LastChangeDate = x.fl.LastChangeDate,
                             LastChangeUserId = x.fl.LastChangeUserId,
@@ -1320,7 +1320,7 @@ namespace BL.Database.Documents
                             Id = x.fl.Id,
                             DocumentId = x.fl.DocumentId,
                             Type = (EnumFileTypes)x.fl.TypeId,
-                            TypeName = x.fl.Type.Code,
+                            TypeName = "##l@FileTypes:" + ((EnumFileTypes)x.fl.TypeId).ToString() + "@l##",
                             Hash = x.fl.Hash,
                             LastChangeDate = x.fl.LastChangeDate,
                             LastChangeUserId = x.fl.LastChangeUserId,

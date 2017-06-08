@@ -13,7 +13,7 @@ namespace BL.Database.DBModel.Dictionary
 
         [MaxLength(2000)]
         [Index("IX_Name", 1, IsUnique = true)]
-        public string Name { get; set; }
+        public string Name { get; set; }    //TODO DEL!!
 
         [MaxLength(2000)]
         public string SourceDescription { get; set; }

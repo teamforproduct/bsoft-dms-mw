@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using BL.Model.Enums;
+using System.Collections.Generic;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
@@ -15,7 +16,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// ИД типа рассылки
         /// </summary>
-        public int? SendType { get; set; }
+        public EnumSendTypes? SendType { get; set; }
         /// <summary>
         /// Название типа рассылки
         /// </summary>
@@ -23,7 +24,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// ИД типа этапа
         /// </summary>
-        public int? StageType { get; set; }
+        public EnumStageTypes? StageType { get; set; }
         /// <summary>
         /// Название типа этапа
         /// </summary>
@@ -51,7 +52,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// ИД уровня доступа
         /// </summary>
-        public int? AccessLevel { get; set; }
+        public EnumAccessLevels? AccessLevel { get; set; }
         /// <summary>
         /// Название уровня доступа
         /// </summary>

@@ -29,7 +29,7 @@ namespace BL.Model.DocumentCore.FrontModel
                 SenderNumber = model.SenderNumber;
                 SenderDate = model.SenderDate;
                 Addressee = model.Addressee;
-                if (model.AccessLevel != null) AccessLevelId = (int)model.AccessLevel;
+                if (model.AccessLevel != null) AccessLevel = model.AccessLevel;
 
                 TemplateDocumentId = model.TemplateId;
                 ExecutorPositionId = model.ExecutorPositionId;
@@ -120,7 +120,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// ИД уровня доступа
         /// </summary>
-        public int? AccessLevelId { get; set; }
+        public EnumAccessLevels? AccessLevel { get; set; }
 
         public string TemplateDocumentName { get; set; }
 
@@ -136,9 +136,6 @@ namespace BL.Model.DocumentCore.FrontModel
         public string SenderAgentName { get; set; }
         public string SenderAgentPersonName { get; set; }
         public string AccessLevelName { get; set; }
-
-        public string GeneralInfo { get; set; }
-
 
         public int? TemplateDocumentId { get; set; }
 

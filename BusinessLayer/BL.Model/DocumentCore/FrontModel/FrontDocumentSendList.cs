@@ -72,7 +72,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// ИД уровня доступа
         /// </summary>
-        public EnumAccessLevels AccessLevel { get; set; }
+        public EnumAccessLevels? AccessLevel { get; set; }
         /// <summary>
         /// Признак первоначальный пункт
         /// </summary>

@@ -8,8 +8,6 @@ namespace BL.Model.DocumentCore.FrontModel
     public class FrontDocumentSendListAccessGroup
     {
         public int? Id { get; set; }
-        public int? ClientId { get; set; }
-        public int? EntityTypeId { get; set; }
         public int? DocumentId { get; set; }
         public int? SendListId { get; set; }
         public EnumEventAccessTypes? AccessType { get; set; }   // получатель, копия, досылка

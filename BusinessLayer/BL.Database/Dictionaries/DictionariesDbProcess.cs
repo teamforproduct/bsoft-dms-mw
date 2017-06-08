@@ -3929,8 +3929,8 @@ namespace BL.Database.Dictionaries
                 var res = qry.Select(x => new FrontDictionaryDocumentDirection
                 {
                     Id = x.Id,
-                    Code = x.Code,
-                    Name = x.Name,
+                    Code = ((EnumDocumentDirections)x.Id).ToString(),
+                    Name = "##l@DocumentDirections:" + ((EnumDocumentDirections)x.Id).ToString() + "@l##",
                 }).ToList();
 
                 transaction.Complete();
@@ -3970,19 +3970,19 @@ namespace BL.Database.Dictionaries
                 }
 
                 // Условие по Name
-                if (!string.IsNullOrEmpty(filter.Name))
-                {
-                    var filterContains = PredicateBuilder.New<DictionaryDocumentDirections>(false);
-                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
+                //if (!string.IsNullOrEmpty(filter.Name))
+                //{
+                //    var filterContains = PredicateBuilder.New<DictionaryDocumentDirections>(false);
+                //    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                //        (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
-                    qry = qry.Where(filterContains);
-                }
+                //    qry = qry.Where(filterContains);
+                //}
 
-                if (!string.IsNullOrEmpty(filter.NameExact))
-                {
-                    qry = qry.Where(x => x.Name == filter.NameExact);
-                }
+                //if (!string.IsNullOrEmpty(filter.NameExact))
+                //{
+                //    qry = qry.Where(x => x.Name == filter.NameExact);
+                //}
 
                 // Условие по Code
                 if (!string.IsNullOrEmpty(filter.Code))
@@ -4222,14 +4222,14 @@ namespace BL.Database.Dictionaries
                     }
 
                     // Поиск по наименованию
-                    if (!string.IsNullOrEmpty(filter.Name))
-                    {
-                        var filterContains = PredicateBuilder.New<DictionaryEventTypes>(false);
-                        filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
-                            (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
+                    //if (!string.IsNullOrEmpty(filter.Name))
+                    //{
+                    //    var filterContains = PredicateBuilder.New<DictionaryEventTypes>(false);
+                    //    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                    //        (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
-                        qry = qry.Where(filterContains);
-                    }
+                    //    qry = qry.Where(filterContains);
+                    //}
 
                     if (filter.ImportanceEventTypeIDs?.Count > 0)
                     {
@@ -4253,10 +4253,10 @@ namespace BL.Database.Dictionaries
                 {
                     EventType = (EnumEventTypes)x.Id,
                     Id = x.Id,
-                    Code = x.Code,
-                    Name = x.Name,
+                    Code = x.Id.ToString(),
+                    Name = "##l@EventTypes:" + x.Id.ToString() + "@l##",
                     ImportanceEventTypeId = x.ImportanceEventTypeId,
-                    ImportanceEventTypeName = x.ImportanceEventType.Name
+                    ImportanceEventTypeName = "##l@ImportanceEventTypes:" + x.ImportanceEventTypeId.ToString() + "@l##"
                 }).ToList();
                 transaction.Complete();
                 return res;
@@ -4299,14 +4299,14 @@ namespace BL.Database.Dictionaries
                     }
 
                     // Поиск по наименованию
-                    if (!string.IsNullOrEmpty(filter.Name))
-                    {
-                        var filterContains = PredicateBuilder.New<DictionaryImportanceEventTypes>(false);
-                        filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
-                            (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
+                    //if (!string.IsNullOrEmpty(filter.Name))
+                    //{
+                    //    var filterContains = PredicateBuilder.New<DictionaryImportanceEventTypes>(false);
+                    //    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                    //        (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
-                        qry = qry.Where(filterContains);
-                    }
+                    //    qry = qry.Where(filterContains);
+                    //}
 
                     if (filter.DocumentIDs?.Count > 0)
                     {
@@ -4321,8 +4321,8 @@ namespace BL.Database.Dictionaries
                 var res = qry.Select(x => new FrontDictionaryImportanceEventType
                 {
                     Id = x.Id,
-                    Code = x.Code,
-                    Name = x.Name,
+                    Code = x.Id.ToString(),
+                    Name = "##l@ImportanceEventTypes:" + x.Id.ToString() + "@l##",
                 }).ToList();
 
                 transaction.Complete();
@@ -4366,20 +4366,20 @@ namespace BL.Database.Dictionaries
                     }
 
                     // Поиск по наименованию
-                    if (!string.IsNullOrEmpty(filter.Name))
-                    {
-                        var filterContains = PredicateBuilder.New<DictionaryLinkTypes>(false);
-                        filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
-                            (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
+                    //if (!string.IsNullOrEmpty(filter.Name))
+                    //{
+                    //    var filterContains = PredicateBuilder.New<DictionaryLinkTypes>(false);
+                    //    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                    //        (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
-                        qry = qry.Where(filterContains);
-                    }
+                    //    qry = qry.Where(filterContains);
+                    //}
                 }
 
                 var res = qry.Select(x => new FrontDictionaryLinkType
                 {
                     Id = x.Id,
-                    Name = x.Name,
+                    Name = "##l@LinkTypes:" + ((EnumLinkTypes)x.Id).ToString() + "@l##",
                     IsImportant = x.IsImportant,
                 }).ToList();
 
@@ -4577,8 +4577,8 @@ namespace BL.Database.Dictionaries
                                 IsActive = y.IsActive,
                                 AgentId = y.Agent.Id,
                                 AgentName = y.Agent.Name,
-                                PositionExecutorTypeName = y.PositionExecutorType.Name,
-                                PositionExecutorTypeId = (EnumPositionExecutionTypes)y.PositionExecutorType.Id,
+                                PositionExecutorTypeName = "##l@EnumPositionExecutionTypes:" + ((EnumPositionExecutionTypes)y.PositionExecutorTypeId).ToString() + "@l##",
+                                PositionExecutorTypeId = (EnumPositionExecutionTypes)y.PositionExecutorTypeId,
                                 //StartDate = y.StartDate,
                                 //EndDate = y.EndDate,
                                 //AccessLevelName = y.AccessLevel.Name,
@@ -5149,10 +5149,10 @@ namespace BL.Database.Dictionaries
                 {
                     case EnumSortPositionExecutors.StartDate_PositionExecutorType:
                         // DMS-367 qry = qry.OrderBy(x => x.Position.Order).ThenBy(x => x.PositionExecutorType.Id).ThenBy(x => x.Agent.Name);
-                        qry = qry.OrderByDescending(x => x.StartDate).ThenBy(x => x.PositionExecutorType.Id);
+                        qry = qry.OrderByDescending(x => x.StartDate).ThenBy(x => x.PositionExecutorTypeId);
                         break;
                     case EnumSortPositionExecutors.PositionExecutorType_ExecutorName:
-                        qry = qry.OrderBy(x => x.PositionExecutorType.Id).ThenBy(x => x.Agent.Name);
+                        qry = qry.OrderBy(x => x.PositionExecutorTypeId).ThenBy(x => x.Agent.Name);
                         break;
                 }
 
@@ -5175,8 +5175,8 @@ namespace BL.Database.Dictionaries
                     PositionFullName = x.Position.FullName,
                     DepartmentIndex = x.Position.Department.Index,
                     DepartmentName = x.Position.Department.Name,
-                    AccessLevelName = x.AccessLevel.Name,
-                    PositionExecutorTypeName = x.PositionExecutorType.Name,
+                    AccessLevelName = "##l@AccessLevels:" + ((EnumAccessLevels)x.AccessLevelId).ToString() + "@l##",
+                    PositionExecutorTypeName = "##l@EnumPositionExecutionTypes:" + ((EnumPositionExecutionTypes)x.PositionExecutorTypeId).ToString() + "@l##",
                     PositionExecutorTypeSuffix = x.PositionExecutorType.Suffix,
                 }).ToList();
 
@@ -5191,7 +5191,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionExecutorsQuery(ctx, filter);
 
-                qry = qry.OrderBy(x => x.Position.Order).ThenBy(x => x.PositionExecutorType.Id).ThenBy(x => x.Agent.Name);
+                qry = qry.OrderBy(x => x.Position.Order).ThenBy(x => x.PositionExecutorTypeId).ThenBy(x => x.Agent.Name);
 
                 DateTime? maxDateTime = DateTime.UtcNow.AddYears(50);
 
@@ -5252,7 +5252,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionExecutorsQuery(ctx, filter);
 
-                qry = qry.OrderBy(x => x.Position.Order).ThenBy(x => x.PositionExecutorType.Id).ThenBy(x => x.Agent.Name);
+                qry = qry.OrderBy(x => x.Position.Order).ThenBy(x => x.PositionExecutorTypeId).ThenBy(x => x.Agent.Name);
 
                 string objId = ((int)EnumObjects.DictionaryPositionExecutors).ToString();
                 string parObjId = ((int)EnumObjects.DictionaryPositions).ToString();
@@ -5267,7 +5267,7 @@ namespace BL.Database.Dictionaries
                     TreeParentId = x.PositionId.ToString() + "_" + parObjId,
                     IsActive = x.IsActive,
                     IsLeaf = true,
-                    Description = x.PositionExecutorType.Code
+                    Description = ((EnumPositionExecutionTypes) x.PositionExecutorType.Id).ToString()
                 }).ToList();
 
                 transaction.Complete();
@@ -5283,7 +5283,7 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionExecutorsQuery(ctx, filter);
 
-                qry = qry.OrderBy(x => x.Position.Order).ThenBy(x => x.PositionExecutorType.Id).ThenBy(x => x.Agent.Name);
+                qry = qry.OrderBy(x => x.Position.Order).ThenBy(x => x.PositionExecutorTypeId).ThenBy(x => x.Agent.Name);
 
                 DateTime? maxDateTime = DateTime.UtcNow.AddYears(50);
 
@@ -5467,8 +5467,8 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     IsActive = x.IsActive,
-                    Code = x.Code,
-                    Name = x.Name,
+//                    Code = ((EnumPositionExecutionTypes)x.Id).ToString(),
+//                    Name = x.Name,
                 }).ToList();
 
                 transaction.Complete();
@@ -5485,8 +5485,8 @@ namespace BL.Database.Dictionaries
                 var res = qry.Select(x => new FrontDictionaryPositionExecutorType
                 {
                     Id = x.Id,
-                    Code = x.Code,
-                    Name = x.Name
+                    Code = ((EnumPositionExecutionTypes)x.Id).ToString(),
+                    Name = "##l@EnumPositionExecutionTypes:" + ((EnumPositionExecutionTypes)x.Id).ToString() + "@l##",
                 }).ToList();
 
                 transaction.Complete();
@@ -5533,24 +5533,24 @@ namespace BL.Database.Dictionaries
                 }
 
                 // Поиск по наименованию
-                if (!string.IsNullOrEmpty(filter.Name))
-                {
-                    var filterContains = PredicateBuilder.New<DictionaryPositionExecutorTypes>(false);
-                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
+                //if (!string.IsNullOrEmpty(filter.Name))
+                //{
+                //    var filterContains = PredicateBuilder.New<DictionaryPositionExecutorTypes>(false);
+                //    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
+                //        (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
 
-                    qry = qry.Where(filterContains);
-                }
+                //    qry = qry.Where(filterContains);
+                //}
 
                 // Поиск по наименованию
-                if (!string.IsNullOrEmpty(filter.Code))
-                {
-                    var filterContains = PredicateBuilder.New<DictionaryPositionExecutorTypes>(false);
-                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Code.Contains(value)).Expand());
+                //if (!string.IsNullOrEmpty(filter.Code))
+                //{
+                //    var filterContains = PredicateBuilder.New<DictionaryPositionExecutorTypes>(false);
+                //    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
+                //        (current, value) => current.Or(e => e.Code.Contains(value)).Expand());
 
-                    qry = qry.Where(filterContains);
-                }
+                //    qry = qry.Where(filterContains);
+                //}
 
                 if (filter.Period?.HasValue == true && filter.PositionId != null)
                 {
@@ -6258,7 +6258,7 @@ namespace BL.Database.Dictionaries
                     TargetDepartmentName = x.TargetPosition.Department.Name,
 
 
-                    AccessLevelName = x.AccessLevel.Name,
+                    AccessLevelName = "##l@AccessLevels:" + ((EnumAccessLevels)x.AccessLevelId).ToString() + "@l##",
                     SendTypeIsExternal = x.SendTypeId == 45
                 }).ToList();
 
@@ -6842,8 +6842,8 @@ namespace BL.Database.Dictionaries
                 var res = qry.Select(x => new FrontAdminAccessLevel
                 {
                     Id = x.Id,
-                    Code = x.Code,
-                    Name = x.Name,
+                    Code = ((EnumAccessLevels)x.Id).ToString(),
+                    Name = "##l@AccessLevels:" + ((EnumAccessLevels)x.Id).ToString() + "@l##",
                 }).ToList();
                 transaction.Complete();
                 return res;
@@ -6885,33 +6885,19 @@ namespace BL.Database.Dictionaries
 
 
                 // Поиск но Code
-                if (!string.IsNullOrEmpty(filter.Code))
-                {
-                    var filterContains = PredicateBuilder.New<AdminAccessLevels>(false);
-                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Code.Contains(value)).Expand());
+                //if (!string.IsNullOrEmpty(filter.Code))
+                //{
+                //    var filterContains = PredicateBuilder.New<AdminAccessLevels>(false);
+                //    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
+                //        (current, value) => current.Or(e => e.Code.Contains(value)).Expand());
 
-                    qry = qry.Where(filterContains);
-                }
+                //    qry = qry.Where(filterContains);
+                //}
 
-                if (!string.IsNullOrEmpty(filter.CodeExact))
-                {
-                    qry = qry.Where(x => filter.Code.Equals(x.Code, StringComparison.OrdinalIgnoreCase));
-                }
-
-                if (!string.IsNullOrEmpty(filter.Name))
-                {
-                    var filterContains = PredicateBuilder.New<AdminAccessLevels>(false);
-                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Name).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Name.Contains(value)).Expand());
-
-                    qry = qry.Where(filterContains);
-                }
-
-                if (!string.IsNullOrEmpty(filter.NameExact))
-                {
-                    qry = qry.Where(x => filter.NameExact.Equals(x.Name, StringComparison.OrdinalIgnoreCase));
-                }
+                //if (!string.IsNullOrEmpty(filter.CodeExact))
+                //{
+                //    qry = qry.Where(x => filter.Code.Equals(x.Code, StringComparison.OrdinalIgnoreCase));
+                //}
 
             }
 

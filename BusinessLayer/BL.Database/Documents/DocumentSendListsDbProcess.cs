@@ -27,16 +27,16 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetDocumentRestrictedSendListQuery(ctx, new FilterDocumentRestrictedSendList { Id = new List<int> { id } });
-                var res = qry.Select(y => new FrontDocumentRestrictedSendList
+                var res = qry.Select(x => new FrontDocumentRestrictedSendList
                 {
-                    Id = y.Id,
-                    DocumentId = y.DocumentId,
-                    PositionId = y.PositionId,
-                    PositionName = y.Position.Name,
-                    PositionExecutorAgentName = y.Position.ExecutorAgent.Name + (y.Position.ExecutorType.Suffix != null ? " (" + y.Position.ExecutorType.Suffix + ")" : null),
-                    AccessLevel = (EnumAccessLevels)y.AccessLevelId,
-                    AccessLevelName = y.AccessLevel.Name,
-                    DepartmentName = y.Position.Department.Name,
+                    Id = x.Id,
+                    DocumentId = x.DocumentId,
+                    PositionId = x.PositionId,
+                    PositionName = x.Position.Name,
+                    PositionExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null),
+                    AccessLevel = (EnumAccessLevels)x.AccessLevelId,
+                    AccessLevelName = "##l@AccessLevels:" + ((EnumAccessLevels)x.AccessLevelId).ToString() + "@l##",
+                    DepartmentName = x.Position.Department.Name,
                 }).FirstOrDefault();
                 transaction.Complete();
                 return res;
@@ -61,16 +61,16 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetDocumentRestrictedSendListQuery(ctx, new FilterDocumentRestrictedSendList { DocumentId = new List<int> { documentId } });
-                var res = qry.Select(y => new FrontDocumentRestrictedSendList
+                var res = qry.Select(x => new FrontDocumentRestrictedSendList
                 {
-                    Id = y.Id,
-                    DocumentId = y.DocumentId,
-                    PositionId = y.PositionId,
-                    PositionName = y.Position.Name,
-                    PositionExecutorAgentName = y.Position.ExecutorAgent.Name + (y.Position.ExecutorType.Suffix != null ? " (" + y.Position.ExecutorType.Suffix + ")" : null),
-                    AccessLevel = (EnumAccessLevels)y.AccessLevelId,
-                    AccessLevelName = y.AccessLevel.Name,
-                    DepartmentName = y.Position.Department.Name,
+                    Id = x.Id,
+                    DocumentId = x.DocumentId,
+                    PositionId = x.PositionId,
+                    PositionName = x.Position.Name,
+                    PositionExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null),
+                    AccessLevel = (EnumAccessLevels)x.AccessLevelId,
+                    AccessLevelName = "##l@AccessLevels:" + ((EnumAccessLevels)x.AccessLevelId).ToString() + "@l##",
+                    DepartmentName = x.Position.Department.Name,
                 }).ToList();
 
                 transaction.Complete();
@@ -108,56 +108,56 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetDocumentSendListQuery(context, new FilterDocumentSendList { DocumentId = new List<int> { documentId } });
-                var res = qry.Select(y => new FrontDocumentSendList
+                var res = qry.Select(x => new FrontDocumentSendList
                 {
-                    Id = y.Id,
-                    DocumentId = y.DocumentId,
-                    Stage = y.Stage,
-                    SendType = (EnumSendTypes)y.SendTypeId,
-                    SendTypeName = y.SendType.Name,
-                    SendTypeCode = y.SendType.Code,
-                    StageType = (EnumStageTypes?)y.StageTypeId,
-                    StageTypeName = y.StageType.Name,
-                    StageTypeCode = y.StageType.Code,
-                    SendTypeIsImportant = y.SendType.IsImportant,
-                    Task = y.Task.Task,
-                    IsAddControl = y.IsAddControl,
-                    SelfDescription = y.SelfDescription,
-                    SelfDueDate = y.SelfDueDate,
-                    SelfDueDay = y.SelfDueDay,
-                    SelfAttentionDate = y.SelfAttentionDate,
-                    SelfAttentionDay = y.SelfAttentionDay,
-                    Description = y.Description,
-                    AddDescription = y.AddDescription,
-                    DueDate = y.DueDate,
-                    DueDay = y.DueDay,
-                    StartEventId = y.StartEventId,
-                    CloseEventId = y.CloseEventId,
-                    IsInitial = y.IsInitial,
-                    AccessLevel = (EnumAccessLevels)y.AccessLevelId,
-                    AccessLevelName = y.AccessLevel.Name,
-                    StartEvent = y.StartEvent == null
+                    Id = x.Id,
+                    DocumentId = x.DocumentId,
+                    Stage = x.Stage,
+                    SendType = (EnumSendTypes)x.SendTypeId,
+                    SendTypeName = x.SendType.Name,
+                    SendTypeCode = x.SendType.Code,
+                    StageType = (EnumStageTypes?)x.StageTypeId,
+                    StageTypeName = x.StageType.Name,
+                    StageTypeCode = x.StageType.Code,
+                    SendTypeIsImportant = x.SendType.IsImportant,
+                    Task = x.Task.Task,
+                    IsAddControl = x.IsAddControl,
+                    SelfDescription = x.SelfDescription,
+                    SelfDueDate = x.SelfDueDate,
+                    SelfDueDay = x.SelfDueDay,
+                    SelfAttentionDate = x.SelfAttentionDate,
+                    SelfAttentionDay = x.SelfAttentionDay,
+                    Description = x.Description,
+                    AddDescription = x.AddDescription,
+                    DueDate = x.DueDate,
+                    DueDay = x.DueDay,
+                    StartEventId = x.StartEventId,
+                    CloseEventId = x.CloseEventId,
+                    IsInitial = x.IsInitial,
+                    AccessLevel = (EnumAccessLevels)x.AccessLevelId,
+                    AccessLevelName = "##l@AccessLevels:" + ((EnumAccessLevels)x.AccessLevelId).ToString() + "@l##",
+                    StartEvent = x.StartEvent == null
                                         ? null
                                         : new FrontDocumentEvent
                                         {
-                                            Id = y.StartEvent.Id,
-                                            EventType = y.StartEvent.EventTypeId,
-                                            EventTypeName = y.StartEvent.EventType.Name,
-                                            Date = y.StartEvent.Date,
-                                            Description = y.StartEvent.Description,
-                                            AddDescription = y.StartEvent.AddDescription,
-                                            DueDate = y.StartEvent.OnWait.Select(z => z.DueDate).FirstOrDefault(),
+                                            Id = x.StartEvent.Id,
+                                            EventType = (EnumEventTypes)x.StartEvent.EventTypeId,
+                                            EventTypeName = "##l@EventTypes:" + ((EnumEventTypes)x.StartEvent.EventTypeId).ToString() + "@l##",
+                                            Date = x.StartEvent.Date,
+                                            Description = x.StartEvent.Description,
+                                            AddDescription = x.StartEvent.AddDescription,
+                                            DueDate = x.StartEvent.OnWait.Select(z => z.DueDate).FirstOrDefault(),
                                         },
-                    CloseEvent = y.CloseEvent == null || y.StartEventId == y.CloseEventId
+                    CloseEvent = x.CloseEvent == null || x.StartEventId == x.CloseEventId
                                         ? null
                                         : new FrontDocumentEvent
                                         {
-                                            Id = y.CloseEvent.Id,
-                                            EventType = y.CloseEvent.EventTypeId,
-                                            EventTypeName = y.CloseEvent.EventType.Name,
-                                            Date = y.CloseEvent.Date,
-                                            Description = y.CloseEvent.Description,
-                                            AddDescription = y.CloseEvent.AddDescription,
+                                            Id = x.CloseEvent.Id,
+                                            EventType = (EnumEventTypes)x.CloseEvent.EventTypeId,
+                                            EventTypeName = "##l@EventTypes:" + ((EnumEventTypes)x.CloseEvent.EventTypeId).ToString() + "@l##",
+                                            Date = x.CloseEvent.Date,
+                                            Description = x.CloseEvent.Description,
+                                            AddDescription = x.CloseEvent.AddDescription,
                                             DueDate = null,
                                         },
                 }).ToList();
@@ -184,56 +184,56 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetDocumentSendListQuery(ctx, new FilterDocumentSendList { Id = new List<int> { id } });
-                var res = qry.Select(y => new FrontDocumentSendList
+                var res = qry.Select(x => new FrontDocumentSendList
                 {
-                    Id = y.Id,
-                    DocumentId = y.DocumentId,
-                    Stage = y.Stage,
-                    SendType = (EnumSendTypes)y.SendTypeId,
-                    SendTypeName = y.SendType.Name,
-                    SendTypeCode = y.SendType.Code,
-                    StageType = (EnumStageTypes?)y.StageTypeId,
-                    StageTypeName = y.StageType.Name,
-                    StageTypeCode = y.StageType.Code,
-                    SendTypeIsImportant = y.SendType.IsImportant,
-                    Task = y.Task.Task,
-                    IsAddControl = y.IsAddControl,
-                    SelfDescription = y.SelfDescription,
-                    SelfDueDate = y.SelfDueDate,
-                    SelfDueDay = y.SelfDueDay,
-                    SelfAttentionDate = y.SelfAttentionDate,
-                    SelfAttentionDay = y.SelfAttentionDay,
-                    Description = y.Description,
-                    AddDescription = y.AddDescription,
-                    DueDate = y.DueDate,
-                    DueDay = y.DueDay,
-                    StartEventId = y.StartEventId,
-                    CloseEventId = y.CloseEventId,
-                    IsInitial = y.IsInitial,
-                    AccessLevel = (EnumAccessLevels)y.AccessLevelId,
-                    AccessLevelName = y.AccessLevel.Name,
-                    StartEvent = y.StartEvent == null
+                    Id = x.Id,
+                    DocumentId = x.DocumentId,
+                    Stage = x.Stage,
+                    SendType = (EnumSendTypes)x.SendTypeId,
+                    SendTypeName = x.SendType.Name,
+                    SendTypeCode = x.SendType.Code,
+                    StageType = (EnumStageTypes?)x.StageTypeId,
+                    StageTypeName = x.StageType.Name,
+                    StageTypeCode = x.StageType.Code,
+                    SendTypeIsImportant = x.SendType.IsImportant,
+                    Task = x.Task.Task,
+                    IsAddControl = x.IsAddControl,
+                    SelfDescription = x.SelfDescription,
+                    SelfDueDate = x.SelfDueDate,
+                    SelfDueDay = x.SelfDueDay,
+                    SelfAttentionDate = x.SelfAttentionDate,
+                    SelfAttentionDay = x.SelfAttentionDay,
+                    Description = x.Description,
+                    AddDescription = x.AddDescription,
+                    DueDate = x.DueDate,
+                    DueDay = x.DueDay,
+                    StartEventId = x.StartEventId,
+                    CloseEventId = x.CloseEventId,
+                    IsInitial = x.IsInitial,
+                    AccessLevel = (EnumAccessLevels)x.AccessLevelId,
+                    AccessLevelName = "##l@AccessLevels:" + ((EnumAccessLevels)x.AccessLevelId).ToString() + "@l##",
+                    StartEvent = x.StartEvent == null
                                         ? null
                                         : new FrontDocumentEvent
                                         {
-                                            Id = y.StartEvent.Id,
-                                            EventType = y.StartEvent.EventTypeId,
-                                            EventTypeName = y.StartEvent.EventType.Name,
-                                            Date = y.StartEvent.Date,
-                                            Description = y.StartEvent.Description,
-                                            AddDescription = y.StartEvent.AddDescription,
-                                            DueDate = y.StartEvent.OnWait.Select(z => z.DueDate).FirstOrDefault(),
+                                            Id = x.StartEvent.Id,
+                                            EventType = (EnumEventTypes)x.StartEvent.EventTypeId,
+                                            EventTypeName = "##l@EventTypes:" + ((EnumEventTypes)x.StartEvent.EventTypeId).ToString() + "@l##",
+                                            Date = x.StartEvent.Date,
+                                            Description = x.StartEvent.Description,
+                                            AddDescription = x.StartEvent.AddDescription,
+                                            DueDate = x.StartEvent.OnWait.Select(z => z.DueDate).FirstOrDefault(),
                                         },
-                    CloseEvent = y.CloseEvent == null || y.StartEventId == y.CloseEventId
+                    CloseEvent = x.CloseEvent == null || x.StartEventId == x.CloseEventId
                                         ? null
                                         : new FrontDocumentEvent
                                         {
-                                            Id = y.CloseEvent.Id,
-                                            EventType = y.CloseEvent.EventTypeId,
-                                            EventTypeName = y.CloseEvent.EventType.Name,
-                                            Date = y.CloseEvent.Date,
-                                            Description = y.CloseEvent.Description,
-                                            AddDescription = y.CloseEvent.AddDescription,
+                                            Id = x.CloseEvent.Id,
+                                            EventType = (EnumEventTypes)x.CloseEvent.EventTypeId,
+                                            EventTypeName = "##l@EventTypes:" + ((EnumEventTypes)x.CloseEvent.EventTypeId).ToString() + "@l##",
+                                            Date = x.CloseEvent.Date,
+                                            Description = x.CloseEvent.Description,
+                                            AddDescription = x.CloseEvent.AddDescription,
                                             DueDate = null,
                                         },
                 }).FirstOrDefault();
@@ -266,17 +266,17 @@ namespace BL.Database.Documents
                 }
                 ).ToList();
                 var docs = CommonQueries.GetDocumentQuery(ctx, new FilterDocument { LinkId = new List<int> { linkId.Value }, NotContainsDocumentId = new List<int> { model.DocumentId }, IsInWork = true })
-                    .Select(y => new FrontDocument
+                    .Select(x => new FrontDocument
                     {
-                        Id = y.Id,
-                        DocumentDirectionName = y.TemplateDocument.DocumentDirection.Name,
-                        DocumentTypeName = y.TemplateDocument.DocumentType.Name,
-                        RegistrationNumber = y.RegistrationNumber,
-                        RegistrationNumberPrefix = y.RegistrationNumberPrefix,
-                        RegistrationNumberSuffix = y.RegistrationNumberSuffix,
-                        DocumentDate = y.RegistrationDate ?? y.CreateDate,
-                        IsRegistered = y.IsRegistered,
-                        Description = y.Description,
+                        Id = x.Id,
+                        DocumentDirectionName = "##l@DocumentDirections:" + ((EnumDocumentDirections)x.DocumentDirectionId).ToString() + "@l##",
+                        DocumentTypeName = x.DocumentType.Name,
+                        RegistrationNumber = x.RegistrationNumber,
+                        RegistrationNumberPrefix = x.RegistrationNumberPrefix,
+                        RegistrationNumberSuffix = x.RegistrationNumberSuffix,
+                        DocumentDate = x.RegistrationDate ?? x.CreateDate,
+                        IsRegistered = x.IsRegistered,
+                        Description = x.Description,
                     }).ToList();
                 docs.ForEach(x => CommonQueries.SetRegistrationFullNumber(x));
                 res.Documents = docs;

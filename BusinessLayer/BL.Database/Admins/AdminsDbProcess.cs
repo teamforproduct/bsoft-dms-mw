@@ -109,8 +109,8 @@ namespace BL.Database.Admins
                     RolePositionId = x.PositionId,
                     RolePositionName = x.Position.Name,
                     RolePositionExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null),
-                    RolePositionExecutorTypeId = x.PositionExecutorType.Id,
-                    RolePositionExecutorTypeName = x.PositionExecutorType.Name,
+                    RolePositionExecutorTypeId = x.PositionExecutorTypeId,
+                    RolePositionExecutorTypeName = "##l@EnumPositionExecutionTypes:" + ((EnumPositionExecutionTypes)x.PositionExecutorTypeId).ToString() + "@l##",
                     StartDate = x.StartDate,
                     EndDate = x.EndDate > maxDateTime ? (DateTime?)null : x.EndDate,
                     DepartmentName = x.Position.Department.Name,
@@ -185,8 +185,8 @@ namespace BL.Database.Admins
                     DepartmentName = x.Position.Department.Name,
                     ExecutorName = (x.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal ? string.Empty : x.Position.ExecutorAgent.Name),
                     ImageByteArray = (x.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal ? new byte[] { } : x.Position.ExecutorAgent.Image),
-                    ExecutorTypeId = x.PositionExecutorType.Id,
-                    ExecutorTypeDescription = x.PositionExecutorType.Description,
+                    ExecutorTypeId = x.PositionExecutorTypeId,
+                    ExecutorTypeDescription = "##l@EnumPositionExecutionTypes" + ((EnumPositionExecutionTypes)x.PositionExecutorTypeId).ToString() + ".Description:@l##",
                 }).ToList();
 
                 //IsLastChosen
