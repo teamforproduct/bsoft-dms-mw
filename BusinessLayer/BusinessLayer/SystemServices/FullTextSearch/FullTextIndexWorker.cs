@@ -13,7 +13,7 @@ using BL.Model.SystemCore;
 using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Extensions;
 using Lucene.Net.Queries;
-using Lucene.Net.QueryParsers.Classic;
+using Lucene.Net.QueryParsers.Analyzing;
 using Lucene.Net.Util;
 
 namespace BL.Logic.SystemServices.FullTextSearch
@@ -54,8 +54,6 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 var di = System.IO.Directory.CreateDirectory(dir);
                 Directory directory = FSDirectory.Open(di);
                 var analyzer = new CaseInsensitiveWhitespaceAnalyzer(LuceneVersion.LUCENE_48);
-                //IndexWriter writer = new IndexWriter(directory, analyzer, IndexWriter.MaxFieldLength.UNLIMITED);
-                //var analyzer = new StandardAnalyzer(Version.LUCENE_48);
                 _cfg = new IndexWriterConfig(LuceneVersion.LUCENE_48, analyzer);
                 var writer = new IndexWriter(directory, _cfg);
                 writer.Commit();
@@ -63,7 +61,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 _cfg = null;
             }
             _directory = FSDirectory.Open(new DirectoryInfo(dir));
-            _analyzer = new CaseInsensitiveWhitespaceAnalyzer(LuceneVersion.LUCENE_48);  //new StandardAnalyzer(Version.LUCENE_48);
+            _analyzer = new CaseInsensitiveWhitespaceAnalyzer(LuceneVersion.LUCENE_48); 
             _indexReader = DirectoryReader.Open(_directory);
             _searcher = new IndexSearcher(_indexReader);
         }
@@ -76,17 +74,13 @@ namespace BL.Logic.SystemServices.FullTextSearch
 
             var qry1 = NumericRangeQuery.NewInt32Range(FIELD_OBJECT_TYPE, (int)item.ObjectType, (int)item.ObjectType, true, true);
             var qry2 = NumericRangeQuery.NewInt32Range(FIELD_OBJECT_ID, item.ObjectId, item.ObjectId, true, true);
-            var bQuery = new BooleanQuery();
-            bQuery.Add(qry1, Occur.MUST);
-            bQuery.Add(qry2, Occur.MUST);
+            var bQuery = new BooleanQuery {{qry1, Occur.MUST}, {qry2, Occur.MUST}};
             _writer.DeleteDocuments(bQuery);
             if (item.OperationType == EnumOperationType.Delete)
             {
                 qry1 = NumericRangeQuery.NewInt32Range(FIELD_PARENT_TYPE, (int)item.ObjectType, (int)item.ObjectType, true, true);
                 qry2 = NumericRangeQuery.NewInt32Range(FIELD_PARENT_ID, item.ObjectId, item.ObjectId, true, true);
-                bQuery = new BooleanQuery();
-                bQuery.Add(qry1, Occur.MUST);
-                bQuery.Add(qry2, Occur.MUST);
+                bQuery = new BooleanQuery {{qry1, Occur.MUST}, {qry2, Occur.MUST}};
                 _writer.DeleteDocuments(bQuery);
             }
         }
@@ -119,14 +113,14 @@ namespace BL.Logic.SystemServices.FullTextSearch
             doc.Add(clientIdFld);
 
             var objectText = (item.ObjectText ?? "") + item.ObjectTextAddDateTime.ListToString();
-            doc.Add(new Field(FIELD_BODY, objectText, StringField.TYPE_NOT_STORED));
+            doc.Add(new TextField(FIELD_BODY, objectText.ToLower(), Field.Store.NO));
 
             var securCodes = (item.Access == null || item.Access.All(x => x.Key == 0))
                 ? FullTextFilterTypes.NoFilter
                 : string.Join(" ", item.Access.Where(x => x.Key != 0).Select(x => x.Key.ToString() + x.Info).ToList());
-            doc.Add(new StringField(FIELD_SECURITY, securCodes, Field.Store.YES));
+            doc.Add(new TextField(FIELD_SECURITY, securCodes.ToLower(), Field.Store.YES));
 
-            doc.Add(new StringField(FIELD_FILTERS, item.Filter ?? "", Field.Store.YES));
+            doc.Add(new TextField(FIELD_FILTERS, item.Filter?.ToLower() ?? "", Field.Store.YES));
 
             var dateFrom = new Int32Field(FIELD_DATE_FROM_ID, (item.DateFrom.HasValue ? (int)item.DateFrom.Value.ToOADate() : 0), new FieldType { IsIndexed = true, IsStored = true, NumericType = NumericType.INT32 });
             doc.Add(dateFrom);
@@ -169,17 +163,17 @@ namespace BL.Logic.SystemServices.FullTextSearch
             var boolFilter = new BooleanFilter();
 
             #region boolQry
-            var arr = text.Trim().Split(' ').ToList();
+            var arr = text.ToLower().Trim().Split(' ').ToList();
             arr.ForEach(x => x.Trim());
             arr.RemoveAll(string.IsNullOrEmpty);
             var qryString = arr.Aggregate("", (current, elem) => current + (string.IsNullOrEmpty(current) ? $"*{elem}*" : $" AND *{elem}*"));
-            var parser = new QueryParser(LuceneVersion.LUCENE_48, FIELD_BODY, _analyzer) { AllowLeadingWildcard = true };
+            var parser = new AnalyzingQueryParser(LuceneVersion.LUCENE_48, FIELD_BODY, _analyzer) { AllowLeadingWildcard = true };
             var textQry = parser.Parse(qryString);
             boolQry.Add(textQry, Occur.MUST);
 
             if (filter.Accesses != null && filter.Accesses.Any())
             {
-                var localParser = new QueryParser(LuceneVersion.LUCENE_48, FIELD_SECURITY, _analyzer);
+                var localParser = new AnalyzingQueryParser(LuceneVersion.LUCENE_48, FIELD_SECURITY, _analyzer);
                 var boolLocalQry = new BooleanQuery();
                 foreach (var item in filter.Accesses)
                 {
@@ -190,11 +184,11 @@ namespace BL.Logic.SystemServices.FullTextSearch
             }
             if (filter.Filters != null && filter.Filters.Any())
             {
-                var localParser = new QueryParser(LuceneVersion.LUCENE_48, FIELD_FILTERS, _analyzer) { AllowLeadingWildcard = true };
+                var localParser = new AnalyzingQueryParser(LuceneVersion.LUCENE_48, FIELD_FILTERS, _analyzer) { AllowLeadingWildcard = true };
                 var boolLocalQry = new BooleanQuery();
                 foreach (var item in filter.Filters)
                 {
-                    var localQry = localParser.Parse(item);
+                    var localQry = localParser.Parse(item.ToLower());
                     boolLocalQry.Add(localQry, Occur.MUST);
                 }
                 boolQry.Add(boolLocalQry, Occur.MUST);
@@ -257,7 +251,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
         private List<FullTextSearchResult> GetQueryResult(out bool IsNotAll, int rowLimit, string text, BooleanQuery boolQry, BooleanFilter boolFilter, UIPaging paging)
         {
 
-            var sort = new Sort(/*SortField.FIELD_SCORE,*/ new SortField(FIELD_PARENT_ID, SortFieldType.SCORE, true));
+            var sort = new Sort( new SortField(FIELD_PARENT_ID, SortFieldType.SCORE, true));
             var qryRes = _searcher.Search(boolQry, boolFilter, rowLimit, sort);
             FileLogger.AppendTextToFile($"{DateTime.Now} '{text}' TotalHits: {qryRes.TotalHits} rows SearchInLucena  Query: '{boolQry}'", @"C:\TEMPLOGS\fulltext.log");
 
