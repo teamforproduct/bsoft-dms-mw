@@ -124,10 +124,8 @@ namespace DMS_WebAPI.Utilities
             return Regex.IsMatch(text, _PATTERN);
         }
 
-        public string GetTranslation(int languageId, string text)
+        public string GetTranslation(int languageId, string text, List<string> Paramenters = null)
         {
-            string errorMessage = text;
-
             if (languageId < 1)
             {
                 // запрашиваю из кэша переводы
@@ -135,6 +133,28 @@ namespace DMS_WebAPI.Utilities
                 var language = languageInfo.Languages.FirstOrDefault(x => x.IsDefault);
                 if (language != null) languageId = language.Id;
             }
+
+            var res = Translate(languageId, text);
+
+            if (Paramenters?.Count() > 0)
+            {
+                try
+                {
+                    res = string.Format(res, Paramenters.ToArray());
+
+                    res = Translate(languageId, res);
+                }
+                catch
+                { }
+            }
+
+            return res;
+        }
+
+
+        private string Translate(int languageId, string text)
+        {
+            string errorMessage = text;
 
             try
             {
@@ -165,9 +185,9 @@ namespace DMS_WebAPI.Utilities
                 }
             }
             catch (Exception) { }
+
             return text;
         }
-
 
 
         /// <summary>
@@ -176,20 +196,24 @@ namespace DMS_WebAPI.Utilities
         /// <param name="languageCode"></param>
         /// <param name="text">json с множеством лейблов для перевода</param>
         /// <returns></returns>
-        public string GetTranslation(string languageCode, string text)
+        public string GetTranslation(string languageCode, string text, List<string> Paramenters = null)
         {
             if (!ExistsLabels(text)) return text;
 
             if (string.IsNullOrEmpty(languageCode)) languageCode = string.Empty;
 
-            return GetTranslation(GetLanguageIdByCode(languageCode), text);
+            return GetTranslation(GetLanguageIdByCode(languageCode), text, Paramenters);
         }
 
-        public string GetTranslation(string text)
+        public string GetTranslation(string text, List<string> Paramenters = null)
         {
             var lang = GetUserLanguage();
 
-            return GetTranslation(lang.Id, text);
+            var res = GetTranslation(lang.Id, text);
+
+            res = InsertValues(res, Paramenters);
+
+            return res;
 
             //var currLang = GetLanguageCodeFromRequestUserLanguages(HttpContext.Current);
             //IContext defContext = null;
@@ -204,6 +228,12 @@ namespace DMS_WebAPI.Utilities
             //{ }
 
             //return defContext == null ? GetTranslation(currLang, text) : GetTranslation(defContext, text);
+        }
+
+        private string InsertValues(string Message, List<string> Paramenters)
+        {
+            
+            return Message;
         }
 
         public int GetLanguageIdByCode(string languageCode)

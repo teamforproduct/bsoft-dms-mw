@@ -453,6 +453,7 @@
     <Compile Include="DatabaseContext\ApplicationDbContext.cs" />
     <Compile Include="Models\EmployeeCreationResult.cs" />
     <Compile Include="Models\ChangeLoginModel.cs" />
+    <Compile Include="Models\BaseMailModel.cs" />
     <Compile Include="Models\UserCreationResult.cs" />
     <Compile Include="Models\ModuleFeatureModel.cs" />
     <Compile Include="Models\RestorePasswordModel.cs" />

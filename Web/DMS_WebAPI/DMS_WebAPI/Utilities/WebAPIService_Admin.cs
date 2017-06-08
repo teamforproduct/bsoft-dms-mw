@@ -10,6 +10,7 @@ using BL.Model.Users;
 using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Models;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -132,19 +133,22 @@ namespace DMS_WebAPI.Utilities
 
             callbackurl += String.Format("?userId={0}&code={1}", User.Id, HttpUtility.UrlEncode(emailConfirmationCode));
 
+            var languages = DmsResolver.Current.Get<ILanguages>();
+
             var m = new ChangeLoginModel
             {
-                Url = callbackurl,
-                FirstName = User.FirstName,
+                Greeting = languages.GetTranslation(User.LanguageId, "##l@Mail:Greeting@l##", new List<string> { User.FirstName }),
+                Closing = languages.GetTranslation(User.LanguageId, "##l@Mail:Closing@l##"),
+                CallToActionUrl = callbackurl,
+                CallToActionName = languages.GetTranslation(User.LanguageId, "##l@Mail.EmailConfirmation.CallToActionName@l##"),
             };
 
             var htmlContent = m.RenderPartialViewToString(RenderPartialView.ChangeLogin);
 
             var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
 
-            var languages = DmsResolver.Current.Get<ILanguages>();
 
-            mailService.SendMessage(null, MailServers.Noreply, User.Email, languages.GetTranslation(User.LanguageId, "##l@EmailSubject:EmailConfirmation@l##"), htmlContent);
+            mailService.SendMessage(null, MailServers.Noreply, User.Email, languages.GetTranslation(User.LanguageId, "##l@Mail.EmailConfirmation.Subject@l##"), htmlContent);
         }
 
         public async Task SwitchOffFingerprint(IContext context, Item model)
