@@ -452,13 +452,9 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="DatabaseContext\ApplicationDbContext.cs" />
     <Compile Include="Models\EmployeeCreationResult.cs" />
-    <Compile Include="Models\ChangeLoginModel.cs" />
-    <Compile Include="Models\BaseMailModel.cs" />
+    <Compile Include="Models\MailWithCallToActionModel.cs" />
     <Compile Include="Models\UserCreationResult.cs" />
     <Compile Include="Models\ModuleFeatureModel.cs" />
-    <Compile Include="Models\RestorePasswordModel.cs" />
-    <Compile Include="Models\NewCompanyRequestModel.cs" />
-    <Compile Include="Models\WelcomeEmailModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -610,10 +606,7 @@
     <Content Include="Views\CreateClient\CreateClient.cshtml" />
     <Content Include="Scripts\jquery-3.1.0.slim.min.map" />
     <Content Include="Scripts\jquery-3.1.0.min.map" />
-    <Content Include="Views\WebPartialView\ChangeLogin.cshtml" />
-    <Content Include="Views\WebPartialView\RestorePassword.cshtml" />
-    <Content Include="Views\WebPartialView\WelcomeEmail.cshtml" />
-    <Content Include="Views\WebPartialView\NewCompanyRequest.cshtml" />
+    <Content Include="Views\WebPartialView\MailWithCallToAction.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Project_Readme.html" />
