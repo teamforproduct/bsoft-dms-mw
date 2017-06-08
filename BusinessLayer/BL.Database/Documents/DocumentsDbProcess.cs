@@ -191,7 +191,10 @@ namespace BL.Database.Documents
                     #endregion groupCount
                     else
                     {
-
+                        if (paging.Sort == EnumSort.IncomingIds && filter?.Document?.DocumentId?.Count() > 0)
+                        {
+                            filter.FullTextSearchSearch.FullTextSearchResult = filter.FullTextSearchSearch.FullTextSearchResult.Where(x => filter.Document.DocumentId.Contains(x.ParentId)).ToList();
+                        }
                         if ((paging.IsOnlyCounter ?? true) && !filter.FullTextSearchSearch.IsNotAll)
                         {
                             var ftDocs = filter.FullTextSearchSearch.FullTextSearchResult.GroupBy(x => x.ParentId);
@@ -216,13 +219,22 @@ namespace BL.Database.Documents
                         }
                         else
                         {
-                            if (paging.Sort == EnumSort.IncomingIds && filter?.Document?.DocumentId?.Count() > 0)
-                            {
-                                filter.FullTextSearchSearch.FullTextSearchResult = filter.FullTextSearchSearch.FullTextSearchResult.Where(x => filter.Document.DocumentId.Contains(x.ParentId)).ToList();
-                            }
+
                             var docIds = filter.FullTextSearchSearch.FullTextSearchResult.GroupBy(x => x.ParentId).Select(x => x.Key).OrderByDescending(x => x).ToList();
                             if (!paging.IsAll)
                             {
+                                if (paging.SearchId.HasValue)
+                                {
+
+                                    if (docIds.Contains(paging.SearchId.Value))
+                                    {
+                                        paging.CurrentPage = docIds.FindIndex(x => x == paging.SearchId.Value) / paging.PageSize + 1;
+                                    }
+                                    else
+                                    {
+                                        paging.SearchId = null;
+                                    }
+                                }
                                 docIds = docIds.Skip(paging.PageSize * (paging.CurrentPage - 1)).Take(paging.PageSize).ToList();
                             }
                             if (docIds.Count > 0)
@@ -393,12 +405,51 @@ namespace BL.Database.Documents
                         }
                         else
                         {
-                            qry = qry.OrderByDescending(x => x.CreateDate).ThenByDescending(x => x.Id);
+                            qry = qry.OrderByDescending(x => x.Id);
                             if (!paging.IsAll)
                             {
+                                if (paging.SearchId.HasValue)
+                                {
+                                    var qryn = qry.Where(x => x.Id >= paging.SearchId.Value);
+                                    if (qryn.Any(x => x.Id == paging.SearchId.Value))
+                                    {
+                                        paging.CurrentPage = qryn.Select(x => x.Id).ToList().FindIndex(x => x == paging.SearchId.Value) / paging.PageSize + 1;
+                                    }
+                                    else
+                                    {
+                                        paging.SearchId = null;
+                                    }
+                                    /*общий случай сортировка не по ИД!
+                                    var isRepeat = true;
+                                    var n = 500;
+                                    while (isRepeat)
+                                    {                                        
+                                        var qryn = qry.AsQueryable();
+                                        if (n < int.MaxValue)
+                                            qryn = qryn.Take(() => n);
+                                        if (qryn.Any(x => x.Id == paging.SearchId.Value))
+                                        {
+                                            int i = qryn.Select(x => x.Id).ToList().FindIndex(x => x == paging.SearchId.Value);
+                                            paging.CurrentPage = 1 + i / paging.PageSize;
+                                            isRepeat = false;
+                                        }
+                                        else
+                                        {
+                                            if (n < 100000)
+                                                n *= 10;
+                                            else if (n < int.MaxValue)
+                                                n = int.MaxValue;
+                                            else
+                                            {
+                                                isRepeat = false;
+                                                paging.SearchId = null;
+                                            }
+                                        }
+                                    }
+                                    */
+                                }
                                 var skip = paging.PageSize * (paging.CurrentPage - 1);
                                 var take = paging.PageSize;
-
                                 qry = qry.Skip(() => skip).Take(() => take);
                             }
                         }

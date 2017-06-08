@@ -11,13 +11,18 @@ namespace BL.Model.SystemCore
         /// Пагинация. Номер страницы
         /// По умолчанию 1
         /// </summary>
-        public int CurrentPage { get; set; } = 1;
-        
+        public int CurrentPage { get; set; } = 1;        
         /// <summary>
         /// Пагинация. Количество записей в странице
         /// По умолчанию 25
         /// </summary>
         public int PageSize { get; set; } = 25;
+        /// <summary>
+        /// Пагинация. ИД записи, который нужно найти.
+        /// Если запись найдена, то будет возвращены записи на странице, на которой она найдена, номер страницы выставится в CurrentPage
+        /// Если запись не найдена, то SearchId будет сброшен и будет отработан стандартная пагинация по CurrentPage и PageSize
+        /// </summary>
+        public int? SearchId { get; set; }
         /// <summary>
         /// Количество записей
         /// </summary>
