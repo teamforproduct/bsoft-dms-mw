@@ -46,6 +46,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             return null;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.DeleteSavedFilter;
+        public override EnumActions CommandType => EnumActions.DeleteSavedFilter;
     }
 }

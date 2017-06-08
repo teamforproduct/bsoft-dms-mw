@@ -33,7 +33,7 @@ namespace BL.Logic.PropertyCore.Commands
             return null;
         }
 
-        public override EnumPropertyActions CommandType => EnumPropertyActions.DeletePropertyLink;
+        public override EnumActions CommandType => EnumActions.DeletePropertyLink;
     }
 
 }

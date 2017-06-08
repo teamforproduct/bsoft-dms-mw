@@ -27,7 +27,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDocumentActions.AddFavourite, model, model.CurrentPositionId);
+                Action.ExecuteDocumentAction(context, EnumActions.AddFavourite, model, model.CurrentPositionId);
                 var res = new JsonResult(null, this);
                 return res;
             });
@@ -44,7 +44,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDocumentActions.DeleteFavourite, model, model.CurrentPositionId);
+                Action.ExecuteDocumentAction(context, EnumActions.DeleteFavourite, model, model.CurrentPositionId);
                 var res = new JsonResult(null, this);
                 return res;
             });

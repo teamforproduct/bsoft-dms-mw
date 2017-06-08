@@ -63,7 +63,7 @@ namespace DMS_WebAPI.ControllersV3.User
                     PassportSerial = model.PassportSerial,
                     PassportText = model.PassportText
                 };
-                Action.Execute(context, EnumDictionaryActions.ModifyAgentPeoplePassport, tmpModel);
+                Action.ExecuteDictionaryAction(context, EnumActions.ModifyAgentPeoplePassport, tmpModel);
                 return GetById(context);
             });
         }

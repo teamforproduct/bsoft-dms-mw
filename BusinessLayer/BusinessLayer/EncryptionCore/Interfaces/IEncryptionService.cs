@@ -9,7 +9,7 @@ namespace BL.Logic.EncryptionCore.Interfaces
 {
     public interface IEncryptionService
     {
-        object ExecuteAction(EnumEncryptionActions act, IContext context, object param);
+        object ExecuteAction(EnumActions act, IContext context, object param);
 
         #region EncryptionCertificates
         FrontEncryptionCertificate GetCertificate(IContext ctx, int id);

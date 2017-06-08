@@ -61,7 +61,7 @@ namespace BL.Logic.AdminCore
 
         private void SetPositionRole(SetAdminPositionRole model)
         {
-            _adminService.ExecuteAction(EnumAdminActions.SetPositionRole, _context, model);
+            _adminService.ExecuteAction(EnumActions.SetPositionRole, _context, model);
         }
     }
 }

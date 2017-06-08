@@ -138,7 +138,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentFile, model, model.Select(x => x.CurrentPositionId).FirstOrDefault());
+                var tmpItem = Action.ExecuteDocumentAction(context, EnumActions.AddDocumentFile, model, model.Select(x => x.CurrentPositionId).FirstOrDefault());
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -155,7 +155,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumDocumentActions.ModifyDocumentFile, model);
+                var tmpItem = Action.ExecuteDocumentAction(context, EnumActions.ModifyDocumentFile, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -172,7 +172,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumDocumentActions.RenameDocumentFile, model);
+                var tmpItem = Action.ExecuteDocumentAction(context, EnumActions.RenameDocumentFile, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -190,7 +190,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDocumentActions.AcceptDocumentFile, model);
+                Action.ExecuteDocumentAction(context, EnumActions.AcceptDocumentFile, model);
                 var res = new JsonResult(null, this);
                 return res;
             });
@@ -207,7 +207,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDocumentActions.AcceptMainVersionDocumentFile, model);
+                Action.ExecuteDocumentAction(context, EnumActions.AcceptMainVersionDocumentFile, model);
                 var res = new JsonResult(null, this);
                 return res;
             });
@@ -224,7 +224,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDocumentActions.RejectDocumentFile, model);
+                Action.ExecuteDocumentAction(context, EnumActions.RejectDocumentFile, model);
                 var res = new JsonResult(null, this);
                 return res;
             });
@@ -243,7 +243,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDocumentActions.DeleteDocumentFile, Id);
+                Action.ExecuteDocumentAction(context, EnumActions.DeleteDocumentFile, Id);
                 var res = new JsonResult(null, this);
                 return res;
             });
@@ -260,7 +260,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDocumentActions.DeleteDocumentFileVersion, Id);
+                Action.ExecuteDocumentAction(context, EnumActions.DeleteDocumentFileVersion, Id);
                 var res = new JsonResult(null, this);
                 return res;
             });
@@ -276,7 +276,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDocumentActions.DeleteDocumentFileVersionFinal, Id);
+                Action.ExecuteDocumentAction(context, EnumActions.DeleteDocumentFileVersionFinal, Id);
                 var res = new JsonResult(null, this);
                 return res;
             });
@@ -293,7 +293,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDocumentActions.RestoreDocumentFileVersion, Id);
+                Action.ExecuteDocumentAction(context, EnumActions.RestoreDocumentFileVersion, Id);
                 var res = new JsonResult(null, this);
                 return res;
             });
@@ -338,3 +338,6 @@ namespace DMS_WebAPI.ControllersV3.Documents
         }
     }
 }
+ 
+    
+

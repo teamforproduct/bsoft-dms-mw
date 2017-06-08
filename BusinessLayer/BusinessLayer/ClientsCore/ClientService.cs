@@ -91,7 +91,7 @@ namespace BL.Logic.ClientCore
             {
                 item.Name = languages.GetTranslation(context.User.LanguageId, item.Name);
                 item.Code = languages.GetTranslation(context.User.LanguageId, item.Code);
-                tmpService.ExecuteAction(EnumDictionaryActions.AddAddressType, context, item);
+                tmpService.ExecuteAction(EnumActions.AddAddressType, context, item);
             };
             #endregion
 
@@ -100,7 +100,7 @@ namespace BL.Logic.ClientCore
             foreach (var item in GetDocumentTypes())
             {
                 item.Name = languages.GetTranslation(context.User.LanguageId, item.Name);
-                tmpService.ExecuteAction(EnumDictionaryActions.AddDocumentType, context, item);
+                tmpService.ExecuteAction(EnumActions.AddDocumentType, context, item);
             };
 
             AddClientRoles(context);
@@ -113,7 +113,7 @@ namespace BL.Logic.ClientCore
             #region [+] Tags ...
             foreach (var item in GetTags(context))
             {
-                tmpService.ExecuteAction(EnumDictionaryActions.AddTag, context, item);
+                tmpService.ExecuteAction(EnumActions.AddTag, context, item);
             };
             #endregion
 
@@ -232,7 +232,7 @@ namespace BL.Logic.ClientCore
             };
 
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            return (int)tmpService.ExecuteAction(EnumDictionaryActions.AddContactType, context, model);
+            return (int)tmpService.ExecuteAction(EnumActions.AddContactType, context, model);
 
         }
 

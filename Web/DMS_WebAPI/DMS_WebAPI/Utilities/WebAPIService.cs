@@ -424,7 +424,7 @@ namespace DMS_WebAPI.Utilities
             }
 
             var exceptionText = ExceptionHandling.GetExceptionText(ex);
-            var loginLogId = logger.Error(ctx, message, exceptionText, objectId: (int)EnumObjects.System, actionId: (int)EnumSystemActions.Login, logObject: errorInfo, agentId: agentId);
+            var loginLogId = logger.Error(ctx, message, exceptionText, objectId: (int)EnumObjects.System, actionId: (int)EnumActions.Login, logObject: errorInfo, agentId: agentId);
 
             // Эти исключения отлавливает Application_Error в Global.asax
             throw ex;

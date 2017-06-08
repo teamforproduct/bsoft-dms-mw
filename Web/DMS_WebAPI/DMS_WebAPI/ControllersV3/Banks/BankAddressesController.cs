@@ -83,7 +83,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumDictionaryActions.AddBankAddress, model);
+                var tmpItem = Action.ExecuteDictionaryAction(context, EnumActions.AddBankAddress, model);
                 return GetById(context, tmpItem);
             });
         }
@@ -99,7 +99,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDictionaryActions.ModifyBankAddress, model);
+                Action.ExecuteDictionaryAction(context, EnumActions.ModifyBankAddress, model);
                 return GetById(context, model.Id);
             });
         }
@@ -115,7 +115,7 @@ namespace DMS_WebAPI.ControllersV3.Banks
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDictionaryActions.DeleteBankAddress, Id);
+                Action.ExecuteDictionaryAction(context, EnumActions.DeleteBankAddress, Id);
                 var tmpItem = new FrontDeleteModel(Id);
                 var res = new JsonResult(tmpItem, this);
                 return res;

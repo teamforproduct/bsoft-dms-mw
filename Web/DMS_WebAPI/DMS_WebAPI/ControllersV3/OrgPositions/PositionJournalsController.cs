@@ -79,7 +79,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.SetJournalAccess, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.SetJournalAccess, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -96,7 +96,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.SetJournalAccessByDepartment_Position, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.SetJournalAccessByDepartment_Position, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -113,7 +113,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.SetJournalAccessByCompany_Position, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.SetJournalAccessByCompany_Position, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -131,7 +131,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.SetJournalAccessDefault_Position, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.SetJournalAccessDefault_Position, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -148,7 +148,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.SetJournalAccessAll_Position, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.SetJournalAccessAll_Position, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -165,7 +165,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.DuplicateJournalAccess_Position, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.DuplicateJournalAccess_Position, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });

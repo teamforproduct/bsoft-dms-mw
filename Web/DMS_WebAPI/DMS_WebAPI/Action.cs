@@ -4,6 +4,7 @@ using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Logic.DocumentCore.Interfaces;
 using BL.Logic.EncryptionCore.Interfaces;
+using BL.Logic.PropertyCore.Interfaces;
 using BL.Logic.SystemCore.Interfaces;
 using BL.Model.Enums;
 
@@ -12,45 +13,44 @@ namespace DMS_WebAPI
     public static class Action
     {
         //TODO ASYNC REMOVE CONTEXT FROM HERE
-        public static int Execute(IContext context, EnumDictionaryActions action, object model)
+        public static int ExecuteEncryptionAction(IContext context, EnumActions action, object model)
         {
-            var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var res = tmpService.ExecuteAction(action, context, model);
-
+            var _service = DmsResolver.Current.Get<IEncryptionService>();
+            var res = _service.ExecuteAction(action, context, model);
+            return res is int ? (int)res : -1;
+        }
+        public static int ExecuteSystemAction(IContext context, EnumActions action, object model)
+        {
+            var _service = DmsResolver.Current.Get<ISystemService>();
+            var res = _service.ExecuteAction(action, context, model);
+            return res is int ? (int)res : -1;
+        }
+        public static int ExecutePropertyAction(IContext context, EnumActions action, object model)
+        {
+            var _service = DmsResolver.Current.Get<IPropertyService>();
+            var res = _service.ExecuteAction(action, context, model);
+            return res is int ? (int)res : -1;
+        }
+        public static int ExecuteAdminAction(IContext context, EnumActions action, object model)
+        {
+            var _service = DmsResolver.Current.Get<IAdminService>();
+            var res = _service.ExecuteAction(action, context, model);
             return res is int ? (int)res : -1;
         }
 
-        public static int Execute(IContext context, EnumAdminActions action, object model)
+        public static int ExecuteDictionaryAction(IContext context, EnumActions action, object model)
         {
-            var tmpService = DmsResolver.Current.Get<IAdminService>();
-            var res = tmpService.ExecuteAction(action, context, model);
-
+            var _service = DmsResolver.Current.Get<IDictionaryService>();
+            var res = _service.ExecuteAction(action, context, model);
             return res is int ? (int)res : -1;
         }
 
-        public static int Execute(IContext context, EnumSystemActions action, object model)
-        {
-            var tmpService = DmsResolver.Current.Get<ISystemService>();
-            var res = tmpService.ExecuteAction(action, context, model);
-
-            return res is int ? (int)res : -1;
-        }
-
-        public static int Execute(IContext context, EnumEncryptionActions action, object model)
-        {
-            var tmpService = DmsResolver.Current.Get<IEncryptionService>();
-            var res = tmpService.ExecuteAction(action, context, model);
-
-            return res is int ? (int)res : -1;
-        }
-
-        public static int Execute(IContext context, EnumDocumentActions action, object model, int? сurrentPositionId = null)
+        public static int ExecuteDocumentAction(IContext context, EnumActions action, object model, int? сurrentPositionId = null)
         {
             if (сurrentPositionId.HasValue)
                 context.SetCurrentPosition(сurrentPositionId);
-            var tmpService = DmsResolver.Current.Get<IDocumentService>();
-            var res = tmpService.ExecuteAction(action, context, model);
-
+            var _service = DmsResolver.Current.Get<IDocumentService>();
+            var res = _service.ExecuteAction(action, context, model);
             return res is int ? (int)res : -1;
         }
 

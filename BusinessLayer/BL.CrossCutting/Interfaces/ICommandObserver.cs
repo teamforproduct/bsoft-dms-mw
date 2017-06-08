@@ -6,6 +6,6 @@ namespace BL.CrossCutting.Interfaces
     public interface ICommandObserver
     {
         EnumObserverType ObserverType { get; }
-        void Inform(IContext context, InternalDocument document, EnumDocumentActions previousAction, object previousParameter);
+        void Inform(IContext context, InternalDocument document, EnumActions previousAction, object previousParameter);
     }
 }

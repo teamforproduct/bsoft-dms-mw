@@ -13,7 +13,7 @@ namespace BL.Logic.DocumentCore
     public interface ITemplateService
     {
 
-        object ExecuteAction(EnumDocumentActions act, IContext context, object param);
+        object ExecuteAction(EnumActions act, IContext context, object param);
 
         IEnumerable<FrontTemplate> GetTemplates(IContext context, FilterTemplate filter, UIPaging paging);
         IEnumerable<FrontMainTemplate> GetMainTemplate(IContext context, FullTextSearch ftSearch, FilterTemplate filter, UIPaging paging);

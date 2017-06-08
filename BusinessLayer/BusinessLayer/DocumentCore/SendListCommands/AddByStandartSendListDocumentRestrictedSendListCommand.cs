@@ -65,6 +65,6 @@ namespace BL.Logic.DocumentCore.SendListCommands
             return null;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.AddByStandartSendListDocumentRestrictedSendList;
+        public override EnumActions CommandType => EnumActions.AddByStandartSendListDocumentRestrictedSendList;
     }
 }

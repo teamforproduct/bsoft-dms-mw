@@ -48,7 +48,7 @@ namespace BL.Logic.AdminCore
 
         protected void SetRegistrationJournalPositionByDepartment(SetJournalAccessByDepartment_Position model)
         {
-            _adminService.ExecuteAction(EnumAdminActions.SetJournalAccessByDepartment_Position, _context, model);
+            _adminService.ExecuteAction(EnumActions.SetJournalAccessByDepartment_Position, _context, model);
         }
     }
 }

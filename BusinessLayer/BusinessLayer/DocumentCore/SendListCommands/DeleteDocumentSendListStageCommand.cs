@@ -89,6 +89,6 @@ namespace BL.Logic.DocumentCore.SendListCommands
             return null;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.DeleteDocumentSendListStage;
+        public override EnumActions CommandType => EnumActions.DeleteDocumentSendListStage;
     }
 }

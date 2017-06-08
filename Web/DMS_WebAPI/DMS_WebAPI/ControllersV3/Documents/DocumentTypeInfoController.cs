@@ -80,7 +80,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         public async Task<IHttpActionResult> Post([FromBody]AddDocumentType model)
         {return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-            var tmpItem = Action.Execute(context, EnumDictionaryActions.AddDocumentType, model);
+            var tmpItem = Action.ExecuteDictionaryAction(context, EnumActions.AddDocumentType, model);
             return GetById(context, tmpItem);});
         }
 
@@ -94,7 +94,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         public async Task<IHttpActionResult> Put([FromBody]ModifyDocumentType model)
         {return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-            Action.Execute(context, EnumDictionaryActions.ModifyDocumentType, model);
+            Action.ExecuteDictionaryAction(context, EnumActions.ModifyDocumentType, model);
             return GetById(context, model.Id);});
         }
 
@@ -108,7 +108,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-            Action.Execute(context, EnumDictionaryActions.DeleteDocumentType, Id);
+            Action.ExecuteDictionaryAction(context, EnumActions.DeleteDocumentType, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
             return res;});

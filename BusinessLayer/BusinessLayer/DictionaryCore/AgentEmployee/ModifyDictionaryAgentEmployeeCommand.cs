@@ -25,7 +25,7 @@ namespace BL.Logic.DictionaryCore.AgentEmployee
                         Id = Model.Id,
                         PostedFileData = Model.PostedFileData
                     };
-                    tmpDict.ExecuteAction(EnumDictionaryActions.SetAgentImage, _context, fileModel);
+                    tmpDict.ExecuteAction(EnumActions.SetAgentImage, _context, fileModel);
                 }
 
                 var item = new InternalDictionaryAgentEmployee(Model);

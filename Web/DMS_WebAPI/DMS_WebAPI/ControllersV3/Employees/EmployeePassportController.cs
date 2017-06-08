@@ -56,7 +56,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDictionaryActions.ModifyAgentPeoplePassport, model);
+                Action.ExecuteDictionaryAction(context, EnumActions.ModifyAgentPeoplePassport, model);
                 return GetById(context, model.Id);
             });
         }

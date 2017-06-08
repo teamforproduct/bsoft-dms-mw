@@ -40,6 +40,6 @@ namespace BL.Logic.PropertyCore.Commands
             return _systDb.AddPropertyLink(_context, item);
         }
 
-        public override EnumPropertyActions CommandType => EnumPropertyActions.AddPropertyLink;
+        public override EnumActions CommandType => EnumActions.AddPropertyLink;
     }
 }

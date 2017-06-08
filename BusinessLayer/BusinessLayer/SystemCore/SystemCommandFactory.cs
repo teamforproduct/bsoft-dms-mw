@@ -7,7 +7,7 @@ namespace BL.Logic.SystemCore
 {
     public static class SystemCommandFactory
     {
-        public static ISystemCommand GetCommand(EnumSystemActions act, IContext ctx, object param)
+        public static ISystemCommand GetCommand(EnumActions act, IContext ctx, object param)
         {
             if (ctx.ClientLicence?.LicenceError != null)
             {
@@ -18,11 +18,11 @@ namespace BL.Logic.SystemCore
             switch (act)
             {
 
-                #region Roles
-                case EnumSystemActions.SetSetting:
+                #region System
+                case EnumActions.SetSetting:
                     cmd = DmsResolver.Current.Get<SetSettingCommand>();
                     break;
-                #endregion
+                #endregion System
 
                 default:
                     throw new CommandNotDefinedError(act.ToString());

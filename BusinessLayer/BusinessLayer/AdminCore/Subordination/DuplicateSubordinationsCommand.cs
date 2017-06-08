@@ -61,7 +61,7 @@ namespace BL.Logic.AdminCore
 
         private void SetSubordination(SetSubordination model)
         {
-            _adminService.ExecuteAction(EnumAdminActions.SetSubordination, _context, model);
+            _adminService.ExecuteAction(EnumActions.SetSubordination, _context, model);
         }
     }
 }

@@ -134,7 +134,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.SetUserRole, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.SetUserRole, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -151,7 +151,7 @@ namespace DMS_WebAPI.ControllersV3.Employees
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.SetUserRoleByAssignment, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.SetUserRoleByAssignment, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });

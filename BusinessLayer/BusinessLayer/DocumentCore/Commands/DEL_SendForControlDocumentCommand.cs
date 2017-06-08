@@ -126,6 +126,6 @@ namespace BL.Logic.DocumentCore.Commands
 
         private EnumEventTypes _eventType => (EnumEventTypes)Enum.Parse(typeof(EnumEventTypes), Model.SendType.ToString());
 
-        public override EnumDocumentActions CommandType => (EnumDocumentActions)Enum.Parse(typeof(EnumDocumentActions), Model.SendType.ToString());
+        public override EnumActions CommandType => (EnumActions)Enum.Parse(typeof(EnumActions), Model.SendType.ToString());
     }
 }

@@ -61,7 +61,7 @@ namespace DMS_WebAPI.Utilities
 
             try
             {
-                employeeId = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddAgentEmployee, context, model);
+                employeeId = (int)tmpService.ExecuteAction(EnumActions.AddAgentEmployee, context, model);
 
                 if (employeeId > 0)
                 {
@@ -97,7 +97,7 @@ namespace DMS_WebAPI.Utilities
             }
             catch (Exception e)
             {
-                if (employeeId > 0) tmpService.ExecuteAction(EnumDictionaryActions.DeleteAgentEmployee, context, employeeId);
+                if (employeeId > 0) tmpService.ExecuteAction(EnumActions.DeleteAgentEmployee, context, employeeId);
 
                 if (user != null) DeleteUsersInClient(context.Client.Id, new List<string> { user.Id });
 
@@ -148,7 +148,7 @@ namespace DMS_WebAPI.Utilities
                             IsActive = true
                         };
 
-                        orgId = (int)dicService.ExecuteAction(EnumDictionaryActions.AddOrg, context, org);
+                        orgId = (int)dicService.ExecuteAction(EnumActions.AddOrg, context, org);
                     }
                     else
                     {
@@ -167,7 +167,7 @@ namespace DMS_WebAPI.Utilities
                             Index = model.DepartmentIndex
                         };
 
-                        depId = (int)dicService.ExecuteAction(EnumDictionaryActions.AddDepartment, context, dep);
+                        depId = (int)dicService.ExecuteAction(EnumActions.AddDepartment, context, dep);
                     }
                     else
                     {
@@ -188,7 +188,7 @@ namespace DMS_WebAPI.Utilities
                             Name = jmodel.IncomingJournalName,
                         };
 
-                        dicService.ExecuteAction(EnumDictionaryActions.AddRegistrationJournal, context, jrn);
+                        dicService.ExecuteAction(EnumActions.AddRegistrationJournal, context, jrn);
 
                         jrn = new AddRegistrationJournal
                         {
@@ -199,7 +199,7 @@ namespace DMS_WebAPI.Utilities
                             Name = jmodel.OutcomingJournalName,
                         };
 
-                        dicService.ExecuteAction(EnumDictionaryActions.AddRegistrationJournal, context, jrn);
+                        dicService.ExecuteAction(EnumActions.AddRegistrationJournal, context, jrn);
 
                         jrn = new AddRegistrationJournal
                         {
@@ -210,7 +210,7 @@ namespace DMS_WebAPI.Utilities
                             Name = jmodel.InternalJournalName,
                         };
 
-                        dicService.ExecuteAction(EnumDictionaryActions.AddRegistrationJournal, context, jrn);
+                        dicService.ExecuteAction(EnumActions.AddRegistrationJournal, context, jrn);
                     }
 
                     if (model.PositionId == null && !string.IsNullOrEmpty(model.PositionName))
@@ -225,7 +225,7 @@ namespace DMS_WebAPI.Utilities
                         };
 
                         // Создается должность. + доступы к журналам, рассылка и роль
-                        posId = (int)dicService.ExecuteAction(EnumDictionaryActions.AddPosition, context, pos);
+                        posId = (int)dicService.ExecuteAction(EnumActions.AddPosition, context, pos);
                     }
                     else
                     {
@@ -251,7 +251,7 @@ namespace DMS_WebAPI.Utilities
                 };
                 // AAV попросил делать назначение на начало дня.
 
-                assignmentId = (int)dicService.ExecuteAction(EnumDictionaryActions.AddExecutor, context, ass);
+                assignmentId = (int)dicService.ExecuteAction(EnumActions.AddExecutor, context, ass);
 
 
                 var languages = DmsResolver.Current.Get<ILanguages>();
@@ -306,16 +306,16 @@ namespace DMS_WebAPI.Utilities
             }
             catch (Exception)
             {
-                if (assignmentId > 0) dicService.ExecuteAction(EnumDictionaryActions.DeleteExecutor, context, assignmentId);
+                if (assignmentId > 0) dicService.ExecuteAction(EnumActions.DeleteExecutor, context, assignmentId);
 
                 // Если создавали новую должность
-                if (!model.PositionId.HasValue && posId > 0) dicService.ExecuteAction(EnumDictionaryActions.DeletePosition, context, posId);
+                if (!model.PositionId.HasValue && posId > 0) dicService.ExecuteAction(EnumActions.DeletePosition, context, posId);
 
                 // Если создавали новый отдел
-                if (!model.DepartmentId.HasValue && depId > 0) dicService.ExecuteAction(EnumDictionaryActions.DeleteDepartment, context, depId);
+                if (!model.DepartmentId.HasValue && depId > 0) dicService.ExecuteAction(EnumActions.DeleteDepartment, context, depId);
 
                 // Если создавали новую организацию
-                if (!model.OrgId.HasValue && orgId > 0) dicService.ExecuteAction(EnumDictionaryActions.DeleteOrg, context, orgId);
+                if (!model.OrgId.HasValue && orgId > 0) dicService.ExecuteAction(EnumActions.DeleteOrg, context, orgId);
 
                 if (res != null) DeleteUserEmployee(context, res.EmployeeId);
 
@@ -341,7 +341,7 @@ namespace DMS_WebAPI.Utilities
                 }
             }
 
-            tmpItem.ExecuteAction(EnumDictionaryActions.ModifyAgentEmployee, context, model);
+            tmpItem.ExecuteAction(EnumActions.ModifyAgentEmployee, context, model);
 
             // При деактивации сотрудника 
             //if (!model.IsActive)
@@ -365,7 +365,7 @@ namespace DMS_WebAPI.Utilities
             if (user == null) throw new UserIsNotDefined();
 
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            tmpService.ExecuteAction(EnumDictionaryActions.DeleteAgentEmployee, context, agentId);
+            tmpService.ExecuteAction(EnumActions.DeleteAgentEmployee, context, agentId);
 
             DeleteUsersInClient(context.Client.Id, new List<string> { user.Id });
         }

@@ -31,51 +31,51 @@ namespace BL.Logic.Common
     public static class CommonDocumentUtilities
     {
         #region Dictionaries
-        public static Dictionary<EnumDocumentActions, EnumSubscriptionStates> SubscriptionStatesForAction =
-        new Dictionary<EnumDocumentActions, EnumSubscriptionStates>
+        public static Dictionary<EnumActions, EnumSubscriptionStates> SubscriptionStatesForAction =
+        new Dictionary<EnumActions, EnumSubscriptionStates>
         {
-                { EnumDocumentActions.AffixSigning, EnumSubscriptionStates.Sign },
-                { EnumDocumentActions.SelfAffixSigning, EnumSubscriptionStates.Sign },
-                { EnumDocumentActions.AffixАpproval, EnumSubscriptionStates.Аpproval },
-                { EnumDocumentActions.AffixVisaing, EnumSubscriptionStates.Visa },
-                { EnumDocumentActions.AffixАgreement, EnumSubscriptionStates.Аgreement },
+                { EnumActions.AffixSigning, EnumSubscriptionStates.Sign },
+                { EnumActions.SelfAffixSigning, EnumSubscriptionStates.Sign },
+                { EnumActions.AffixАpproval, EnumSubscriptionStates.Аpproval },
+                { EnumActions.AffixVisaing, EnumSubscriptionStates.Visa },
+                { EnumActions.AffixАgreement, EnumSubscriptionStates.Аgreement },
         };
 
-        public static Dictionary<EnumDocumentActions, List<EnumEventTypes>> PermissibleEventTypesForAction =
-        new Dictionary<EnumDocumentActions, List<EnumEventTypes>>
+        public static Dictionary<EnumActions, List<EnumEventTypes>> PermissibleEventTypesForAction =
+        new Dictionary<EnumActions, List<EnumEventTypes>>
         {
 
-                { EnumDocumentActions.ControlChange, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.ControlChange } },
+                { EnumActions.ControlChange, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.ControlChange } },
 
-                { EnumDocumentActions.SendForExecutionChange, new List<EnumEventTypes> { EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange} },
+                { EnumActions.SendForExecutionChange, new List<EnumEventTypes> { EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange} },
 
-                { EnumDocumentActions.ControlTargetChange, new List<EnumEventTypes> { EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange,
+                { EnumActions.ControlTargetChange, new List<EnumEventTypes> { EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange,
                                                                                      } },
 
-                { EnumDocumentActions.ControlOff, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.ControlChange } },
+                { EnumActions.ControlOff, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.ControlChange } },
 
-                { EnumDocumentActions.AskPostponeDueDate, new List<EnumEventTypes> { EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange } },
-                { EnumDocumentActions.CancelPostponeDueDate, new List<EnumEventTypes> { EnumEventTypes.AskPostponeDueDate, EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange } },
+                { EnumActions.AskPostponeDueDate, new List<EnumEventTypes> { EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange } },
+                { EnumActions.CancelPostponeDueDate, new List<EnumEventTypes> { EnumEventTypes.AskPostponeDueDate, EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange } },
 
-                { EnumDocumentActions.MarkExecution, new List<EnumEventTypes> { EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange } },
-                { EnumDocumentActions.CancelExecution, new List<EnumEventTypes> { EnumEventTypes.MarkExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange } },
-                { EnumDocumentActions.AcceptResult, new List<EnumEventTypes> { EnumEventTypes.MarkExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange } },
-                { EnumDocumentActions.RejectResult, new List<EnumEventTypes> { EnumEventTypes.MarkExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange } },
+                { EnumActions.MarkExecution, new List<EnumEventTypes> { EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange } },
+                { EnumActions.CancelExecution, new List<EnumEventTypes> { EnumEventTypes.MarkExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange } },
+                { EnumActions.AcceptResult, new List<EnumEventTypes> { EnumEventTypes.MarkExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange } },
+                { EnumActions.RejectResult, new List<EnumEventTypes> { EnumEventTypes.MarkExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange } },
 
-                { EnumDocumentActions.RejectSigning, new List<EnumEventTypes> { EnumEventTypes.SendForSigning} },
-                { EnumDocumentActions.RejectАpproval, new List<EnumEventTypes> { EnumEventTypes.SendForАpproval } },
-                { EnumDocumentActions.RejectVisaing, new List<EnumEventTypes> { EnumEventTypes.SendForVisaing } },
-                { EnumDocumentActions.RejectАgreement, new List<EnumEventTypes> { EnumEventTypes.SendForАgreement } },
+                { EnumActions.RejectSigning, new List<EnumEventTypes> { EnumEventTypes.SendForSigning} },
+                { EnumActions.RejectАpproval, new List<EnumEventTypes> { EnumEventTypes.SendForАpproval } },
+                { EnumActions.RejectVisaing, new List<EnumEventTypes> { EnumEventTypes.SendForVisaing } },
+                { EnumActions.RejectАgreement, new List<EnumEventTypes> { EnumEventTypes.SendForАgreement } },
 
-                { EnumDocumentActions.WithdrawSigning, new List<EnumEventTypes> { EnumEventTypes.SendForSigning} },
-                { EnumDocumentActions.WithdrawАpproval, new List<EnumEventTypes> { EnumEventTypes.SendForАpproval } },
-                { EnumDocumentActions.WithdrawVisaing, new List<EnumEventTypes> { EnumEventTypes.SendForVisaing } },
-                { EnumDocumentActions.WithdrawАgreement, new List<EnumEventTypes> { EnumEventTypes.SendForАgreement } },
+                { EnumActions.WithdrawSigning, new List<EnumEventTypes> { EnumEventTypes.SendForSigning} },
+                { EnumActions.WithdrawАpproval, new List<EnumEventTypes> { EnumEventTypes.SendForАpproval } },
+                { EnumActions.WithdrawVisaing, new List<EnumEventTypes> { EnumEventTypes.SendForVisaing } },
+                { EnumActions.WithdrawАgreement, new List<EnumEventTypes> { EnumEventTypes.SendForАgreement } },
 
-                { EnumDocumentActions.AffixSigning, new List<EnumEventTypes> { EnumEventTypes.SendForSigning} },
-                { EnumDocumentActions.AffixАpproval, new List<EnumEventTypes> { EnumEventTypes.SendForАpproval } },
-                { EnumDocumentActions.AffixVisaing, new List<EnumEventTypes> { EnumEventTypes.SendForVisaing } },
-                { EnumDocumentActions.AffixАgreement, new List<EnumEventTypes> { EnumEventTypes.SendForАgreement } },
+                { EnumActions.AffixSigning, new List<EnumEventTypes> { EnumEventTypes.SendForSigning} },
+                { EnumActions.AffixАpproval, new List<EnumEventTypes> { EnumEventTypes.SendForАpproval } },
+                { EnumActions.AffixVisaing, new List<EnumEventTypes> { EnumEventTypes.SendForVisaing } },
+                { EnumActions.AffixАgreement, new List<EnumEventTypes> { EnumEventTypes.SendForАgreement } },
 
         };
         #endregion Dictionaries

@@ -85,7 +85,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var docProc = DmsResolver.Current.Get<IDocumentService>();
-                   var tmpItem = docProc.ExecuteAction(EnumDocumentActions.ReportRegisterTransmissionDocuments, context, Id);
+                   var tmpItem = docProc.ExecuteAction(EnumActions.ReportRegisterTransmissionDocuments, context, Id);
                    var res = new JsonResult(tmpItem, this);
                    return res;
                });
@@ -103,7 +103,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
                    var docProc = DmsResolver.Current.Get<IDocumentService>();
-                   var tmpItem = (List<int>)docProc.ExecuteAction(EnumDocumentActions.AddDocumentPaperList, context, model);
+                   var tmpItem = (List<int>)docProc.ExecuteAction(EnumActions.AddDocumentPaperList, context, model);
                    var res = new JsonResult(tmpItem, this);
                    return res;
                });
@@ -120,7 +120,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   var tmpItem = Action.Execute(context, EnumDocumentActions.ModifyDocumentPaperList, model);
+                   var tmpItem = Action.ExecuteDocumentAction(context, EnumActions.ModifyDocumentPaperList, model);
                    var res = new JsonResult(tmpItem, this);
                    return res;
                });
@@ -137,7 +137,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.DeleteDocumentPaperList, Id);
+                   Action.ExecuteDocumentAction(context, EnumActions.DeleteDocumentPaperList, Id);
                    var tmpItem = new FrontDeleteModel(Id);
                    var res = new JsonResult(tmpItem, this);
                    return res;
@@ -155,7 +155,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.CancelPlanDocumentPaperEvent, new PaperList { PaperListId = Id });
+                   Action.ExecuteDocumentAction(context, EnumActions.CancelPlanDocumentPaperEvent, new PaperList { PaperListId = Id });
                    var res = new JsonResult(null, this);
                    return res;
                });
@@ -172,7 +172,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.SendDocumentPaperEvent, new PaperList { PaperListId = Id });
+                   Action.ExecuteDocumentAction(context, EnumActions.SendDocumentPaperEvent, new PaperList { PaperListId = Id });
                    var res = new JsonResult(null, this);
                    return res;
                });
@@ -189,7 +189,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.CancelSendDocumentPaperEvent, new PaperList { PaperListId = Id });
+                   Action.ExecuteDocumentAction(context, EnumActions.CancelSendDocumentPaperEvent, new PaperList { PaperListId = Id });
                    var res = new JsonResult(null, this);
                    return res;
                });
@@ -206,7 +206,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.RecieveDocumentPaperEvent, new PaperList { PaperListId = Id });
+                   Action.ExecuteDocumentAction(context, EnumActions.RecieveDocumentPaperEvent, new PaperList { PaperListId = Id });
                    var res = new JsonResult(null, this);
                    return res;
                });

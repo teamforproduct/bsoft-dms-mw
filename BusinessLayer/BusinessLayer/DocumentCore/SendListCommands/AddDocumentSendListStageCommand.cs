@@ -76,6 +76,6 @@ namespace BL.Logic.DocumentCore.SendListCommands
             return false;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.AddDocumentSendListStage;
+        public override EnumActions CommandType => EnumActions.AddDocumentSendListStage;
     }
 }

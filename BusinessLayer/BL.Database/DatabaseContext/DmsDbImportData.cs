@@ -638,287 +638,287 @@ namespace BL.Database.DatabaseContext
             var items = new List<SystemActions>();
 
 
-            items.Add(GetSysAct(EnumDocumentActions.AddDocument, EnumObjects.Documents));
-            items.Add(GetSysAct(EnumDocumentActions.AddLinkedDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.C), category: EnumActionCategories.Document));
-            items.Add(GetSysAct(EnumDocumentActions.CopyDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.C), category: EnumActionCategories.Document));
-            items.Add(GetSysAct(EnumDocumentActions.ModifyDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: EnumActionCategories.Document));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.D), category: EnumActionCategories.Document));
-            items.Add(GetSysAct(EnumDocumentActions.LaunchPlan, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.U), category: EnumActionCategories.Informing));
-            items.Add(GetSysAct(EnumDocumentActions.StopPlan, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.U), category: EnumActionCategories.Informing));
-            items.Add(GetSysAct(EnumDocumentActions.ChangeExecutor, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: EnumActionCategories.Document));
-            items.Add(GetSysAct(EnumDocumentActions.RegisterDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.C), category: EnumActionCategories.Document));
-            items.Add(GetSysAct(EnumDocumentActions.MarkDocumentEventAsRead, EnumObjects.Documents));
-            items.Add(GetSysAct(EnumDocumentActions.SendDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Events, EnumAccessTypes.C), category: EnumActionCategories.Informing));
-            items.Add(GetSysAct(EnumDocumentActions.SendMessage, EnumObjects.DocumentEvents, GetPermissionId(Modules.Documents, Features.Events, EnumAccessTypes.C), category: EnumActionCategories.Informing));
-            items.Add(GetSysAct(EnumDocumentActions.AddNote, EnumObjects.DocumentEvents, GetPermissionId(Modules.Documents, Features.Events, EnumAccessTypes.C), category: EnumActionCategories.Informing));
+            items.Add(GetSysAct(EnumActions.AddDocument, EnumObjects.Documents));
+            items.Add(GetSysAct(EnumActions.AddLinkedDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.C), category: EnumActionCategories.Document));
+            items.Add(GetSysAct(EnumActions.CopyDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.C), category: EnumActionCategories.Document));
+            items.Add(GetSysAct(EnumActions.ModifyDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: EnumActionCategories.Document));
+            items.Add(GetSysAct(EnumActions.DeleteDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.D), category: EnumActionCategories.Document));
+            items.Add(GetSysAct(EnumActions.LaunchPlan, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.U), category: EnumActionCategories.Informing));
+            items.Add(GetSysAct(EnumActions.StopPlan, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.U), category: EnumActionCategories.Informing));
+            items.Add(GetSysAct(EnumActions.ChangeExecutor, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: EnumActionCategories.Document));
+            items.Add(GetSysAct(EnumActions.RegisterDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.C), category: EnumActionCategories.Document));
+            items.Add(GetSysAct(EnumActions.MarkDocumentEventAsRead, EnumObjects.Documents));
+            items.Add(GetSysAct(EnumActions.SendDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Events, EnumAccessTypes.C), category: EnumActionCategories.Informing));
+            items.Add(GetSysAct(EnumActions.SendMessage, EnumObjects.DocumentEvents, GetPermissionId(Modules.Documents, Features.Events, EnumAccessTypes.C), category: EnumActionCategories.Informing));
+            items.Add(GetSysAct(EnumActions.AddNote, EnumObjects.DocumentEvents, GetPermissionId(Modules.Documents, Features.Events, EnumAccessTypes.C), category: EnumActionCategories.Informing));
 
-            items.Add(GetSysAct(EnumDocumentActions.SendForInformation, EnumObjects.Documents));
-            items.Add(GetSysAct(EnumDocumentActions.SendForConsideration, EnumObjects.Documents));
-            items.Add(GetSysAct(EnumDocumentActions.SendForInformationExternal, EnumObjects.Documents));
-            items.Add(GetSysAct(EnumDocumentActions.SendForExecution, EnumObjects.Documents));
-            items.Add(GetSysAct(EnumDocumentActions.SendForVisaing, EnumObjects.Documents));
-            items.Add(GetSysAct(EnumDocumentActions.SendForАgreement, EnumObjects.Documents));
-            items.Add(GetSysAct(EnumDocumentActions.SendForАpproval, EnumObjects.Documents));
-            items.Add(GetSysAct(EnumDocumentActions.SendForSigning, EnumObjects.Documents));
-            items.Add(GetSysAct(EnumDocumentActions.ReportRegistrationCardDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.R), category: EnumActionCategories.Reports));
-            items.Add(GetSysAct(EnumDocumentActions.ReportRegisterTransmissionDocuments, EnumObjects.DocumentPaperLists, GetPermissionId(Modules.PaperList, Features.Info, EnumAccessTypes.R), category: EnumActionCategories.ParerLists));
-            items.Add(GetSysAct(EnumDocumentActions.ReportDocumentForDigitalSignature, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.R), category: EnumActionCategories.Signing));
-            items.Add(GetSysAct(EnumDocumentActions.AddFavourite, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Favourite, EnumAccessTypes.U), category: EnumActionCategories.Additional));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteFavourite, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Favourite, EnumAccessTypes.U), category: EnumActionCategories.Additional));
+            items.Add(GetSysAct(EnumActions.SendForInformation, EnumObjects.Documents));
+            items.Add(GetSysAct(EnumActions.SendForConsideration, EnumObjects.Documents));
+            items.Add(GetSysAct(EnumActions.SendForInformationExternal, EnumObjects.Documents));
+            items.Add(GetSysAct(EnumActions.SendForExecution, EnumObjects.Documents));
+            items.Add(GetSysAct(EnumActions.SendForVisaing, EnumObjects.Documents));
+            items.Add(GetSysAct(EnumActions.SendForАgreement, EnumObjects.Documents));
+            items.Add(GetSysAct(EnumActions.SendForАpproval, EnumObjects.Documents));
+            items.Add(GetSysAct(EnumActions.SendForSigning, EnumObjects.Documents));
+            items.Add(GetSysAct(EnumActions.ReportRegistrationCardDocument, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.R), category: EnumActionCategories.Reports));
+            items.Add(GetSysAct(EnumActions.ReportRegisterTransmissionDocuments, EnumObjects.DocumentPaperLists, GetPermissionId(Modules.PaperList, Features.Info, EnumAccessTypes.R), category: EnumActionCategories.ParerLists));
+            items.Add(GetSysAct(EnumActions.ReportDocumentForDigitalSignature, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.R), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumActions.AddFavourite, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Favourite, EnumAccessTypes.U), category: EnumActionCategories.Additional));
+            items.Add(GetSysAct(EnumActions.DeleteFavourite, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Favourite, EnumAccessTypes.U), category: EnumActionCategories.Additional));
 
-            items.Add(GetSysAct(EnumDocumentActions.FinishWork, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: EnumActionCategories.Additional));
-            items.Add(GetSysAct(EnumDocumentActions.StartWork, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: EnumActionCategories.Additional));
-            items.Add(GetSysAct(EnumDocumentActions.ChangePosition, EnumObjects.Documents, GetPermissionId(Modules.Position, Features.DocumentAccesses, EnumAccessTypes.U), category: EnumActionCategories.Additional));
+            items.Add(GetSysAct(EnumActions.FinishWork, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: EnumActionCategories.Additional));
+            items.Add(GetSysAct(EnumActions.StartWork, EnumObjects.Documents, GetPermissionId(Modules.Documents, Features.Info, EnumAccessTypes.U), category: EnumActionCategories.Additional));
+            items.Add(GetSysAct(EnumActions.ChangePosition, EnumObjects.Documents, GetPermissionId(Modules.Position, Features.DocumentAccesses, EnumAccessTypes.U), category: EnumActionCategories.Additional));
 
-            items.Add(GetSysAct(EnumDocumentActions.AddDocumentRestrictedSendList, EnumObjects.DocumentRestrictedSendLists, GetPermissionId(Modules.Documents, Features.AccessList, EnumAccessTypes.C)));
-            items.Add(GetSysAct(EnumDocumentActions.AddByStandartSendListDocumentRestrictedSendList, EnumObjects.DocumentRestrictedSendLists, GetPermissionId(Modules.Documents, Features.AccessList, EnumAccessTypes.C)));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentRestrictedSendList, EnumObjects.DocumentRestrictedSendLists, GetPermissionId(Modules.Documents, Features.AccessList, EnumAccessTypes.D)));
+            items.Add(GetSysAct(EnumActions.AddDocumentRestrictedSendList, EnumObjects.DocumentRestrictedSendLists, GetPermissionId(Modules.Documents, Features.AccessList, EnumAccessTypes.C)));
+            items.Add(GetSysAct(EnumActions.AddByStandartSendListDocumentRestrictedSendList, EnumObjects.DocumentRestrictedSendLists, GetPermissionId(Modules.Documents, Features.AccessList, EnumAccessTypes.C)));
+            items.Add(GetSysAct(EnumActions.DeleteDocumentRestrictedSendList, EnumObjects.DocumentRestrictedSendLists, GetPermissionId(Modules.Documents, Features.AccessList, EnumAccessTypes.D)));
 
-            items.Add(GetSysAct(EnumDocumentActions.AddDocumentSendList, EnumObjects.DocumentSendListStages, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.C)));
-            items.Add(GetSysAct(EnumDocumentActions.AddDocumentSendListStage, EnumObjects.DocumentSendListStages));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentSendListStage, EnumObjects.DocumentSendListStages));
-            items.Add(GetSysAct(EnumDocumentActions.ModifyDocumentSendList, EnumObjects.DocumentSendLists, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.U)));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentSendList, EnumObjects.DocumentSendLists, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.D)));
-            items.Add(GetSysAct(EnumDocumentActions.CopyDocumentSendList, EnumObjects.DocumentSendLists, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.C)));
-            items.Add(GetSysAct(EnumDocumentActions.LaunchDocumentSendListItem, EnumObjects.DocumentSendLists, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.U)));
+            items.Add(GetSysAct(EnumActions.AddDocumentSendList, EnumObjects.DocumentSendListStages, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.C)));
+            items.Add(GetSysAct(EnumActions.AddDocumentSendListStage, EnumObjects.DocumentSendListStages));
+            items.Add(GetSysAct(EnumActions.DeleteDocumentSendListStage, EnumObjects.DocumentSendListStages));
+            items.Add(GetSysAct(EnumActions.ModifyDocumentSendList, EnumObjects.DocumentSendLists, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.U)));
+            items.Add(GetSysAct(EnumActions.DeleteDocumentSendList, EnumObjects.DocumentSendLists, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.D)));
+            items.Add(GetSysAct(EnumActions.CopyDocumentSendList, EnumObjects.DocumentSendLists, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.C)));
+            items.Add(GetSysAct(EnumActions.LaunchDocumentSendListItem, EnumObjects.DocumentSendLists, GetPermissionId(Modules.Documents, Features.Plan, EnumAccessTypes.U)));
 
-            items.Add(GetSysAct(EnumDocumentActions.AddDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.C)));
-            items.Add(GetSysAct(EnumDocumentActions.ModifyDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.U)));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.D)));
+            items.Add(GetSysAct(EnumActions.AddDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.C)));
+            items.Add(GetSysAct(EnumActions.ModifyDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.U)));
+            items.Add(GetSysAct(EnumActions.DeleteDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.D)));
 //            items.Add(GetSysAct(EnumDocumentActions.AddDocumentFileUseMainNameFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.C)));
-            items.Add(GetSysAct(EnumDocumentActions.AcceptDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.U), category: EnumActionCategories.Controls));
-            items.Add(GetSysAct(EnumDocumentActions.RejectDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.U), category: EnumActionCategories.Controls));
-            items.Add(GetSysAct(EnumDocumentActions.RenameDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.U)));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentFileVersion, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.D)));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentFileVersionFinal, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.D)));
+            items.Add(GetSysAct(EnumActions.AcceptDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.U), category: EnumActionCategories.Controls));
+            items.Add(GetSysAct(EnumActions.RejectDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.U), category: EnumActionCategories.Controls));
+            items.Add(GetSysAct(EnumActions.RenameDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.U)));
+            items.Add(GetSysAct(EnumActions.DeleteDocumentFileVersion, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.D)));
+            items.Add(GetSysAct(EnumActions.DeleteDocumentFileVersionFinal, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.D)));
 
-            items.Add(GetSysAct(EnumDocumentActions.RestoreDocumentFileVersion, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.D)));
+            items.Add(GetSysAct(EnumActions.RestoreDocumentFileVersion, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.D)));
 
             //            items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentFileVersionRecord, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.D)));
-            items.Add(GetSysAct(EnumDocumentActions.AcceptMainVersionDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.U)));
+            items.Add(GetSysAct(EnumActions.AcceptMainVersionDocumentFile, EnumObjects.DocumentFiles, GetPermissionId(Modules.Documents, Features.Files, EnumAccessTypes.U)));
 
-            items.Add(GetSysAct(EnumDocumentActions.AddDocumentLink, EnumObjects.DocumentLinks, GetPermissionId(Modules.Documents, Features.Links, EnumAccessTypes.C)));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentLink, EnumObjects.DocumentLinks, GetPermissionId(Modules.Documents, Features.Links, EnumAccessTypes.D)));
-
-
-            items.Add(GetSysAct(EnumDocumentActions.ControlOn, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.C), category: EnumActionCategories.Controls));
-            items.Add(GetSysAct(EnumDocumentActions.ControlChange, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: EnumActionCategories.Controls));
-            items.Add(GetSysAct(EnumDocumentActions.SendForExecutionChange, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: EnumActionCategories.Controls));
-            items.Add(GetSysAct(EnumDocumentActions.ControlTargetChange, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: EnumActionCategories.Controls));
-            items.Add(GetSysAct(EnumDocumentActions.ControlOff, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: EnumActionCategories.Controls));
-            items.Add(GetSysAct(EnumDocumentActions.AskPostponeDueDate, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.C), category: EnumActionCategories.Controls));
-            items.Add(GetSysAct(EnumDocumentActions.CancelPostponeDueDate, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: EnumActionCategories.Controls));
-            items.Add(GetSysAct(EnumDocumentActions.MarkExecution, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.C), category: EnumActionCategories.Controls));
-            items.Add(GetSysAct(EnumDocumentActions.AcceptResult, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: EnumActionCategories.Controls));
-            items.Add(GetSysAct(EnumDocumentActions.CancelExecution, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: EnumActionCategories.Controls));
-            items.Add(GetSysAct(EnumDocumentActions.RejectResult, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: EnumActionCategories.Controls));
-            items.Add(GetSysAct(EnumDocumentActions.WithdrawVisaing, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
-            items.Add(GetSysAct(EnumDocumentActions.WithdrawАgreement, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
-            items.Add(GetSysAct(EnumDocumentActions.WithdrawАpproval, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
-            items.Add(GetSysAct(EnumDocumentActions.WithdrawSigning, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
-            items.Add(GetSysAct(EnumDocumentActions.AffixVisaing, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
-            items.Add(GetSysAct(EnumDocumentActions.AffixАgreement, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
-            items.Add(GetSysAct(EnumDocumentActions.AffixАpproval, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
-            items.Add(GetSysAct(EnumDocumentActions.AffixSigning, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
-            items.Add(GetSysAct(EnumDocumentActions.SelfAffixSigning, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
-            items.Add(GetSysAct(EnumDocumentActions.RejectVisaing, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
-            items.Add(GetSysAct(EnumDocumentActions.RejectАgreement, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
-            items.Add(GetSysAct(EnumDocumentActions.RejectАpproval, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
-            items.Add(GetSysAct(EnumDocumentActions.RejectSigning, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
-            items.Add(GetSysAct(EnumDocumentActions.VerifySigning, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.R), category: EnumActionCategories.Signing));
-
-            items.Add(GetSysAct(EnumDocumentActions.AddDocumentTask, EnumObjects.DocumentTasks, GetPermissionId(Modules.Documents, Features.Tasks, EnumAccessTypes.C)));
-            items.Add(GetSysAct(EnumDocumentActions.ModifyDocumentTask, EnumObjects.DocumentTasks, GetPermissionId(Modules.Documents, Features.Tasks, EnumAccessTypes.U)));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentTask, EnumObjects.DocumentTasks, GetPermissionId(Modules.Documents, Features.Tasks, EnumAccessTypes.D)));
-
-            items.Add(GetSysAct(EnumDocumentActions.AddDocumentPaper, EnumObjects.DocumentPapers, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.C), category: EnumActionCategories.Parers));
-            items.Add(GetSysAct(EnumDocumentActions.ModifyDocumentPaper, EnumObjects.DocumentPapers, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: EnumActionCategories.Parers));
-            items.Add(GetSysAct(EnumDocumentActions.MarkOwnerDocumentPaper, EnumObjects.DocumentPapers, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.D), category: EnumActionCategories.Parers));
-            items.Add(GetSysAct(EnumDocumentActions.MarkСorruptionDocumentPaper, EnumObjects.DocumentPapers, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: EnumActionCategories.Parers));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentPaper, EnumObjects.DocumentPapers, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: EnumActionCategories.Parers));
-            items.Add(GetSysAct(EnumDocumentActions.PlanDocumentPaperEvent, EnumObjects.DocumentPaperEvents, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: EnumActionCategories.Parers));
-            items.Add(GetSysAct(EnumDocumentActions.CancelPlanDocumentPaperEvent, EnumObjects.DocumentPaperEvents, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: EnumActionCategories.Parers));
-            items.Add(GetSysAct(EnumDocumentActions.SendDocumentPaperEvent, EnumObjects.DocumentPaperEvents, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: EnumActionCategories.Parers));
-            items.Add(GetSysAct(EnumDocumentActions.CancelSendDocumentPaperEvent, EnumObjects.DocumentPaperEvents, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: EnumActionCategories.Parers));
-            items.Add(GetSysAct(EnumDocumentActions.RecieveDocumentPaperEvent, EnumObjects.DocumentPaperEvents, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: EnumActionCategories.Parers));
-
-            items.Add(GetSysAct(EnumDocumentActions.AddDocumentPaperList, EnumObjects.DocumentPaperLists, GetPermissionId(Modules.PaperList, Features.Info, EnumAccessTypes.C), category: EnumActionCategories.ParerLists));
-            items.Add(GetSysAct(EnumDocumentActions.ModifyDocumentPaperList, EnumObjects.DocumentPaperLists, GetPermissionId(Modules.PaperList, Features.Info, EnumAccessTypes.U), category: EnumActionCategories.ParerLists));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteDocumentPaperList, EnumObjects.DocumentPaperLists, GetPermissionId(Modules.PaperList, Features.Info, EnumAccessTypes.D), category: EnumActionCategories.ParerLists));
-
-            items.Add(GetSysAct(EnumDocumentActions.AddSavedFilter, EnumObjects.DocumentSavedFilters, GetPermissionId(Modules.Documents, Features.SavedFilters, EnumAccessTypes.C)));
-            items.Add(GetSysAct(EnumDocumentActions.ModifySavedFilter, EnumObjects.DocumentSavedFilters, GetPermissionId(Modules.Documents, Features.SavedFilters, EnumAccessTypes.U)));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteSavedFilter, EnumObjects.DocumentSavedFilters, GetPermissionId(Modules.Documents, Features.SavedFilters, EnumAccessTypes.D)));
-            items.Add(GetSysAct(EnumDocumentActions.ModifyDocumentTags, EnumObjects.DocumentTags, GetPermissionId(Modules.Documents, Features.Tags, EnumAccessTypes.C)));
-
-            items.Add(GetSysAct(EnumDocumentActions.AddTemplate, EnumObjects.Template));
-            items.Add(GetSysAct(EnumDocumentActions.CopyTemplate, EnumObjects.Template));
-            items.Add(GetSysAct(EnumDocumentActions.ModifyTemplate, EnumObjects.Template));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteTemplate, EnumObjects.Template));
-            items.Add(GetSysAct(EnumDocumentActions.AddTemplateSendList, EnumObjects.TemplateSendList));
-            items.Add(GetSysAct(EnumDocumentActions.ModifyTemplateSendList, EnumObjects.TemplateSendList));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteTemplateSendList, EnumObjects.TemplateSendList));
-            items.Add(GetSysAct(EnumDocumentActions.AddTemplateRestrictedSendList, EnumObjects.TemplateRestrictedSendList));
-            items.Add(GetSysAct(EnumDocumentActions.ModifyTemplateRestrictedSendList, EnumObjects.TemplateRestrictedSendList));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteTemplateRestrictedSendList, EnumObjects.TemplateRestrictedSendList));
-            items.Add(GetSysAct(EnumDocumentActions.AddTemplateTask, EnumObjects.TemplateTask));
-            items.Add(GetSysAct(EnumDocumentActions.ModifyTemplateTask, EnumObjects.TemplateTask));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteTemplateTask, EnumObjects.TemplateTask));
-            items.Add(GetSysAct(EnumDocumentActions.AddTemplateFile, EnumObjects.TemplateFiles));
-            items.Add(GetSysAct(EnumDocumentActions.ModifyTemplateFile, EnumObjects.TemplateFiles));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteTemplateFile, EnumObjects.TemplateFiles));
-            items.Add(GetSysAct(EnumDocumentActions.AddTemplatePaper, EnumObjects.TemplatePaper));
-            items.Add(GetSysAct(EnumDocumentActions.ModifyTemplatePaper, EnumObjects.TemplatePaper));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteTemplatePaper, EnumObjects.TemplatePaper));
-
-            items.Add(GetSysAct(EnumDocumentActions.AddTemplateAccess, EnumObjects.TemplateAccess));
-            items.Add(GetSysAct(EnumDocumentActions.ModifyTemplateAccess, EnumObjects.TemplateAccess));
-            items.Add(GetSysAct(EnumDocumentActions.DeleteTemplateAccess, EnumObjects.TemplateAccess));
+            items.Add(GetSysAct(EnumActions.AddDocumentLink, EnumObjects.DocumentLinks, GetPermissionId(Modules.Documents, Features.Links, EnumAccessTypes.C)));
+            items.Add(GetSysAct(EnumActions.DeleteDocumentLink, EnumObjects.DocumentLinks, GetPermissionId(Modules.Documents, Features.Links, EnumAccessTypes.D)));
 
 
-            items.Add(GetSysAct(EnumDictionaryActions.AddDocumentType, EnumObjects.DictionaryDocumentType));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyDocumentType, EnumObjects.DictionaryDocumentType));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteDocumentType, EnumObjects.DictionaryDocumentType));
-            items.Add(GetSysAct(EnumDictionaryActions.AddAddressType, EnumObjects.DictionaryAddressType));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyAddressType, EnumObjects.DictionaryAddressType));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteAddressType, EnumObjects.DictionaryAddressType));
-            items.Add(GetSysAct(EnumDictionaryActions.AddRegistrationJournal, EnumObjects.DictionaryRegistrationJournals));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyRegistrationJournal, EnumObjects.DictionaryRegistrationJournals));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteRegistrationJournal, EnumObjects.DictionaryRegistrationJournals));
-            items.Add(GetSysAct(EnumDictionaryActions.AddContactType, EnumObjects.DictionaryContactType));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyContactType, EnumObjects.DictionaryContactType));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteContactType, EnumObjects.DictionaryContactType));
-            items.Add(GetSysAct(EnumDictionaryActions.SetAgentImage, EnumObjects.DictionaryAgents));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteAgentImage, EnumObjects.DictionaryAgents));
+            items.Add(GetSysAct(EnumActions.ControlOn, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.C), category: EnumActionCategories.Controls));
+            items.Add(GetSysAct(EnumActions.ControlChange, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: EnumActionCategories.Controls));
+            items.Add(GetSysAct(EnumActions.SendForExecutionChange, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: EnumActionCategories.Controls));
+            items.Add(GetSysAct(EnumActions.ControlTargetChange, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: EnumActionCategories.Controls));
+            items.Add(GetSysAct(EnumActions.ControlOff, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: EnumActionCategories.Controls));
+            items.Add(GetSysAct(EnumActions.AskPostponeDueDate, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.C), category: EnumActionCategories.Controls));
+            items.Add(GetSysAct(EnumActions.CancelPostponeDueDate, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: EnumActionCategories.Controls));
+            items.Add(GetSysAct(EnumActions.MarkExecution, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.C), category: EnumActionCategories.Controls));
+            items.Add(GetSysAct(EnumActions.AcceptResult, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: EnumActionCategories.Controls));
+            items.Add(GetSysAct(EnumActions.CancelExecution, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: EnumActionCategories.Controls));
+            items.Add(GetSysAct(EnumActions.RejectResult, EnumObjects.DocumentWaits, GetPermissionId(Modules.Documents, Features.Waits, EnumAccessTypes.U), category: EnumActionCategories.Controls));
+            items.Add(GetSysAct(EnumActions.WithdrawVisaing, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumActions.WithdrawАgreement, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumActions.WithdrawАpproval, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumActions.WithdrawSigning, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumActions.AffixVisaing, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumActions.AffixАgreement, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumActions.AffixАpproval, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumActions.AffixSigning, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumActions.SelfAffixSigning, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumActions.RejectVisaing, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumActions.RejectАgreement, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumActions.RejectАpproval, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumActions.RejectSigning, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.U), category: EnumActionCategories.Signing));
+            items.Add(GetSysAct(EnumActions.VerifySigning, EnumObjects.DocumentSubscriptions, GetPermissionId(Modules.Documents, Features.Signs, EnumAccessTypes.R), category: EnumActionCategories.Signing));
 
-            items.Add(GetSysAct(EnumDictionaryActions.AddAgentContact, EnumObjects.DictionaryContacts));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyAgentContact, EnumObjects.DictionaryContacts));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteAgentContact, EnumObjects.DictionaryContacts));
-            items.Add(GetSysAct(EnumDictionaryActions.AddBankContact, EnumObjects.DictionaryBankContact));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyBankContact, EnumObjects.DictionaryBankContact));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteBankContact, EnumObjects.DictionaryBankContact));
-            items.Add(GetSysAct(EnumDictionaryActions.AddClientCompanyContact, EnumObjects.DictionaryClientCompanyContact));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyClientCompanyContact, EnumObjects.DictionaryClientCompanyContact));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteClientCompanyContact, EnumObjects.DictionaryClientCompanyContact));
-            items.Add(GetSysAct(EnumDictionaryActions.AddCompanyContact, EnumObjects.DictionaryCompanyContact));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyCompanyContact, EnumObjects.DictionaryCompanyContact));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteCompanyContact, EnumObjects.DictionaryCompanyContact));
-            items.Add(GetSysAct(EnumDictionaryActions.AddEmployeeContact, EnumObjects.DictionaryEmployeeContact));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyEmployeeContact, EnumObjects.DictionaryEmployeeContact));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteEmployeeContact, EnumObjects.DictionaryEmployeeContact));
-            items.Add(GetSysAct(EnumDictionaryActions.AddPersonContact, EnumObjects.DictionaryPersonContact));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyPersonContact, EnumObjects.DictionaryPersonContact));
-            items.Add(GetSysAct(EnumDictionaryActions.DeletePersonContact, EnumObjects.DictionaryPersonContact));
+            items.Add(GetSysAct(EnumActions.AddDocumentTask, EnumObjects.DocumentTasks, GetPermissionId(Modules.Documents, Features.Tasks, EnumAccessTypes.C)));
+            items.Add(GetSysAct(EnumActions.ModifyDocumentTask, EnumObjects.DocumentTasks, GetPermissionId(Modules.Documents, Features.Tasks, EnumAccessTypes.U)));
+            items.Add(GetSysAct(EnumActions.DeleteDocumentTask, EnumObjects.DocumentTasks, GetPermissionId(Modules.Documents, Features.Tasks, EnumAccessTypes.D)));
 
+            items.Add(GetSysAct(EnumActions.AddDocumentPaper, EnumObjects.DocumentPapers, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.C), category: EnumActionCategories.Parers));
+            items.Add(GetSysAct(EnumActions.ModifyDocumentPaper, EnumObjects.DocumentPapers, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: EnumActionCategories.Parers));
+            items.Add(GetSysAct(EnumActions.MarkOwnerDocumentPaper, EnumObjects.DocumentPapers, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.D), category: EnumActionCategories.Parers));
+            items.Add(GetSysAct(EnumActions.MarkСorruptionDocumentPaper, EnumObjects.DocumentPapers, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: EnumActionCategories.Parers));
+            items.Add(GetSysAct(EnumActions.DeleteDocumentPaper, EnumObjects.DocumentPapers, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: EnumActionCategories.Parers));
+            items.Add(GetSysAct(EnumActions.PlanDocumentPaperEvent, EnumObjects.DocumentPaperEvents, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: EnumActionCategories.Parers));
+            items.Add(GetSysAct(EnumActions.CancelPlanDocumentPaperEvent, EnumObjects.DocumentPaperEvents, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: EnumActionCategories.Parers));
+            items.Add(GetSysAct(EnumActions.SendDocumentPaperEvent, EnumObjects.DocumentPaperEvents, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: EnumActionCategories.Parers));
+            items.Add(GetSysAct(EnumActions.CancelSendDocumentPaperEvent, EnumObjects.DocumentPaperEvents, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: EnumActionCategories.Parers));
+            items.Add(GetSysAct(EnumActions.RecieveDocumentPaperEvent, EnumObjects.DocumentPaperEvents, GetPermissionId(Modules.Documents, Features.Papers, EnumAccessTypes.U), category: EnumActionCategories.Parers));
 
-            items.Add(GetSysAct(EnumDictionaryActions.AddAgentAddress, EnumObjects.DictionaryAgentAddresses));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyAgentAddress, EnumObjects.DictionaryAgentAddresses));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteAgentAddress, EnumObjects.DictionaryAgentAddresses));
-            items.Add(GetSysAct(EnumDictionaryActions.AddBankAddress, EnumObjects.DictionaryBankAddress));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyBankAddress, EnumObjects.DictionaryBankAddress));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteBankAddress, EnumObjects.DictionaryBankAddress));
-            items.Add(GetSysAct(EnumDictionaryActions.AddClientCompanyAddress, EnumObjects.DictionaryClientCompanyAddress));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyClientCompanyAddress, EnumObjects.DictionaryClientCompanyAddress));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteClientCompanyAddress, EnumObjects.DictionaryClientCompanyAddress));
-            items.Add(GetSysAct(EnumDictionaryActions.AddCompanyAddress, EnumObjects.DictionaryCompanyAddress));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyCompanyAddress, EnumObjects.DictionaryCompanyAddress));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteCompanyAddress, EnumObjects.DictionaryCompanyAddress));
-            items.Add(GetSysAct(EnumDictionaryActions.AddEmployeeAddress, EnumObjects.DictionaryEmployeeAddress));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyEmployeeAddress, EnumObjects.DictionaryEmployeeAddress));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteEmployeeAddress, EnumObjects.DictionaryEmployeeAddress));
-            items.Add(GetSysAct(EnumDictionaryActions.AddPersonAddress, EnumObjects.DictionaryPersonAddress));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyPersonAddress, EnumObjects.DictionaryPersonAddress));
-            items.Add(GetSysAct(EnumDictionaryActions.DeletePersonAddress, EnumObjects.DictionaryPersonAddress));
+            items.Add(GetSysAct(EnumActions.AddDocumentPaperList, EnumObjects.DocumentPaperLists, GetPermissionId(Modules.PaperList, Features.Info, EnumAccessTypes.C), category: EnumActionCategories.ParerLists));
+            items.Add(GetSysAct(EnumActions.ModifyDocumentPaperList, EnumObjects.DocumentPaperLists, GetPermissionId(Modules.PaperList, Features.Info, EnumAccessTypes.U), category: EnumActionCategories.ParerLists));
+            items.Add(GetSysAct(EnumActions.DeleteDocumentPaperList, EnumObjects.DocumentPaperLists, GetPermissionId(Modules.PaperList, Features.Info, EnumAccessTypes.D), category: EnumActionCategories.ParerLists));
 
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyAgentPeoplePassport, EnumObjects.DictionaryAgentPeople));
-            items.Add(GetSysAct(EnumDictionaryActions.AddAgentPerson, EnumObjects.DictionaryAgentPersons));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyAgentPerson, EnumObjects.DictionaryAgentPersons));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteAgentPerson, EnumObjects.DictionaryAgentPersons));
+            items.Add(GetSysAct(EnumActions.AddSavedFilter, EnumObjects.DocumentSavedFilters, GetPermissionId(Modules.Documents, Features.SavedFilters, EnumAccessTypes.C)));
+            items.Add(GetSysAct(EnumActions.ModifySavedFilter, EnumObjects.DocumentSavedFilters, GetPermissionId(Modules.Documents, Features.SavedFilters, EnumAccessTypes.U)));
+            items.Add(GetSysAct(EnumActions.DeleteSavedFilter, EnumObjects.DocumentSavedFilters, GetPermissionId(Modules.Documents, Features.SavedFilters, EnumAccessTypes.D)));
+            items.Add(GetSysAct(EnumActions.ModifyDocumentTags, EnumObjects.DocumentTags, GetPermissionId(Modules.Documents, Features.Tags, EnumAccessTypes.C)));
 
+            items.Add(GetSysAct(EnumActions.AddTemplate, EnumObjects.Template));
+            items.Add(GetSysAct(EnumActions.CopyTemplate, EnumObjects.Template));
+            items.Add(GetSysAct(EnumActions.ModifyTemplate, EnumObjects.Template));
+            items.Add(GetSysAct(EnumActions.DeleteTemplate, EnumObjects.Template));
+            items.Add(GetSysAct(EnumActions.AddTemplateSendList, EnumObjects.TemplateSendList));
+            items.Add(GetSysAct(EnumActions.ModifyTemplateSendList, EnumObjects.TemplateSendList));
+            items.Add(GetSysAct(EnumActions.DeleteTemplateSendList, EnumObjects.TemplateSendList));
+            items.Add(GetSysAct(EnumActions.AddTemplateRestrictedSendList, EnumObjects.TemplateRestrictedSendList));
+            items.Add(GetSysAct(EnumActions.ModifyTemplateRestrictedSendList, EnumObjects.TemplateRestrictedSendList));
+            items.Add(GetSysAct(EnumActions.DeleteTemplateRestrictedSendList, EnumObjects.TemplateRestrictedSendList));
+            items.Add(GetSysAct(EnumActions.AddTemplateTask, EnumObjects.TemplateTask));
+            items.Add(GetSysAct(EnumActions.ModifyTemplateTask, EnumObjects.TemplateTask));
+            items.Add(GetSysAct(EnumActions.DeleteTemplateTask, EnumObjects.TemplateTask));
+            items.Add(GetSysAct(EnumActions.AddTemplateFile, EnumObjects.TemplateFiles));
+            items.Add(GetSysAct(EnumActions.ModifyTemplateFile, EnumObjects.TemplateFiles));
+            items.Add(GetSysAct(EnumActions.DeleteTemplateFile, EnumObjects.TemplateFiles));
+            items.Add(GetSysAct(EnumActions.AddTemplatePaper, EnumObjects.TemplatePaper));
+            items.Add(GetSysAct(EnumActions.ModifyTemplatePaper, EnumObjects.TemplatePaper));
+            items.Add(GetSysAct(EnumActions.DeleteTemplatePaper, EnumObjects.TemplatePaper));
 
-            items.Add(GetSysAct(EnumDictionaryActions.AddAgentEmployee, EnumObjects.DictionaryAgentEmployees));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyAgentEmployee, EnumObjects.DictionaryAgentEmployees));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteAgentEmployee, EnumObjects.DictionaryAgentEmployees));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyAgentEmployeeLanguage, EnumObjects.DictionaryAgentEmployees));
-
-            items.Add(GetSysAct(EnumDictionaryActions.AddDepartment, EnumObjects.DictionaryDepartments));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyDepartment, EnumObjects.DictionaryDepartments));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteDepartment, EnumObjects.DictionaryDepartments));
-
-            items.Add(GetSysAct(EnumDictionaryActions.AddPosition, EnumObjects.DictionaryPositions));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyPosition, EnumObjects.DictionaryPositions));
-            items.Add(GetSysAct(EnumDictionaryActions.DeletePosition, EnumObjects.DictionaryPositions));
-
-            items.Add(GetSysAct(EnumDictionaryActions.AddAgentCompany, EnumObjects.DictionaryAgentCompanies));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyAgentCompany, EnumObjects.DictionaryAgentCompanies));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteAgentCompany, EnumObjects.DictionaryAgentCompanies));
-
-            items.Add(GetSysAct(EnumDictionaryActions.AddAgentBank, EnumObjects.DictionaryAgentBanks));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyAgentBank, EnumObjects.DictionaryAgentBanks));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteAgentBank, EnumObjects.DictionaryAgentBanks));
-            items.Add(GetSysAct(EnumDictionaryActions.AddAgentAccount, EnumObjects.DictionaryAgentAccounts));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyAgentAccount, EnumObjects.DictionaryAgentAccounts));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteAgentAccount, EnumObjects.DictionaryAgentAccounts));
-            items.Add(GetSysAct(EnumDictionaryActions.AddStandartSendListContent, EnumObjects.DictionaryStandartSendListContent));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyStandartSendListContent, EnumObjects.DictionaryStandartSendListContent));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteStandartSendListContent, EnumObjects.DictionaryStandartSendListContent));
-            items.Add(GetSysAct(EnumDictionaryActions.AddStandartSendList, EnumObjects.DictionaryStandartSendLists));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyStandartSendList, EnumObjects.DictionaryStandartSendLists));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteStandartSendList, EnumObjects.DictionaryStandartSendLists));
-            items.Add(GetSysAct(EnumDictionaryActions.AddOrg, EnumObjects.DictionaryAgentClientCompanies));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyOrg, EnumObjects.DictionaryAgentClientCompanies));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteOrg, EnumObjects.DictionaryAgentClientCompanies));
-            items.Add(GetSysAct(EnumDictionaryActions.AddExecutorType, EnumObjects.DictionaryPositionExecutorTypes));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyExecutorType, EnumObjects.DictionaryPositionExecutorTypes));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteExecutorType, EnumObjects.DictionaryPositionExecutorTypes));
-            items.Add(GetSysAct(EnumDictionaryActions.AddExecutor, EnumObjects.DictionaryPositionExecutors));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyExecutor, EnumObjects.DictionaryPositionExecutors));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteExecutor, EnumObjects.DictionaryPositionExecutors));
-            items.Add(GetSysAct(EnumDictionaryActions.AddTag, EnumObjects.DictionaryTag));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyTag, EnumObjects.DictionaryTag));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteTag, EnumObjects.DictionaryTag));
-            items.Add(GetSysAct(EnumDictionaryActions.AddCustomDictionaryType, EnumObjects.CustomDictionaryTypes));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyCustomDictionaryType, EnumObjects.CustomDictionaryTypes));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteCustomDictionaryType, EnumObjects.CustomDictionaryTypes));
-            items.Add(GetSysAct(EnumDictionaryActions.AddCustomDictionary, EnumObjects.CustomDictionaries));
-            items.Add(GetSysAct(EnumDictionaryActions.ModifyCustomDictionary, EnumObjects.CustomDictionaries));
-            items.Add(GetSysAct(EnumDictionaryActions.DeleteCustomDictionary, EnumObjects.CustomDictionaries));
-
-            items.Add(GetSysAct(EnumPropertyActions.AddProperty, EnumObjects.Properties));
-            items.Add(GetSysAct(EnumPropertyActions.ModifyProperty, EnumObjects.Properties));
-            items.Add(GetSysAct(EnumPropertyActions.DeleteProperty, EnumObjects.Properties));
-            items.Add(GetSysAct(EnumPropertyActions.AddPropertyLink, EnumObjects.PropertyLinks));
-            items.Add(GetSysAct(EnumPropertyActions.ModifyPropertyLink, EnumObjects.PropertyLinks));
-            items.Add(GetSysAct(EnumPropertyActions.DeletePropertyLink, EnumObjects.PropertyLinks));
-            items.Add(GetSysAct(EnumPropertyActions.ModifyPropertyValues, EnumObjects.PropertyValues));
-
-            items.Add(GetSysAct(EnumEncryptionActions.AddEncryptionCertificate, EnumObjects.EncryptionCertificates));
-            items.Add(GetSysAct(EnumEncryptionActions.ModifyEncryptionCertificate, EnumObjects.EncryptionCertificates));
-            items.Add(GetSysAct(EnumEncryptionActions.VerifyPdf, EnumObjects.EncryptionCertificates));
-            items.Add(GetSysAct(EnumEncryptionActions.DeleteEncryptionCertificate, EnumObjects.EncryptionCertificates));
-
-            items.Add(GetSysAct(EnumAdminActions.AddRole, EnumObjects.AdminRoles));
-            items.Add(GetSysAct(EnumAdminActions.ModifyRole, EnumObjects.AdminRoles));
-            items.Add(GetSysAct(EnumAdminActions.DeleteRole, EnumObjects.AdminRoles));
-
-            items.Add(GetSysAct(EnumAdminActions.SetPositionRole, EnumObjects.AdminPositionRoles));
-            items.Add(GetSysAct(EnumAdminActions.DuplicatePositionRoles, EnumObjects.AdminPositionRoles));
-
-            items.Add(GetSysAct(EnumAdminActions.SetRolePermission, EnumObjects.AdminRolePermission));
-            items.Add(GetSysAct(EnumAdminActions.SetRolePermissionByModuleFeature, EnumObjects.AdminRolePermission));
-            items.Add(GetSysAct(EnumAdminActions.SetRolePermissionByModule, EnumObjects.AdminRolePermission));
-            items.Add(GetSysAct(EnumAdminActions.SetRolePermissionByModuleAccessType, EnumObjects.AdminRolePermission));
+            items.Add(GetSysAct(EnumActions.AddTemplateAccess, EnumObjects.TemplateAccess));
+            items.Add(GetSysAct(EnumActions.ModifyTemplateAccess, EnumObjects.TemplateAccess));
+            items.Add(GetSysAct(EnumActions.DeleteTemplateAccess, EnumObjects.TemplateAccess));
 
 
-            items.Add(GetSysAct(EnumAdminActions.SetUserRole, EnumObjects.AdminUserRoles));
-            items.Add(GetSysAct(EnumAdminActions.SetUserRoleByAssignment, EnumObjects.AdminUserRoles));
+            items.Add(GetSysAct(EnumActions.AddDocumentType, EnumObjects.DictionaryDocumentType));
+            items.Add(GetSysAct(EnumActions.ModifyDocumentType, EnumObjects.DictionaryDocumentType));
+            items.Add(GetSysAct(EnumActions.DeleteDocumentType, EnumObjects.DictionaryDocumentType));
+            items.Add(GetSysAct(EnumActions.AddAddressType, EnumObjects.DictionaryAddressType));
+            items.Add(GetSysAct(EnumActions.ModifyAddressType, EnumObjects.DictionaryAddressType));
+            items.Add(GetSysAct(EnumActions.DeleteAddressType, EnumObjects.DictionaryAddressType));
+            items.Add(GetSysAct(EnumActions.AddRegistrationJournal, EnumObjects.DictionaryRegistrationJournals));
+            items.Add(GetSysAct(EnumActions.ModifyRegistrationJournal, EnumObjects.DictionaryRegistrationJournals));
+            items.Add(GetSysAct(EnumActions.DeleteRegistrationJournal, EnumObjects.DictionaryRegistrationJournals));
+            items.Add(GetSysAct(EnumActions.AddContactType, EnumObjects.DictionaryContactType));
+            items.Add(GetSysAct(EnumActions.ModifyContactType, EnumObjects.DictionaryContactType));
+            items.Add(GetSysAct(EnumActions.DeleteContactType, EnumObjects.DictionaryContactType));
+            items.Add(GetSysAct(EnumActions.SetAgentImage, EnumObjects.DictionaryAgents));
+            items.Add(GetSysAct(EnumActions.DeleteAgentImage, EnumObjects.DictionaryAgents));
 
-            items.Add(GetSysAct(EnumAdminActions.SetSubordination, EnumObjects.AdminSubordination));
-            items.Add(GetSysAct(EnumAdminActions.SetSubordinationByCompany, EnumObjects.AdminSubordination));
-            items.Add(GetSysAct(EnumAdminActions.SetSubordinationByDepartment, EnumObjects.AdminSubordination));
-            items.Add(GetSysAct(EnumAdminActions.SetDefaultSubordination, EnumObjects.AdminSubordination));
-            items.Add(GetSysAct(EnumAdminActions.DuplicateSubordinations, EnumObjects.AdminSubordination));
-            items.Add(GetSysAct(EnumAdminActions.SetAllSubordination, EnumObjects.AdminSubordination));
+            items.Add(GetSysAct(EnumActions.AddAgentContact, EnumObjects.DictionaryContacts));
+            items.Add(GetSysAct(EnumActions.ModifyAgentContact, EnumObjects.DictionaryContacts));
+            items.Add(GetSysAct(EnumActions.DeleteAgentContact, EnumObjects.DictionaryContacts));
+            items.Add(GetSysAct(EnumActions.AddBankContact, EnumObjects.DictionaryBankContact));
+            items.Add(GetSysAct(EnumActions.ModifyBankContact, EnumObjects.DictionaryBankContact));
+            items.Add(GetSysAct(EnumActions.DeleteBankContact, EnumObjects.DictionaryBankContact));
+            items.Add(GetSysAct(EnumActions.AddClientCompanyContact, EnumObjects.DictionaryClientCompanyContact));
+            items.Add(GetSysAct(EnumActions.ModifyClientCompanyContact, EnumObjects.DictionaryClientCompanyContact));
+            items.Add(GetSysAct(EnumActions.DeleteClientCompanyContact, EnumObjects.DictionaryClientCompanyContact));
+            items.Add(GetSysAct(EnumActions.AddCompanyContact, EnumObjects.DictionaryCompanyContact));
+            items.Add(GetSysAct(EnumActions.ModifyCompanyContact, EnumObjects.DictionaryCompanyContact));
+            items.Add(GetSysAct(EnumActions.DeleteCompanyContact, EnumObjects.DictionaryCompanyContact));
+            items.Add(GetSysAct(EnumActions.AddEmployeeContact, EnumObjects.DictionaryEmployeeContact));
+            items.Add(GetSysAct(EnumActions.ModifyEmployeeContact, EnumObjects.DictionaryEmployeeContact));
+            items.Add(GetSysAct(EnumActions.DeleteEmployeeContact, EnumObjects.DictionaryEmployeeContact));
+            items.Add(GetSysAct(EnumActions.AddPersonContact, EnumObjects.DictionaryPersonContact));
+            items.Add(GetSysAct(EnumActions.ModifyPersonContact, EnumObjects.DictionaryPersonContact));
+            items.Add(GetSysAct(EnumActions.DeletePersonContact, EnumObjects.DictionaryPersonContact));
+
+
+            items.Add(GetSysAct(EnumActions.AddAgentAddress, EnumObjects.DictionaryAgentAddresses));
+            items.Add(GetSysAct(EnumActions.ModifyAgentAddress, EnumObjects.DictionaryAgentAddresses));
+            items.Add(GetSysAct(EnumActions.DeleteAgentAddress, EnumObjects.DictionaryAgentAddresses));
+            items.Add(GetSysAct(EnumActions.AddBankAddress, EnumObjects.DictionaryBankAddress));
+            items.Add(GetSysAct(EnumActions.ModifyBankAddress, EnumObjects.DictionaryBankAddress));
+            items.Add(GetSysAct(EnumActions.DeleteBankAddress, EnumObjects.DictionaryBankAddress));
+            items.Add(GetSysAct(EnumActions.AddClientCompanyAddress, EnumObjects.DictionaryClientCompanyAddress));
+            items.Add(GetSysAct(EnumActions.ModifyClientCompanyAddress, EnumObjects.DictionaryClientCompanyAddress));
+            items.Add(GetSysAct(EnumActions.DeleteClientCompanyAddress, EnumObjects.DictionaryClientCompanyAddress));
+            items.Add(GetSysAct(EnumActions.AddCompanyAddress, EnumObjects.DictionaryCompanyAddress));
+            items.Add(GetSysAct(EnumActions.ModifyCompanyAddress, EnumObjects.DictionaryCompanyAddress));
+            items.Add(GetSysAct(EnumActions.DeleteCompanyAddress, EnumObjects.DictionaryCompanyAddress));
+            items.Add(GetSysAct(EnumActions.AddEmployeeAddress, EnumObjects.DictionaryEmployeeAddress));
+            items.Add(GetSysAct(EnumActions.ModifyEmployeeAddress, EnumObjects.DictionaryEmployeeAddress));
+            items.Add(GetSysAct(EnumActions.DeleteEmployeeAddress, EnumObjects.DictionaryEmployeeAddress));
+            items.Add(GetSysAct(EnumActions.AddPersonAddress, EnumObjects.DictionaryPersonAddress));
+            items.Add(GetSysAct(EnumActions.ModifyPersonAddress, EnumObjects.DictionaryPersonAddress));
+            items.Add(GetSysAct(EnumActions.DeletePersonAddress, EnumObjects.DictionaryPersonAddress));
+
+            items.Add(GetSysAct(EnumActions.ModifyAgentPeoplePassport, EnumObjects.DictionaryAgentPeople));
+            items.Add(GetSysAct(EnumActions.AddAgentPerson, EnumObjects.DictionaryAgentPersons));
+            items.Add(GetSysAct(EnumActions.ModifyAgentPerson, EnumObjects.DictionaryAgentPersons));
+            items.Add(GetSysAct(EnumActions.DeleteAgentPerson, EnumObjects.DictionaryAgentPersons));
+
+
+            items.Add(GetSysAct(EnumActions.AddAgentEmployee, EnumObjects.DictionaryAgentEmployees));
+            items.Add(GetSysAct(EnumActions.ModifyAgentEmployee, EnumObjects.DictionaryAgentEmployees));
+            items.Add(GetSysAct(EnumActions.DeleteAgentEmployee, EnumObjects.DictionaryAgentEmployees));
+            items.Add(GetSysAct(EnumActions.ModifyAgentEmployeeLanguage, EnumObjects.DictionaryAgentEmployees));
+
+            items.Add(GetSysAct(EnumActions.AddDepartment, EnumObjects.DictionaryDepartments));
+            items.Add(GetSysAct(EnumActions.ModifyDepartment, EnumObjects.DictionaryDepartments));
+            items.Add(GetSysAct(EnumActions.DeleteDepartment, EnumObjects.DictionaryDepartments));
+
+            items.Add(GetSysAct(EnumActions.AddPosition, EnumObjects.DictionaryPositions));
+            items.Add(GetSysAct(EnumActions.ModifyPosition, EnumObjects.DictionaryPositions));
+            items.Add(GetSysAct(EnumActions.DeletePosition, EnumObjects.DictionaryPositions));
+
+            items.Add(GetSysAct(EnumActions.AddAgentCompany, EnumObjects.DictionaryAgentCompanies));
+            items.Add(GetSysAct(EnumActions.ModifyAgentCompany, EnumObjects.DictionaryAgentCompanies));
+            items.Add(GetSysAct(EnumActions.DeleteAgentCompany, EnumObjects.DictionaryAgentCompanies));
+
+            items.Add(GetSysAct(EnumActions.AddAgentBank, EnumObjects.DictionaryAgentBanks));
+            items.Add(GetSysAct(EnumActions.ModifyAgentBank, EnumObjects.DictionaryAgentBanks));
+            items.Add(GetSysAct(EnumActions.DeleteAgentBank, EnumObjects.DictionaryAgentBanks));
+            items.Add(GetSysAct(EnumActions.AddAgentAccount, EnumObjects.DictionaryAgentAccounts));
+            items.Add(GetSysAct(EnumActions.ModifyAgentAccount, EnumObjects.DictionaryAgentAccounts));
+            items.Add(GetSysAct(EnumActions.DeleteAgentAccount, EnumObjects.DictionaryAgentAccounts));
+            items.Add(GetSysAct(EnumActions.AddStandartSendListContent, EnumObjects.DictionaryStandartSendListContent));
+            items.Add(GetSysAct(EnumActions.ModifyStandartSendListContent, EnumObjects.DictionaryStandartSendListContent));
+            items.Add(GetSysAct(EnumActions.DeleteStandartSendListContent, EnumObjects.DictionaryStandartSendListContent));
+            items.Add(GetSysAct(EnumActions.AddStandartSendList, EnumObjects.DictionaryStandartSendLists));
+            items.Add(GetSysAct(EnumActions.ModifyStandartSendList, EnumObjects.DictionaryStandartSendLists));
+            items.Add(GetSysAct(EnumActions.DeleteStandartSendList, EnumObjects.DictionaryStandartSendLists));
+            items.Add(GetSysAct(EnumActions.AddOrg, EnumObjects.DictionaryAgentClientCompanies));
+            items.Add(GetSysAct(EnumActions.ModifyOrg, EnumObjects.DictionaryAgentClientCompanies));
+            items.Add(GetSysAct(EnumActions.DeleteOrg, EnumObjects.DictionaryAgentClientCompanies));
+            items.Add(GetSysAct(EnumActions.AddExecutorType, EnumObjects.DictionaryPositionExecutorTypes));
+            items.Add(GetSysAct(EnumActions.ModifyExecutorType, EnumObjects.DictionaryPositionExecutorTypes));
+            items.Add(GetSysAct(EnumActions.DeleteExecutorType, EnumObjects.DictionaryPositionExecutorTypes));
+            items.Add(GetSysAct(EnumActions.AddExecutor, EnumObjects.DictionaryPositionExecutors));
+            items.Add(GetSysAct(EnumActions.ModifyExecutor, EnumObjects.DictionaryPositionExecutors));
+            items.Add(GetSysAct(EnumActions.DeleteExecutor, EnumObjects.DictionaryPositionExecutors));
+            items.Add(GetSysAct(EnumActions.AddTag, EnumObjects.DictionaryTag));
+            items.Add(GetSysAct(EnumActions.ModifyTag, EnumObjects.DictionaryTag));
+            items.Add(GetSysAct(EnumActions.DeleteTag, EnumObjects.DictionaryTag));
+            items.Add(GetSysAct(EnumActions.AddCustomDictionaryType, EnumObjects.CustomDictionaryTypes));
+            items.Add(GetSysAct(EnumActions.ModifyCustomDictionaryType, EnumObjects.CustomDictionaryTypes));
+            items.Add(GetSysAct(EnumActions.DeleteCustomDictionaryType, EnumObjects.CustomDictionaryTypes));
+            items.Add(GetSysAct(EnumActions.AddCustomDictionary, EnumObjects.CustomDictionaries));
+            items.Add(GetSysAct(EnumActions.ModifyCustomDictionary, EnumObjects.CustomDictionaries));
+            items.Add(GetSysAct(EnumActions.DeleteCustomDictionary, EnumObjects.CustomDictionaries));
+
+            items.Add(GetSysAct(EnumActions.AddProperty, EnumObjects.Properties));
+            items.Add(GetSysAct(EnumActions.ModifyProperty, EnumObjects.Properties));
+            items.Add(GetSysAct(EnumActions.DeleteProperty, EnumObjects.Properties));
+            items.Add(GetSysAct(EnumActions.AddPropertyLink, EnumObjects.PropertyLinks));
+            items.Add(GetSysAct(EnumActions.ModifyPropertyLink, EnumObjects.PropertyLinks));
+            items.Add(GetSysAct(EnumActions.DeletePropertyLink, EnumObjects.PropertyLinks));
+            items.Add(GetSysAct(EnumActions.ModifyPropertyValues, EnumObjects.PropertyValues));
+
+            items.Add(GetSysAct(EnumActions.AddEncryptionCertificate, EnumObjects.EncryptionCertificates));
+            items.Add(GetSysAct(EnumActions.ModifyEncryptionCertificate, EnumObjects.EncryptionCertificates));
+            items.Add(GetSysAct(EnumActions.VerifyPdf, EnumObjects.EncryptionCertificates));
+            items.Add(GetSysAct(EnumActions.DeleteEncryptionCertificate, EnumObjects.EncryptionCertificates));
+
+            items.Add(GetSysAct(EnumActions.AddRole, EnumObjects.AdminRoles));
+            items.Add(GetSysAct(EnumActions.ModifyRole, EnumObjects.AdminRoles));
+            items.Add(GetSysAct(EnumActions.DeleteRole, EnumObjects.AdminRoles));
+
+            items.Add(GetSysAct(EnumActions.SetPositionRole, EnumObjects.AdminPositionRoles));
+            items.Add(GetSysAct(EnumActions.DuplicatePositionRoles, EnumObjects.AdminPositionRoles));
+
+            items.Add(GetSysAct(EnumActions.SetRolePermission, EnumObjects.AdminRolePermission));
+            items.Add(GetSysAct(EnumActions.SetRolePermissionByModuleFeature, EnumObjects.AdminRolePermission));
+            items.Add(GetSysAct(EnumActions.SetRolePermissionByModule, EnumObjects.AdminRolePermission));
+            items.Add(GetSysAct(EnumActions.SetRolePermissionByModuleAccessType, EnumObjects.AdminRolePermission));
+
+
+            items.Add(GetSysAct(EnumActions.SetUserRole, EnumObjects.AdminUserRoles));
+            items.Add(GetSysAct(EnumActions.SetUserRoleByAssignment, EnumObjects.AdminUserRoles));
+
+            items.Add(GetSysAct(EnumActions.SetSubordination, EnumObjects.AdminSubordination));
+            items.Add(GetSysAct(EnumActions.SetSubordinationByCompany, EnumObjects.AdminSubordination));
+            items.Add(GetSysAct(EnumActions.SetSubordinationByDepartment, EnumObjects.AdminSubordination));
+            items.Add(GetSysAct(EnumActions.SetDefaultSubordination, EnumObjects.AdminSubordination));
+            items.Add(GetSysAct(EnumActions.DuplicateSubordinations, EnumObjects.AdminSubordination));
+            items.Add(GetSysAct(EnumActions.SetAllSubordination, EnumObjects.AdminSubordination));
 
             //items.Add(GetSysAct(EnumAdminActions.SetRegistrationJournalPosition, EnumObjects.AdminRegistrationJournalPositions));
             //items.Add(GetSysAct(EnumAdminActions.SetRegistrationJournalPositionByCompany, EnumObjects.AdminRegistrationJournalPositions, isVisible: false, grantId: (int)EnumAdminActions.SetRegistrationJournalPosition));
@@ -928,13 +928,13 @@ namespace BL.Database.DatabaseContext
             //items.Add(GetSysAct(EnumAdminActions.SetAllRegistrationJournalPosition, EnumObjects.AdminRegistrationJournalPositions, isVisible: false, grantId: (int)EnumAdminActions.SetRegistrationJournalPosition));
 
 
-            items.Add(GetSysAct(EnumAdminActions.AddDepartmentAdmin, EnumObjects.DictionaryDepartments));
-            items.Add(GetSysAct(EnumAdminActions.DeleteDepartmentAdmin, EnumObjects.DictionaryDepartments));
+            items.Add(GetSysAct(EnumActions.AddDepartmentAdmin, EnumObjects.DictionaryDepartments));
+            items.Add(GetSysAct(EnumActions.DeleteDepartmentAdmin, EnumObjects.DictionaryDepartments));
 
-            items.Add(GetSysAct(EnumAdminActions.ChangeLogin, EnumObjects.DictionaryAgentUsers));
+            items.Add(GetSysAct(EnumActions.ChangeLogin, EnumObjects.DictionaryAgentUsers));
 
-            items.Add(GetSysAct(EnumSystemActions.Login, EnumObjects.System));
-            items.Add(GetSysAct(EnumSystemActions.SetSetting, EnumObjects.SystemSettings));
+            items.Add(GetSysAct(EnumActions.Login, EnumObjects.System));
+            items.Add(GetSysAct(EnumActions.SetSetting, EnumObjects.SystemSettings));
             // при добавлении действия не забудь добавить перевод! DMS_WebAPI.Models.ApplicationDbImportData GetAdminLanguageValuesForActions
 
             return items;
@@ -970,12 +970,12 @@ namespace BL.Database.DatabaseContext
 
         public static List<EnumModel> CheckSystemActions2()
         {
-            var AdminActionsList = GetListByEnum<EnumAdminActions>().Where(x => x.Value > 0);
-            var EncryptionActionsList = GetListByEnum<EnumEncryptionActions>().Where(x => x.Value > 0);
-            var PropertyActionsList = GetListByEnum<EnumPropertyActions>().Where(x => x.Value > 0);
-            var DictionaryActionsList = GetListByEnum<EnumDictionaryActions>().Where(x => x.Value > 0);
-            var DocumentActionsList = GetListByEnum<EnumDocumentActions>().Where(x => x.Value > 0);
-            var SystemActionsList = GetListByEnum<EnumSystemActions>().Where(x => x.Value > 0);
+            var AdminActionsList = GetListByEnum<EnumActions>().Where(x => x.Value > 0);
+            var EncryptionActionsList = GetListByEnum<EnumActions>().Where(x => x.Value > 0);
+            var PropertyActionsList = GetListByEnum<EnumActions>().Where(x => x.Value > 0);
+            var DictionaryActionsList = GetListByEnum<EnumActions>().Where(x => x.Value > 0);
+            var DocumentActionsList = GetListByEnum<EnumActions>().Where(x => x.Value > 0);
+            var SystemActionsList = GetListByEnum<EnumActions>().Where(x => x.Value > 0);
 
             var actionsList = GetSystemActions();
             List<EnumModel> ActionsList = new List<EnumModel>();
@@ -1024,42 +1024,12 @@ namespace BL.Database.DatabaseContext
               .ToList();
         }
 
-
-        private static SystemActions GetSysAct(EnumAdminActions id, EnumObjects objId, int? permissionId = null, EnumActionCategories? category = null)
+        private static SystemActions GetSysAct(EnumActions id, EnumObjects objId, int? permissionId = null, EnumActionCategories? category = null)
         {
-            string description = GetLabel("AdminActions", id.ToString());
+            string description = GetLabel("Actions", id.ToString());
             return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category);
         }
 
-        private static SystemActions GetSysAct(EnumEncryptionActions id, EnumObjects objId, int? permissionId = null, EnumActionCategories? category = null)
-        {
-            string description = GetLabel("EncryptionActions", id.ToString());
-            return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category);
-        }
-
-        private static SystemActions GetSysAct(EnumPropertyActions id, EnumObjects objId, int? permissionId = null, EnumActionCategories? category = null)
-        {
-            string description = GetLabel("PropertyActions", id.ToString());
-            return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category);
-        }
-
-        private static SystemActions GetSysAct(EnumDictionaryActions id, EnumObjects objId, int? permissionId = null, EnumActionCategories? category = null)
-        {
-            string description = GetLabel("DictionaryActions", id.ToString());
-            return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category);
-        }
-
-        private static SystemActions GetSysAct(EnumDocumentActions id, EnumObjects objId, int? permissionId = null, EnumActionCategories? category = null)
-        {
-            string description = GetLabel("DocumentActions", id.ToString());
-            return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category);
-        }
-
-        private static SystemActions GetSysAct(EnumSystemActions id, EnumObjects objId, int? permissionId = null, EnumActionCategories? category = null)
-        {
-            string description = GetLabel("SystemActions", id.ToString());
-            return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category);
-        }
 
         private static SystemActions GetSystemAction(int id, string code, EnumObjects objId, string description,
             int? permissionId, EnumActionCategories? category = null)
@@ -1173,7 +1143,7 @@ namespace BL.Database.DatabaseContext
             {
                 Id = (int)id,
                 Code = id.ToString(),
-                ActionId = (int)EnumDocumentActions.ModifyDocument,
+                ActionId = (int)EnumActions.ModifyDocument,
                 TypeCode = typeCode,
                 Description = descr,
                 Label = label,

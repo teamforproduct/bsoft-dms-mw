@@ -49,7 +49,7 @@ namespace BL.Logic.AdminCore
 
         private void SetSubordination(SetSubordination model)
         {
-            _adminService.ExecuteAction(BL.Model.Enums.EnumAdminActions.SetSubordination, _context, model);
+            _adminService.ExecuteAction(BL.Model.Enums.EnumActions.SetSubordination, _context, model);
         }
 
         private void SetSubordinationByDepartment(int departmentId)

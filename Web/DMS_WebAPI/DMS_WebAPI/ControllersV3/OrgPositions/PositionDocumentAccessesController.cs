@@ -28,7 +28,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDocumentActions.ChangePosition, model);
+                Action.ExecuteDictionaryAction(context, EnumActions.ChangePosition, model);
                 var res = new JsonResult(null, this);
                 return res;
             });

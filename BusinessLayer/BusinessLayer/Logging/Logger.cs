@@ -128,7 +128,7 @@ namespace BL.Logic.Logging
                     new FilterSystemLog
                     {
                         ObjectIDs = new List<int> { (int)EnumObjects.System },
-                        ActionIDs = new List<int> { (int)EnumSystemActions.Login },
+                        ActionIDs = new List<int> { (int)EnumActions.Login },
                         ExecutorAgentIDs = filter?.ExecutorAgentIDs,
                         ExecutorAgentName = filter?.ExecutorAgentName,
                         LogDateFrom = filter?.CreateDateFrom,

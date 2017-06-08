@@ -45,7 +45,7 @@ namespace BL.Logic.AdminCore
             _commandService = commandService;
         }
 
-        public object ExecuteAction(EnumAdminActions act, IContext context, object param)
+        public object ExecuteAction(EnumActions act, IContext context, object param)
         {
             var cmd = AdminCommandFactory.GetAdminCommand(act, context, param);
             var res = _commandService.ExecuteCommand(cmd);
@@ -962,27 +962,7 @@ namespace BL.Logic.AdminCore
             }
         }
 
-        public bool VerifyAccess(IContext context, EnumDocumentActions action, bool isPositionFromContext = true, bool isThrowExeception = true)
-        {
-            return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
-        }
-
-        public bool VerifyAccess(IContext context, EnumDictionaryActions action, bool isPositionFromContext = true, bool isThrowExeception = true)
-        {
-            return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
-        }
-
-        public bool VerifyAccess(IContext context, EnumEncryptionActions action, bool isPositionFromContext = true, bool isThrowExeception = true)
-        {
-            return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
-        }
-
-        public bool VerifyAccess(IContext context, EnumAdminActions action, bool isPositionFromContext = true, bool isThrowExeception = true)
-        {
-            return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
-        }
-
-        public bool VerifyAccess(IContext context, EnumSystemActions action, bool isPositionFromContext = true, bool isThrowExeception = true)
+        public bool VerifyAccess(IContext context, EnumActions action, bool isPositionFromContext = true, bool isThrowExeception = true)
         {
             return VerifyAccess(context, new VerifyAccess { DocumentActionId = (int)action, IsPositionFromContext = isPositionFromContext }, isThrowExeception);
         }

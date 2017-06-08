@@ -42,7 +42,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
         {
             if ((_document.Accesses?.Count() ?? 0) != 0 && !_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork))
                 return false;
-            if (CommandType == EnumDocumentActions.CopyDocumentSendList)
+            if (CommandType == EnumActions.CopyDocumentSendList)
             {
                 _actionRecords =
                     _document.SendLists.Select(x => new InternalActionRecord
@@ -116,7 +116,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             if (!_sendList.Stage.HasValue)
             {
                 var docProc = DmsResolver.Current.Get<IDocumentService>();
-                docProc.ExecuteAction((EnumDocumentActions)Enum.Parse(typeof(EnumDocumentActions), _sendList.SendType.ToString()), _context, _sendList);
+                docProc.ExecuteAction((EnumActions)Enum.Parse(typeof(EnumActions), _sendList.SendType.ToString()), _context, _sendList);
             }
             else if (Model.IsLaunchItem ?? false)
                 DmsResolver.Current.Get<IAutoPlanService>().ManualRunAutoPlan(_context, res, _document.Id);

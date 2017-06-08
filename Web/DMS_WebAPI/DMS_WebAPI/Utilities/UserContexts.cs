@@ -769,14 +769,14 @@ namespace DMS_WebAPI.Utilities
         private void WriteLog(IContext context)
         {
             var logger = DmsResolver.Current.Get<ILogger>();
-            context.LoginLogId = logger.Information(context, context.LoginLogInfo, (int)EnumObjects.System, (int)EnumSystemActions.Login, logDate: context.CreateDate, isCopyDate1: true);
+            context.LoginLogId = logger.Information(context, context.LoginLogInfo, (int)EnumObjects.System, (int)EnumActions.Login, logDate: context.CreateDate, isCopyDate1: true);
 
             // не понятно чего это такое
             if (!string.IsNullOrEmpty(context.User.Fingerprint))
                 logger.DeleteSystemLogs(context, new FilterSystemLog
                 {
                     ObjectIDs = new List<int> { (int)EnumObjects.System },
-                    ActionIDs = new List<int> { (int)EnumSystemActions.Login },
+                    ActionIDs = new List<int> { (int)EnumActions.Login },
                     LogLevels = new List<int> { (int)EnumLogTypes.Error },
                     ExecutorAgentIDs = new List<int> { context.CurrentAgentId },
                     LogDateFrom = DateTime.UtcNow.AddMinutes(-60),

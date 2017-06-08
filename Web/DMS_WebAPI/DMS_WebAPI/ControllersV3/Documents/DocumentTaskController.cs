@@ -79,7 +79,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentTask, model, model.CurrentPositionId);
+                   var tmpItem = Action.ExecuteDocumentAction(context, EnumActions.AddDocumentTask, model, model.CurrentPositionId);
                    var res = new JsonResult(tmpItem, this);
                    return res;
                });
@@ -96,7 +96,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   var tmpItem = Action.Execute(context, EnumDocumentActions.ModifyDocumentTask, model);
+                   var tmpItem = Action.ExecuteDocumentAction(context, EnumActions.ModifyDocumentTask, model);
                    var res = new JsonResult(tmpItem, this);
                    return res;
                });
@@ -113,7 +113,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.DeleteDocumentTask, Id);
+                   Action.ExecuteDocumentAction(context, EnumActions.DeleteDocumentTask, Id);
                    var tmpItem = new FrontDeleteModel(Id);
                    var res = new JsonResult(tmpItem, this);
                    return res;

@@ -140,7 +140,7 @@ namespace BL.Logic.DocumentCore
         public IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontDocument doc)
         {
             var sysDb = DmsResolver.Current.Get<ISystemDbProcess>();
-            var uiElements = sysDb.GetSystemUIElements(ctx, new FilterSystemUIElement { ActionId = new List<int> { (int)EnumDocumentActions.ModifyDocument } }).ToList();
+            var uiElements = sysDb.GetSystemUIElements(ctx, new FilterSystemUIElement { ActionId = new List<int> { (int)EnumActions.ModifyDocument } }).ToList();
 
             uiElements.AddRange(CommonSystemUtilities.GetPropertyUIElements(ctx, EnumObjects.Documents, CommonDocumentUtilities.GetFilterTemplateByDocument(doc).ToArray()));
 
@@ -149,7 +149,7 @@ namespace BL.Logic.DocumentCore
             return uiElements;
         }
 
-        public object ExecuteAction(EnumDocumentActions act, IContext context, object param)
+        public object ExecuteAction(EnumActions act, IContext context, object param)
         {
             var cmd = DocumentCommandFactory.GetDocumentCommand(act, context, null, param);
             var res = _commandService.ExecuteCommand(cmd);
@@ -282,7 +282,7 @@ namespace BL.Logic.DocumentCore
             else
                 adminCtx = new AdminContext(ctx);
             var list = _documentDb.CheckIsInWorkForControlsPrepare(ctx, filter).Where(x => x.PositionId.HasValue).ToList();
-            list.ForEach(x => ExecuteAction(EnumDocumentActions.StartWork, adminCtx, new ChangeWorkStatus { CurrentPositionId = x.PositionId.Value, DocumentId = x.DocumentId }));
+            list.ForEach(x => ExecuteAction(EnumActions.StartWork, adminCtx, new ChangeWorkStatus { CurrentPositionId = x.PositionId.Value, DocumentId = x.DocumentId }));
         }
 
         #endregion DocumentAccesses 

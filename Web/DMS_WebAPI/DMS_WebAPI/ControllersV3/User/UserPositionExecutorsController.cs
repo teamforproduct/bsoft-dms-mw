@@ -82,7 +82,7 @@ namespace DMS_WebAPI.ControllersV3.User
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-                var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddUserPositionExecutor, context, model);
+                var tmpItem = (int)tmpService.ExecuteAction(EnumActions.AddUserPositionExecutor, context, model);
                 return GetById(context, tmpItem);
             });
         }
@@ -99,7 +99,7 @@ namespace DMS_WebAPI.ControllersV3.User
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-                tmpService.ExecuteAction(EnumDictionaryActions.ModifyUserPositionExecutor, context, model);
+                tmpService.ExecuteAction(EnumActions.ModifyUserPositionExecutor, context, model);
                 return GetById(context, model.Id);
             });
         }
@@ -117,7 +117,7 @@ namespace DMS_WebAPI.ControllersV3.User
             {
                 var tmpService = DmsResolver.Current.Get<IDictionaryService>();
 
-                tmpService.ExecuteAction(EnumDictionaryActions.DeleteUserPositionExecutor, context, Id);
+                tmpService.ExecuteAction(EnumActions.DeleteUserPositionExecutor, context, Id);
                 var tmpItem = new FrontDeleteModel(Id);
                 var res = new JsonResult(tmpItem, this);
                 return res;

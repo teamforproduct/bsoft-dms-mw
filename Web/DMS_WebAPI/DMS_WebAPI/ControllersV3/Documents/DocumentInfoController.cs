@@ -141,7 +141,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var docProc = DmsResolver.Current.Get<IDocumentService>();
-                var tmpItem = docProc.ExecuteAction(EnumDocumentActions.ReportRegistrationCardDocument, context, Id);
+                var tmpItem = docProc.ExecuteAction(EnumActions.ReportRegistrationCardDocument, context, Id);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -162,7 +162,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             {
                 context.SetCurrentPosition(model.CurrentPositionId);
                 var docProc = DmsResolver.Current.Get<IDocumentService>();
-                var tmpItem = docProc.ExecuteAction(EnumDocumentActions.ReportDocumentForDigitalSignature, context,model);
+                var tmpItem = docProc.ExecuteAction(EnumActions.ReportDocumentForDigitalSignature, context,model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -192,7 +192,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
                 bool tmpItem;
                 try
                 {
-                    tmpItem = (bool) encryptionProc.ExecuteAction(EnumEncryptionActions.VerifyPdf, context, md);
+                    tmpItem = (bool) encryptionProc.ExecuteAction(EnumActions.VerifyPdf, context, md);
                 }
                 catch (Exception)
                 {
@@ -214,7 +214,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocument, model, model.CurrentPositionId);
+                var tmpItem = Action.ExecuteDocumentAction(context, EnumActions.AddDocument, model, model.CurrentPositionId);
                 return GetById(context, tmpItem);
             });
         }
@@ -231,7 +231,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             model.ServerPath = Properties.Settings.Default.ServerPath;
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDocumentActions.ModifyDocument, model);
+                Action.ExecuteDocumentAction(context, EnumActions.ModifyDocument, model);
                 return GetById(context, model.Id);
             });
         }
@@ -247,7 +247,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDocumentActions.DeleteDocument, Id);
+                Action.ExecuteDocumentAction(context, EnumActions.DeleteDocument, Id);
                 var tmpItem = new FrontDeleteModel(Id);
                 var res = new JsonResult(tmpItem, this);
                 return res;
@@ -265,7 +265,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumDocumentActions.CopyDocument, model, model.CurrentPositionId);
+                var tmpItem = Action.ExecuteDocumentAction(context, EnumActions.CopyDocument, model, model.CurrentPositionId);
                 return GetById(context, tmpItem);
             });
         }
@@ -284,7 +284,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumDocumentActions.RegisterDocument, model, model.CurrentPositionId);
+                var tmpItem = Action.ExecuteDocumentAction(context, EnumActions.RegisterDocument, model, model.CurrentPositionId);
                 return GetById(context, tmpItem);
             });
         }
@@ -339,7 +339,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDocumentActions.StartWork, model, model.CurrentPositionId);
+                Action.ExecuteDocumentAction(context, EnumActions.StartWork, model, model.CurrentPositionId);
                 var res = new JsonResult(null, this);
                 return res;
             });
@@ -356,7 +356,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDocumentActions.FinishWork, model, model.CurrentPositionId);
+                Action.ExecuteDocumentAction(context, EnumActions.FinishWork, model, model.CurrentPositionId);
                 var res = new JsonResult(null, this);
                 return res;
             });
@@ -373,7 +373,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDocumentActions.ChangeExecutor, model);
+                Action.ExecuteDocumentAction(context, EnumActions.ChangeExecutor, model);
                 var res = new JsonResult(null, this);
                 return res;
             });

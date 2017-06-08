@@ -18,7 +18,7 @@ namespace BL.Logic.AdminCore.Interfaces
     {
         #region [+] General ...
 
-        object ExecuteAction(EnumAdminActions act, IContext context, object param);
+        object ExecuteAction(EnumActions act, IContext context, object param);
 
         IEnumerable<CurrentPosition> GetPositionsByUser(Employee employee);
         IEnumerable<FrontUserAssignments> GetAvailablePositions(IContext context, List<int> PositionIDs = null);
@@ -32,11 +32,7 @@ namespace BL.Logic.AdminCore.Interfaces
 
         #region [+] Verify ...
         bool VerifyAccess(IContext context, VerifyAccess verifyAccess, bool isThrowExeception = true);
-        bool VerifyAccess(IContext context, EnumDocumentActions action, bool isPositionFromContext = true, bool isThrowExeception = true);
-        bool VerifyAccess(IContext context, EnumDictionaryActions action, bool isPositionFromContext = true, bool isThrowExeception = true);
-        bool VerifyAccess(IContext context, EnumAdminActions action, bool isPositionFromContext = true, bool isThrowExeception = true);
-        bool VerifyAccess(IContext context, EnumEncryptionActions action, bool isPositionFromContext = true, bool isThrowExeception = true);
-        bool VerifyAccess(IContext context, EnumSystemActions action, bool isPositionFromContext = true, bool isThrowExeception = true);
+        bool VerifyAccess(IContext context, EnumActions action, bool isPositionFromContext = true, bool isThrowExeception = true);
         bool VerifySubordination(IContext context, VerifySubordination model, bool isThrowException = false);
         #endregion
 

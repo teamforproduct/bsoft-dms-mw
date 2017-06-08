@@ -103,7 +103,7 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   var tmpItem = Action.Execute(context, EnumDictionaryActions.AddCustomDictionaryType, model);
+                   var tmpItem = Action.ExecuteDictionaryAction(context, EnumActions.AddCustomDictionaryType, model);
                    return GetById(context, tmpItem);
                });
         }
@@ -119,7 +119,7 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDictionaryActions.ModifyCustomDictionaryType, model);
+                   Action.ExecuteDictionaryAction(context, EnumActions.ModifyCustomDictionaryType, model);
                    return GetById(context, model.Id);
                });
         }
@@ -135,7 +135,7 @@ namespace DMS_WebAPI.ControllersV3.CustomDictionaries
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDictionaryActions.DeleteCustomDictionaryType, Id);
+                   Action.ExecuteDictionaryAction(context, EnumActions.DeleteCustomDictionaryType, Id);
                    var tmpItem = new FrontDeleteModel(Id);
                    var res = new JsonResult(tmpItem, this);
                    return res;

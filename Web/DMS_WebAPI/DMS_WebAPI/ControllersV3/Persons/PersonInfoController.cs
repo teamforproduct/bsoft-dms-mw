@@ -84,7 +84,7 @@ namespace DMS_WebAPI.ControllersV3.Persons
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumDictionaryActions.AddAgentPerson, model);
+                var tmpItem = Action.ExecuteDictionaryAction(context, EnumActions.AddAgentPerson, model);
                 return GetById(context, tmpItem);
             });
         }
@@ -100,7 +100,7 @@ namespace DMS_WebAPI.ControllersV3.Persons
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDictionaryActions.ModifyAgentPerson, model);
+                Action.ExecuteDictionaryAction(context, EnumActions.ModifyAgentPerson, model);
                 return GetById(context, model.Id);
             });
         }
@@ -116,7 +116,7 @@ namespace DMS_WebAPI.ControllersV3.Persons
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDictionaryActions.DeleteAgentPerson, Id);
+                Action.ExecuteDictionaryAction(context, EnumActions.DeleteAgentPerson, Id);
                 var tmpItem = new FrontDeleteModel(Id);
                 var res = new JsonResult(tmpItem, this);
                 return res;

@@ -136,7 +136,7 @@ namespace BL.Logic.SystemServices.TaskManagerService
                         {
                             try
                             {
-                                var cmd =DocumentCommandFactory.GetDocumentCommand(Model.Enums.EnumDocumentActions.DeleteDocument, context, null, id);
+                                var cmd =DocumentCommandFactory.GetDocumentCommand(Model.Enums.EnumActions.DeleteDocument, context, null, id);
                                 cmdService.ExecuteCommand(cmd);
                             }
                             catch (Exception ex)

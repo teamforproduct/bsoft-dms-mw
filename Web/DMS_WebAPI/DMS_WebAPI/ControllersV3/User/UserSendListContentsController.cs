@@ -83,7 +83,7 @@ namespace DMS_WebAPI.ControllersV3.User
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumDictionaryActions.AddStandartSendListContent, model);
+                var tmpItem = Action.ExecuteDictionaryAction(context, EnumActions.AddStandartSendListContent, model);
                 return GetById(context, tmpItem);
             });
         }
@@ -99,7 +99,7 @@ namespace DMS_WebAPI.ControllersV3.User
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDictionaryActions.ModifyStandartSendListContent, model);
+                Action.ExecuteDictionaryAction(context, EnumActions.ModifyStandartSendListContent, model);
                 return GetById(context, model.Id);
             });
         }
@@ -115,7 +115,7 @@ namespace DMS_WebAPI.ControllersV3.User
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDictionaryActions.DeleteStandartSendListContent, Id);
+                Action.ExecuteDictionaryAction(context, EnumActions.DeleteStandartSendListContent, Id);
                 var tmpItem = new FrontDeleteModel(Id);
                 var res = new JsonResult(tmpItem, this);
                 return res;

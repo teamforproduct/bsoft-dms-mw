@@ -63,17 +63,17 @@ namespace BL.Logic.DictionaryCore
 
         private void SetDefaultRJournalPositions(ModifyAdminDefaultByPosition model)
         {
-            _adminService.ExecuteAction(EnumAdminActions.SetJournalAccessDefault_Position, _context, model);
+            _adminService.ExecuteAction(EnumActions.SetJournalAccessDefault_Position, _context, model);
         }
 
         private void SetDefaultSubordinations(ModifyAdminDefaultByPosition model)
         {
-            _adminService.ExecuteAction(EnumAdminActions.SetDefaultSubordination, _context, model);
+            _adminService.ExecuteAction(EnumActions.SetDefaultSubordination, _context, model);
         }
 
         private void SetAllSubordinations(SetSubordinations model)
         {
-            _adminService.ExecuteAction(EnumAdminActions.SetAllSubordination, _context, model);
+            _adminService.ExecuteAction(EnumActions.SetAllSubordination, _context, model);
         }
 
         private void SetDefaultRoles(int positionId, List<Roles> list)
@@ -85,7 +85,7 @@ namespace BL.Logic.DictionaryCore
                 model.RoleId = _adminDb.GetRoleByCode(_context, item);
                 model.PositionId = positionId;
 
-                _adminService.ExecuteAction(EnumAdminActions.SetPositionRole, _context, model);
+                _adminService.ExecuteAction(EnumActions.SetPositionRole, _context, model);
             }
 
         }

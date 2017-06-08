@@ -58,7 +58,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.AddDepartmentAdmin, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.AddDepartmentAdmin, model);
                 return GetById(context, tmpItem);
             });
         }
@@ -74,7 +74,7 @@ namespace DMS_WebAPI.ControllersV3.OrgDepartments
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumAdminActions.DeleteDepartmentAdmin, Id);
+                Action.ExecuteAdminAction(context, EnumActions.DeleteDepartmentAdmin, Id);
                 var tmpItem = new FrontDeleteModel(Id);
                 var res = new JsonResult(tmpItem, this);
                 return res;

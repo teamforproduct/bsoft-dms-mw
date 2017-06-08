@@ -4,8 +4,8 @@ namespace BL.CrossCutting.Interfaces
 {
     public interface ISystemCommand:ICommand
     {
-        void InitializeCommand(EnumSystemActions action, IContext ctx);
-        void InitializeCommand(EnumSystemActions action, IContext ctx, object param);
-        EnumSystemActions CommandType { get; }
+        void InitializeCommand(EnumActions action, IContext ctx);
+        void InitializeCommand(EnumActions action, IContext ctx, object param);
+        EnumActions CommandType { get; }
     }
 }

@@ -12,17 +12,17 @@ namespace BL.Logic.Common
     {
         protected IContext _context;
         protected object _param;
-        private EnumSystemActions _action;
+        private EnumActions _action;
         protected ISystemService _systemService;
         protected IAdminService _adminService;
         protected ISystemDbProcess _systemDb;
 
-        public void InitializeCommand(EnumSystemActions action, IContext ctx)
+        public void InitializeCommand(EnumActions action, IContext ctx)
         {
             InitializeCommand(action,ctx, null);
         }
 
-        public void InitializeCommand(EnumSystemActions action, IContext ctx, object param)
+        public void InitializeCommand(EnumActions action, IContext ctx, object param)
         {
             _action = action;
             _context = ctx;
@@ -42,6 +42,6 @@ namespace BL.Logic.Common
 
         public abstract object Execute();
 
-        public virtual EnumSystemActions CommandType => _action;
+        public virtual EnumActions CommandType => _action;
     }
 }

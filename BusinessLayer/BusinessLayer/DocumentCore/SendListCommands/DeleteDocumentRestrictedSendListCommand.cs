@@ -58,6 +58,6 @@ namespace BL.Logic.DocumentCore.SendListCommands
             return DocRestSendList.DocumentId;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.DeleteDocumentRestrictedSendList;
+        public override EnumActions CommandType => EnumActions.DeleteDocumentRestrictedSendList;
     }
 }

@@ -96,7 +96,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   var tmpItem = Action.Execute(context, EnumDocumentActions.AddSavedFilter, model);
+                   var tmpItem = Action.ExecuteDocumentAction(context, EnumActions.AddSavedFilter, model);
                    var res = new JsonResult(tmpItem, this);
                    return res;
                });
@@ -113,7 +113,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   var tmpItem = Action.Execute(context, EnumDocumentActions.ModifySavedFilter, model);
+                   var tmpItem = Action.ExecuteDocumentAction(context, EnumActions.ModifySavedFilter, model);
                    var res = new JsonResult(tmpItem, this);
                    return res;
                });
@@ -130,7 +130,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.DeleteSavedFilter, Id);
+                   Action.ExecuteDocumentAction(context, EnumActions.DeleteSavedFilter, Id);
                    var tmpItem = new FrontDeleteModel(Id);
                    var res = new JsonResult(tmpItem, this);
                    return res;

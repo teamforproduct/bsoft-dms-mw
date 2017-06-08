@@ -56,7 +56,7 @@ namespace BL.Logic.DocumentCore
         private static void MenuFormation(IContext ctx, DocumentActionsModel model, bool isOnlyIdActions = false, List<EnumObjects> mаndatoryObject = null)
         {
             // total list of type for possible actions we could process
-            var totalCommandListType = new List<EnumDocumentActions>();
+            var totalCommandListType = new List<EnumActions>();
 
             foreach (var cmd in model.ActionsList.Values)
             {

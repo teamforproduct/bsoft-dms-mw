@@ -66,7 +66,7 @@ namespace DMS_WebAPI.ControllersV3.User
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDictionaryActions.DeleteAgentImage, context.CurrentAgentId);
+                Action.ExecuteDictionaryAction(context, EnumActions.DeleteAgentImage, context.CurrentAgentId);
                 var tmpItem = new FrontDeleteModel(context.CurrentAgentId);
                 var res = new JsonResult(tmpItem, this);
                 return res;

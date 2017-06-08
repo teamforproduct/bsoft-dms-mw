@@ -16,7 +16,7 @@ namespace BL.Logic.DictionaryCore.Interfaces
 {
     public interface IDictionaryService
     {
-        object ExecuteAction(EnumDictionaryActions act, IContext context, object param);
+        object ExecuteAction(EnumActions act, IContext context, object param);
 
         #region DictionaryAgents
         FrontDictionaryAgent GetAgent(IContext context, int id);
