@@ -15,7 +15,7 @@ namespace BL.Database.Common
                 Id = item.Id,
                 CategoryId = (int?) item.Category,
                 Code = item.Code,
-                Description = item.Description,
+                //Description = item.Description,
                 ObjectId = (int)item.ObjectId,
                 PermissionId = item.PermissionId,
             };

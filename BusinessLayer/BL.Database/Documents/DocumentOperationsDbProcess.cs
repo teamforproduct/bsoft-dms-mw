@@ -431,14 +431,14 @@ namespace BL.Database.Documents
                         qry = qry.Where(x => x.CategoryId.HasValue);
                     qry = qry.Where(x => (x.Permission.RolePermissions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
                                         y.Role.UserRoles.Any(z => z.PositionExecutor.AgentId == context.CurrentAgentId))));
-                    var qryActLst = qry.OrderBy(x => x.CategoryId).ThenBy(x => x.Id).Select(a => new InternalSystemActionForDocument
+                    var qryActLst = qry.OrderBy(x => x.CategoryId).ThenBy(x => x.Id).Select(x => new InternalSystemActionForDocument
                     {
-                        DocumentAction = (EnumDocumentActions)a.Id,
-                        Object = (EnumObjects)a.ObjectId,
-                        ActionCode = a.Code,
-                        ObjectCode = a.Object.Code,
-                        Description = a.Description,
-                        Category = (EnumActionCategories)a.CategoryId,
+                        DocumentAction = (EnumDocumentActions)x.Id,
+                        Object = (EnumObjects)x.ObjectId,
+                        ActionCode = x.Code,
+                        ObjectCode = x.Object.Code,
+                        Description = "##l@Actions:" + ((EnumDocumentActions)x.Id).ToString() + "@l##",
+                        Category = (EnumActionCategories)x.CategoryId,
                         
                     });
                     var actLst = qryActLst.ToList();

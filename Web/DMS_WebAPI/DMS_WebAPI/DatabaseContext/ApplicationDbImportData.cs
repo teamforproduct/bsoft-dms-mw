@@ -115,7 +115,7 @@ namespace DMS_WebAPI.DatabaseContext
             var tmpService = DmsResolver.Current.Get<ISystemService>();
 
             // Действия
-            f.AddRange(tmpService.GetImportSystemActions().Select(x => x.Description));
+            //f.AddRange(tmpService.GetImportSystemActions().Select(x => x.Description));
 
             // Модули
             f.AddRange(tmpService.GetImportSystemModules().Select(x => x.Name));

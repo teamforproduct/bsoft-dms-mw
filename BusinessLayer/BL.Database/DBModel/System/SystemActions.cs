@@ -25,7 +25,7 @@ namespace BL.Database.DBModel.System
         public string Description { get; set; }
 
         [MaxLength(2000)]
-        public string Category { get; set; }
+        public string Category { get; set; }    //TODO DEL!!!
         public int? CategoryId { get; set; }
 
         [ForeignKey("PermissionId")]
