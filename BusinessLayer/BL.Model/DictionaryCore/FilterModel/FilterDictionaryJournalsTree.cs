@@ -7,6 +7,6 @@ namespace BL.Model.DictionaryCore.FilterModel
         /// <summary>
         /// Если flse склывает отделы без журналов
         /// </summary>
-        public bool? IsShowAll {get; set;}
+        public bool? IsShowAll { get; set; }
     }
 }

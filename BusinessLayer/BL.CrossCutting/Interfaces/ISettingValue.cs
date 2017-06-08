@@ -100,6 +100,7 @@ namespace BL.CrossCutting.Interfaces
         int GetClearTrashDocumentsTimeoutMinute(IContext ctx);
 
         int GetClearTrashDocumentsTimeoutMinuteForClear(IContext ctx);
+        int GetClearTrashFilesTimeoutDayForClear(IContext ctx);
 
 
 

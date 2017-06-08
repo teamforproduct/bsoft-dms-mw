@@ -1,16 +1,9 @@
 ﻿namespace DMS_WebAPI.Models
 {
-    public class WelcomeEmailModel
+    public class WelcomeEmailModel : BaseMailModel
     {
-        public string UserName { get; set; }
+        public string InvitingName { get; set; }
 
-        public string ClientUrl { get; set; }
-
-        public string CabinetUrl { get; set; }
-
-        public string SpamUrl { get; set; }
-        public string UserEmail { get; set; }
-
-        public string OstreanEmail { get; set; }
+        public string ClientName{ get; set; }
     }
 }

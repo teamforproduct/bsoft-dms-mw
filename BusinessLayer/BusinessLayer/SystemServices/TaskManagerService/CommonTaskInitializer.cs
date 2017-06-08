@@ -109,6 +109,7 @@ namespace BL.Logic.SystemServices.TaskManagerService
                     var documentServ = DmsResolver.Current.Get<IDocumentService>();
                     var sysDb = DmsResolver.Current.Get<ISystemDbProcess>();
                     var cmdService = DmsResolver.Current.Get<ICommandService>();
+                    var fileServ = DmsResolver.Current.Get<IDocumentFileService>();
                     var docFileDb = DmsResolver.Current.Get<IDocumentFileDbProcess>();
                     var docOperDb = DmsResolver.Current.Get<IDocumentOperationsDbProcess>();
                     var fileStore = DmsResolver.Current.Get<IFileStore>();
@@ -119,6 +120,7 @@ namespace BL.Logic.SystemServices.TaskManagerService
                     try
                     {
                         docOperDb.ModifyDocumentAccessesStatistics(context);
+                        fileServ.DeleteDocumentFileFinal(context);
                         documentServ.CheckIsInWorkForControls(context, new FilterDocumentAccess());
                     }
                     catch (Exception ex)
@@ -152,7 +154,7 @@ namespace BL.Logic.SystemServices.TaskManagerService
                     try
                     {
                         var pdfFilePeriod = _settingValues.GetClearOldPdfCopiesInDay(context);
-                        var fileTodelete = docFileDb.GetOldPdfForAttachedFiles(context, pdfFilePeriod);
+                        var fileTodelete = docFileDb.GetOldPdfForFiles(context, pdfFilePeriod);
                         foreach (var file in fileTodelete)
                         {
                             fileStore.DeletePdfCopy(context, file);

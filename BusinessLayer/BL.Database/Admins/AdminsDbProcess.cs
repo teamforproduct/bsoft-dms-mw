@@ -109,8 +109,8 @@ namespace BL.Database.Admins
                     RolePositionId = x.PositionId,
                     RolePositionName = x.Position.Name,
                     RolePositionExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null),
-                    RolePositionExecutorTypeId = x.PositionExecutorType.Id,
-                    RolePositionExecutorTypeName = x.PositionExecutorType.Name,
+                    RolePositionExecutorTypeId = x.PositionExecutorTypeId,
+                    RolePositionExecutorTypeName = "##l@EnumPositionExecutionTypes:" + ((EnumPositionExecutionTypes)x.PositionExecutorTypeId).ToString() + "@l##",
                     StartDate = x.StartDate,
                     EndDate = x.EndDate > maxDateTime ? (DateTime?)null : x.EndDate,
                     DepartmentName = x.Position.Department.Name,
@@ -185,8 +185,8 @@ namespace BL.Database.Admins
                     DepartmentName = x.Position.Department.Name,
                     ExecutorName = (x.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal ? string.Empty : x.Position.ExecutorAgent.Name),
                     ImageByteArray = (x.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal ? new byte[] { } : x.Position.ExecutorAgent.Image),
-                    ExecutorTypeId = x.PositionExecutorType.Id,
-                    ExecutorTypeDescription = x.PositionExecutorType.Description,
+                    ExecutorTypeId = x.PositionExecutorTypeId,
+                    ExecutorTypeDescription = "##l@EnumPositionExecutionTypes" + ((EnumPositionExecutionTypes)x.PositionExecutorTypeId).ToString() + ".Description:@l##",
                 }).ToList();
 
                 //IsLastChosen
@@ -315,6 +315,10 @@ namespace BL.Database.Admins
         public bool VerifySubordination(IContext ctx, VerifySubordination model)
         {
             var res = false;
+            if (model.TargetPosition?.Any() ?? false)
+            {
+                return true;
+            }
             if (model.SourcePositions?.Any() ?? false)
             {
                 model.SourcePositions = new List<int> { ctx.CurrentPositionId };
@@ -338,15 +342,16 @@ namespace BL.Database.Admins
             {
                 var now = DateTime.UtcNow;
 
-                // для авторизации 
+                // для контекста пользователя 
                 var res = dbContext.DictionaryAgentUsersSet.Where(x => x.Agent.ClientId == ctx.Client.Id).Where(x => x.UserId.Equals(userId))
                     .Select(x => new Employee
                     {
                         Id = x.Id,
                         Name = x.Agent.Name,
                         //LanguageId = x.Agent.AgentUser.LanguageId,
+                        IsLockout = x.Agent.AgentUser.IsLockout,
                         IsActive = x.Agent.AgentEmployee.IsActive,
-                        PositionExecutorsCount = x.Agent.AgentEmployee.PositionExecutors.Where(y => y.AgentId == x.Id & y.IsActive == true & now >= y.StartDate & now <= y.EndDate).Count(), //IS THAT CORRECT?? 
+                        AssigmentsCount = x.Agent.AgentEmployee.PositionExecutors.Where(y => y.AgentId == x.Id & y.IsActive == true & now >= y.StartDate & now <= y.EndDate).Count(), //IS THAT CORRECT?? 
                     }).FirstOrDefault();
                 transaction.Complete();
                 return res;

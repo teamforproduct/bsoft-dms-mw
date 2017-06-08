@@ -6,7 +6,7 @@ namespace BL.Model.DocumentCore.IncomingModel
     /// <summary>
     /// Модель для добавление документа по шаблону
     /// </summary>
-    public class AddDocumentByTemplateDocument : CurrentPosition
+    public class AddDocumentByTemplate : CurrentPosition
     {
         /// <summary>
         /// ИД шаблона документа

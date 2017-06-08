@@ -61,7 +61,6 @@ namespace BL.Logic.DependencyInjection
             Bind<ICommandService>().To<CommandService>().InSingletonScope();
             Bind<IAdminService>().To<AdminService>().InSingletonScope();
             Bind<IClientService>().To<ClientService>().InSingletonScope();
-            Bind<ILanguageService>().To<LanguageService>().InSingletonScope();
             Bind<IFullTextSearchService>().To<FullTextSearchService>().InSingletonScope();
             Bind<IQueueWorkerService>().To<QueueWorkerService>().InSingletonScope();
             Bind<ITempStorageService>().To<TempStorageService>().InSingletonScope();
@@ -76,7 +75,7 @@ namespace BL.Logic.DependencyInjection
         private void LoadDocumentModule()
         {
             Bind<IDocumentService>().To<DocumentService>().InSingletonScope();
-            Bind<ITemplateDocumentService>().To<TemplateDocumentService>().InSingletonScope();
+            Bind<ITemplateService>().To<TemplateService>().InSingletonScope();
             Bind<IDictionaryService>().To<DictionaryService>().InSingletonScope();
             Bind<IDocumentFileService>().To<DocumentFileService>().InSingletonScope();
 
@@ -159,6 +158,8 @@ namespace BL.Logic.DependencyInjection
 
             Bind<IDocumentCommand>().To<AddDocumentFileCommand>();
             Bind<IDocumentCommand>().To<DeleteDocumentFileCommand>();
+            Bind<IDocumentCommand>().To<RestoreDocumentFileCommand>();
+
             Bind<IDocumentCommand>().To<ModifyDocumentFileCommand>();
 
             Bind<IDocumentCommand>().To<AcceptDocumentFileCommand>();
@@ -167,8 +168,8 @@ namespace BL.Logic.DependencyInjection
             Bind<IDocumentCommand>().To<DeleteDocumentFileVersionCommand>();
 
             Bind<IDocumentCommand>().To<SendForInformationDocumentCommand>();
-            Bind<IDocumentCommand>().To<SendForControlDocumentCommand>();
-            Bind<IDocumentCommand>().To<SendForResponsibleExecutionDocumentCommand>();
+            Bind<IDocumentCommand>().To<DEL_SendForControlDocumentCommand>();
+            Bind<IDocumentCommand>().To<DEL_SendForResponsibleExecutionDocumentCommand>();
             Bind<IDocumentCommand>().To<SendForExecutionDocumentCommand>();
             Bind<IDocumentCommand>().To<MarkExecutionDocumentCommand>();
             Bind<IDocumentCommand>().To<RejectResultDocumentCommand>();

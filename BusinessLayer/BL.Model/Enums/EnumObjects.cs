@@ -64,13 +64,13 @@
         DictionaryAgentPeople = 234,
 
 
-        TemplateDocument = 251, // Шаблоны документов
-        TemplateDocumentSendList = 252, // Списки рассылки в шаблонах
-        TemplateDocumentRestrictedSendList = 253, // Ограничительные списки рассылки в шаблонах
-        TemplateDocumentTask = 254, // Задачи в шаблонах
-        TemplateDocumentAttachedFiles = 255, // Прикрепленные к шаблонам файлы
-        TemplateDocumentPaper = 256, // БН в шаблонах
-        TemplateDocumentAccess = 257, // Доступы к шаблонам
+        Template = 251, // Шаблоны документов
+        TemplateSendList = 252, // Списки рассылки в шаблонах
+        TemplateRestrictedSendList = 253, // Ограничительные списки рассылки в шаблонах
+        TemplateTask = 254, // Задачи в шаблонах
+        TemplateFiles = 255, // Прикрепленные к шаблонам файлы
+        TemplatePaper = 256, // БН в шаблонах
+        TemplateAccess = 257, // Доступы к шаблонам
         DictionaryTag = 291, // Теги
         CustomDictionaryTypes = 301, // Типы пользовательских словарей
         CustomDictionaries = 302, // Пользовательские словари

@@ -12,23 +12,23 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 {
     public class ModifyTemplateAccessCommand : BaseDocumentCommand
     {
-        private readonly ITemplateDocumentsDbProcess _operationDb;
+        private readonly ITemplateDbProcess _operationDb;
 
-        public ModifyTemplateAccessCommand(ITemplateDocumentsDbProcess operationDb)
+        public ModifyTemplateAccessCommand(ITemplateDbProcess operationDb)
         {
             _operationDb = operationDb;
 
         }
 
-        private ModifyTemplateDocumentAccess Model
+        private ModifyTemplateAccess Model
         {
             get
             {
-                if (!(_param is ModifyTemplateDocumentAccess))
+                if (!(_param is ModifyTemplateAccess))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyTemplateDocumentAccess)_param;
+                return (ModifyTemplateAccess)_param;
             }
         }
 
@@ -40,7 +40,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
         public override bool CanExecute()
         {
             _adminProc.VerifyAccess(_context, CommandType, false);
-            if (_operationDb.ExistsTemplateDocumentAccesses(_context, new FilterTemplateDocumentAccess { TemplateId = Model.DocumentId, PositionId = Model.PositionId, NotContainsIDs = new List<int> { Model.Id} }))
+            if (_operationDb.ExistsTemplateAccesses(_context, new FilterTemplateAccess { TemplateId = Model.DocumentId, PositionId = Model.PositionId, NotContainsIDs = new List<int> { Model.Id} }))
             {
                 throw new RecordNotUnique();
             }
@@ -49,7 +49,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override object Execute()
         {
-            var model = new InternalTemplateDocumentAccess(Model);
+            var model = new InternalTemplateAccess(Model);
             CommonDocumentUtilities.SetLastChange(_context, model);
             return _operationDb.AddOrUpdateTemplateAccess(_context, model);
         }

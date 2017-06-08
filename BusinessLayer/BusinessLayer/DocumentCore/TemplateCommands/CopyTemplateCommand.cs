@@ -15,11 +15,11 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 {
     public class CopyTemplateCommand : BaseDocumentCommand
     {
-        private readonly ITemplateDocumentsDbProcess _operationDb;
-        private InternalTemplateDocument _templateDoc;
+        private readonly ITemplateDbProcess _operationDb;
+        private InternalTemplate _templateDoc;
         private readonly IFileStore _fStore;
 
-        public CopyTemplateCommand(ITemplateDocumentsDbProcess operationDb, IFileStore fStore)
+        public CopyTemplateCommand(ITemplateDbProcess operationDb, IFileStore fStore)
         {
             _operationDb = operationDb;
             _fStore = fStore;
@@ -75,7 +75,9 @@ namespace BL.Logic.DocumentCore.TemplateCommands
                     x.DocumentId = _templateDoc.Id;
                     if (string.IsNullOrEmpty(x.TaskName))
                         x.TaskId = _templateDoc.Tasks.Where(y => x.TaskName == y.Task).Select(y => (int?)y.Id).FirstOrDefault();
-                    x.Id = _operationDb.AddOrUpdateTemplateSendList(_context, x);
+                    CommonDocumentUtilities.SetLastChange(_context, x.AccessGroups);
+                    x.AccessGroups.ToList().ForEach(y => y.DocumentId = _templateDoc.Id);
+                    x.Id = _operationDb.AddTemplateSendList(_context, x);
                 });
                 _templateDoc.RestrictedSendLists.ToList().ForEach(x =>
                 {
@@ -86,13 +88,13 @@ namespace BL.Logic.DocumentCore.TemplateCommands
                 {
                     x.DocumentId = _templateDoc.Id;
                 });
-                _operationDb.AddTemplateDocumentPapers(_context, _templateDoc.Papers);
+                _operationDb.AddTemplatePapers(_context, _templateDoc.Papers);
                 _templateDoc.Files.ToList().ForEach(x =>
                 {
-                    var newFile = CommonDocumentUtilities.GetNewTemplateDocumentFile(_context,x);
+                    var newFile = CommonDocumentUtilities.GetNewTemplateFile(_context,x);
                     newFile.DocumentId = _templateDoc.Id;
                     _fStore.CopyFile(_context, x, newFile);
-                    newFile.Id = _operationDb.AddNewFile(_context, newFile);
+                    newFile.Id = _operationDb.AddTemplateFile(_context, newFile);
                 });
                 transaction.Complete();
             }

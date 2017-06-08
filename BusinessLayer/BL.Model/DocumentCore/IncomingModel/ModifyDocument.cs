@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Collections.Generic;
 using BL.Model.SystemCore.IncomingModel;
 using BL.Model.Extensions;
+using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore.IncomingModel
 {
@@ -50,7 +51,7 @@ namespace BL.Model.DocumentCore.IncomingModel
         /// ИД уровня доступа
         /// </summary>
         [Required]
-        public int AccessLevelId { get; set; }
+        public  EnumAccessLevels AccessLevel { get; set; }
 
         public string ServerPath { get; set; }
         public IEnumerable<ModifyPropertyValue> Properties { get; set; }

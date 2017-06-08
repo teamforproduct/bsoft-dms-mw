@@ -77,7 +77,8 @@ namespace BL.Logic.Settings
 
         public int GetClearTrashDocumentsTimeoutMinuteForClear(IContext ctx) =>
              cliSett.GetSettingWithWriteDefaultIfEmpty<int>(ctx, EnumSystemSettings.CLEARTRASHDOCUMENTS_TIMEOUT_MINUTE_FOR_CLEAR);
-
+        public int GetClearTrashFilesTimeoutDayForClear(IContext ctx) =>
+             cliSett.GetSettingWithWriteDefaultIfEmpty<int>(ctx, EnumSystemSettings.CLEARTRASHFILES_TIMEOUT_DAY_FOR_CLEAR);
         public string GetCurrentServerName() =>
             genSett.GetSetting<string>(EnumGeneralSettings.ServerForNewClient);
 

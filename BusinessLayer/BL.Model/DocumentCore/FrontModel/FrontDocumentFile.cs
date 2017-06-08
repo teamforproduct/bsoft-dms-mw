@@ -18,7 +18,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// Номер вложения в документе
         /// </summary>
-        public int OrderInDocument { get; set; }
+        public int? OrderInDocument { get; set; }
         /// <summary>
         /// Признак дополнительный файл или основной
         /// </summary>
@@ -44,7 +44,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// Есть ли необработанные версии файлов
         /// </summary>
-        public bool IsNotAllWorkedOut { get; set; }
+        public bool? IsNotAllWorkedOut { get; set; }
         /// <summary>
         /// Файл
         /// </summary>
@@ -62,6 +62,10 @@ namespace BL.Model.DocumentCore.FrontModel
         /// Версия вложения
         /// </summary>
         public int Version { get; set; }
+        /// <summary>
+        /// Количество версий для основного файла
+        /// </summary>
+        public int? CountVersions { get; set; }
 
         /// <summary>
         /// Дата создания файла

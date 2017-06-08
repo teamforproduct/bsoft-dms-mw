@@ -9,6 +9,10 @@ using BL.Model.Exception;
 
 namespace BL.Logic.DocumentCore.AdditionalCommands
 {
+
+    /// <summary>
+    /// TODO DELETE???
+    /// </summary>
     public class DeleteDocumentFileVersionCommand : BaseDocumentCommand
     {
         private readonly IDocumentFileDbProcess _operationDb;
@@ -36,28 +40,13 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
-            //if (CommandType == EnumDocumentActions.DeleteDocumentFileVersionRecord)
-            //{
-            //    _actionRecords =
-            //              _document.DocumentFiles.Where(
-            //                  x => x.IsDeleted &&
-            //                      x.ExecutorPositionId == positionId)
-            //                                              .Select(x => new InternalActionRecord
-            //                                              {
-            //                                                  FileId = x.Id,
-            //                                              });
-            //}
-            //else
-            {
-                _actionRecords =
-                              _document.DocumentFiles.Where(
-                                  x => (!x.IsMainVersion && !x.IsDeleted) &&
-                                      x.ExecutorPositionId == positionId)
-                                                              .Select(x => new InternalActionRecord
-                                                              {
-                                                                  FileId = x.Id,
-                                                              });
-            }
+            if ((_document.Accesses?.Count() ?? 0) != 0 && !_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork))
+                return false;
+            _actionRecords = _document.DocumentFiles.Where( x => !x.IsMainVersion && !x.IsDeleted && x.ExecutorPositionId == positionId)
+                              .Select(x => new InternalActionRecord
+                              {
+                                  FileId = x.Id,
+                              });
             if (!_actionRecords.Any())
             {
                 return false;
@@ -71,9 +60,9 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _document = _operationDb.DeleteDocumentFilePrepare(_context, Model);
             if (_document == null)
             {
-                throw new EmployeeHasNoAccessToDocument();
+                throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            if (_document.DocumentFiles == null || !_document.DocumentFiles.Any(x=>x.Id == Model))
+            if (_document.DocumentFiles == null || !_document.DocumentFiles.Any(x => x.Id == Model))
             {
                 throw new UnknownDocumentFile();
             }
@@ -93,29 +82,12 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override object Execute()
         {
-            var docFile = new InternalDocumentFile
-            {
-                ClientId = _document.ClientId,
-                EntityTypeId = _document.EntityTypeId,
-                DocumentId = _file.DocumentId,
-                OrderInDocument = _file.OrderInDocument,
-                Version = _file.Version,
-                IsDeleted = _file.IsDeleted
-            };
-
-            try
-            {
-                //_fStore.DeleteFile(_context, docFile);
-            }
-            catch (CannotAccessToFile ex)
-            {
-
-            }
+            CommonDocumentUtilities.SetLastChange(_context, _file);
             //if (_document.IsRegistered.HasValue)
             //{
             //    docFile.Events = CommonDocumentUtilities.GetNewDocumentEvents(_context, docFile.DocumentId, EnumEventTypes.DeleteDocumentFileVersion, null, null, _file.Name + "." + _file.Extension);
             //}
-            _operationDb.DeleteAttachedFile(_context, docFile);
+            _operationDb.DeleteDocumentFile(_context, _file);
             return null;
         }
     }

@@ -117,7 +117,7 @@ namespace BL.Logic.SystemCore
             return DmsDbImportData.GetSystemObjects().Select(x => new FrontSystemObject {
                 Id = x.Id,
                 Code = x.Code,
-                Description = x.Description,
+                Description = "##l@Objects:"+ x.Code + "@l##",
             }).ToList();
         }
 

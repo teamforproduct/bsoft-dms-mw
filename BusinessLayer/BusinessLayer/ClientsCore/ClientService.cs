@@ -314,6 +314,7 @@ namespace BL.Logic.ClientCore
 
 
             items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.CLEARTRASHDOCUMENTS_TIMEOUT_MINUTE_FOR_CLEAR));
+            items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.CLEARTRASHFILES_TIMEOUT_DAY_FOR_CLEAR));            
 
             items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_DocumentForDigitalSignature));
             items.Add(SettingFactory.GetDefaultSetting(EnumSystemSettings.FILE_STORE_TEMPLATE_REPORT_FILE_RegisterTransmissionDocuments));

@@ -21,9 +21,8 @@ namespace BL.Logic.DictionaryCore.Interfaces
         #region DictionaryAgents
         FrontDictionaryAgent GetAgent(IContext context, int id);
         IEnumerable<AutocompleteItem> GetShortListAgentExternal(IContext context, UIPaging paging);
-        FrontDictionaryAgentUser GetDictionaryAgentUser(IContext context, int id);
-        int SetAgentUserLanguage(IContext context, string languageCode);
-        void SetDictionaryAgentUserLastPositionChose(IContext context, List<int> positionsIdList);
+        void SetAgentUserLockout(IContext context, int agentId, bool isLockout);
+        void SetAgentUserLastPositionChose(IContext context, int agentId, List<int> positionsIdList);
         IEnumerable<FrontDictionaryAgent> GetAgents(IContext context, FilterDictionaryAgent filter, UIPaging paging);
         void DeleteAgentIfNoAny(IContext context, List<int> list);
 
@@ -70,11 +69,12 @@ namespace BL.Logic.DictionaryCore.Interfaces
         IEnumerable<FrontMainAgentEmployee> GetMainAgentEmployees(IContext context, FullTextSearch ftSearch, FilterDictionaryAgentEmployee filter, UIPaging paging, UISorting sorting);
 
         FrontFile GetDictionaryAgentUserPicture(IContext context, int employeeId);
-        string GetDictionaryAgentUserId(IContext context, int employeeId);
+        string GetAgentUserId(IContext context, int employeeId);
+        InternalDictionaryAgentUser GetAgentUser(IContext context, int employeeId);
 
         IEnumerable<ListItem> GetAgentEmployeeList(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging);
 
-        void SetAgentUserUserId(IContext context, InternalDictionaryAgentUser User);
+        void SetAgentUserUserId(IContext context, int agentId, string userId);
         #endregion DictionaryAgentEmployees
 
         #region DictionaryAgentAdress
@@ -235,7 +235,8 @@ namespace BL.Logic.DictionaryCore.Interfaces
         FrontDictionaryStandartSendList GetUserStandartSendList(IContext context, int id);
         IEnumerable<AutocompleteItem> GetStandartSendListsShortList(IContext ctx, FilterDictionaryStandartSendList filter, UIPaging paging);
         IEnumerable<FrontDictionaryStandartSendList> GetDictionaryStandartSendLists(IContext context, FilterDictionaryStandartSendList filter);
-        IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, bool SearchInPositionsOnly = false);
+        IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendListBase(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, bool SearchInPositionsOnly = false);
+        IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendList(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, bool SearchInPositionsOnly = false);
         IEnumerable<FrontMainDictionaryStandartSendList> GetMainUserStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter);
         #endregion DictionaryStandartSendList
 

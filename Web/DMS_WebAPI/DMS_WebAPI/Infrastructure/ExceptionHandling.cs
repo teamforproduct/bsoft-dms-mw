@@ -4,6 +4,7 @@ using BL.Logic.AdminCore.Interfaces;
 using BL.Model.Exception;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Net;
 using System.Web;
@@ -14,9 +15,15 @@ namespace DMS_WebAPI.Infrastructure
 {
     public static class ExceptionHandling
     {
-        private static HttpStatusCode GetResponseStatusCode(Exception exception)
+        private static HttpStatusCode GetResponseStatusCode(HttpContext context, Exception exception)
         {
             var res = HttpStatusCode.OK;
+
+            //TODO Remove
+            if (context.IsDebuggingEnabled)
+            {
+                res = HttpStatusCode.InternalServerError;
+            }
 
             if (exception is DmsExceptions)
             {
@@ -63,11 +70,10 @@ namespace DMS_WebAPI.Infrastructure
                 var d = string.Empty;
 
                 // для DmsExceptions Message формирую на основании названия класса
-                var dmsEx = exc as DmsExceptions;
-                if (dmsEx!=null)
+                if (exc is DmsExceptions)
                 {
                     m = "##l@DmsExceptions:" + exc.GetType().Name + "@l##";
-                    if (dmsEx.Errors != null) d = string.Join(" ", dmsEx.Errors);
+                    if ((exc as DmsExceptions).Errors != null) d = string.Join(" ", (exc as DmsExceptions).Errors);
                 }
                 else m = exc.Message;
 
@@ -98,25 +104,16 @@ namespace DMS_WebAPI.Infrastructure
                     continue;
                 }
 
-                // перевожу
-                m = languageService.GetTranslation(m);
+                List<string> parms = null;
 
                 // подстановка параметров в сообщение
                 if (exc is DmsExceptions)
                 {
-                    var p = (exc as DmsExceptions).Parameters;
-
-                    if (p?.Count > 0)
-                    {
-                        try
-                        {
-                           m= string.Format(m, p);
-                        }
-                        catch
-                        { }
-                    }
+                    parms = (exc as DmsExceptions).Parameters;
                 }
 
+                // перевожу
+                m = languageService.GetTranslation(m, parms);
 
                 // Без вложенных сообщений
                 if (string.IsNullOrEmpty(responceExpression)) responceExpression = m;
@@ -127,14 +124,13 @@ namespace DMS_WebAPI.Infrastructure
                 logExpression += $"   Message: {(exc is DmsExceptions ? exc.GetType().Name : exc.Message)}\r\n";
                 logExpression += $"   Source: {exc.Source}\r\n";
                 logExpression += $"   Method: {exc.TargetSite}\r\n";
-                logExpression += $"   Trace: {exc.StackTrace}\r\n";
 
                 exc = exc.InnerException;
             }
 
             // Если в результате подстановки параметров подставили лейблы, нужно их перевести
-            descriptionExpression = languageService.GetTranslation(descriptionExpression);
-            responceExpression = languageService.GetTranslation(responceExpression);
+            //descriptionExpression = languageService.GetTranslation(descriptionExpression);
+            //responceExpression = languageService.GetTranslation(responceExpression);
 
             return responceExpression;
         }
@@ -178,7 +174,7 @@ namespace DMS_WebAPI.Infrastructure
             // Очищаю существующий Response
             try
             {
-                statusCode = GetResponseStatusCode(exception);
+                statusCode = GetResponseStatusCode(httpContext, exception);
 
                 httpContext.Response.Clear();
 
@@ -231,5 +227,8 @@ namespace DMS_WebAPI.Infrastructure
                 DmsResolver.Current.Get<Utilities.UserContexts>().Remove();
 
         }
+
+
+
     }
 }

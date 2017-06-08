@@ -63,12 +63,10 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 ex = new PlanPointHasAlredyBeenLaunched();
             }
-            else if (!Model.TargetPositionId.HasValue || Model.AccessGroups.Count(x => x.AccessType == EnumEventAccessTypes.Target) > 1)
+            else if (Model.AccessGroups.Count(x => x.AccessType == EnumEventAccessTypes.Target) > 1)
             {
                 ex = new TargetIsNotDefined();
             }
-            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
-
             if (Model.TargetPositionId.HasValue
                 && (Model.DueDate.HasValue || Model.DueDay.HasValue)
                 && !_adminProc.VerifySubordination(_context, new VerifySubordination
@@ -89,10 +87,9 @@ namespace BL.Logic.DocumentCore.Commands
         public override object Execute()
         {
             var subscription = CommonDocumentUtilities.GetNewDocumentSubscription(_context, Model);
-            _document.Subscriptions = new List<InternalDocumentSubscription> { subscription };
             var waitTarget = CommonDocumentUtilities.GetNewDocumentWait(_context, Model, _eventType, EnumEventCorrespondentType.FromSourceToTarget);
             var newEvent = Model.StartEvent = subscription.SendEvent = waitTarget.OnEvent;
-            var ex = CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses,
+            var ex = CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent,
                 new VerifySubordination
                 {
                     SubordinationType = EnumSubordinationTypes.Informing,
@@ -102,8 +99,8 @@ namespace BL.Logic.DocumentCore.Commands
                 false, Model.AccessLevel);
             if (ex != null) CommonDocumentUtilities.ThrowError(_context, ex, Model);
             CommonDocumentUtilities.SetLastChange(_context, Model);
+            _document.Subscriptions = new List<InternalDocumentSubscription> { subscription };
             _document.SendLists = new List<InternalDocumentSendList> { Model };
-
             _document.Waits = new List<InternalDocumentWait> { waitTarget };
             if (Model.IsAddControl)
             {

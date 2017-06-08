@@ -121,6 +121,8 @@ namespace BL.Database.Documents
                             EntityTypeId = x.EntityTypeId,
                             TaskId = x.OnEvent.TaskId,
                             SourcePositionId = x.OnEvent.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
+                            ControllerPositionId = x.OnEvent.Accesses.Where(y => y.AccessTypeId <= (int)EnumEventAccessTypes.Controller)
+                                                     .OrderByDescending(y => y.AccessTypeId).FirstOrDefault().PositionId,
                             TargetPositionId = x.OnEvent.Accesses.Where(y => y.AccessTypeId <= (int)EnumEventAccessTypes.Target)
                                                      .OrderByDescending(y => y.AccessTypeId).FirstOrDefault().PositionId,
                             EventType = (EnumEventTypes)x.OnEvent.EventTypeId,
@@ -158,7 +160,7 @@ namespace BL.Database.Documents
                         }
                         ).ToList();
 
-                    var qryFiles = dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id);
+                    var qryFiles = CommonQueries.GetDocumentFileQuery(context, null);
                     if (id.HasValue)
                         qryFiles = qryFiles.Where(x => x.EventId == id);
                     else
@@ -288,7 +290,7 @@ namespace BL.Database.Documents
                             IsInWork = x.IsInWork,
                         }
                         ).ToList();
-                    var qryFiles = dbContext.DocumentFilesSet.Where(x => x.ClientId == context.Client.Id);
+                    var qryFiles = CommonQueries.GetDocumentFileQuery(context, null);
                     if (id.HasValue)
                     {
                         qryFiles = qryFiles.Where(x => x.Id == id);
@@ -429,15 +431,15 @@ namespace BL.Database.Documents
                         qry = qry.Where(x => x.CategoryId.HasValue);
                     qry = qry.Where(x => (x.Permission.RolePermissions.Any(y => y.Role.PositionRoles.Any(pr => pr.PositionId == posId) &&
                                         y.Role.UserRoles.Any(z => z.PositionExecutor.AgentId == context.CurrentAgentId))));
-                    var qryActLst = qry.OrderBy(x => x.CategoryId).ThenBy(x => x.Id).Select(a => new InternalSystemActionForDocument
+                    var qryActLst = qry.OrderBy(x => x.CategoryId).ThenBy(x => x.Id).Select(x => new InternalSystemActionForDocument
                     {
-                        DocumentAction = (EnumDocumentActions)a.Id,
-                        Object = (EnumObjects)a.ObjectId,
-                        ActionCode = a.Code,
-                        ObjectCode = a.Object.Code,
-                        Description = a.Description,
-                        Category = (EnumActionCategories)a.CategoryId,
-                        CategoryName = "##l@EnumActionCategories:" + ((EnumActionCategories)a.CategoryId).ToString() + "@l##"
+                        DocumentAction = (EnumDocumentActions)x.Id,
+                        Object = (EnumObjects)x.ObjectId,
+                        ActionCode = x.Code,
+                        ObjectCode = x.Object.Code,
+                        Description = "##l@Actions:" + ((EnumDocumentActions)x.Id).ToString() + "@l##",
+                        Category = (EnumActionCategories)x.CategoryId,
+                        
                     });
                     var actLst = qryActLst.ToList();
                     res.Add(posId, actLst);
@@ -461,8 +463,8 @@ namespace BL.Database.Documents
                     {
                         Id = x.Id,
                         DocumentDescription = x.Document.LinkId.HasValue ? x.Document.Description : null,
-                        DocumentTypeName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentType.Name : null,
-                        DocumentDirectionName = x.Document.LinkId.HasValue ? x.Document.TemplateDocument.DocumentDirection.Name : null,
+                        DocumentTypeName = x.Document.LinkId.HasValue ? x.Document.DocumentType.Name : null,
+                        DocumentDirectionName = x.Document.LinkId.HasValue ? "##l@DocumentDirections:" + ((EnumDocumentDirections)x.Document.DocumentDirectionId).ToString() + "@l##" : null,
                         PaperPlanAgentName = x.PaperPlanAgent.Name,
                         PaperSendAgentName = x.PaperSendAgent.Name,
                         PaperRecieveAgentName = x.PaperRecieveAgent.Name,
@@ -593,8 +595,8 @@ namespace BL.Database.Documents
                     {
                         Id = x.Id,
                         DocumentId = x.DocumentId,
-                        EventType = x.EventTypeId,
-                        EventTypeName = x.EventType.Name,
+                        EventType = (EnumEventTypes)x.EventTypeId,
+                        EventTypeName = "##l@EventTypes:" + ((EnumEventTypes)x.EventTypeId).ToString() + "@l##",
                         Date = x.Date,
                         CreateDate = x.Date != x.CreateDate ? (DateTime?)x.CreateDate : null,
                         Task = x.Task.Task,
@@ -780,7 +782,7 @@ namespace BL.Database.Documents
                         ParentId = x.ParentId,
                         OnEventId = x.OnEventId,
                         OffEventId = x.OffEventId,
-                        ResultTypeId = x.ResultTypeId,
+                        ResultType = (EnumResultTypes)x.ResultTypeId,
                         ResultTypeName = x.ResultType.Name,
                         PlanDueDate = x.PlanDueDate,
                         DueDate = x.DueDate > maxDateTime ? null : x.DueDate,
@@ -788,7 +790,7 @@ namespace BL.Database.Documents
                         TargetDescription = x.TargetDescription,
                         //TargetAttentionDate = x.TargetAttentionDate,
                         IsClosed = x.OffEvent != null,
-
+                        IsOverDue = !x.OffEventId.HasValue && x.DueDate.HasValue && x.DueDate.Value <= DateTime.UtcNow,
                         DocumentDate = (x.Document.LinkId.HasValue || isNeedRegistrationFullNumber) ? x.Document.RegistrationDate ?? x.Document.CreateDate : (DateTime?)null,
                         RegistrationNumber = x.Document.RegistrationNumber,
                         RegistrationNumberPrefix = x.Document.RegistrationNumberPrefix,
@@ -805,7 +807,7 @@ namespace BL.Database.Documents
                             Task = x.OnEvent.Task.Task,
                             Description = x.OnEvent.Description,
                             AddDescription = x.OnEvent.AddDescription,
-                            EventType = x.OnEvent.EventTypeId,
+                            EventType = (EnumEventTypes)x.OnEvent.EventTypeId,
                             EventTypeName = x.OnEvent.EventType.WaitDescription/*?? x.OnEvent.EventType.Name*/,
                             Date = x.OnEvent.Date,
                         },
@@ -818,8 +820,8 @@ namespace BL.Database.Documents
                             Task = null,
                             Description = x.OffEvent.Description,
                             AddDescription = x.OffEvent.AddDescription,
-                            EventType = x.OffEvent.EventTypeId,
-                            EventTypeName = x.OffEvent.EventType.Name,
+                            EventType = (EnumEventTypes)x.OffEvent.EventTypeId,
+                            EventTypeName = "##l@EventTypes:" + ((EnumEventTypes)x.OffEvent.EventTypeId).ToString() + "@l##",
                             Date = x.OffEvent.Date,
                         }
                     });
@@ -900,8 +902,8 @@ namespace BL.Database.Documents
                         {
                             Id = x.SendEvent.Id,
                             DocumentId = x.SendEvent.DocumentId,
-                            EventType = x.SendEvent.EventTypeId,
-                            EventTypeName = x.SendEvent.EventType.Name,
+                            EventType = (EnumEventTypes)x.SendEvent.EventTypeId,
+                            EventTypeName = "##l@EventTypes:" + ((EnumEventTypes)x.SendEvent.EventTypeId).ToString() + "@l##",
                             DueDate = x.SendEvent.OnWait.FirstOrDefault().DueDate > maxDateTime ? null : x.SendEvent.OnWait.FirstOrDefault().DueDate,
                             Date = x.SendEvent.Date,
                             Description = x.SendEvent.Description,
@@ -913,8 +915,8 @@ namespace BL.Database.Documents
                         {
                             Id = x.DoneEvent.Id,
                             DocumentId = x.DoneEvent.DocumentId,
-                            EventType = x.DoneEvent.EventTypeId,
-                            EventTypeName = x.DoneEvent.EventType.Name,
+                            EventType = (EnumEventTypes)x.DoneEvent.EventTypeId,
+                            EventTypeName = "##l@EventTypes:" + ((EnumEventTypes)x.DoneEvent.EventTypeId).ToString() + "@l##",
                             DueDate = null,
                             Date = x.DoneEvent.Date,
                             Description = x.DoneEvent.Description,
@@ -1045,7 +1047,9 @@ namespace BL.Database.Documents
                 var waitParentDb = ModelConverter.GetDbDocumentWait(wait.ParentWait);
                 dbContext.DocumentWaitsSet.Add(waitParentDb);
                 dbContext.SaveChanges();
-                dbContext.DocumentFilesSet.Where(x => x.EventId == wait.OnEvent.Id).Update(x => new DocumentFiles { EventId = waitParentDb.OnEventId }); //перекидываем файлы на новый ИД
+                dbContext.DocumentFilesSet  //Without security restrictions
+                    .Where(x => x.EventId == wait.OnEvent.Id)
+                    .Update(x => new DocumentFiles { EventId = waitParentDb.OnEventId }); //перекидываем файлы на новый ИД
 
                 var eventDb = ModelConverter.GetDbDocumentEvent(wait.OnEvent);
                 eventDb.Id = wait.OnEvent.Id;
@@ -1320,14 +1324,10 @@ namespace BL.Database.Documents
                                                 EntityTypeId = x.EntityTypeId,
                                                 DocumentId = x.OnEvent.DocumentId,
                                                 SourcePositionId = x.OnEvent.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
+                                                ControllerPositionId = x.OnEvent.Accesses.Where(y => y.AccessTypeId <= (int)EnumEventAccessTypes.Controller)
+                                                                    .OrderByDescending(y=> y.AccessTypeId).FirstOrDefault().PositionId,
                                                 TargetPositionId = x.OnEvent.Accesses.Where(y => y.AccessTypeId <= (int)EnumEventAccessTypes.Target)
                                                                     .OrderByDescending(y=> y.AccessTypeId).FirstOrDefault().PositionId,
-                                                //SourcePositionExecutorAgentId = x.OnEvent.SourcePositionExecutorAgentId,
-                                                //SourcePositionExecutorTypeId = x.OnEvent.SourcePositionExecutorTypeId,
-                                                //TargetPositionExecutorAgentId = x.OnEvent.TargetPositionExecutorAgentId,
-                                                //TargetPositionExecutorTypeId = x.OnEvent.TargetPositionExecutorTypeId,
-                                                //SourceAgentId = x.OnEvent.SourceAgentId,
-                                                //TargetAgentId = x.OnEvent.TargetAgentId,
                                                 TaskId = x.OnEvent.TaskId,
                                                 Description = x.OnEvent.Description,
                                                 AddDescription = x.OnEvent.AddDescription,
@@ -1336,10 +1336,6 @@ namespace BL.Database.Documents
                                                 Date = x.OnEvent.Date,
                                                 LastChangeUserId = x.OnEvent.LastChangeUserId,
                                                 LastChangeDate = x.OnEvent.LastChangeDate,
-                                                //SendDate = x.OnEvent.SendDate,
-                                                //ReadDate = x.OnEvent.ReadDate,
-                                                //ReadAgentId = x.OnEvent.ReadAgentId,
-
                                             }
                                         }
                                     }
@@ -1426,6 +1422,8 @@ namespace BL.Database.Documents
                                                 DocumentId = x.OnEvent.DocumentId,
                                                 EventType = (EnumEventTypes)x.OnEvent.EventTypeId,
                                                 SourcePositionId = x.OnEvent.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
+                                                ControllerPositionId = x.OnEvent.Accesses.Where(y => y.AccessTypeId <= (int)EnumEventAccessTypes.Controller)
+                                                                    .OrderByDescending(y=> y.AccessTypeId).FirstOrDefault().PositionId,
                                                 TargetPositionId = x.OnEvent.Accesses.Where(y => y.AccessTypeId <= (int)EnumEventAccessTypes.Target)
                                                                     .OrderByDescending(y=> y.AccessTypeId).FirstOrDefault().PositionId,
                                                 TaskId = x.OnEvent.TaskId,
@@ -1519,6 +1517,8 @@ namespace BL.Database.Documents
                             DocumentId = x.OnEvent.DocumentId,
                             EventType = (EnumEventTypes)x.OnEvent.EventTypeId,
                             SourcePositionId = x.OnEvent.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
+                            ControllerPositionId = x.OnEvent.Accesses.Where(y => y.AccessTypeId <= (int)EnumEventAccessTypes.Controller)
+                                                                    .OrderByDescending(y => y.AccessTypeId).FirstOrDefault().PositionId,
                             TargetPositionId = x.OnEvent.Accesses.Where(y => y.AccessTypeId <= (int)EnumEventAccessTypes.Target)
                                                                     .OrderByDescending(y => y.AccessTypeId).FirstOrDefault().PositionId,
                             TaskId = x.OnEvent.TaskId,
@@ -1551,6 +1551,8 @@ namespace BL.Database.Documents
                             DocumentId = x.OnEvent.DocumentId,
                             EventType = (EnumEventTypes)x.OnEvent.EventTypeId,
                             SourcePositionId = x.OnEvent.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
+                            ControllerPositionId = x.OnEvent.Accesses.Where(y => y.AccessTypeId <= (int)EnumEventAccessTypes.Controller)
+                                                                    .OrderByDescending(y => y.AccessTypeId).FirstOrDefault().PositionId,
                             TargetPositionId = x.OnEvent.Accesses.Where(y => y.AccessTypeId <= (int)EnumEventAccessTypes.Target)
                                                                     .OrderByDescending(y => y.AccessTypeId).FirstOrDefault().PositionId,
                             TaskId = x.OnEvent.TaskId,
@@ -2061,101 +2063,9 @@ namespace BL.Database.Documents
                         IsLaunchPlan = x.IsLaunchPlan,
                     }).FirstOrDefault();
                 if (doc == null) return null;
-                if (sendList.SendType == EnumSendTypes.SendForResponsibleExecution || sendList.SendType == EnumSendTypes.SendForControl || sendList.IsWorkGroup)
-                {
-                    var initiatorInfo = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == context.Client.Id)
-                        .Where(x => x.Id == sendList.SourcePositionId)
-                        .Select(x => new InternalDictionaryPositionWithActions
-                        {
-                            //Id = x.Id,
-                            Name = x.Name,
-                            //DepartmentId = x.DepartmentId,
-                            //ExecutorAgentId = x.ExecutorAgentId,
-                            //DepartmentName = x.Department.Name,
-                            ExecutorAgentName = x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : null),
-                        }).FirstOrDefault();
-                    if (initiatorInfo == null) return null;
-                    sendList.InitiatorPositionName = initiatorInfo.Name;
-                    sendList.InitiatorPositionExecutorAgentName = initiatorInfo.ExecutorAgentName;
-                    doc.Events = dbContext.DocumentEventsSet.Where(x => x.ClientId == context.Client.Id)  //Without security restrictions
-                        .Where(x => x.DocumentId == sendList.DocumentId && x.Task.Id == sendList.TaskId
-                                    && x.EventTypeId == (int)EnumEventTypes.SendForControl
-                                    && x.Accesses.Any(y => y.PositionId == sendList.SourcePositionId))
-                        .Select(x => new
-                        {
-                            eventC = x,
-                            source = x.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source),
-                            target = x.Accesses.Where(y => y.AccessTypeId <= (int)EnumEventAccessTypes.Target)
-                                                                    .OrderByDescending(y => y.AccessTypeId).FirstOrDefault()
-                        })
-                        .Select(x => new InternalDocumentEvent
-                        {
-                            Id = x.eventC.Id,
-                            ClientId = x.eventC.ClientId,
-                            EntityTypeId = x.eventC.EntityTypeId,
-                            //ParentEventId = x.ParentEventId,
-                            SourcePositionId = x.source.PositionId,
-                            //SourcePositionName = x.SourcePosition.Name,
-                            //SourcePositionExecutorAgentName = x.SourcePosition.ExecutorAgent.Name + (x.SourcePosition.ExecutorType.Suffix != null ? " (" + x.SourcePosition.ExecutorType.Suffix + ")" : null),
-                            TargetPositionId = x.target.PositionId,
-                            TargetPositionName = x.target.Position.Name,
-                            TargetPositionExecutorAgentId = x.target.Position.ExecutorAgentId,
-                            TargetPositionExecutorTypeId = x.target.Position.PositionExecutorTypeId,
-                            TargetPositionExecutorAgentName = x.target.Position.ExecutorAgent.Name + (x.target.PositionExecutorType.Suffix != null ? " (" + x.target.PositionExecutorType.Suffix + ")" : null),
-                        }).ToList();
-
-                    doc.Waits = dbContext.DocumentWaitsSet.Where(x => x.ClientId == context.Client.Id)  //Without security restrictions
-                        .Where(x => x.DocumentId == sendList.DocumentId && x.OnEvent.Task.Id == sendList.TaskId && !x.OffEventId.HasValue
-                                    && (x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecution || x.OnEvent.EventTypeId == (int)EnumEventTypes.SendForResponsibleExecutionChange))
-                        .Select(x => new
-                        {
-                            waitRE = x,
-                            sourceRE = x.OnEvent.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source),
-                            targetRE = x.OnEvent.Accesses.Where(y => y.AccessTypeId <= (int)EnumEventAccessTypes.Target)
-                                                                    .OrderByDescending(y => y.AccessTypeId).FirstOrDefault(),
-                            eventCSourcePositionId = x.OnEvent
-                                                        .ChildEvents.FirstOrDefault(y => y.ParentEventId == x.OnEvent.Id && y.EventTypeId == (int)EnumEventTypes.InfoSendForResponsibleExecutionReportingControler)
-                                                        .Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
-                        }).Where(x => x.eventCSourcePositionId == null && x.sourceRE.PositionId == sendList.SourcePositionId
-                                    || x.eventCSourcePositionId != null && x.eventCSourcePositionId == sendList.SourcePositionId)
-                        .Select(x => new InternalDocumentWait
-                        {
-                            Id = x.waitRE.Id,
-                            ClientId = x.waitRE.ClientId,
-                            EntityTypeId = x.waitRE.EntityTypeId,
-                            OnEvent = new InternalDocumentEvent
-                            {
-                                ClientId = x.waitRE.ClientId,
-                                EntityTypeId = x.waitRE.EntityTypeId,
-                                SourcePositionId = x.eventCSourcePositionId == null ? x.sourceRE.PositionId : x.eventCSourcePositionId,
-                                //SourcePositionName = x.eventC == null ? x.waitRE.OnEvent.SourcePosition.Name : x.eventC.SourcePosition.Name,
-                                //SourcePositionExecutorAgentName = x.eventC == null
-                                //    ? x.waitRE.OnEvent.SourcePosition.ExecutorAgent.Name + (x.waitRE.OnEvent.SourcePosition.ExecutorType.Suffix != null ? " (" + x.waitRE.OnEvent.SourcePosition.ExecutorType.Suffix + ")" : null)
-                                //    : x.eventC.SourcePosition.ExecutorAgent.Name + (x.eventC.SourcePosition.ExecutorType.Suffix != null ? " (" + x.eventC.SourcePosition.ExecutorType.Suffix + ")" : null),
-                                TargetPositionId = x.targetRE.PositionId,
-                                TargetPositionName = x.targetRE.Position.Name,
-                                TargetPositionExecutorAgentId = x.targetRE.Position.ExecutorAgentId,
-                                TargetPositionExecutorTypeId = x.targetRE.PositionExecutorTypeId,
-                                TargetPositionExecutorAgentName = x.targetRE.Position.ExecutorAgent.Name + (x.targetRE.PositionExecutorType.Suffix != null ? " (" + x.targetRE.PositionExecutorType.Suffix + ")" : null),
-                            }
-                        }).ToList();
-                }
                 if (sendList.IsInitial)
                 {
-                    doc.Subscriptions = dbContext.DocumentSubscriptionsSet.Where(x => x.ClientId == context.Client.Id)
-                        .Where(x => x.DocumentId == sendList.DocumentId && x.SubscriptionState.IsSuccess)
-                        .Select(x => new InternalDocumentSubscription
-                        {
-                            Id = x.Id,
-                            ClientId = doc.ClientId,
-                            EntityTypeId = doc.EntityTypeId,
-                            DoneEvent = new InternalDocumentEvent
-                            {
-                                ClientId = doc.ClientId,
-                                EntityTypeId = doc.EntityTypeId,
-                                SourcePositionId = x.DoneEvent.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
-                            }
-                        }).ToList();
+                    CommonQueries.SetSuccessfulSubscriptions(context, doc);
                 }
                 transaction.Complete();
                 return doc;
@@ -2178,20 +2088,7 @@ namespace BL.Database.Documents
                 if (doc == null) return null;
                 if (sendList.IsInitial)
                 {
-                    doc.Subscriptions = dbContext.DocumentSubscriptionsSet.Where(x => x.ClientId == context.Client.Id)
-                        .Where(x => x.DocumentId == sendList.DocumentId && x.SubscriptionState.IsSuccess)
-                        .Select(x => new InternalDocumentSubscription
-                        {
-                            Id = x.Id,
-                            ClientId = x.ClientId,
-                            EntityTypeId = x.EntityTypeId,
-                            DoneEvent = new InternalDocumentEvent
-                            {
-                                ClientId = x.ClientId,
-                                EntityTypeId = x.EntityTypeId,
-                                SourcePositionId = x.DoneEvent.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
-                            }
-                        }).ToList();
+                    CommonQueries.SetSuccessfulSubscriptions(context, doc);
                 }
                 transaction.Complete();
                 return doc;
@@ -2215,6 +2112,7 @@ namespace BL.Database.Documents
                         DocumentId = x.DocumentId,
                         AccessLevel = (EnumAccessLevels)x.AccessLevelId,
                     }).ToList();
+                document.IsRestrictedSendListsLoaded = true;
                 transaction.Complete();
             }
         }
@@ -2404,7 +2302,7 @@ namespace BL.Database.Documents
                         ClientId = x.ClientId,
                         EntityTypeId = x.EntityTypeId,
                         ExecutorPositionId = x.ExecutorPositionId,
-                        TemplateDocumentId = x.TemplateDocument.Id,
+                        TemplateId = x.TemplateDocument.Id,
                         IsHard = x.TemplateDocument.IsHard,
                         IsLaunchPlan = x.IsLaunchPlan
                     }).FirstOrDefault();
@@ -2431,46 +2329,31 @@ namespace BL.Database.Documents
                         StageType = (EnumStageTypes?)x.StageTypeId,
                         Stage = x.Stage,
                         SourcePositionId = x.AccessGroups.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
-                        SourceAgentId = x.AccessGroups.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).AgentId ?? 0,
+                        //SourceAgentId = x.AccessGroups.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).AgentId ?? 0,
                         //TargetAgentId = x.TargetAgentId
 
                     }).ToList();
-                doc.Subscriptions = dbContext.DocumentSubscriptionsSet.Where(x => x.ClientId == context.Client.Id)
-                    .Where(x => x.DocumentId == doc.Id && x.SubscriptionState.IsSuccess)
-                    .Select(x => new InternalDocumentSubscription
-                    {
-                        Id = x.Id,
-                        ClientId = x.ClientId,
-                        EntityTypeId = x.EntityTypeId,
-                        SubscriptionStatesId = x.SubscriptionStateId,
-                        SubscriptionStatesIsSuccess = x.SubscriptionState.IsSuccess,
-                        DoneEvent = new InternalDocumentEvent
-                        {
-                            ClientId = x.ClientId,
-                            EntityTypeId = x.EntityTypeId,
-                            SourcePositionId = x.DoneEvent.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
-                        }
-                    }).ToList();
+                CommonQueries.SetSuccessfulSubscriptions(context, doc);
                 if (doc.IsHard)
                 {
-                    doc.TemplateDocument = new InternalTemplateDocument();
+                    doc.Template = new InternalTemplate();
 
-                    doc.TemplateDocument.RestrictedSendLists = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == context.Client.Id)
-                        .Where(x => x.DocumentId == doc.TemplateDocumentId)
-                        .Select(x => new InternalTemplateDocumentRestrictedSendList
+                    doc.Template.RestrictedSendLists = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == context.Client.Id)
+                        .Where(x => x.DocumentId == doc.TemplateId)
+                        .Select(x => new InternalTemplateRestrictedSendList
                         {
                             Id = x.Id,
                             PositionId = x.PositionId
                         }).ToList();
 
-                    doc.TemplateDocument.SendLists = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == context.Client.Id)
-                        .Where(x => x.DocumentId == doc.TemplateDocumentId)
-                        .Select(x => new InternalTemplateDocumentSendList
-                        {
-                            Id = x.Id,
-                            TargetPositionId = x.TargetPositionId,
-                            SendType = (EnumSendTypes)x.SendTypeId
-                        }).ToList();
+                    //doc.TemplateDocument.SendLists = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == context.Client.Id)
+                    //    .Where(x => x.DocumentId == doc.TemplateDocumentId)
+                    //    .Select(x => new InternalTemplateDocumentSendList
+                    //    {
+                    //        Id = x.Id,
+                    //        TargetPositionId = x.TargetPositionId,
+                    //        SendType = (EnumSendTypes)x.SendTypeId
+                    //    }).ToList();
                 }
 
                 if (id != 0)
@@ -2634,14 +2517,7 @@ namespace BL.Database.Documents
                 entry.Property(e => e.Stage).IsModified = true;
                 entry.Property(e => e.StageTypeId).IsModified = true;
                 entry.Property(e => e.SendTypeId).IsModified = true;
-                //entry.Property(e => e.SourcePositionExecutorAgentId).IsModified = true;
-                //entry.Property(e => e.SourcePositionExecutorTypeId).IsModified = true;
-                //entry.Property(e => e.TargetPositionId).IsModified = true;
-                //entry.Property(e => e.TargetPositionExecutorAgentId).IsModified = true;
-                //entry.Property(e => e.TargetPositionExecutorTypeId).IsModified = true;
-                //entry.Property(e => e.TargetAgentId).IsModified = true;
                 entry.Property(e => e.TaskId).IsModified = true;
-                entry.Property(e => e.IsWorkGroup).IsModified = true;
                 entry.Property(e => e.IsAddControl).IsModified = true;
                 entry.Property(e => e.SelfDescription).IsModified = true;
                 entry.Property(e => e.SelfDueDate).IsModified = true;
@@ -2806,12 +2682,7 @@ namespace BL.Database.Documents
                                             Stage = x.Stage,
                                             StageType = (EnumStageTypes?)x.StageTypeId,
                                             SendType = (EnumSendTypes)x.SendTypeId,
-                                            //SourcePositionId = x.SourcePositionId,
-                                            //SourceAgentId = x.SourceAgentId,
-                                            //TargetPositionId = x.TargetPositionId,
-                                            //TargetAgentId = x.TargetAgentId,
                                             TaskId = x.TaskId,
-                                            IsWorkGroup = x.IsWorkGroup,
                                             IsAddControl = x.IsAddControl,
                                             SelfDescription = x.SelfDescription,
                                             SelfDueDate = x.SelfDueDate,
@@ -2830,24 +2701,7 @@ namespace BL.Database.Documents
                     }).FirstOrDefault();
                 if (doc?.SendLists?.Any() ?? false)
                 {
-                    var sendLists = doc?.SendLists.First();
-                    sendLists.AccessGroups = dbContext.DocumentSendListAccessGroupsSet.Where(x => x.ClientId == context.Client.Id)
-                         .Where(x => x.SendListId == id)
-                         .Select(x => new InternalDocumentSendListAccessGroup
-                         {
-                             Id = x.Id,
-                             ClientId = x.ClientId,
-                             EntityTypeId = x.EntityTypeId,
-                             DocumentId = x.DocumentId,
-                             SendListId = x.SendListId,
-                             AccessGroupType = (EnumEventAccessGroupTypes)x.AccessGroupTypeId,
-                             AccessType = (EnumEventAccessTypes)x.AccessTypeId,
-                             AgentId = x.AgentId,
-                             CompanyId = x.CompanyId,
-                             DepartmentId = x.DepartmentId,
-                             PositionId = x.PositionId,
-                             StandartSendListId = x.StandartSendListId,
-                         }).ToList();
+                    CommonQueries.SetAccessGroups(context, doc.SendLists.ToList());
                 }
                 transaction.Complete();
                 return doc;
@@ -3531,7 +3385,7 @@ namespace BL.Database.Documents
                         Id = x.Id,
                         ClientId = x.ClientId,
                         EntityTypeId = x.EntityTypeId,
-                        SourcePositionId = x.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
+                        SourcePositionId = x.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,   //TODO multitarget
                         TargetPositionId = x.Accesses.Where(y => y.AccessTypeId <= (int)EnumEventAccessTypes.Target)
                                                      .OrderByDescending(y => y.AccessTypeId).FirstOrDefault().PositionId,
                         TargetAgentId = x.Accesses.Where(y => y.AccessTypeId <= (int)EnumEventAccessTypes.Target)

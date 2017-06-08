@@ -11,25 +11,25 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 {
     public class ModifyTemplatePaperCommand : BaseDocumentCommand
     {
-        private readonly ITemplateDocumentsDbProcess _operationDb;
-        private new InternalTemplateDocument _document;
-        private InternalTemplateDocumentPaper _paper;
+        private readonly ITemplateDbProcess _operationDb;
+        private new InternalTemplate _document;
+        private InternalTemplatePaper _paper;
 
-        public ModifyTemplatePaperCommand(ITemplateDocumentsDbProcess operationDb)
+        public ModifyTemplatePaperCommand(ITemplateDbProcess operationDb)
         {
             _operationDb = operationDb;
 
         }
 
-        private ModifyTemplateDocumentPaper Model
+        private ModifyTemplatePaper Model
         {
             get
             {
-                if (!(_param is ModifyTemplateDocumentPaper))
+                if (!(_param is ModifyTemplatePaper))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (ModifyTemplateDocumentPaper)_param;
+                return (ModifyTemplatePaper)_param;
             }
         }
 

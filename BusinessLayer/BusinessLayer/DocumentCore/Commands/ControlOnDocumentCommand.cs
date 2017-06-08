@@ -8,6 +8,7 @@ using BL.CrossCutting.Helpers;
 using System.Collections.Generic;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.AdminCore;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -49,17 +50,17 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
-            _operationDb.SetParentEventAccessesPrepare(_context, _document, Model.ParentEventId);
-            //TODO проверка на контроль с одинаковыми задачами
             return true;
         }
 
         public override object Execute()
         {
             var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task);
+            Model.TargetCopyAccessGroups = (Model.TargetCopyAccessGroups ?? new List<AccessGroup>())
+                .Concat(CommonDocumentUtilities.GetAccessGroupsFileExecutors(_context, _document.Id, Model.AddDocumentFiles))
+                .ToList();
             var newWait = CommonDocumentUtilities.GetNewDocumentWait(_context, (int)EnumEntytiTypes.Document, Model, EnumEventTypes.ControlOn, taskId);
-            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newWait.OnEvent.Accesses);
+            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newWait.OnEvent);
             _document.Waits = new List<InternalDocumentWait> { newWait };
             using (var transaction = Transactions.GetTransaction())
             {

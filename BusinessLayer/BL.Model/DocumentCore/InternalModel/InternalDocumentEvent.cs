@@ -19,21 +19,11 @@ namespace BL.Model.DocumentCore.InternalModel
         public int? TaskId { get; set; }
         public string Description { get; set; }
         public string AddDescription { get; set; }
+
         public int? SourcePositionId { get; set; }
-        public int? SourcePositionExecutorAgentId { get; set; }
-        public int? SourcePositionExecutorTypeId { get; set; }
-        public int? SourceAgentId { get; set; }
+        public int? ControllerPositionId { get; set; }
         public int? TargetPositionId { get; set; }
-        public int? TargetPositionExecutorAgentId { get; set; }
-        public int? TargetPositionExecutorTypeId { get; set; }
         public int? TargetAgentId { get; set; }
-        public DateTime? ReadDate { get; set; }
-        public int? ReadAgentId { get; set; }
-        public DateTime? SendDate { get; set; }
-        public string SourcePositionName { get; set; }
-        public string TargetPositionName { get; set; }
-        public string SourcePositionExecutorAgentName { get; set; }
-        public string TargetPositionExecutorAgentName { get; set; }
 
         public int? PaperId { get; set; }
         public Nullable<int> ParentEventId { get; set; }

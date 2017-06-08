@@ -144,14 +144,6 @@ namespace BL.Logic.AdminCore
                 
                 #endregion
 
-                #region AdminSubordinations
-                case EnumAdminActions.ChangePassword:
-                case EnumAdminActions.ChangeLockout:
-                case EnumAdminActions.KillSessions:
-                case EnumAdminActions.MustChangePassword:
-                    cmd = DmsResolver.Current.Get<VerifyAccessCommand>();
-                    break;
-                #endregion
 
                 default:
                     throw new CommandNotDefinedError(act.ToString());

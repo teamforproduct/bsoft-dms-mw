@@ -26,8 +26,8 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
     {
         private IHttpActionResult GetById(IContext context, int Id)
         {
-            var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpItem = tmpService.GetTemplateDocumentPaper(context, Id);
+            var tmpService = DmsResolver.Current.Get<ITemplateService>();
+            var tmpItem = tmpService.GetTemplatePaper(context, Id);
             var res = new JsonResult(tmpItem, this);
             return res;
         }
@@ -40,16 +40,16 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpGet]
         [Route("{Id:int}/" + Features.Papers)]
-        [ResponseType(typeof(List<FrontTemplateDocumentPaper>))]
-        public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterTemplateDocumentPaper filter)
+        [ResponseType(typeof(List<FrontTemplatePaper>))]
+        public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterTemplatePaper filter)
         {
-            if (filter == null) filter = new FilterTemplateDocumentPaper();
+            if (filter == null) filter = new FilterTemplatePaper();
             filter.TemplateId = Id;
 
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
-                var tmpItems = tmpService.GetTemplateDocumentPapers(context, filter);
+                var tmpService = DmsResolver.Current.Get<ITemplateService>();
+                var tmpItems = tmpService.GetTemplatePapers(context, filter);
                 var res = new JsonResult(tmpItems, this);
                 return res;
             });
@@ -63,7 +63,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Papers + "/{Id:int}")]
-        [ResponseType(typeof(FrontTemplateDocumentPaper))]
+        [ResponseType(typeof(FrontTemplatePaper))]
         public async Task<IHttpActionResult> Get(int Id)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
@@ -79,11 +79,11 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Papers)]
-        public async Task<IHttpActionResult> Post([FromBody]AddTemplateDocumentPaper model)
+        public async Task<IHttpActionResult> Post([FromBody]AddTemplatePaper model)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   var tmpItem = Action.Execute(context, EnumDocumentActions.AddTemplateDocumentPaper, model);
+                   var tmpItem = Action.Execute(context, EnumDocumentActions.AddTemplatePaper, model);
                    return GetById(context, tmpItem);
                });
         }
@@ -95,11 +95,11 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Papers)]
-        public async Task<IHttpActionResult> Put([FromBody]ModifyTemplateDocumentPaper model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyTemplatePaper model)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.ModifyTemplateDocumentPaper, model);
+                   Action.Execute(context, EnumDocumentActions.ModifyTemplatePaper, model);
                    return GetById(context, model.Id);
                });
         }
@@ -115,7 +115,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.DeleteTemplateDocumentPaper, Id);
+                   Action.Execute(context, EnumDocumentActions.DeleteTemplatePaper, Id);
                    var tmpItem = new FrontDeleteModel(Id);
                    var res = new JsonResult(tmpItem, this);
                    return res;

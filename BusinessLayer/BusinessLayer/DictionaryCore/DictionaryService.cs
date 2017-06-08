@@ -149,7 +149,17 @@ namespace BL.Logic.DictionaryCore
 
         public FrontAgentEmployee GetDictionaryAgentEmployee(IContext context, int id)
         {
-            return _dictDb.GetAgentEmployee(context, id);
+            var res = _dictDb.GetAgentEmployee(context, id);
+
+            //var adminService = DmsResolver.Current.Get<APIWebService>();
+
+            // Язык перенес в центральную базу. На фронте требуются изменения.
+            // Чтобы ничего сейчас не ломать пишу всем русский
+            res.LanguageId = 570;
+            res.LanguageCode = "ru_RU";
+            res.LanguageName = "Русский";
+
+            return res;
         }
 
         public IEnumerable<ListItem> GetAgentEmployeeList(IContext context, FilterDictionaryAgentEmployee filter, UIPaging paging)
@@ -186,16 +196,30 @@ namespace BL.Logic.DictionaryCore
             return uPic;
         }
 
-        public string GetDictionaryAgentUserId(IContext context, int employeeId)
+        /// <summary>
+        /// Возвращает id пользователя связанного с сотрудником
+        /// Если пользователь еще не зарегистрировался, то Empty 
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="employeeId"></param>
+        /// <returns></returns>
+        public string GetAgentUserId(IContext context, int employeeId)
         {
             var user = _dictDb.GetInternalAgentUser(context, employeeId);
 
             return user.UserId;
         }
 
-        public void SetAgentUserUserId(IContext context, InternalDictionaryAgentUser User)
+        public InternalDictionaryAgentUser GetAgentUser(IContext context, int employeeId)
         {
-            _dictDb.SetAgentUserUserId(context, User);
+            return _dictDb.GetInternalAgentUser(context, employeeId);
+        }
+
+        public void SetAgentUserUserId(IContext context, int agentId, string userId)
+        {
+            var agentUser = new InternalDictionaryAgentUser { Id = agentId, UserId = userId };
+            CommonDocumentUtilities.SetLastChange(context, agentUser);
+            _dictDb.SetAgentUserUserId(context, agentUser);
         }
         #endregion DictionaryAgentEmployees
 
@@ -309,25 +333,20 @@ namespace BL.Logic.DictionaryCore
         #endregion DictionaryAgentCompanies
 
         #region DictionaryAgentUser
-        public FrontDictionaryAgentUser GetDictionaryAgentUser(IContext context, int id)
+
+
+        public void SetAgentUserLockout(IContext context, int agentId, bool isLockout)
         {
-            return _dictDb.GetAgentUser(context, id);
+            var agentUser = new InternalDictionaryAgentUser { Id = agentId, IsLockout = isLockout };
+            CommonDocumentUtilities.SetLastChange(context, agentUser);
+            _dictDb.SetAgentUserLockout(context, agentUser);
         }
 
-        public int SetAgentUserLanguage(IContext context, string languageCode)
+        public void SetAgentUserLastPositionChose(IContext context, int agentId, List<int> positionsIdList)
         {
-            var languageService = DmsResolver.Current.Get<ILanguages>();
-            var languageId = languageService.GetLanguageIdByCode(languageCode);
-            var model = new InternalDictionaryAgentUser { Id = context.CurrentAgentId, LanguageId = languageId };
-            CommonDocumentUtilities.SetLastChange(context, model);
-            _dictDb.SetAgentUserLanguage(context, model);
-            return languageId;
-        }
-
-        public void SetDictionaryAgentUserLastPositionChose(IContext context, List<int> positionsIdList)
-        {
-            _dictDb.SetAgentUserLastPositionChose(context,
-                new InternalDictionaryAgentUser { Id = context.CurrentAgentId, LastPositionChose = string.Join(",", positionsIdList) });
+            var agentUser = new InternalDictionaryAgentUser { Id = agentId, LastPositionChose = string.Join(",", positionsIdList) };
+            CommonDocumentUtilities.SetLastChange(context, agentUser);
+            _dictDb.SetAgentUserLastPositionChose(context, agentUser);
         }
 
         #endregion DictionaryAgentUser
@@ -1127,7 +1146,7 @@ namespace BL.Logic.DictionaryCore
             return _dictDb.GetStandartSendListsShortList(ctx, filter, paging);
         }
 
-        public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendLists(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, bool SearchInPositionsOnly = false)
+        public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendListBase(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, bool SearchInPositionsOnly = false)
         {
 
             if (filter == null) filter = new FilterDictionaryStandartSendList();
@@ -1162,7 +1181,7 @@ namespace BL.Logic.DictionaryCore
 
             filter.AgentId = context.CurrentAgentId;
 
-            var res = GetMainStandartSendLists(context, ftSearch, filter);
+            var res = GetMainStandartSendListBase(context, ftSearch, filter);
 
             //res = res.ToList();
 
@@ -1191,6 +1210,57 @@ namespace BL.Logic.DictionaryCore
 
                 res = res.OrderBy(x => x.Name).ToList();
             }
+
+            return res;
+        }
+
+        public IEnumerable<FrontMainDictionaryStandartSendList> GetMainStandartSendList(IContext context, FullTextSearch ftSearch, FilterDictionaryStandartSendList filter, bool SearchInPositionsOnly = false)
+        {
+            if (filter == null) filter = new FilterDictionaryStandartSendList();
+
+            var fullTextSearchString = ftSearch?.FullTextSearchString;
+
+            //filter.AgentId = context.CurrentAgentId;
+
+            var res = GetMainStandartSendListBase(context, ftSearch, filter, SearchInPositionsOnly);
+
+            if (filter.IsShowAll.HasValue && filter.IsShowAll.Value)
+            {
+                var filterPos = new FilterDictionaryPosition();
+
+                filterPos.NotContainsIDs = res.Select(x => x.Id).ToList();
+                filterPos.IsActive = true;
+                filterPos.NameDepartmentExecutor = fullTextSearchString;
+
+                // Тонкий момент, проверяю не является ли сотрудник локальным администратором.
+                // Если не локальный значит, надеюсь, что глобальный и отображаю все
+                var adminService = DmsResolver.Current.Get<IAdminService>();
+                var employeeDepartments = adminService.GetInternalEmployeeDepartments(context, context.Employee.Id);
+
+                if (employeeDepartments != null)
+                {
+                    filterPos.DepartmentIDs = employeeDepartments;
+                }
+
+                var l = _dictDb.GetPositions(context, filterPos);
+
+                if (l.Count() > 0)
+                {
+                    res = res.Concat(l.Select(x => new FrontMainDictionaryStandartSendList
+                    {
+                        Id = x.Id,
+                        Name = x.Name,
+                        ExecutorName = x.ExecutorAgentName,
+                        //???ExecutorTypeSuffix = null,
+                        DepartmentIndex = x.DepartmentCode,
+                        DepartmentName = x.DepartmentName,
+                    }));
+
+                    res = res.OrderBy(x => x.Name).ToList();
+                }
+
+            }
+
 
             return res;
         }

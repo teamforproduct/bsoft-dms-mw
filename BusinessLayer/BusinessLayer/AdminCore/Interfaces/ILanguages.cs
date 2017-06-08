@@ -9,14 +9,12 @@ namespace BL.Logic.AdminCore.Interfaces
     {
         void RefreshLanguageValues();
 
-        string GetTranslation(int languageId, string text);
-        string GetTranslation(string languageName, string text);
+        string GetTranslation(int languageId, string text, List<string> Paramenters = null);
+        string GetTranslation(string languageName, string text, List<string> Paramenters = null);
         string GetTranslation(IContext Context, string text);
         IEnumerable<InternalAdminLanguage> GetLanguages(FilterAdminLanguage filter);
-        IEnumerable<InternalAdminLanguageValue> GetLanguageValues(FilterAdminLanguageValue filter);
-        string GetTranslation(string text);
+        string GetTranslation(string text, List<string> Paramenters = null);
 
-        string GetLanguageCodeById(int languageId);
         int GetLanguageIdByCode(string languageCode);
 
         int GetLanguageIdByHttpContext();

@@ -100,7 +100,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDocumentActions.MarkDocumentEventAsRead, model);
-                var res = new JsonResult(true, this);
+                var res = new JsonResult(null, this);
                 return res;
             });
         }
@@ -117,7 +117,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDocumentActions.SendMessage, model, model.CurrentPositionId);
-                var res = new JsonResult(true, this);
+                var res = new JsonResult(null, this);
                 return res;
             });
         }
@@ -134,7 +134,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDocumentActions.AddNote, model, model.CurrentPositionId);
-                var res = new JsonResult(true, this);
+                var res = new JsonResult(null, this);
                 return res;
             });
         }

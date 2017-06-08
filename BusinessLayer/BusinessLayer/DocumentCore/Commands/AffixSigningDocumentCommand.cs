@@ -71,8 +71,6 @@ namespace BL.Logic.DocumentCore.Commands
                 throw new CouldNotPerformOperation();
             }
             _operationDb.SetSendListForControlOffPrepare(_context, _document);
-            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
-            _operationDb.SetParentEventAccessesPrepare(_context, _document, Model.EventId);
             _operationDb.SetSubscriptionForControlOffPrepare(_context, _document);
             _context.SetCurrentPosition(_docWait.OnEvent.TargetPositionId);
             _adminProc.VerifyAccess(_context, CommandType);
@@ -83,10 +81,12 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _docWait.ResultTypeId = (int)EnumResultTypes.CloseByAffixing;
             var evAcceesses = (Model.TargetCopyAccessGroups?.Where(x => x.AccessType == EnumEventAccessTypes.TargetCopy) ?? new List<AccessGroup>())
-                .Concat(new List<AccessGroup> { new AccessGroup { AccessType = EnumEventAccessTypes.Target, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = _docWait.OnEvent.SourcePositionId } })
+                .Concat(new List<AccessGroup> { new AccessGroup { AccessType = EnumEventAccessTypes.Target, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = _docWait.OnEvent.ControllerPositionId } })
+                .Concat(CommonDocumentUtilities.GetAccessGroupsFileExecutors(_context, _document.Id, Model.AddDocumentFiles))
                 .ToList();
-            var newEvent = _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, null, Model.EventId, _docWait.OnEvent.TaskId, evAcceesses); 
-            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
+            var newEvent = _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, _eventType, Model.EventDate, 
+                                                                                            Model.Description, null, Model.EventId, _docWait.OnEvent.TaskId, evAcceesses); 
+            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent);
             CommonDocumentUtilities.SetLastChange(_context, _document.Waits);
             CommonDocumentUtilities.SetLastChange(Context, _document.SendLists);
 

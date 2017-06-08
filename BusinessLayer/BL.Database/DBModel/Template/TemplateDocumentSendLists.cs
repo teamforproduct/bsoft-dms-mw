@@ -28,7 +28,7 @@ namespace BL.Database.DBModel.Template
         public int Stage { get; set; }
         public int? DueDay { get; set; }
         public int AccessLevelId { get; set; }
-        public bool IsWorkGroup { get; set; }
+        public bool IsWorkGroup { get; set; }   //TODO DEL!
         public bool IsAddControl { get; set; }
         [MaxLength(2000)]
         public string SelfDescription { get; set; }

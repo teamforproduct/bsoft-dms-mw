@@ -26,8 +26,8 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
     {
         private IHttpActionResult GetById(IContext context, int Id)
         {
-            var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpItem = tmpService.GetTemplateDocumentRestrictedSendList(context, Id);
+            var tmpService = DmsResolver.Current.Get<ITemplateService>();
+            var tmpItem = tmpService.GetTemplateRestrictedSendList(context, Id);
             var res = new JsonResult(tmpItem, this);
             return res;
         }
@@ -40,15 +40,15 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpGet]
         [Route("{Id:int}/" + Features.AccessList)]
-        [ResponseType(typeof(List<FrontTemplateDocumentRestrictedSendList>))]
-        public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterTemplateDocumentRestrictedSendList filter)
+        [ResponseType(typeof(List<FrontTemplateRestrictedSendList>))]
+        public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterTemplateRestrictedSendList filter)
         {return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-            if (filter == null) filter = new FilterTemplateDocumentRestrictedSendList();
+            if (filter == null) filter = new FilterTemplateRestrictedSendList();
             filter.TemplateId =  Id ;
 
-            var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpItems = tmpService.GetTemplateDocumentRestrictedSendLists(context, filter);
+            var tmpService = DmsResolver.Current.Get<ITemplateService>();
+            var tmpItems = tmpService.GetTemplateRestrictedSendLists(context, filter);
             var res = new JsonResult(tmpItems, this);
             return res;});
         }
@@ -61,7 +61,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpGet]
         [Route(Features.AccessList + "/{Id:int}")]
-        [ResponseType(typeof(FrontTemplateDocumentRestrictedSendList))]
+        [ResponseType(typeof(FrontTemplateRestrictedSendList))]
         public async Task<IHttpActionResult> Get(int Id)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
@@ -77,10 +77,10 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpPost]
         [Route(Features.AccessList)]
-        public async Task<IHttpActionResult> Post([FromBody]AddTemplateDocumentRestrictedSendList model)
+        public async Task<IHttpActionResult> Post([FromBody]AddTemplateRestrictedSendList model)
         {return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-            var tmpItem = Action.Execute(context, EnumDocumentActions.AddTemplateDocumentRestrictedSendList, model);
+            var tmpItem = Action.Execute(context, EnumDocumentActions.AddTemplateRestrictedSendList, model);
             return GetById(context, tmpItem);});
         }
 
@@ -91,10 +91,10 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpPut]
         [Route(Features.AccessList)]
-        public async Task<IHttpActionResult> Put([FromBody]ModifyTemplateDocumentRestrictedSendList model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyTemplateRestrictedSendList model)
         {return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-            Action.Execute(context, EnumDocumentActions.ModifyTemplateDocumentRestrictedSendList, model);
+            Action.Execute(context, EnumDocumentActions.ModifyTemplateRestrictedSendList, model);
             return GetById(context, model.Id);});
         }
 
@@ -108,7 +108,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-            Action.Execute(context, EnumDocumentActions.DeleteTemplateDocumentRestrictedSendList, Id);
+            Action.Execute(context, EnumDocumentActions.DeleteTemplateRestrictedSendList, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
             return res;});

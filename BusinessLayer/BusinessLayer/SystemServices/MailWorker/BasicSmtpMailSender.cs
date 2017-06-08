@@ -32,9 +32,9 @@ namespace BL.Logic.SystemServices.MailWorker
                 message.Subject = mailData.Subject;
                 message.SubjectEncoding = System.Text.Encoding.UTF8;
 
-                if (mailData.AttachedFiles != null)
+                if (mailData.Files != null)
                 {
-                    foreach (var filePath in mailData.AttachedFiles.Where(filePath => !string.IsNullOrEmpty(filePath.Trim())))
+                    foreach (var filePath in mailData.Files.Where(filePath => !string.IsNullOrEmpty(filePath.Trim())))
                     {
                         message.Attachments.Add(new Attachment(filePath.Trim()));
                     }

@@ -11,24 +11,24 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 {
     public class AddTemplateAccessCommand : BaseDocumentCommand
     {
-        private readonly ITemplateDocumentsDbProcess _operationDb;
+        private readonly ITemplateDbProcess _operationDb;
 
 
-        public AddTemplateAccessCommand(ITemplateDocumentsDbProcess operationDb)
+        public AddTemplateAccessCommand(ITemplateDbProcess operationDb)
         {
             _operationDb = operationDb;
 
         }
 
-        private AddTemplateDocumentAccess Model
+        private AddTemplateAccess Model
         {
             get
             {
-                if (!(_param is AddTemplateDocumentAccess))
+                if (!(_param is AddTemplateAccess))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (AddTemplateDocumentAccess)_param;
+                return (AddTemplateAccess)_param;
             }
         }
 
@@ -40,7 +40,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
         public override bool CanExecute()
         {
             _adminProc.VerifyAccess(_context, CommandType, false);
-            if (_operationDb.ExistsTemplateDocumentAccesses(_context, new FilterTemplateDocumentAccess { TemplateId = Model.DocumentId,PositionId = Model.PositionId }))
+            if (_operationDb.ExistsTemplateAccesses(_context, new FilterTemplateAccess { TemplateId = Model.DocumentId,PositionId = Model.PositionId }))
             {
                 throw new RecordNotUnique();
             }
@@ -49,7 +49,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override object Execute()
         {
-            var model = new InternalTemplateDocumentAccess(Model);
+            var model = new InternalTemplateAccess(Model);
             CommonDocumentUtilities.SetLastChange(_context, model);
             return _operationDb.AddOrUpdateTemplateAccess(_context, model);
 

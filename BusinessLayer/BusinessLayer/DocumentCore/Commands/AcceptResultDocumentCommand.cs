@@ -46,7 +46,7 @@ namespace BL.Logic.DocumentCore.Commands
                 _document.Waits.Where(
                     x =>
                         (x.OnEvent.EventType == EnumEventTypes.MarkExecution && x.OnEvent.TargetPositionId == positionId ||
-                        x.OnEvent.EventType != EnumEventTypes.MarkExecution && x.OnEvent.SourcePositionId == positionId) &&
+                        x.OnEvent.EventType != EnumEventTypes.MarkExecution && x.OnEvent.ControllerPositionId == positionId) &&
                         x.OffEventId == null &&
                         CommonDocumentUtilities.PermissibleEventTypesForAction[CommandType].Contains(x.OnEvent.EventType))
                         .Select(x => new InternalActionRecord
@@ -80,16 +80,14 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 _operationDb.ControlOffMarkExecutionWaitPrepare(_context, _document);
             }
-            if (_docWait?.OnEvent?.SourcePositionId == null
-                || !CanBeDisplayed(_docWait.OnEvent.SourcePositionId.Value)
+            if (_docWait?.OnEvent?.ControllerPositionId == null
+                || !CanBeDisplayed(_docWait.OnEvent.ControllerPositionId.Value)
                 )
             {
                 throw new CouldNotPerformOperation();
             }
             _operationDb.SetSendListForControlOffPrepare(_context, _document);
-            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
-            _operationDb.SetParentEventAccessesPrepare(_context, _document, Model.EventId);
-            _context.SetCurrentPosition(_docWait.OnEvent.SourcePositionId);
+            _context.SetCurrentPosition(_docWait.OnEvent.ControllerPositionId);
             _adminProc.VerifyAccess(_context, CommandType);
             return true;
         }
@@ -99,9 +97,11 @@ namespace BL.Logic.DocumentCore.Commands
             _docWait.ResultTypeId = Model.ResultTypeId;
             var evAcceesses = (Model.TargetCopyAccessGroups?.Where(x => x.AccessType == EnumEventAccessTypes.TargetCopy) ?? new List<AccessGroup>())
                 .Concat(new List<AccessGroup> { new AccessGroup { AccessType = EnumEventAccessTypes.Target, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = _docWait.OnEvent.TargetPositionId } })
+                .Concat(CommonDocumentUtilities.GetAccessGroupsFileExecutors(_context, _document.Id, Model.AddDocumentFiles))
                 .ToList();
-            var newEvent = _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, _eventType, Model.EventDate, Model.Description, null, _docWait.OnEvent.Id,_docWait.OnEvent.TaskId, evAcceesses);
-            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
+            var newEvent = _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, _eventType, Model.EventDate, 
+                                                                                            Model.Description, null, _docWait.OnEvent.Id,_docWait.OnEvent.TaskId, evAcceesses);
+            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent);
             _document.Waits.ToList().ForEach(x => x.OffEvent = _docWait.OffEvent);
             CommonDocumentUtilities.SetLastChange(_context, _document.Waits);
             CommonDocumentUtilities.SetLastChange(Context, _document.SendLists);

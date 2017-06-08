@@ -13,12 +13,10 @@ namespace BL.Model.DocumentCore.FrontModel
     public class FrontDocumentEventAccess
     {
         public int? Id { get; set; }
-        public int? ClientId { get; set; }
-        public int? EntityTypeId { get; set; }
         public int? DocumentId { get; set; }
         public int? EventId { get; set; }
         public EnumEventAccessTypes? AccessType { get; set; }
-        public Nullable<int> PositionId { get; set; }
+        public int? PositionId { get; set; }
         public string PositionName { get; set; }
         public Nullable<int> AgentId { get; set; }
         public string AgentName { get; set; }

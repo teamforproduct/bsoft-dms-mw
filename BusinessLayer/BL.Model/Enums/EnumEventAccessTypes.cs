@@ -9,6 +9,10 @@
         /// Отправитель
         /// </summary>
         Source = 10,
+        /// <summary>
+        /// Отправитель
+        /// </summary>
+        Controller = 15,
 
         /// <summary>
         /// Получатель

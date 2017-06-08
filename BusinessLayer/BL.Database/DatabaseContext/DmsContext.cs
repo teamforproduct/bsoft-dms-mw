@@ -106,8 +106,6 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<AdminSubordinations> AdminSubordinationsSet { get; set; }
         public virtual DbSet<AdminRegistrationJournalPositions> AdminRegistrationJournalPositionsSet { get; set; }
 
-        public virtual DbSet<AdminLanguages> AdminLanguagesSet { get; set; }
-        public virtual DbSet<AdminLanguageValues> AdminLanguageValuesSet { get; set; }
 
         public virtual DbSet<DictionaryAgents> DictionaryAgentsSet { get; set; }
 
@@ -160,6 +158,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<DBModel.Document.Documents> DocumentsSet { get; set; }
         public virtual DbSet<DocumentSavedFilters> DocumentSavedFiltersSet { get; set; }
         public virtual DbSet<DocumentFiles> DocumentFilesSet { get; set; }
+        public virtual DbSet<DocumentFileLinks> DocumentFileLinksSet { get; set; }
         public virtual DbSet<DocumentLinks> DocumentLinksSet { get; set; }
         public virtual DbSet<DocumentAccesses> DocumentAccessesSet { get; set; }
         public virtual DbSet<DocumentEvents> DocumentEventsSet { get; set; }
@@ -180,7 +179,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<TemplateDocumentSendLists> TemplateDocumentSendListsSet { get; set; }
         public virtual DbSet<TemplateDocumentSendListAccessGroups> TemplateDocumentSendListAccessGroupsSet { get; set; }
         public virtual DbSet<TemplateDocumentRestrictedSendLists> TemplateDocumentRestrictedSendListsSet { get; set; }
-        public virtual DbSet<TemplateDocumentAccesses> TemplateDocumentAccessesSet { get; set; }
+        public virtual DbSet<TemplateAccesses> TemplateDocumentAccessesSet { get; set; }
         public virtual DbSet<TemplateDocuments> TemplateDocumentsSet { get; set; }
         public virtual DbSet<TemplateDocumentFiles> TemplateDocumentFilesSet { get; set; }
         public virtual DbSet<TemplateDocumentTasks> TemplateDocumentTasksSet { get; set; }

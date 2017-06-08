@@ -3,6 +3,7 @@ using BL.Model.Extensions;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using System.Runtime.Serialization;
+using BL.Model.Enums;
 
 namespace BL.Model.DocumentCore.FrontModel
 {
@@ -13,7 +14,7 @@ namespace BL.Model.DocumentCore.FrontModel
     {
         public int Id { get; set; }
 
-        public int? EventType { get; set; }
+        public EnumEventTypes? EventType { get; set; }
         public string EventTypeName { get; set; }
 
         public DateTime? Date { get { return _date; } set { _date = value.ToUTC(); } }

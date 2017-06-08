@@ -33,7 +33,7 @@ namespace BL.Logic.DictionaryCore.AgentEmployee
                 CommonDocumentUtilities.SetLastChange(_context, item);
 
                 _dictDb.UpdateAgentEmployee(_context, item);
-                _dictDb.SetAgentUserLanguage(_context, new InternalDictionaryAgentUser(item));
+                //_dictDb.SetAgentUserLanguage(_context, new InternalDictionaryAgentUser(item));
                 transaction.Complete();
             }
             return null;

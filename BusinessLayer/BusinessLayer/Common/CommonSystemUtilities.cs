@@ -75,7 +75,7 @@ namespace BL.Logic.Common
 
             if (res)
             {
-                throw new TemplateDocumentIsNotValid();
+                throw new TemplateIsNotValid();
             }
         }
 

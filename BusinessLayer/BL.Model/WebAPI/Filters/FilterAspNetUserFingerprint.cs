@@ -6,6 +6,7 @@ namespace BL.Model.WebAPI.Filters
 {
     public class FilterAspNetUserFingerprint : BaseFilter
     {
+        [IgnoreDataMember]
         public List<string> UserIDs { get; set; }
         [IgnoreDataMember]
         public string NameExact { get; set; }

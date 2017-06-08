@@ -233,7 +233,7 @@ namespace BL.Model.Exception
         public UserEmailCouldNotBeConfirmd(System.Exception ex) : base(ex) { }
     }
 
-    
+
 
     public class UserParmsCouldNotBeChanged : DmsExceptions
     {
@@ -249,7 +249,7 @@ namespace BL.Model.Exception
 
     public class ClientIsNotContainUser : DmsExceptions
     {
-        public ClientIsNotContainUser() : base() { }
+        public ClientIsNotContainUser(string ClientName) : base() { base.Parameters = new List<string> { ClientName }; }
         public ClientIsNotContainUser(System.Exception ex) : base(ex) { }
     }
 
@@ -302,6 +302,7 @@ namespace BL.Model.Exception
     public class UserPasswordIsIncorrect : DmsExceptions
     {
         public UserPasswordIsIncorrect() : base() { }
+        public UserPasswordIsIncorrect(IEnumerable<string> Errors) : base() { base.Errors = Errors; }
         public UserPasswordIsIncorrect(System.Exception ex) : base(ex) { }
     }
 
@@ -317,6 +318,15 @@ namespace BL.Model.Exception
         public EmployeeIsDeactivated(string UserName) : base() { Parameters = new List<string> { UserName }; }
         public EmployeeIsDeactivated(System.Exception ex) : base(ex) { }
     }
+
+    public class EmployeeIsLockoutByAdmin : DmsExceptions
+    {
+        public EmployeeIsLockoutByAdmin(string UserName) : base() { Parameters = new List<string> { UserName }; }
+        public EmployeeIsLockoutByAdmin(System.Exception ex) : base(ex) { }
+    }
+
+
+
     public class UserIsLockout : DmsExceptions
     {
         public UserIsLockout() : base() { }
@@ -449,18 +459,12 @@ namespace BL.Model.Exception
         public EmployeeIsNotDefined(System.Exception ex) : base(ex) { }
     }
 
-    
+
 
     public class EmployeeNotExecuteCheckPosition : DmsExceptions
     {
         public EmployeeNotExecuteCheckPosition() : base() { }
         public EmployeeNotExecuteCheckPosition(System.Exception ex) : base(ex) { }
-    }
-
-    public class EmployeeHasNoAccessToDocument : DmsExceptions
-    {
-        public EmployeeHasNoAccessToDocument() : base() { }
-        public EmployeeHasNoAccessToDocument(System.Exception ex) : base(ex) { }
     }
 
     public class FileNotExists : DmsExceptions
@@ -540,10 +544,10 @@ namespace BL.Model.Exception
         public DocumentNotFoundOrUserHasNoAccess() : base() { }
         public DocumentNotFoundOrUserHasNoAccess(System.Exception ex) : base(ex) { }
     }
-    public class TemplateDocumentNotFoundOrUserHasNoAccess : DmsExceptions
+    public class TemplateNotFoundOrUserHasNoAccess : DmsExceptions
     {
-        public TemplateDocumentNotFoundOrUserHasNoAccess() : base() { }
-        public TemplateDocumentNotFoundOrUserHasNoAccess(System.Exception ex) : base(ex) { }
+        public TemplateNotFoundOrUserHasNoAccess() : base() { }
+        public TemplateNotFoundOrUserHasNoAccess(System.Exception ex) : base(ex) { }
     }
     public class CouldNotAddTemplate : DmsExceptions
     {
@@ -570,10 +574,10 @@ namespace BL.Model.Exception
     }
 
 
-    public class TemplateDocumentIsNotValid : DmsExceptions
+    public class TemplateIsNotValid : DmsExceptions
     {
-        public TemplateDocumentIsNotValid() : base() { }
-        public TemplateDocumentIsNotValid(System.Exception ex) : base(ex) { }
+        public TemplateIsNotValid() : base() { }
+        public TemplateIsNotValid(System.Exception ex) : base(ex) { }
     }
     public class DocumentCouldNotBeRegistered : DmsExceptions
     {
@@ -827,21 +831,18 @@ namespace BL.Model.Exception
     }
 
     /// <summary>
-    /// Ошибка возникает при попытке задублировать паспортные данные физлица
-    /// </summary>
-    public class DictionaryAgentPersonPassportNotUnique : DmsExceptions
-    {
-        public DictionaryAgentPersonPassportNotUnique(string PassportSerial, int? PassportNumber) : base() { Parameters = new List<string> { PassportSerial, PassportNumber?.ToString() }; }
-        public DictionaryAgentPersonPassportNotUnique(System.Exception ex) : base(ex) { }
-    }
-
-    /// <summary>
     /// Ошибка возникает при попытке задублировать ИНН физлица
     /// </summary>
     public class DictionaryAgentPersonTaxCodeNotUnique : DmsExceptions
     {
         public DictionaryAgentPersonTaxCodeNotUnique(string TaxCode) : base() { Parameters = new List<string> { TaxCode }; }
         public DictionaryAgentPersonTaxCodeNotUnique(System.Exception ex) : base(ex) { }
+    }
+
+    public class DictionaryAgentPersonCompanyExists : DmsExceptions
+    {
+        public DictionaryAgentPersonCompanyExists(string CompanyName) : base() { Parameters = new List<string> { CompanyName }; }
+        public DictionaryAgentPersonCompanyExists(System.Exception ex) : base(ex) { }
     }
 
     /// <summary>

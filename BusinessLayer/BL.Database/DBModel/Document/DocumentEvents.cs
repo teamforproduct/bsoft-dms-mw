@@ -20,6 +20,7 @@ namespace BL.Database.DBModel.Document
             this.Accesses = new HashSet<DocumentEventAccesses>();
             this.AccessGroups = new HashSet<DocumentEventAccessGroups>();
             this.Files = new HashSet<DocumentFiles>();
+            this.FileLinks = new HashSet<DocumentFileLinks>();
             this.ChildEvents = new HashSet<DocumentEvents>();
         }
 
@@ -88,6 +89,8 @@ namespace BL.Database.DBModel.Document
         public virtual ICollection<DocumentEventAccessGroups> AccessGroups { get; set; }
         [ForeignKey("EventId")]
         public virtual ICollection<DocumentFiles> Files { get; set; }
+        [ForeignKey("EventId")]
+        public virtual ICollection<DocumentFileLinks> FileLinks { get; set; }
 
         [ForeignKey("PaperId")]
         public virtual DocumentPapers Paper { get; set; }
@@ -105,43 +108,6 @@ namespace BL.Database.DBModel.Document
         public virtual DictionaryAgents PaperSendAgent { get; set; }
         [ForeignKey("PaperRecieveAgentId")]
         public virtual DictionaryAgents PaperRecieveAgent { get; set; }
-
-
-
-
-
-
-
-        //TODO DELETE
-        //public int? SourcePositionId { get; set; }
-        //public Nullable<int> SourcePositionExecutorAgentId { get; set; }
-        //public int? SourcePositionExecutorTypeId { get; set; }
-        //public int? SourceAgentId { get; set; }
-        //public Nullable<int> TargetPositionId { get; set; }
-        //public Nullable<int> TargetPositionExecutorAgentId { get; set; }
-        //public int? TargetPositionExecutorTypeId { get; set; }
-        //public Nullable<int> TargetAgentId { get; set; }
-        //public Nullable<DateTime> SendDate { get; set; }
-        //public Nullable<DateTime> ReadDate { get; set; }
-        //public Nullable<int> ReadAgentId { get; set; }
-        //[ForeignKey("SourcePositionId")]
-        //public virtual DictionaryPositions SourcePosition { get; set; }
-        //[ForeignKey("SourcePositionExecutorAgentId")]
-        //public virtual DictionaryAgents SourcePositionExecutorAgent { get; set; }
-        //[ForeignKey("SourcePositionExecutorTypeId")]
-        //public virtual DictionaryPositionExecutorTypes SourcePositionExecutorType { get; set; }
-        //[ForeignKey("SourceAgentId")]
-        //public virtual DictionaryAgents SourceAgent { get; set; }
-        //[ForeignKey("TargetPositionId")]
-        //public virtual DictionaryPositions TargetPosition { get; set; }
-        //[ForeignKey("TargetPositionExecutorAgentId")]
-        //public virtual DictionaryAgents TargetPositionExecutorAgent { get; set; }
-        //[ForeignKey("TargetPositionExecutorTypeId")]
-        //public virtual DictionaryPositionExecutorTypes TargetPositionExecutorType { get; set; }
-        //[ForeignKey("TargetAgentId")]
-        //public virtual DictionaryAgents TargetAgent { get; set; }
-        //[ForeignKey("ReadAgentId")]
-        //public virtual DictionaryAgents ReadAgent { get; set; }
 
     }
 }

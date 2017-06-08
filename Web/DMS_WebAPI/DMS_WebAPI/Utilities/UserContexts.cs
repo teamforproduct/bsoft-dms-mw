@@ -55,6 +55,7 @@ namespace DMS_WebAPI.Utilities
                         ClientId = (x.Value.StoreObject as IContext).Client.Id,
                         IsActive = true,
                         IsSuccess = true,
+                        Host = "_.ostrean.com"
                     });
                 return res;
             }
@@ -193,23 +194,20 @@ namespace DMS_WebAPI.Utilities
             };
 
             var context = new UserContext(intContext);
-            var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(context, user.Id);
+            var employee = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(context, user.Id);
 
-            if (agentUser != null)
+            if (employee != null)
             {
+                if (employee.IsLockout) throw new EmployeeIsLockoutByAdmin(employee.Name);
+
                 // проверка активности сотрудника
-                if (!agentUser.IsActive)
-                {
-                    throw new EmployeeIsDeactivated(agentUser.Name);
-                }
+                if (!employee.IsActive) throw new EmployeeIsDeactivated(employee.Name);
 
-                if (agentUser.PositionExecutorsCount == 0)
-                {
-                    throw new EmployeeNotExecuteAnyPosition(agentUser.Name);
-                }
 
-                intContext.Employee.Id = agentUser.Id;
-                intContext.Employee.Name = agentUser.Name;
+                if (employee.AssigmentsCount == 0) throw new EmployeeNotExecuteAnyPosition(employee.Name);
+
+                intContext.Employee.Id = employee.Id;
+                intContext.Employee.Name = employee.Name;
             }
             else
             {
@@ -247,7 +245,7 @@ namespace DMS_WebAPI.Utilities
             intContext.CurrentPositionsAccessLevel = DmsResolver.Current.Get<IAdminService>().GetCurrentPositionsAccessLevel(context);
             context.CurrentPositionsAccessLevel = intContext.CurrentPositionsAccessLevel;
 
-            DmsResolver.Current.Get<IDictionaryService>().SetDictionaryAgentUserLastPositionChose(context, positionsIdList);
+            DmsResolver.Current.Get<IDictionaryService>().SetAgentUserLastPositionChose(context, context.Employee.Id, positionsIdList);
             // Контекст полностью сформирован и готов к работе
             intContext.IsFormed = true;
         }
@@ -394,6 +392,7 @@ namespace DMS_WebAPI.Utilities
 
                 if (removeFromBase)
                 {
+                    // TODO нужно овиновскую сессию тоже останавливать
                     //HttpContext.Current.GetOwinContext().Authentication.SignOut(CookieAuthenticationDefaults.AuthenticationType);
 
                     var webService = DmsResolver.Current.Get<WebAPIService>();
@@ -454,16 +453,40 @@ namespace DMS_WebAPI.Utilities
         }
 
         /// <summary>
-        /// Удаляет пользовательские контексты по agentID
+        /// Удаляет пользовательские контексты по clientId
         /// </summary>
-        /// <param name="agentId"></param>
-        public void RemoveByAgentId(int agentId)
+        /// <param name="clientId"></param>
+        /// <param name="userId"></param>
+        public void RemoveByClientId(int clientId, string userId)
         {
             List<string> keys;
             locker.EnterReadLock();
             try
             {
-                keys = _cacheContexts.Where(x => x.Value.StoreObject is IContext && ((IContext)x.Value.StoreObject).Employee.Id == agentId).Select(x => x.Key).ToList();
+                keys = _cacheContexts.Where(x => x.Value.StoreObject is IContext && ((IContext)x.Value.StoreObject).User.Id == userId && ((IContext)x.Value.StoreObject).Client.Id == clientId).Select(x => x.Key).ToList();
+            }
+            finally
+            {
+                locker.ExitReadLock();
+            }
+            foreach (var key in keys)
+            {
+                Remove(key);
+            }
+        }
+
+        /// <summary>
+        /// Удаляет пользовательские контексты по clientId
+        /// </summary>
+        /// <param name="clientId"></param>
+        /// <param name="employeeId"></param>
+        public void RemoveByClientId(int clientId, int employeeId)
+        {
+            List<string> keys;
+            locker.EnterReadLock();
+            try
+            {
+                keys = _cacheContexts.Where(x => x.Value.StoreObject is IContext && ((IContext)x.Value.StoreObject).Employee.Id == employeeId && ((IContext)x.Value.StoreObject).Client.Id == clientId).Select(x => x.Key).ToList();
             }
             finally
             {
@@ -479,18 +502,28 @@ namespace DMS_WebAPI.Utilities
         /// Удаляет пользовательские контексты по userId
         /// </summary>
         /// <param name="userId"></param>
-        public void RemoveByUserId(string userId)
+        /// <param name="exceptCurrent"></param>
+        public void RemoveByUserId(string userId, bool exceptCurrent = false)
         {
             List<string> keys;
             locker.EnterReadLock();
             try
             {
-                keys = _cacheContexts.Where(x => x.Value.StoreObject is IContext && ((IContext)x.Value.StoreObject).User.Id == userId).Select(x => x.Key).ToList();
+                var qry = _cacheContexts.Where(x => x.Value.StoreObject is IContext && ((IContext)x.Value.StoreObject).User.Id == userId);
+
+                if (exceptCurrent)
+                {
+                    qry = qry.Where(x => x.Key != TokenLower);
+                }
+
+                keys = qry.Select(x => x.Key).ToList();
             }
             finally
             {
                 locker.ExitReadLock();
             }
+
+
             foreach (var key in keys)
             {
                 Remove(key);
@@ -553,8 +586,7 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        // TODO LanguageId is User parm
-        public void UpdateLanguageId(int agentId, int languageId)
+        public void UpdateLanguageId(string userId, int languageId)
         {
             List<IContext> contexts;
             locker.EnterReadLock();
@@ -562,12 +594,13 @@ namespace DMS_WebAPI.Utilities
             {
                 contexts = _cacheContexts
                         .Select(x => (IContext)x.Value.StoreObject)
-                        .Where(x => x.Employee.Id == agentId).ToList();
+                        .Where(x => x.User.Id == userId).ToList();
             }
             finally
             {
                 locker.ExitReadLock();
             }
+
             foreach (var context in contexts)
             {
                 context.User.LanguageId = languageId;

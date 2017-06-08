@@ -8,6 +8,8 @@ using BL.Model.AdminCore.InternalModel;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 using DMS_WebAPI.DatabaseContext;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -63,7 +65,7 @@ namespace DMS_WebAPI.Utilities
 
         }
 
-        public IEnumerable<InternalAdminLanguageValue> GetLanguageValues(FilterAdminLanguageValue filter)
+        private IEnumerable<InternalAdminLanguageValue> GetLanguageValues(FilterAdminLanguageValue filter)
         {
             // выгребаю все переводы из кэша 
             var languageInfo = GetLanguageInfo();
@@ -122,10 +124,8 @@ namespace DMS_WebAPI.Utilities
             return Regex.IsMatch(text, _PATTERN);
         }
 
-        public string GetTranslation(int languageId, string text)
+        public string GetTranslation(int languageId, string text, List<string> Paramenters = null)
         {
-            string errorMessage = text;
-
             if (languageId < 1)
             {
                 // запрашиваю из кэша переводы
@@ -134,41 +134,60 @@ namespace DMS_WebAPI.Utilities
                 if (language != null) languageId = language.Id;
             }
 
+            var res = Translate(languageId, text);
+
+            if (Paramenters?.Count() > 0)
+            {
+                try
+                {
+                    res = string.Format(res, Paramenters.ToArray());
+
+                    res = Translate(languageId, res);
+                }
+                catch
+                { }
+            }
+
+            return res;
+        }
+
+
+        private string Translate(int languageId, string text)
+        {
+            string errorMessage = text;
+
             try
             {
-                //using (var dbContext = new ApplicationDbContext())
+                var labelsInText = new List<string>();
+                // нахожу в тексте все лейблы, которые нужно переводить
+                foreach (Match label in Regex.Matches(errorMessage, _PATTERN))
                 {
-                    var labelsInText = new List<string>();
-                    // нахожу в тексте все лейблы, которые нужно переводить
-                    foreach (Match label in Regex.Matches(errorMessage, _PATTERN))
+                    labelsInText.Add(label.Value);
+                }
+
+                if (labelsInText.Count > 0)
+                {
+                    // получаю массив переводов для найденных лейблов
+                    var labels = GetLanguageValues(new FilterAdminLanguageValue { LanguageId = languageId, Labels = labelsInText }).ToArray();
+
+                    // заменяю лейблы на переводы
+                    for (int i = 0, l = labels.Length; i < l; i++)
                     {
-                        labelsInText.Add(label.Value);
-                    }
+                        string val = labels[i].Value;
+                        // если нет перевода подставляю предупреждение с лейблом
+                        if (string.IsNullOrEmpty(val)) val = "Empty translation for label: " + labels[i].Label;
+                        errorMessage = errorMessage.Replace(labels[i].Label, val);
 
-                    if (labelsInText.Count > 0)
-                    {
-                        // получаю массив переводов для найденных лейблов
-                        var labels = GetLanguageValues(new FilterAdminLanguageValue { LanguageId = languageId, Labels = labelsInText }).ToArray();
-
-                        // заменяю лейблы на переводы
-                        for (int i = 0, l = labels.Length; i < l; i++)
-                        {
-                            string val = labels[i].Value;
-                            // если нет перевода подставляю предупреждение с лейблом
-                            if (string.IsNullOrEmpty(val)) val = "Empty translation for label: " + labels[i].Label;
-                            errorMessage = errorMessage.Replace(labels[i].Label, val);
-
-                            //errorMessage = errorMessage.Replace(labels[i].Label, labels[i].Value);
-                        }
+                        //errorMessage = errorMessage.Replace(labels[i].Label, labels[i].Value);
                     }
 
                     return errorMessage;
                 }
             }
-            catch (Exception ex) { }
+            catch (Exception) { }
+
             return text;
         }
-
 
 
         /// <summary>
@@ -177,50 +196,59 @@ namespace DMS_WebAPI.Utilities
         /// <param name="languageCode"></param>
         /// <param name="text">json с множеством лейблов для перевода</param>
         /// <returns></returns>
-        public string GetTranslation(string languageCode, string text)
+        public string GetTranslation(string languageCode, string text, List<string> Paramenters = null)
         {
             if (!ExistsLabels(text)) return text;
 
             if (string.IsNullOrEmpty(languageCode)) languageCode = string.Empty;
 
-            return GetTranslation(GetLanguageIdByCode(languageCode), text);
+            return GetTranslation(GetLanguageIdByCode(languageCode), text, Paramenters);
         }
 
-        public string GetLanguageCodeById(int languageId)
+        public string GetTranslation(string text, List<string> Paramenters = null)
         {
-            // запрашиваю из кэша переводы
-            var languageInfo = GetLanguageInfo();
+            var lang = GetUserLanguage();
 
+            var res = GetTranslation(lang.Id, text);
 
-            // languageCode может быть ru или ru_RU в зависимости от настроек браузера
-            // нахожу локаль по имени 
-            //var language = languageInfo.Languages.FirstOrDefault(x => languageCode.Equals(x.Code, StringComparison.OrdinalIgnoreCase));
+            res = InsertValues(res, Paramenters);
 
-            var language = languageInfo.Languages.FirstOrDefault(x => x.Id == languageId);
+            return res;
 
-            // если локаль не определена, беру локаль по умолчанию
-            if (language == null)
-            {
-                language = languageInfo.Languages.FirstOrDefault(x => x.IsDefault);
-            }
+            //var currLang = GetLanguageCodeFromRequestUserLanguages(HttpContext.Current);
+            //IContext defContext = null;
 
-            if (language == null) throw new DefaultLanguageIsNotSet();
+            //try
+            //{
+            //    defContext = DmsResolver.Current.Get<UserContexts>().Get(keepAlive: false, restoreToken: false);
 
-            return language.Code;
+            //    if (defContext.User.LanguageId <= 0) defContext = null;
+            //}
+            //catch
+            //{ }
 
+            //return defContext == null ? GetTranslation(currLang, text) : GetTranslation(defContext, text);
+        }
+
+        private string InsertValues(string Message, List<string> Paramenters)
+        {
+            
+            return Message;
         }
 
         public int GetLanguageIdByCode(string languageCode)
         {
             // запрашиваю из кэша переводы
             var languageInfo = GetLanguageInfo();
-
+            InternalAdminLanguage language = null;
 
             // languageCode может быть ru или ru_RU в зависимости от настроек браузера
             // нахожу локаль по имени 
             //var language = languageInfo.Languages.FirstOrDefault(x => languageCode.Equals(x.Code, StringComparison.OrdinalIgnoreCase));
-
-            var language = languageInfo.Languages.FirstOrDefault(x => x.Code.Contains(languageCode));
+            if (!string.IsNullOrEmpty(languageCode))
+            {
+                language = languageInfo.Languages.FirstOrDefault(x => x.Code.Contains(languageCode));
+            }
 
             // если локаль не определена, беру локаль по умолчанию
             if (language == null)
@@ -244,12 +272,71 @@ namespace DMS_WebAPI.Utilities
 
         public int GetLanguageIdByHttpContext()
         {
-            var code = GetLanguageFromHttpContext(HttpContext.Current);
+            var code = GetLanguageCodeFromRequestUserLanguages(HttpContext.Current);
 
             return GetLanguageIdByCode(code);
         }
 
-        private string GetLanguageFromHttpContext(HttpContext context)
+        private InternalAdminLanguage GetUserLanguage()
+        {
+            var context = HttpContext.Current;
+
+            var languageInfo = GetLanguageInfo();
+
+            var userName = string.Empty;
+
+            InternalAdminLanguage res = null;
+            try
+            {
+                // тут я наблюдал, что Identity.Name возвращает имя последнего удачно авторизованного пользователя
+                userName = HttpContext.Current.User.Identity.Name; //Request.GetOwinContext().Authentication.User.Identity.Name;// 
+
+            }
+            catch { }
+
+            if (!string.IsNullOrEmpty(userName))
+            {
+                var webService = DmsResolver.Current.Get<WebAPIService>();
+                var languageId = webService.GetUserLanguageId(userName);
+
+                res = languageInfo.Languages.FirstOrDefault(x => x.Id == languageId);
+            }
+
+            if (res == null)
+            {
+                var languageCode = string.Empty;
+
+                try
+                {
+                    // получаю первый язык из массива языковых параметров клиента
+                    // всегда пусто
+                    languageCode = context.Request.UserLanguages?[0];
+
+                    // Первый параметр может быть "ru-RU" или просто "ru"
+                    if (!string.IsNullOrEmpty(languageCode)) languageCode = languageCode.Split('-')[0];
+                }
+                catch { }
+
+                if (!string.IsNullOrEmpty(languageCode))
+                {
+                    res = languageInfo.Languages.FirstOrDefault(x => x.Code.Contains(languageCode));
+                }
+            }
+
+
+            if (res == null)
+            {
+                // если локаль не определена, беру локаль по умолчанию
+                res = languageInfo.Languages.FirstOrDefault(x => x.IsDefault);
+
+                if (res == null) throw new DefaultLanguageIsNotSet();
+            }
+
+            return res;
+
+        }
+
+        private string GetLanguageCodeFromRequestUserLanguages(HttpContext context)
         {
             string languageName = string.Empty;
 
@@ -266,6 +353,7 @@ namespace DMS_WebAPI.Utilities
                 return languageName;
             }
             catch { }
+
 
             return languageName;
 
@@ -284,22 +372,9 @@ namespace DMS_WebAPI.Utilities
             //AddAdminLanguageValues(ApplicationDbImportData.GetAdminLanguageValues());
         }
 
-        public string GetTranslation(string text)
-        {
-            var currLang = GetLanguageFromHttpContext(HttpContext.Current);
-            IContext defContext = null;
 
-            try
-            {
-                defContext = DmsResolver.Current.Get<UserContexts>().Get(keepAlive: false, restoreToken: false);
 
-                if (defContext.User.LanguageId <= 0) defContext = null;
-            }
-            catch
-            { }
-
-            return defContext == null ? GetTranslation(currLang, text) : GetTranslation(defContext, text);
-        }
+       
 
         public string GetLabel(string module, string item) => "##l@" + module.Trim() + ":" + item.Trim() + "@l##";
 

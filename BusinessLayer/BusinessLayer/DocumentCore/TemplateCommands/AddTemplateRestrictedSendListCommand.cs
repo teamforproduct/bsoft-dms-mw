@@ -11,24 +11,24 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 {
     public class AddTemplateRestrictedSendListCommand : BaseDocumentCommand
     {
-        private readonly ITemplateDocumentsDbProcess _operationDb;
+        private readonly ITemplateDbProcess _operationDb;
 
 
-        public AddTemplateRestrictedSendListCommand(ITemplateDocumentsDbProcess operationDb)
+        public AddTemplateRestrictedSendListCommand(ITemplateDbProcess operationDb)
         {
             _operationDb = operationDb;
 
         }
 
-        private AddTemplateDocumentRestrictedSendList Model
+        private AddTemplateRestrictedSendList Model
         {
             get
             {
-                if (!(_param is AddTemplateDocumentRestrictedSendList))
+                if (!(_param is AddTemplateRestrictedSendList))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (AddTemplateDocumentRestrictedSendList)_param;
+                return (AddTemplateRestrictedSendList)_param;
             }
         }
 
@@ -40,7 +40,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
         public override bool CanExecute()
         {
             _adminProc.VerifyAccess(_context, CommandType, false);
-            if (_operationDb.ExistsTemplateDocumentRestrictedSendLists(_context, new FilterTemplateDocumentRestrictedSendList {TemplateId = Model.DocumentId,PositionId = Model.PositionId }))
+            if (_operationDb.ExistsTemplateRestrictedSendLists(_context, new FilterTemplateRestrictedSendList {TemplateId = Model.DocumentId,PositionId = Model.PositionId }))
             {
                 throw new RecordNotUnique();
             }
@@ -49,7 +49,7 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override object Execute()
         {
-            var model = new InternalTemplateDocumentRestrictedSendList(Model);
+            var model = new InternalTemplateRestrictedSendList(Model);
             CommonDocumentUtilities.SetLastChange(_context, model);
             return _operationDb.AddOrUpdateTemplateRestrictedSendList(_context, model);
 

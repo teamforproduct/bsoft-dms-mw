@@ -29,9 +29,8 @@
 
         public bool EmailConfirmed { get; set; }
 
-        public string FirstName { get; set; }
+        public string FullName { get; set; }
 
-        public string LastName { get; set; }
 
         public int LanguageId { get; set; }
 

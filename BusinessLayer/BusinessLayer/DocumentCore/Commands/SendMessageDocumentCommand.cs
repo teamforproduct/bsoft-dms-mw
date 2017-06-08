@@ -8,6 +8,7 @@ using System.Linq;
 using BL.Model.DocumentCore.InternalModel;
 using BL.CrossCutting.Helpers;
 using BL.Model.AdminCore;
+using BL.Model.DocumentCore.IncomingModel;
 
 namespace BL.Logic.DocumentCore.Commands
 {
@@ -50,20 +51,22 @@ namespace BL.Logic.DocumentCore.Commands
             {
                 throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
-            _operationDb.SetParentEventAccessesPrepare(_context, _document, Model.ParentEventId);
             return true;
         }
 
         public override object Execute()
         {
             var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task);
-            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.SendMessage, Model.EventDate, Model.Description, null, Model.ParentEventId, taskId, Model.TargetAccessGroups);
+            var evAcceesses = (Model.TargetCopyAccessGroups ?? new List<AccessGroup>())
+                .Concat(CommonDocumentUtilities.GetAccessGroupsFileExecutors(_context, _document.Id, Model.AddDocumentFiles))
+                .ToList();
+            var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, Model.DocumentId, EnumEventTypes.SendMessage, Model.EventDate, 
+                                                                        Model.Description, null, Model.ParentEventId, taskId, evAcceesses);
             //if (!newEvent.Accesses.Any(x => x.AccessType != EnumEventAccessTypes.Source)) //TODO Need verify?
             //{
             //    throw new NobodyIsChosen();
             //}
-            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
+            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent);
             _document.Events = new List<InternalDocumentEvent> { newEvent };
             using (var transaction = Transactions.GetTransaction())
             {

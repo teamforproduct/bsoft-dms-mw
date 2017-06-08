@@ -10,24 +10,24 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 {
     public class AddTemplatePaperCommand : BaseDocumentCommand
     {
-        private readonly ITemplateDocumentsDbProcess _operationDb;
-        private InternalTemplateDocument _document;
+        private readonly ITemplateDbProcess _operationDb;
+        private InternalTemplate _document;
 
-        public AddTemplatePaperCommand(ITemplateDocumentsDbProcess operationDb)
+        public AddTemplatePaperCommand(ITemplateDbProcess operationDb)
         {
             _operationDb = operationDb;
 
         }
 
-        private AddTemplateDocumentPaper Model
+        private AddTemplatePaper Model
         {
             get
             {
-                if (!(_param is AddTemplateDocumentPaper))
+                if (!(_param is AddTemplatePaper))
                 {
                     throw new WrongParameterTypeError();
                 }
-                return (AddTemplateDocumentPaper)_param;
+                return (AddTemplatePaper)_param;
             }
         }
 
@@ -49,9 +49,9 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 
         public override object Execute()
         {
-            _document.Papers = CommonDocumentUtilities.GetNewTemplateDocumentPapers(_context, Model, _document.MaxPaperOrderNumber ?? 0);
+            _document.Papers = CommonDocumentUtilities.GetNewTemplatePapers(_context, Model, _document.MaxPaperOrderNumber ?? 0);
 
-            return _operationDb.AddTemplateDocumentPapers(_context, _document.Papers);
+            return _operationDb.AddTemplatePapers(_context, _document.Papers);
 
         }
 

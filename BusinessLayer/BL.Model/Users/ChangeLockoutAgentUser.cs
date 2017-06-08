@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace BL.Model.Users
 {
@@ -16,14 +11,10 @@ namespace BL.Model.Users
         public int Id { get; set; }
 
         /// <summary>
-        /// блокирование/разблокирование пользователя
+        /// блокирование/разблокирование сотрудника
         /// </summary>
         [Required]
         public bool IsLockout { get; set; }
 
-        /// <summary>
-        /// Немедленно убить все текущие сессии пользователя
-        /// </summary>
-        public bool IsKillSessions { get; set; }
     }
 }

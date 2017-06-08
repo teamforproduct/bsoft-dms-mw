@@ -10,35 +10,35 @@ using BL.Model.FullTextSearch;
 
 namespace BL.Logic.DocumentCore
 {
-    public interface ITemplateDocumentService
+    public interface ITemplateService
     {
 
         object ExecuteAction(EnumDocumentActions act, IContext context, object param);
 
-        IEnumerable<FrontTemplateDocument> GetTemplateDocuments(IContext context, FilterTemplateDocument filter, UIPaging paging);
-        IEnumerable<FrontMainTemplateDocument> GetMainTemplateDocument(IContext context, FullTextSearch ftSearch, FilterTemplateDocument filter, UIPaging paging);
-        FrontTemplateDocument GetTemplateDocument(IContext context, int templateDocumentId);
-        IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontTemplateDocument templateDoc);
+        IEnumerable<FrontTemplate> GetTemplates(IContext context, FilterTemplate filter, UIPaging paging);
+        IEnumerable<FrontMainTemplate> GetMainTemplate(IContext context, FullTextSearch ftSearch, FilterTemplate filter, UIPaging paging);
+        FrontTemplate GetTemplate(IContext context, int templateId);
+        IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontTemplate templateDoc);
 
-        IEnumerable<FrontTemplateDocumentSendList> GetTemplateDocumentSendLists(IContext context,FilterTemplateDocumentSendList filter);
-        FrontTemplateDocumentSendList GetTemplateDocumentSendList(IContext context, int id);
+        IEnumerable<FrontTemplateSendList> GetTemplateSendLists(IContext context,FilterTemplateSendList filter);
+        FrontTemplateSendList GetTemplateSendList(IContext context, int id);
 
-        IEnumerable<FrontTemplateDocumentRestrictedSendList> GetTemplateDocumentRestrictedSendLists(IContext context,FilterTemplateDocumentRestrictedSendList filter);
-        FrontTemplateDocumentRestrictedSendList GetTemplateDocumentRestrictedSendList(IContext context, int id);
+        IEnumerable<FrontTemplateRestrictedSendList> GetTemplateRestrictedSendLists(IContext context,FilterTemplateRestrictedSendList filter);
+        FrontTemplateRestrictedSendList GetTemplateRestrictedSendList(IContext context, int id);
 
-        IEnumerable<FrontTemplateDocumentAccess> GetTemplateDocumentAccesses(IContext context, FilterTemplateDocumentAccess filter);
-        FrontTemplateDocumentAccess GetTemplateDocumentAccess(IContext context, int id);
+        IEnumerable<FrontTemplateAccess> GetTemplateAccesses(IContext context, FilterTemplateAccess filter);
+        FrontTemplateAccess GetTemplateAccess(IContext context, int id);
 
-        IEnumerable<FrontTemplateDocumentTask> GetTemplateDocumentTasks(IContext context,FilterTemplateDocumentTask filter);
-        FrontTemplateDocumentTask GetTemplateDocumentTask(IContext context, int id);
+        IEnumerable<FrontTemplateTask> GetTemplateTasks(IContext context,FilterTemplateTask filter);
+        FrontTemplateTask GetTemplateTask(IContext context, int id);
 
-        IEnumerable<FrontTemplateDocumentPaper> GetTemplateDocumentPapers(IContext context, FilterTemplateDocumentPaper filter);
-        FrontTemplateDocumentPaper GetTemplateDocumentPaper(IContext context, int id);
+        IEnumerable<FrontTemplatePaper> GetTemplatePapers(IContext context, FilterTemplatePaper filter);
+        FrontTemplatePaper GetTemplatePaper(IContext context, int id);
 
-        IEnumerable<FrontTemplateDocumentFile> GetTemplateAttachedFiles(IContext ctx, FilterTemplateAttachedFile filter);
-        FrontTemplateDocumentFile GetTemplateAttachedFile(IContext ctx, int id);
-        FrontTemplateDocumentFile GetTemplateAttachedFilePdf(IContext ctx, int id);
-        FrontTemplateDocumentFile GetTemplateAttachedFilePreview(IContext ctx, int id);
+        IEnumerable<FrontTemplateFile> GetTemplateFiles(IContext ctx, FilterTemplateFile filter);
+        FrontTemplateFile GetTemplateFile(IContext ctx, int id);
+        FrontTemplateFile GetTemplateFilePdf(IContext ctx, int id);
+        FrontTemplateFile GetTemplateFilePreview(IContext ctx, int id);
 
     }
 }

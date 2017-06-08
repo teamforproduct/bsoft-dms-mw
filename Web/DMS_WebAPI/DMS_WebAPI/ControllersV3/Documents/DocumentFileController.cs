@@ -150,12 +150,12 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPut]
-        [Route(Features.Files + "/ChangeDescription")]
+        [Route(Features.Files + "/Modify")]
         public async Task<IHttpActionResult> Put([FromBody]ModifyDocumentFile model)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumDocumentActions.ModifyDocumentFile, model, model.CurrentPositionId);
+                var tmpItem = Action.Execute(context, EnumDocumentActions.ModifyDocumentFile, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -168,11 +168,11 @@ namespace DMS_WebAPI.ControllersV3.Documents
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Files + "/Rename")]
-        public async Task<IHttpActionResult> RenameFile([FromBody]ModifyDocumentFile model)
+        public async Task<IHttpActionResult> RenameFile([FromBody]RenameDocumentFile model)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumDocumentActions.RenameDocumentFile, model, model.CurrentPositionId);
+                var tmpItem = Action.Execute(context, EnumDocumentActions.RenameDocumentFile, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -191,7 +191,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDocumentActions.AcceptDocumentFile, model);
-                var res = new JsonResult(true, this);
+                var res = new JsonResult(null, this);
                 return res;
             });
         }
@@ -208,7 +208,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDocumentActions.AcceptMainVersionDocumentFile, model);
-                var res = new JsonResult(true, this);
+                var res = new JsonResult(null, this);
                 return res;
             });
         }
@@ -225,7 +225,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 Action.Execute(context, EnumDocumentActions.RejectDocumentFile, model);
-                var res = new JsonResult(true, this);
+                var res = new JsonResult(null, this);
                 return res;
             });
         }
@@ -265,23 +265,39 @@ namespace DMS_WebAPI.ControllersV3.Documents
                 return res;
             });
         }
+        /// <summary>
+        /// Удаляет версию файла (окончательно)
+        /// </summary>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        [HttpDelete]
+        [Route(Features.Files + "/{Id:int}" + "/DeleteFileVersionFinal")]
+        public async Task<IHttpActionResult> DeleteFileVersionFinal([FromUri]int Id)
+        {
+            return await SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                Action.Execute(context, EnumDocumentActions.DeleteDocumentFileVersionFinal, Id);
+                var res = new JsonResult(null, this);
+                return res;
+            });
+        }
 
         /// <summary>
-        /// Удаляет версию файла (окончательное удаление)
+        /// Восстанавливает версию файла (снимается отметка)
         /// </summary>
-        /// <param name="model"></param>
+        /// <param name="Id"></param>
         /// <returns></returns>
-        //[HttpDelete]
-        //[Route(Features.Files + "/DeleteFileVersionRecord")]
-        //public async Task<IHttpActionResult> DeleteFileVersionRecord([FromUri]FilterDocumentFileIdentity model)
-        //{
-        //    return await SafeExecuteAsync(ModelState, (context, param) =>
-        //    {
-        //        Action.Execute(context, EnumDocumentActions.DeleteDocumentFileVersionRecord, model);
-        //        var res = new JsonResult(null, this);
-        //        return res;
-        //    });
-        //}
+        [HttpDelete]
+        [Route(Features.Files + "/{Id:int}" + "/RestoreFileVersion")]
+        public async Task<IHttpActionResult> RestoreFileVersion([FromUri]int Id)
+        {
+            return await SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                Action.Execute(context, EnumDocumentActions.RestoreDocumentFileVersion, Id);
+                var res = new JsonResult(null, this);
+                return res;
+            });
+        }
 
         /// <summary>
         /// Возвращает меню по ИД документа для работы с файлами 

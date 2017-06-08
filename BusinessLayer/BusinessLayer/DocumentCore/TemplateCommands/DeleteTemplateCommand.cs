@@ -12,10 +12,10 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 {
     public class DeleteTemplateCommand : BaseDocumentCommand
     {
-        private readonly ITemplateDocumentsDbProcess _operationDb;
+        private readonly ITemplateDbProcess _operationDb;
         private readonly IFileStore _fStore;
-        private new InternalTemplateDocument _document;
-        public DeleteTemplateCommand(ITemplateDocumentsDbProcess operationDb, IFileStore fStore)
+        private new InternalTemplate _document;
+        public DeleteTemplateCommand(ITemplateDbProcess operationDb, IFileStore fStore)
         {
             _operationDb = operationDb;
             _fStore = fStore;

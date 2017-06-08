@@ -11,7 +11,6 @@ using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
-using BL.Logic.SystemServices.FileService;
 using BL.CrossCutting.DependencyInjection;
 
 namespace BL.Logic.DocumentCore
@@ -32,9 +31,9 @@ namespace BL.Logic.DocumentCore
             return _dbProcess.GetDocumentFiles(ctx, filter, paging);
         }
 
-        private FrontDocumentFile GetUserFile(IContext ctx, int id, EnumDocumentFileType fileType)
+        public FrontDocumentFile GetDocumentFile(IContext ctx, int id, EnumDocumentFileType fileType)
         {
-            var fl = _dbProcess.GetDocumentFileVersion(ctx, id);
+            var fl = _dbProcess.GetDocumentFile(ctx, id);
             if (fl == null)
             {
                 throw new UnknownDocumentFile();
@@ -56,17 +55,13 @@ namespace BL.Logic.DocumentCore
 
         public FrontDocumentFile GetUserFile(IContext ctx, int id)
         {
-            return GetUserFile(ctx, id, EnumDocumentFileType.UserFile);
-        }
+            return GetDocumentFile(ctx, id, EnumDocumentFileType.UserFile);
+        } 
 
-        public FrontDocumentFile GetUserFilePdf(IContext ctx, int id)
+        public void DeleteDocumentFileFinal(IContext ctx)
         {
-            return GetUserFile(ctx, id, EnumDocumentFileType.PdfFile);
-        }
-
-        public FrontDocumentFile GetUserFilePreview(IContext ctx, int id)
-        {
-            return GetUserFile(ctx, id, EnumDocumentFileType.PdfPreview);
+            var days = DmsResolver.Current.Get<ISettingValues>().GetClearTrashFilesTimeoutDayForClear(ctx);
+            _dbProcess.DeleteDocumentFileFinal(ctx, days);
         }
 
     }

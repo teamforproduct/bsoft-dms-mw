@@ -42,7 +42,7 @@ namespace BL.Logic.DocumentCore.Commands
             _actionRecords =
                 _document.Waits.Where(
                     x =>
-                        x.OnEvent.SourcePositionId == positionId &&
+                        x.OnEvent.ControllerPositionId == positionId &&
                         x.OffEventId == null &&
                         CommonDocumentUtilities.PermissibleEventTypesForAction[CommandType].Contains(x.OnEvent.EventType))
                         .Select(x => new InternalActionRecord
@@ -61,13 +61,11 @@ namespace BL.Logic.DocumentCore.Commands
         {
             _document = _operationDb.ControlChangeDocumentPrepare(_context, Model.EventId);
             _docWait = _document?.Waits?.FirstOrDefault();
-            if (_docWait?.OnEvent?.SourcePositionId == null || !CanBeDisplayed(_docWait.OnEvent.SourcePositionId.Value))
+            if (_docWait?.OnEvent?.ControllerPositionId == null || !CanBeDisplayed(_docWait.OnEvent.ControllerPositionId.Value))
             {
                 throw new CouldNotPerformOperation();
             }
-            _operationDb.SetRestrictedSendListsPrepare(_context, _document);
-            _operationDb.SetParentEventAccessesPrepare(_context, _document, Model.EventId);
-            _context.SetCurrentPosition(_docWait.OnEvent.SourcePositionId);
+            _context.SetCurrentPosition(_docWait.OnEvent.ControllerPositionId);
             _adminProc.VerifyAccess(_context, CommandType);
             return true;
         }
@@ -77,9 +75,11 @@ namespace BL.Logic.DocumentCore.Commands
             _docWait.ResultTypeId = Model.ResultTypeId;
             var evAcceesses = (Model.TargetCopyAccessGroups?.Where(x => x.AccessType == EnumEventAccessTypes.TargetCopy) ?? new List<AccessGroup>())
                 .Concat(new List<AccessGroup> { new AccessGroup { AccessType = EnumEventAccessTypes.Target, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = _docWait.OnEvent.TargetPositionId } })
+                .Concat(CommonDocumentUtilities.GetAccessGroupsFileExecutors(_context, _document.Id, Model.AddDocumentFiles))
                 .ToList();
-            var newEvent = _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, EnumEventTypes.ControlOff, Model.EventDate, Model.Description, null, Model.EventId, _docWait.OnEvent.TaskId, evAcceesses);
-            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
+            var newEvent = _docWait.OffEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _docWait.DocumentId, EnumEventTypes.ControlOff, Model.EventDate, 
+                                                                                            Model.Description, null, Model.EventId, _docWait.OnEvent.TaskId, evAcceesses);
+            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent);
             CommonDocumentUtilities.SetLastChange(_context, _docWait);
             using (var transaction = Transactions.GetTransaction())
             {

@@ -1,9 +1,12 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.Model.AdminCore.Clients;
+using BL.Model.Common;
+using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Model.WebAPI.Filters;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -117,6 +120,38 @@ namespace DMS_WebAPI.ControllersV3.Clients
             var tmpService = DmsResolver.Current.Get<WebAPIService>();
             var res = tmpService.ExistsClientRequest(filter);
             return new JsonResult(res, this);
+        }
+
+        /// <summary>
+        /// Определяет существует ли уже заявка на создание клиента
+        /// </summary>
+        /// <param name="Code"></param>
+        /// <returns></returns>
+        [HttpGet]
+        [Route("Request")]
+        public IHttpActionResult Get([FromUri] string Code)
+        {
+            var tmpService = DmsResolver.Current.Get<WebAPIService>();
+            var res = tmpService.GetClientRequest(new FilterAspNetClientRequests { HashCodeExact = Code }).FirstOrDefault();
+            return new JsonResult(res, this);
+        }
+
+        /// <summary>
+        /// Проверяет код клиента
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("Validate")]
+        public IHttpActionResult ValidateCode([FromBody] CodeItem model)
+        {
+            var tmpService = DmsResolver.Current.Get<WebAPIService>();
+
+            if (!tmpService.ValidateClientCode(model.Code)) throw new ClientCodeInvalid();
+
+            if (tmpService.ExistsClient(new FilterAspNetClients { Code = model.Code })) throw new ClientCodeAlreadyExists(model.Code);
+
+            return new JsonResult(null, this);
         }
     }
 }

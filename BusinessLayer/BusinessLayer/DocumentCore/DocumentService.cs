@@ -114,8 +114,8 @@ namespace BL.Logic.DocumentCore
         public FrontDocument GetDocument(IContext ctx, int documentId)
         {
             var doc = _documentDb.GetDocument(ctx, documentId);
-            doc.SendListStages = CommonDocumentUtilities.GetSendListStage(doc.SendLists);
-            doc.SendLists = null;
+            //doc.SendListStages = CommonDocumentUtilities.GetSendListStage(doc.SendLists);
+            //doc.SendLists = null;
             return doc;
         }
 

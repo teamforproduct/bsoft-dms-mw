@@ -47,25 +47,20 @@ namespace BL.Logic.Common
 
                 { EnumDocumentActions.ControlChange, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.ControlChange } },
 
-                { EnumDocumentActions.SendForResponsibleExecutionChange, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForResponsibleExecutionChange } },
-
                 { EnumDocumentActions.SendForExecutionChange, new List<EnumEventTypes> { EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange} },
 
-                //{ EnumDocumentActions.SendForControlChange, new List<EnumEventTypes> { EnumEventTypes.SendForControl, EnumEventTypes.SendForControlChange} },
-
-                { EnumDocumentActions.ControlTargetChange, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution,
-                                                                                      EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange,
+                { EnumDocumentActions.ControlTargetChange, new List<EnumEventTypes> { EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange,
                                                                                      } },
 
-                { EnumDocumentActions.ControlOff, new List<EnumEventTypes> { EnumEventTypes.ControlOn,/* EnumEventTypes.SendForControl,*/ EnumEventTypes.ControlChange/*, EnumEventTypes.SendForControlChange*/ } },
+                { EnumDocumentActions.ControlOff, new List<EnumEventTypes> { EnumEventTypes.ControlOn, EnumEventTypes.ControlChange } },
 
-                { EnumDocumentActions.AskPostponeDueDate, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
-                { EnumDocumentActions.CancelPostponeDueDate, new List<EnumEventTypes> { EnumEventTypes.AskPostponeDueDate, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
+                { EnumDocumentActions.AskPostponeDueDate, new List<EnumEventTypes> { EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange } },
+                { EnumDocumentActions.CancelPostponeDueDate, new List<EnumEventTypes> { EnumEventTypes.AskPostponeDueDate, EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange } },
 
-                { EnumDocumentActions.MarkExecution, new List<EnumEventTypes> { EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
-                { EnumDocumentActions.CancelExecution, new List<EnumEventTypes> { EnumEventTypes.MarkExecution, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
-                { EnumDocumentActions.AcceptResult, new List<EnumEventTypes> { EnumEventTypes.MarkExecution, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
-                { EnumDocumentActions.RejectResult, new List<EnumEventTypes> { EnumEventTypes.MarkExecution, EnumEventTypes.SendForResponsibleExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForResponsibleExecutionChange, EnumEventTypes.SendForExecutionChange } },
+                { EnumDocumentActions.MarkExecution, new List<EnumEventTypes> { EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange } },
+                { EnumDocumentActions.CancelExecution, new List<EnumEventTypes> { EnumEventTypes.MarkExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange } },
+                { EnumDocumentActions.AcceptResult, new List<EnumEventTypes> { EnumEventTypes.MarkExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange } },
+                { EnumDocumentActions.RejectResult, new List<EnumEventTypes> { EnumEventTypes.MarkExecution, EnumEventTypes.SendForExecution, EnumEventTypes.SendForExecutionChange } },
 
                 { EnumDocumentActions.RejectSigning, new List<EnumEventTypes> { EnumEventTypes.SendForSigning} },
                 { EnumDocumentActions.RejectАpproval, new List<EnumEventTypes> { EnumEventTypes.SendForАpproval } },
@@ -130,14 +125,29 @@ namespace BL.Logic.Common
                 {
                     sl.IsInitial = isInitial.Value;
                 }
-                if (!sl.SourcePositionId.HasValue)
+                var sourceAccess = sl.AccessGroups.FirstOrDefault(y => y.AccessType == EnumEventAccessTypes.Source);
+                if (sourceAccess != null)
                 {
-                    sl.SourcePositionId = context.CurrentPositionId;
+                    sourceAccess.PositionId = context.CurrentPositionId;
+                }
+                else
+                {
+                    var accessGroups = sl.AccessGroups.ToList();
+                    accessGroups.Add(new InternalDocumentSendListAccessGroup
+                    {
+                        AccessGroupType = EnumEventAccessGroupTypes.Position,
+                        AccessType = EnumEventAccessTypes.Source,
+                        ClientId = sl.ClientId,
+                        EntityTypeId = sl.EntityTypeId,
+                        IsActive = true,
+                        PositionId = context.CurrentPositionId,
+                    });
+                    sl.AccessGroups = accessGroups;
                 }
                 sl.StartEventId = null;
                 sl.CloseEventId = null;
-                sl.SourceAgentId = context.CurrentAgentId;
                 SetLastChange(context, sl);
+                SetLastChange(context, sl.AccessGroups);
             }
         }
         public static void SetLastChange(IContext context, LastChangeInfo document)
@@ -210,6 +220,7 @@ namespace BL.Logic.Common
                       accesses.AddRange(positions.Select(y =>
                       {
                           var positionExecutor = GetExecutorAgentIdByPositionId(context, y);
+                          var isRead = context.CurrentPositionsIdList.Contains(y);
                           return new InternalDocumentEventAccess
                           {
                               ClientId = ev.ClientId,
@@ -221,9 +232,9 @@ namespace BL.Logic.Common
                               PositionId = y,
                               AgentId = positionExecutor.ExecutorAgentId,
                               PositionExecutorTypeId = positionExecutor.ExecutorTypeId,
-                              ReadDate = (x.AccessType == EnumEventAccessTypes.Source) ? DateTime.UtcNow : (DateTime?)null,
-                              SendDate = (x.AccessType == EnumEventAccessTypes.Source) ? DateTime.UtcNow : (DateTime?)null,
-                              ReadAgentId = (x.AccessType == EnumEventAccessTypes.Source) ? context.CurrentAgentId : (int?)null,
+                              ReadDate = isRead ? DateTime.UtcNow : (DateTime?)null,
+                              SendDate = isRead ? DateTime.UtcNow : (DateTime?)null,
+                              ReadAgentId = isRead ? context.CurrentAgentId : (int?)null,
                               IsNew = !docAccesses.Select(z => z.PositionId).Contains(y),
                           };
                       }));
@@ -236,9 +247,9 @@ namespace BL.Logic.Common
                           IsActive = true,
                           AccessType = x.AccessType,
                           AgentId = y,
-                          ReadDate = (x.AccessType == EnumEventAccessTypes.Source) ? DateTime.UtcNow : (DateTime?)null,
-                          SendDate = (x.AccessType == EnumEventAccessTypes.Source) ? DateTime.UtcNow : (DateTime?)null,
-                          ReadAgentId = (x.AccessType == EnumEventAccessTypes.Source) ? context.CurrentAgentId : (int?)null,
+                          ReadDate = context.CurrentAgentId == y ? DateTime.UtcNow : (DateTime?)null,
+                          SendDate = context.CurrentAgentId == y ? DateTime.UtcNow : (DateTime?)null,
+                          ReadAgentId = context.CurrentAgentId == y ? context.CurrentAgentId : (int?)null,
                           IsNew = !docAccesses.Select(z => z.AgentId).Contains(y),
                       }));
                   });
@@ -271,20 +282,39 @@ namespace BL.Logic.Common
                 SetLastChange(context, sl.AccessGroups);
             }
         }
+        public static void SetAccessess(IContext context, InternalTemplateSendList sl, List<AccessGroup> accessGroups)
+        {
+            if (sl != null)
+            {
+                if (accessGroups == null) accessGroups = new List<AccessGroup>();
+                sl.AccessGroups = accessGroups.Select(x => new InternalTemplateSendListAccessGroup
+                {
+                    DocumentId = sl.DocumentId,
+                    SendListId = sl.Id,
+                    IsActive = true,
+                    AccessType = x.AccessType,
+                    AccessGroupType = x.AccessGroupType,
+                    PositionId = x.AccessGroupType == EnumEventAccessGroupTypes.Position ? x.RecordId : null,
+                    AgentId = x.AccessGroupType == EnumEventAccessGroupTypes.Agent ? x.RecordId : null,
+                    DepartmentId = x.AccessGroupType == EnumEventAccessGroupTypes.Department ? x.RecordId : null,
+                    CompanyId = x.AccessGroupType == EnumEventAccessGroupTypes.Company ? x.RecordId : null,
+                    StandartSendListId = x.AccessGroupType == EnumEventAccessGroupTypes.SendList ? x.RecordId : null,
+                }).ToList();
+                SetLastChange(context, sl.AccessGroups);
+            }
+        }
+
         public static void SetSendListAtrributes(IContext context, InternalDocumentSendList sendList, ModifyDocumentSendList model, int? taskId)
         {
             sendList.Stage = model.Stage.Value;
             sendList.StageType = model.StageType;
             sendList.SendType = model.SendType;
-            sendList.TargetPositionId = model.TargetPositionId;
-            sendList.TargetAgentId = model.TargetAgentId;
             sendList.Description = model.Description;
             sendList.DueDate = model.DueDate;
             sendList.DueDay = model.DueDay;
             sendList.AccessLevel = model.AccessLevel;
             sendList.IsInitial = model.IsInitial;
             sendList.TaskId = taskId;
-            sendList.IsWorkGroup = model.IsWorkGroup;
             sendList.IsAddControl = model.IsAddControl;
             sendList.SelfDueDate = model.SelfDueDate;
             sendList.SelfDueDay = model.SelfDueDay;
@@ -363,7 +393,8 @@ namespace BL.Logic.Common
             };
         }
 
-        public static InternalDocumentEvent GetNewDocumentEvent(IContext context, int entityTypeId, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string addDescription = null, int? parentEventId = null, int? taskId = null,
+        public static InternalDocumentEvent GetNewDocumentEvent(IContext context, int entityTypeId, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null,
+                                                                string description = null, string addDescription = null, int? parentEventId = null, int? taskId = null,
                                                                 List<AccessGroup> accessGroups = null)
         {
             var res = new InternalDocumentEvent
@@ -384,7 +415,9 @@ namespace BL.Logic.Common
             return res;
         }
 
-        public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvents(IContext context, int entityTypeId, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null, string description = null, string addDescription = null, int? parentEventId = null, int? taskId = null, List<AccessGroup> accessGroups = null)
+        public static IEnumerable<InternalDocumentEvent> GetNewDocumentEvents(IContext context, int entityTypeId, int? documentId, EnumEventTypes eventType, DateTime? eventDate = null,
+                                                                            string description = null, string addDescription = null, int? parentEventId = null, int? taskId = null,
+                                                                            List<AccessGroup> accessGroups = null)
         {
             return new List<InternalDocumentEvent>
             {
@@ -515,17 +548,12 @@ namespace BL.Logic.Common
                 Stage = model.Stage,
                 StageType = model.StageType,
                 SendType = model.SendType,
-                SourcePositionId = context.CurrentPositionId,
-                SourceAgentId = context.CurrentAgentId,
-                TargetPositionId = model.TargetPositionId,
-                TargetAgentId = model.TargetAgentId,
                 TaskId = taskId,
                 Description = model.Description,
                 DueDate = model.DueDate,
                 DueDay = model.DueDay,
                 AccessLevel = model.AccessLevel,
                 IsInitial = model.IsInitial,
-                IsWorkGroup = model.IsWorkGroup,
                 IsAddControl = model.IsAddControl,
                 SelfDueDate = model.SelfDueDate,
                 SelfDueDay = model.SelfDueDay,
@@ -552,12 +580,33 @@ namespace BL.Logic.Common
             return res;
         }
 
-        public static InternalTemplateDocumentFile GetNewTemplateDocumentFile(IContext context, int entityTypeId, AddTemplateAttachedFile model, BaseFile file)
+        public static InternalTemplateSendList GetNewTemplateSendList(IContext context, AddTemplateSendList model)
         {
-            var res = new InternalTemplateDocumentFile
+            var res = new InternalTemplateSendList
             {
-                ClientId = context.Client.Id,
-                EntityTypeId = entityTypeId,
+                Id = model is ModifyTemplateSendList ? (model as ModifyTemplateSendList).Id : 0,
+                DocumentId = model.DocumentId,
+                SendType = model.SendType,
+                StageType = model.StageType,
+                TaskId = model.TaskId,
+                IsAddControl = model.IsAddControl,
+                SelfDescription = model.SelfDescription,
+                SelfDueDay = model.SelfDueDay,
+                SelfAttentionDay = model.SelfAttentionDay,
+                Description = model.Description,
+                Stage = model.Stage,
+                DueDay = model.DueDay,
+                AccessLevel = model.AccessLevel,
+            };
+            SetLastChange(context, res);
+            SetAccessess(context, res, model.TargetAccessGroups);
+            return res;
+        }
+
+        public static InternalTemplateFile GetNewTemplateFile(IContext context, AddTemplateFile model, BaseFile file)
+        {
+            var res = new InternalTemplateFile
+            {
                 DocumentId = model.DocumentId,
                 Type = model.Type,
                 Description = model.Description,
@@ -568,12 +617,10 @@ namespace BL.Logic.Common
             SetLastChange(context, res);
             return res;
         }
-        public static InternalTemplateDocumentFile GetNewTemplateDocumentFile(IContext context, InternalTemplateDocumentFile src, int? newOrderNumber = null)
+        public static InternalTemplateFile GetNewTemplateFile(IContext context, InternalTemplateFile src, int? newOrderNumber = null)
         {
-            var res = new InternalTemplateDocumentFile
+            var res = new InternalTemplateFile
             {
-                ClientId = context.Client.Id,
-                EntityTypeId = src.EntityTypeId,
                 DocumentId = src.DocumentId,
                 File = src.File,
                 Type = src.Type,
@@ -596,11 +643,11 @@ namespace BL.Logic.Common
                 DocumentId = model.DocumentId,
                 EventId = model.EventId,
                 Date = DateTime.UtcNow,
-                Type = model.Type,
+                Type = model.Type.Value,
                 IsMainVersion = model.IsMainVersion ?? false,
                 OrderInDocument = model.OrderInDocument ?? 0,
                 Version = 1,
-                File = model.File,
+                File = model.File.File,
                 Description = model.Description,
                 IsWorkedOut = (model.IsMainVersion ?? false),
                 WasChangedExternal = false,
@@ -674,9 +721,9 @@ namespace BL.Logic.Common
             return res;
         }
 
-        public static InternalTemplateDocumentPaper GetNewTemplateDocumentPaper(IContext context, AddTemplateDocumentPaper model, int orderNumber)
+        public static InternalTemplatePaper GetNewTemplatePaper(IContext context, AddTemplatePaper model, int orderNumber)
         {
-            var res = new InternalTemplateDocumentPaper
+            var res = new InternalTemplatePaper
             {
                 DocumentId = model.DocumentId,
                 Name = model.Name,
@@ -691,12 +738,12 @@ namespace BL.Logic.Common
             return res;
         }
 
-        public static IEnumerable<InternalTemplateDocumentPaper> GetNewTemplateDocumentPapers(IContext context, AddTemplateDocumentPaper model, int maxOrderNumber)
+        public static IEnumerable<InternalTemplatePaper> GetNewTemplatePapers(IContext context, AddTemplatePaper model, int maxOrderNumber)
         {
-            var res = new List<InternalTemplateDocumentPaper>();
+            var res = new List<InternalTemplatePaper>();
             for (int i = 1, l = model.PaperQuantity; i <= l; i++)
             {
-                res.Add(GetNewTemplateDocumentPaper(context, model, maxOrderNumber + i));
+                res.Add(GetNewTemplatePaper(context, model, maxOrderNumber + i));
             }
             return res;
         }
@@ -715,14 +762,14 @@ namespace BL.Logic.Common
                 Date = DateTime.UtcNow,
                 CreateDate = DateTime.UtcNow,
                 Description = description,
-                SourceAgentId = sourceAgentId ?? context.CurrentAgentId,
+                TargetPositionId = targetPositionId ?? context.CurrentPositionId,   //TODO multi
                 SourcePositionId = sourcePositionId ?? context.CurrentPositionId,
-                SourcePositionExecutorAgentId = IsMarkPlan ? sourcePositionExecutor.ExecutorAgentId : null,
-                SourcePositionExecutorTypeId = IsMarkPlan ? sourcePositionExecutor.ExecutorTypeId : null,
-                TargetPositionId = targetPositionId ?? context.CurrentPositionId,
-                TargetPositionExecutorAgentId = IsMarkPlan ? targetPositionExecutor.ExecutorAgentId : null,
-                TargetPositionExecutorTypeId = IsMarkPlan ? targetPositionExecutor.ExecutorTypeId : null,
-                TargetAgentId = targetAgentId,
+                //SourceAgentId = sourceAgentId ?? context.CurrentAgentId,
+                //SourcePositionExecutorAgentId = IsMarkPlan ? sourcePositionExecutor.ExecutorAgentId : null,
+                //SourcePositionExecutorTypeId = IsMarkPlan ? sourcePositionExecutor.ExecutorTypeId : null,
+                //TargetPositionExecutorAgentId = IsMarkPlan ? targetPositionExecutor.ExecutorAgentId : null,
+                //TargetPositionExecutorTypeId = IsMarkPlan ? targetPositionExecutor.ExecutorTypeId : null,
+                //TargetAgentId = targetAgentId,
                 PaperPlanAgentId = IsMarkPlan ? (int?)(sourceAgentId ?? context.CurrentAgentId) : null,
                 PaperPlanDate = IsMarkPlan ? (DateTime?)DateTime.UtcNow : null,
                 PaperSendAgentId = IsMarkRecieve ? (int?)context.CurrentAgentId : null,
@@ -764,7 +811,7 @@ namespace BL.Logic.Common
                 {
                     //paper.LastPaperEventId = null;
                     paper.LastPaperEvent = CommonDocumentUtilities.GetNewDocumentPaperEvent(context, document.EntityTypeId, document.Id, paper.Id,
-                        EnumEventTypes.MoveDocumentPaper, null, model.TargetPositionId, model.TargetAgentId, model.SourcePositionId, model.SourceAgentId, true, false);
+                        EnumEventTypes.MoveDocumentPaper, null, null, null, null, null, true, false); //TODO Multi
                     CommonDocumentUtilities.SetLastChange(context, paper);
                     paper.LastPaperEventId = null;
                     paper.LastPaperEvent.Id = paper.NextPaperEventId.Value;
@@ -844,8 +891,8 @@ namespace BL.Logic.Common
 
             if (doc.IsHard.Value)
             {
-                var _templateDb = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
-                var docTemplate = _templateDb.GetTemplateDocument(ctx, doc.TemplateDocumentId.Value);
+                var _templateDb = DmsResolver.Current.Get<ITemplateDbProcess>();
+                var docTemplate = _templateDb.GetTemplate(ctx, doc.TemplateDocumentId.Value);
 
                 //if (docTemplate.DocumentSubjectId.HasValue)
                 //{
@@ -912,7 +959,7 @@ namespace BL.Logic.Common
                         if (propNotSet.Where(x => x.dp == null).Any())
                         {
                             var _sysDb = DmsResolver.Current.Get<ISystemDbProcess>();
-                            var propLinks = _sysDb.GetPropertyValuesToDocumentFromTemplateDocument(ctx, new FilterPropertyLink { PropertyLinkId = propNotSet.Where(x => x.dp == null).Select(x => x.dtp.PropertyLinkId).ToList() });
+                            var propLinks = _sysDb.GetPropertyValuesToDocumentFromTemplate(ctx, new FilterPropertyLink { PropertyLinkId = propNotSet.Where(x => x.dp == null).Select(x => x.dtp.PropertyLinkId).ToList() });
 
                             var props = doc.Properties.ToList();
 
@@ -935,7 +982,7 @@ namespace BL.Logic.Common
             return uiElements;
         }
 
-        public static IEnumerable<BaseSystemUIElement> VerifyTemplateDocument(IContext ctx, FrontTemplateDocument templateDoc, IEnumerable<BaseSystemUIElement> uiElements)
+        public static IEnumerable<BaseSystemUIElement> VerifyTemplate(IContext ctx, FrontTemplate templateDoc, IEnumerable<BaseSystemUIElement> uiElements)
         {
             if (templateDoc.DocumentDirection != EnumDocumentDirections.Incoming)
             {
@@ -968,19 +1015,28 @@ namespace BL.Logic.Common
             return uiElements;
         }
 
-        public static DmsExceptions VerifyAndSetDocumentAccess(IContext ctx, InternalDocument document, IEnumerable<InternalDocumentEventAccess> accesses, VerifySubordination modelVerifySubordination = null, bool isThrowException = true, EnumAccessLevels accessLevel = EnumAccessLevels.PersonallyAndIOAndReferents)
+        public static DmsExceptions VerifyAndSetDocumentAccess(IContext ctx, InternalDocument document, InternalDocumentEvent newEvent, VerifySubordination modelVerifySubordination = null, bool isThrowException = true, EnumAccessLevels accessLevel = EnumAccessLevels.PersonallyAndIOAndReferents)
         {
-            if (!VerifyAccessesByRestrictedSendLists(ctx, document.RestrictedSendLists, accesses, isThrowException)) return new DocumentSendListNotFoundInDocumentRestrictedSendList();
-            var targetPosition = accesses.Where(x => x.AccessType != EnumEventAccessTypes.Source && x.PositionId.HasValue).Select(x => x.PositionId.Value).ToList();
-            if (document.ParentEventAccesses?.Any(x=>x.PositionId.HasValue) ?? false)
+            var operationDb = DmsResolver.Current.Get<IDocumentOperationsDbProcess>();
+            if (!document.IsRestrictedSendListsLoaded)
             {
-                targetPosition = targetPosition.Where(x => !document.ParentEventAccesses.Where(y => y.PositionId.HasValue).Any(y => y.PositionId.Value == x)).ToList();
+                operationDb.SetRestrictedSendListsPrepare(ctx, document);
             }
-            if (!DmsResolver.Current.Get<IAdminService>().VerifySubordination(ctx, 
-                modelVerifySubordination ?? new VerifySubordination { SubordinationType = EnumSubordinationTypes.Informing, TargetPosition = targetPosition,},
+            if (!VerifyAccessesByRestrictedSendLists(ctx, document.RestrictedSendLists, newEvent.Accesses, isThrowException)) return new DocumentSendListNotFoundInDocumentRestrictedSendList();
+            var targetPosition = newEvent.Accesses.Where(x => x.AccessType != EnumEventAccessTypes.Source && x.PositionId.HasValue).Select(x => x.PositionId.Value).ToList();
+            if (newEvent.ParentEventId.HasValue)
+            {
+                operationDb.SetParentEventAccessesPrepare(ctx, document, newEvent.ParentEventId.Value);
+                if (document.ParentEventAccesses?.Any(x => x.PositionId.HasValue) ?? false)
+                {
+                    targetPosition = targetPosition.Where(x => !document.ParentEventAccesses.Where(y => y.PositionId.HasValue).Any(y => y.PositionId.Value == x)).ToList();
+                }
+            }
+            if (!DmsResolver.Current.Get<IAdminService>().VerifySubordination(ctx,
+                modelVerifySubordination ?? new VerifySubordination { SubordinationType = EnumSubordinationTypes.Informing, TargetPosition = targetPosition, },
                 isThrowException))
                 return new SubordinationHasBeenViolated();
-            document.Accesses = GetNewDocumentAccesses(ctx, accesses.Where(x=> x.PositionId.HasValue && targetPosition.Contains(x.PositionId.Value)), accessLevel);
+            document.Accesses = GetNewDocumentAccesses(ctx, newEvent.Accesses.Where(x => x.PositionId.HasValue && targetPosition.Contains(x.PositionId.Value)), accessLevel);
             return null;
         }
 
@@ -1016,26 +1072,26 @@ namespace BL.Logic.Common
             //    throw new DocumentSendListNotFoundInDocumentRestrictedSendList();
             //}
 
-            if (doc.IsHard)
-            {
-                if (doc.TemplateDocument.RestrictedSendLists.Any()
-                    && doc.TemplateDocument.RestrictedSendLists.GroupJoin(doc.RestrictedSendLists
-                        , trsl => trsl.PositionId
-                        , rsl => rsl.PositionId
-                        , (trsl, rsls) => new { trsl, rsls }).Any(x => x.rsls.Count() == 0))
-                {
-                    throw new DocumentRestrictedSendListDoesNotMatchTheTemplate();
-                }
+            //if (doc.IsHard)
+            //{
+            //    if (doc.Template.RestrictedSendLists.Any()
+            //        && doc.Template.RestrictedSendLists.GroupJoin(doc.RestrictedSendLists
+            //            , trsl => trsl.PositionId
+            //            , rsl => rsl.PositionId
+            //            , (trsl, rsls) => new { trsl, rsls }).Any(x => x.rsls.Count() == 0))
+            //    {
+            //        throw new DocumentRestrictedSendListDoesNotMatchTheTemplate();
+            //    }
 
-                if (doc.TemplateDocument.SendLists.Any()
-                    && doc.TemplateDocument.SendLists.GroupJoin(doc.SendLists
-                        , trsl => new { trsl.TargetPositionId, trsl.SendType }
-                        , rsl => new { rsl.TargetPositionId, rsl.SendType }
-                        , (trsl, rsls) => new { trsl, rsls }).Any(x => x.rsls.Count() == 0))
-                {
-                    throw new DocumentSendListDoesNotMatchTheTemplate();
-                }
-            }
+            //    if (doc.Template.SendLists.Any()
+            //        && doc.Template.SendLists.GroupJoin(doc.SendLists
+            //            , trsl => new { trsl.TargetPositionId, trsl.SendType }
+            //            , rsl => new { rsl.TargetPositionId, rsl.SendType }
+            //            , (trsl, rsls) => new { trsl, rsls }).Any(x => x.rsls.Count() == 0))
+            //    {
+            //        throw new DocumentSendListDoesNotMatchTheTemplate();
+            //    }
+            //}
         }
 
         public static IEnumerable<FrontDocumentSendListStage> GetSendListStage(IEnumerable<FrontDocumentSendList> sendLists)
@@ -1067,8 +1123,7 @@ namespace BL.Logic.Common
             return new List<FrontDocumentSendListStage>();
         }
 
-
-        public static void CorrectModel(IContext context, AddTemplateDocumentSendList model)
+        public static void CorrectModel(IContext context, AddTemplateSendList model)
         {
             if (model.SendType == EnumSendTypes.SendForInformation || model.SendType == EnumSendTypes.SendForConsideration)
             {
@@ -1080,18 +1135,6 @@ namespace BL.Logic.Common
                 model.SelfDueDay = null;
                 model.SelfDescription = null;
             }
-            if (model.SendType != EnumSendTypes.SendForExecution || model.TaskId == null)
-            {
-                model.IsWorkGroup = false;
-            }
-            if (model.SendType == EnumSendTypes.SendForInformationExternal)
-            {
-                model.TargetPositionId = null;
-            }
-            else
-            {
-                model.TargetAgentId = null;
-            }
 
         }
 
@@ -1099,8 +1142,7 @@ namespace BL.Logic.Common
         {
             if (positionId.HasValue)
             {
-                var dict = DmsResolver.Current.Get<DictionariesDbProcess>();
-                return dict.GetExecutorAgentIdByPositionId(context, positionId.Value);
+                return DmsResolver.Current.Get<DictionariesDbProcess>().GetExecutorAgentIdByPositionId(context, positionId.Value);
             }
             else
                 return null;
@@ -1109,14 +1151,6 @@ namespace BL.Logic.Common
         public static List<int> GetSourcePositionsForSubordinationVeification(IContext context, InternalDocumentSendList sendList, InternalDocument document, bool isTakeSendList = false)
         {
             var res = new List<int> { sendList.SourcePositionId.Value };
-            if (document.Events?.Any() ?? false)
-            {
-                res.AddRange(document.Events.Select(x => x.SourcePositionId.Value));
-            }
-            if (document.Waits?.Any() ?? false)
-            {
-                res.AddRange(document.Waits.Select(x => x.OnEvent.SourcePositionId.Value));
-            }
             if (document.Subscriptions?.Any() ?? false)
             {
                 res.AddRange(document.Subscriptions.Select(x => x.DoneEvent.SourcePositionId.Value));
@@ -1130,25 +1164,12 @@ namespace BL.Logic.Common
             return res;
         }
 
-        internal static string GetNextDocumentFileName(IContext context, int documentId, string name, string extention)
-        {
-            var _fileDb = DmsResolver.Current.Get<IDocumentFileDbProcess>();
-            var res = name;
-            var i = 1;
-            while (_fileDb.CheckFileForDocument(context, documentId, res, extention) > 0)
-            {
-                res = name + $" ({i})";
-                i++;
-            }
-            return res;
-        }
-
         internal static string GetTemplateNameForCopy(IContext context, string name)
         {
-            var _templateDb = DmsResolver.Current.Get<ITemplateDocumentsDbProcess>();
+            var _templateDb = DmsResolver.Current.Get<ITemplateDbProcess>();
             var i = 1;
             var res = name + $" ({i})";
-            while (_templateDb.ExistsTemplateDocuments(context, new FilterTemplateDocument { NameExectly = res }))
+            while (_templateDb.ExistsTemplates(context, new FilterTemplate { NameExectly = res }))
             {
                 i++;
                 res = name + $" ({i})";
@@ -1207,6 +1228,14 @@ namespace BL.Logic.Common
             };
         }
 
+        public static List<AccessGroup> GetAccessGroupsFileExecutors(IContext context, int documentId, List<AddDocumentFile> addDocumentFiles)
+        {
+            if (!addDocumentFiles?.Any(x => x.OrderInDocument.HasValue) ?? false) return new List<AccessGroup>();
+            return DmsResolver.Current.Get<IDocumentFileDbProcess>()
+                .GetDocumentFileExecutors(context, documentId, addDocumentFiles.Where(x => x.OrderInDocument.HasValue).Select(x => x.OrderInDocument.Value).ToList())
+                .Select(x => new AccessGroup { AccessType = EnumEventAccessTypes.TargetCopy, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = x }).ToList();
+
+        }
         #endregion Misc
 
         #region RegistrationNumber
@@ -1362,7 +1391,7 @@ namespace BL.Logic.Common
             return res;
         }
 
-        public static IEnumerable<string> GetFilterTemplateByTemplateDocument(FrontTemplateDocument templateDoc)
+        public static IEnumerable<string> GetFilterTemplateByTemplate(FrontTemplate templateDoc)
         {
             var res = new List<string>();
             if (templateDoc.DocumentTypeId > 0)
@@ -1374,7 +1403,7 @@ namespace BL.Logic.Common
             return res;
         }
 
-        public static IEnumerable<string> GetFilterTemplateByTemplateDocument(InternalTemplateDocument templateDoc)
+        public static IEnumerable<string> GetFilterTemplateByTemplate(InternalTemplate templateDoc)
         {
             var res = new List<string>();
             if (templateDoc.DocumentTypeId > 0)

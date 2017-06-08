@@ -105,14 +105,24 @@ namespace BL.Logic.DocumentCore
                 x.Details = new List<string> { "Детали 1", "Детали 2" };
             });
         }
-
+        private static void MenuCategoryGrouping(IContext ctx, DocumentActionsModel model)
+        {
+            model.PositionWithActions?.ForEach(x =>
+               x.Categories = x.Actions?.GroupBy(y => y.Category).Select(y => new InternalSystemActionCategoryForDocument
+               {
+                   Category = y.Key ?? EnumActionCategories.Actions,
+                   CategoryName = y.Key.HasValue ? "##l@ActionCategories:" + ((EnumActionCategories)y.Key).ToString() + "@l##" : "##l@ActionCategories:Actions@l##",
+                   Actions = y.ToList()
+               }).ToList()
+            );
+        }
         public IEnumerable<InternalDictionaryPositionWithActions> GetDocumentActions(IContext ctx, int? documentId, int? id = null)
         {
             var model = _operationDb.GetDocumentActionsModelPrepare(ctx, documentId, id);
-
             MenuFormation(ctx, model, id.HasValue, new List<EnumObjects> { { EnumObjects.DocumentEvents } });
-
-            return model.PositionWithActions?.Where(x => x.Actions != null && x.Actions.Any()).ToList();
+            model.PositionWithActions = model.PositionWithActions?.Where(x => x.Actions != null && x.Actions.Any()).ToList();
+            MenuCategoryGrouping(ctx, model);
+            return model.PositionWithActions;
         }
 
         public IEnumerable<InternalDictionaryPositionWithActions> GetDocumentSendListActions(IContext ctx, int documentId)
@@ -120,7 +130,7 @@ namespace BL.Logic.DocumentCore
             var model = _operationDb.GetDocumentSendListActionsModelPrepare(ctx, documentId);
 
             MenuFormation(ctx, model);
-
+            MenuCategoryGrouping(ctx, model);
             return model.PositionWithActions;
         }
 
@@ -129,8 +139,9 @@ namespace BL.Logic.DocumentCore
             var model = _operationDb.GetDocumentFileActionsModelPrepare(ctx, documentId, id);
 
             MenuFormation(ctx, model, id.HasValue);
-
-            return model.PositionWithActions.Where(x => x.Actions != null && x.Actions.Any()).ToList();
+            model.PositionWithActions = model.PositionWithActions.Where(x => x.Actions != null && x.Actions.Any()).ToList();
+            MenuCategoryGrouping(ctx, model);
+            return model.PositionWithActions;
         }
 
         public IEnumerable<InternalDictionaryPositionWithActions> GetDocumentPaperActions(IContext ctx, int documentId)
@@ -138,7 +149,7 @@ namespace BL.Logic.DocumentCore
             var model = _operationDb.GetDocumentPaperActionsModelPrepare(ctx, documentId);
 
             MenuFormation(ctx, model);
-
+            MenuCategoryGrouping(ctx, model);
             return model.PositionWithActions;
         }
 

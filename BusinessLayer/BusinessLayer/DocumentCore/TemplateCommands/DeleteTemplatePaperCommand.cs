@@ -7,9 +7,9 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 {
     public class DeleteTemplatePaperCommand : BaseDocumentCommand
     {
-        private readonly ITemplateDocumentsDbProcess _operationDb;
+        private readonly ITemplateDbProcess _operationDb;
 
-        public DeleteTemplatePaperCommand(ITemplateDocumentsDbProcess operationDb)
+        public DeleteTemplatePaperCommand(ITemplateDbProcess operationDb)
         {
             _operationDb = operationDb;
 

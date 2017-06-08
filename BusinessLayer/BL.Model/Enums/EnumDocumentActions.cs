@@ -88,7 +88,7 @@
 
         SendForExecutionChange = 100024, // Изменить параметры направлен для исполнения
         //SendForControlChange = 100025, // Изменить параметры направлен для исполнения (на контроль)
-        SendForResponsibleExecutionChange = 100026, // Изменить параметры направлен для исполнения (отв. исполнитель)
+        //SendForResponsibleExecutionChange = 100026, // Изменить параметры направлен для исполнения (отв. исполнитель)
 
         /// <summary>
         /// Изменить параметры контроля для исполнителя
@@ -103,12 +103,12 @@
         /// <summary>
         /// Направить для контроля
         /// </summary>
-        SendForControl = 100030,
+        //SendForControl = 100030,
 
         /// <summary>
         /// Направить для ответственного исполнения 
         /// </summary>
-        SendForResponsibleExecution = 100031,
+        //SendForResponsibleExecution = 100031,
 
         /// <summary>
         /// Направить для исполнения
@@ -348,16 +348,19 @@
         /// </summary>
         DeleteDocumentFileVersion = 104014,
         /// <summary>
-        /// Удалить запись о версим файла
+        /// Восстановить версию файла из корзину
         /// </summary>
-        DeleteDocumentFileVersionRecord = 104015,
+        RestoreDocumentFileVersion = 104015,
 
         /// <summary>
         /// Сделать основной версией
         /// </summary>
         AcceptMainVersionDocumentFile = 104016,
 
-
+        /// <summary>
+        /// Удалить версию файл
+        /// </summary>
+        DeleteDocumentFileVersionFinal = 104018,
         /// <summary>
         /// Добавить связь между документами
         /// </summary>
@@ -414,30 +417,30 @@
         ReportRegisterTransmissionDocuments = 100086,
         ReportDocumentForDigitalSignature = 100087,
 
-        AddTemplateDocument = 251001,
-        CopyTemplateDocument = 251002,
-        ModifyTemplateDocument = 251005,
-        DeleteTemplateDocument = 251009,
-        AddTemplateDocumentSendList = 252001,
-        ModifyTemplateDocumentSendList = 252005,
-        DeleteTemplateDocumentSendList = 252009,
-        AddTemplateDocumentRestrictedSendList = 253001,
-        ModifyTemplateDocumentRestrictedSendList = 253005,
-        DeleteTemplateDocumentRestrictedSendList = 253009,
-        AddTemplateDocumentTask = 254001,
-        ModifyTemplateDocumentTask = 254005,
-        DeleteTemplateDocumentTask = 254009,
-        AddTemplateAttachedFile = 255001,
-        ModifyTemplateAttachedFile = 255005,
-        DeleteTemplateAttachedFile = 255009,
+        AddTemplate = 251001,
+        CopyTemplate = 251002,
+        ModifyTemplate = 251005,
+        DeleteTemplate = 251009,
+        AddTemplateSendList = 252001,
+        ModifyTemplateSendList = 252005,
+        DeleteTemplateSendList = 252009,
+        AddTemplateRestrictedSendList = 253001,
+        ModifyTemplateRestrictedSendList = 253005,
+        DeleteTemplateRestrictedSendList = 253009,
+        AddTemplateTask = 254001,
+        ModifyTemplateTask = 254005,
+        DeleteTemplateTask = 254009,
+        AddTemplateFile = 255001,
+        ModifyTemplateFile = 255005,
+        DeleteTemplateFile = 255009,
 
-        AddTemplateDocumentPaper = 256001,
-        ModifyTemplateDocumentPaper = 256005,
-        DeleteTemplateDocumentPaper = 256009,
+        AddTemplatePaper = 256001,
+        ModifyTemplatePaper = 256005,
+        DeleteTemplatePaper = 256009,
 
-        AddTemplateDocumentAccess = 257001,
-        ModifyTemplateDocumentAccess = 257005,
-        DeleteTemplateDocumentAccess = 257009,
+        AddTemplateAccess = 257001,
+        ModifyTemplateAccess = 257005,
+        DeleteTemplateAccess = 257009,
 
         // При добавлении действия не забудь добавить действие в ImportData: BL.Database.DatabaseContext.DmsDbImportData!!!
 

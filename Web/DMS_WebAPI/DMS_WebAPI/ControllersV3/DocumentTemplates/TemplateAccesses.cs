@@ -26,8 +26,8 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
     {
         private IHttpActionResult GetById(IContext context, int Id)
         {
-            var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
-            var tmpItem = tmpService.GetTemplateDocumentAccess(context, Id);
+            var tmpService = DmsResolver.Current.Get<ITemplateService>();
+            var tmpItem = tmpService.GetTemplateAccess(context, Id);
             var res = new JsonResult(tmpItem, this);
             return res;
         }
@@ -40,16 +40,16 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpGet]
         [Route("{Id:int}/" + Features.Accesses)]
-        [ResponseType(typeof(List<FrontTemplateDocumentAccess>))]
-        public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterTemplateDocumentAccess filter)
+        [ResponseType(typeof(List<FrontTemplateAccess>))]
+        public async Task<IHttpActionResult> Get(int Id, [FromUri] FilterTemplateAccess filter)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   if (filter == null) filter = new FilterTemplateDocumentAccess();
+                   if (filter == null) filter = new FilterTemplateAccess();
                    filter.TemplateId = Id;
 
-                   var tmpService = DmsResolver.Current.Get<ITemplateDocumentService>();
-                   var tmpItems = tmpService.GetTemplateDocumentAccesses(context, filter);
+                   var tmpService = DmsResolver.Current.Get<ITemplateService>();
+                   var tmpItems = tmpService.GetTemplateAccesses(context, filter);
                    var res = new JsonResult(tmpItems, this);
                    return res;
                });
@@ -63,7 +63,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpGet]
         [Route(Features.Accesses + "/{Id:int}")]
-        [ResponseType(typeof(FrontTemplateDocumentAccess))]
+        [ResponseType(typeof(FrontTemplateAccess))]
         public async Task<IHttpActionResult> Get(int Id)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
@@ -79,11 +79,11 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Accesses)]
-        public async Task<IHttpActionResult> Post([FromBody]AddTemplateDocumentAccess model)
+        public async Task<IHttpActionResult> Post([FromBody]AddTemplateAccess model)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   var tmpItem = Action.Execute(context, EnumDocumentActions.AddTemplateDocumentAccess, model);
+                   var tmpItem = Action.Execute(context, EnumDocumentActions.AddTemplateAccess, model);
                    return GetById(context, tmpItem);
                });
         }
@@ -95,11 +95,11 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         /// <returns></returns>
         [HttpPut]
         [Route(Features.Accesses)]
-        public async Task<IHttpActionResult> Put([FromBody]ModifyTemplateDocumentAccess model)
+        public async Task<IHttpActionResult> Put([FromBody]ModifyTemplateAccess model)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.ModifyTemplateDocumentAccess, model);
+                   Action.Execute(context, EnumDocumentActions.ModifyTemplateAccess, model);
                    return GetById(context, model.Id);
                });
         }
@@ -115,7 +115,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.DeleteTemplateDocumentAccess, Id);
+                   Action.Execute(context, EnumDocumentActions.DeleteTemplateAccess, Id);
                    var tmpItem = new FrontDeleteModel(Id);
                    var res = new JsonResult(tmpItem, this);
                    return res;

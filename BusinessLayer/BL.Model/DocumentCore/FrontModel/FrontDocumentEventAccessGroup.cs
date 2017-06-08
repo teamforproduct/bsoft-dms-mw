@@ -8,8 +8,6 @@ namespace BL.Model.DocumentCore.FrontModel
     public class FrontDocumentEventAccessGroup 
     {
         public int? Id { get; set; }
-        public int? ClientId { get; set; }
-        public int? EntityTypeId { get; set; }
         public int? DocumentId { get; set; }
         public int? EventId { get; set; }
         public EnumEventAccessTypes? AccessType { get; set; }   // получатель, копия, досылка
@@ -22,7 +20,6 @@ namespace BL.Model.DocumentCore.FrontModel
         public int? RecordId { get; set; }
         public string Name { get; set; }
         public List<string> Details { get; set; }
-
         public bool? IsActive { get; set; }
     }
 }

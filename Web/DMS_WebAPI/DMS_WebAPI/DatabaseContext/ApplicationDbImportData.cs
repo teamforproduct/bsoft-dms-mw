@@ -18,7 +18,7 @@ namespace DMS_WebAPI.DatabaseContext
         public static List<AdminLanguages> GetAdminLanguages()
         {
             var items = new List<AdminLanguages>();
-            // Эту функциюнужно синхронизить с DmsDbImportData.GetAdminLanguages
+
             items.Add(new AdminLanguages { Id = 570, Code = "ru_RU", Name = "Русский", FileName = "messages_ru_RU.properties", IsDefault = true });
             items.Add(new AdminLanguages { Id = 045, Code = "en_US", Name = "English", FileName = "messages_en_US.properties", IsDefault = false });
             items.Add(new AdminLanguages { Id = 720, Code = "uk_UA", Name = "Українська", FileName = "messages_uk_UA.properties", IsDefault = false });
@@ -115,7 +115,7 @@ namespace DMS_WebAPI.DatabaseContext
             var tmpService = DmsResolver.Current.Get<ISystemService>();
 
             // Действия
-            f.AddRange(tmpService.GetImportSystemActions().Select(x => x.Description));
+            //f.AddRange(tmpService.GetImportSystemActions().Select(x => x.Description));
 
             // Модули
             f.AddRange(tmpService.GetImportSystemModules().Select(x => x.Name));

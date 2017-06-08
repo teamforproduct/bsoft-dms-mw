@@ -29,25 +29,9 @@ namespace BL.Model.DocumentCore.FrontModel
         /// </summary>
         public EnumSendTypes SendType { get; set; }
         /// <summary>
-        /// ИД должности от кого идет рассылка
-        /// </summary>
-        public int? SourcePositionId { get; set; }
-        /// <summary>
-        /// ИД должности кому направлена рассылка
-        /// </summary>
-        public int? TargetPositionId { get; set; }
-        /// <summary>
-        /// ИД внешнего агента кому направлена рассылка
-        /// </summary>
-        public int? TargetAgentId { get; set; }
-        /// <summary>
         /// Задача
         /// </summary>
         public string Task { get; set; }
-        /// <summary>
-        /// В рамках рабочей группы
-        /// </summary>
-        public bool IsWorkGroup { get; set; }
         /// <summary>
         /// Добавлять самоконтроль для отправителя
         /// </summary>
@@ -66,11 +50,11 @@ namespace BL.Model.DocumentCore.FrontModel
         public int? SelfDueDay { get; set; }
         /// <summary>
         /// Дата постоянное внимание для самоконтроля
-        /// </sumпmary>
+        /// </summary>
         public Nullable<DateTime> SelfAttentionDate { get; set; }
         /// <summary>
         /// Дни для определения даты постоянного внимания для самоконтроля
-        /// </sumпmary>
+        /// </summary>
         public int? SelfAttentionDay { get; set; }
         /// <summary>
         /// Комментарий
@@ -88,7 +72,7 @@ namespace BL.Model.DocumentCore.FrontModel
         /// <summary>
         /// ИД уровня доступа
         /// </summary>
-        public EnumAccessLevels AccessLevel { get; set; }
+        public EnumAccessLevels? AccessLevel { get; set; }
         /// <summary>
         /// Признак первоначальный пункт
         /// </summary>
@@ -109,23 +93,15 @@ namespace BL.Model.DocumentCore.FrontModel
         public string SendTypeName { get; set; }
         public string SendTypeCode { get; set; }
         public bool SendTypeIsImportant { get; set; }
-        public int? SourceAgentId { get; set; }
-        public string SourcePositionName { get; set; }
-        public int? SourcePositionExecutorAgentId { get; set; }
-        public string SourcePositionExecutorAgentName { get; set; }
-        public string SourceAgentName { get; set; }
-
-        public string TargetPositionName { get; set; }
-        public int? TargetPositionExecutorAgentId { get; set; }
-        public string TargetPositionExecutorAgentName { get; set; }
-        public string TargetAgentName { get; set; }
-
         public string AccessLevelName { get; set; }
 
         public string AddDescription { get; set; }
 
         public FrontDocumentEvent StartEvent { get; set; }
         public FrontDocumentEvent CloseEvent { get; set; }
+        /// <summary>
+        /// Группы получателей
+        /// </summary>
         public IEnumerable<FrontDocumentSendListAccessGroup> AccessGroups { get; set; }
     }
 }

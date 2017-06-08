@@ -40,12 +40,9 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
-            _actionRecords =
-                   _document.DocumentFiles
-                   .Where(x => !x.IsDeleted)
-                        .Where(
-                       x =>
-                           x.ExecutorPositionId == positionId)
+            if ((_document.Accesses?.Count() ?? 0) != 0 && !_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork))
+                return false;
+            _actionRecords = _document.DocumentFiles.Where(x => !x.IsDeleted && x.ExecutorPositionId == positionId)
                                                    .Select(x => new InternalActionRecord
                                                    {
                                                        FileId = x.Id,
@@ -59,22 +56,20 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanExecute()
         {
-            _adminProc.VerifyAccess(_context, CommandType);
-
-            //TODO potential two user could add same new version in same time. Probably need to implement CheckOut flag in future
-            //TODO REDISIGN!!!!!!!!!
             _document = _operationDb.ModifyDocumentFilePrepare(_context, Model.FileId);
             if (_document == null)
             {
-                throw new EmployeeHasNoAccessToDocument();
+                throw new DocumentNotFoundOrUserHasNoAccess();
             }
             if (_document.DocumentFiles == null || !_document.DocumentFiles.Any())
             {
                 throw new UnknownDocumentFile();
             }
             _file = _document.DocumentFiles.First();
-
-            if (!CanBeDisplayed(_context.CurrentPositionId))
+            _context.SetCurrentPosition(_file.ExecutorPositionId);
+            _adminProc.VerifyAccess(_context, CommandType);
+            if ((Model.Type != null && Model.Type == EnumFileTypes.Main && _file.ExecutorPositionId != _file.ExecutorPositionId)
+                || !CanBeDisplayed(_context.CurrentPositionId))
             {
                 throw new CouldNotPerformOperation();
             }
@@ -84,14 +79,20 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override object Execute()
         {
+            if (Model.Type.HasValue && _file.Type != Model.Type)
+            {
+                _file.IsTypeChange = true;
+                _file.Type = Model.Type.Value;
+            }
             _file.Description = Model.Description;
+            _file.IsBaseChange = true;
 
             CommonDocumentUtilities.SetLastChange(_context, _file);
             var newEvent = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _file.DocumentId, EnumEventTypes.ModifyDocumentFile, Model.EventDate, Model.Description, null, _file.EventId, null, Model.TargetAccessGroups);
-            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent.Accesses);
+            CommonDocumentUtilities.VerifyAndSetDocumentAccess(_context, _document, newEvent);
             _document.Events = new List<InternalDocumentEvent> { newEvent };
 
-            _operationDb.UpdateFileOrVersion(_context, _document);
+            _operationDb.ModifyDocumentFile(_context, _document);
             return _file.Id;
         }
     }

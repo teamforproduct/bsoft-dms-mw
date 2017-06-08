@@ -6,13 +6,17 @@
     public enum EnumActionCategories
     {
         /// <summary>
+        /// Действия
+        /// </summary>
+        Actions = 0,
+        /// <summary>
         /// Документ
         /// </summary>
         Document = 10,
         /// <summary>
         /// Действия
         /// </summary>
-        Actions = 20,
+        DocumentActions = 20,
         /// <summary>
         /// Информирование
         /// </summary>
@@ -28,7 +32,7 @@
         /// <summary>
         /// Файлы
         /// </summary>
-        Files = 60,
+        FileVersions = 60,
         /// <summary>
         /// Отчеты
         /// </summary>

@@ -5,6 +5,7 @@ using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using Microsoft.AspNet.Identity;
 using System.Web.Http;
 
 namespace DMS_WebAPI.ControllersV3.User
@@ -17,10 +18,10 @@ namespace DMS_WebAPI.ControllersV3.User
     [RoutePrefix(ApiPrefix.V3 + Modules.User)]
     public class UserControlQuestionController : WebApiController
     {
-        private IHttpActionResult GetById(IContext context)
+        private IHttpActionResult GetById()
         {
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            var user = webService.GetUserById(context.User.Id);
+            var user = webService.GetUserById(User.Identity.GetUserId());
             var res = new JsonResult(new FrontAspNetUserControlQuestion
             {
                 Question = user.ControlQuestion?.Name,
@@ -39,8 +40,7 @@ namespace DMS_WebAPI.ControllersV3.User
         public IHttpActionResult Get()
         {
             //!ASYNC
-            var context = DmsResolver.Current.Get<UserContexts>().Get();
-            return GetById(context);
+            return GetById();
         }
 
         /// <summary>
@@ -52,10 +52,9 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.ControlQuestion)]
         public IHttpActionResult Put([FromBody]ModifyAspNetUserControlQuestion model)
         {
-            var context = DmsResolver.Current.Get<UserContexts>().Get();
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            webService.ChangeControlQuestion(model);
-            return GetById(context);
+            webService.ChangeControlQuestion(User.Identity.GetUserId(), model);
+            return GetById();
         }
 
     }

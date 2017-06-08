@@ -107,8 +107,8 @@ namespace DMS_WebAPI.ControllersV3.Employees
             var webSeevice = DmsResolver.Current.Get<WebAPIService>();
             webSeevice.UpdateUserEmployee(context, model);
 
-            var contexts = DmsResolver.Current.Get<UserContexts>();
-            contexts.UpdateLanguageId(model.Id, model.LanguageId);
+            //var contexts = DmsResolver.Current.Get<UserContexts>();
+            //contexts.UpdateLanguageId(model.Id, model.LanguageId);
 
             return GetById(context, model.Id);
         }

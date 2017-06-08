@@ -36,16 +36,20 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override bool CanBeDisplayed(int positionId)
         {
-            _actionRecords =
-                          _document.DocumentFiles.Where(x => x.IsMainVersion && !x.IsDeleted)
-                            .Where(
-                              x =>
-                                  (x.Type == EnumFileTypes.Additional && x.ExecutorPositionId == positionId)
-                                    || (x.Type == EnumFileTypes.Main && _document.ExecutorPositionId == positionId))
-                                                          .Select(x => new InternalActionRecord
-                                                          {
-                                                              FileId = x.Id,
-                                                          });
+            if ((_document.Accesses?.Count() ?? 0) != 0 && !_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork))
+                return false;
+            var qry = _document.DocumentFiles.Where(x => x.ExecutorPositionId == positionId);
+            if (CommandType == EnumDocumentActions.DeleteDocumentFile)
+                qry = qry.Where(x => !x.IsDeleted && x.IsMainVersion);
+            else if (CommandType == EnumDocumentActions.DeleteDocumentFileVersion)
+                qry = qry.Where(x => !x.IsDeleted && !x.IsMainVersion);
+            else if (CommandType == EnumDocumentActions.DeleteDocumentFileVersionFinal)
+                qry = qry.Where(x => x.IsDeleted && !x.IsContentDeleted);
+            else return false;
+            _actionRecords = qry.Select(x => new InternalActionRecord
+            {
+                FileId = x.Id,
+            });
             if (!_actionRecords.Any())
             {
                 return false;
@@ -58,23 +62,17 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             _document = _operationDb.DeleteDocumentFilePrepare(_context, Model);
             if (_document == null)
             {
-                throw new EmployeeHasNoAccessToDocument();
+                throw new DocumentNotFoundOrUserHasNoAccess();
             }
-            if (_document.DocumentFiles == null || !_document.DocumentFiles.Any())
+            if (_document.DocumentFiles == null || !_document.DocumentFiles.Any(x => x.Id == Model))
             {
                 throw new UnknownDocumentFile();
             }
 
-            _file = _document.DocumentFiles.Where(x => x.IsMainVersion).First();
+            _file = _document.DocumentFiles.Where(x => x.Id == Model).First();
 
-            if (_file.Type != EnumFileTypes.Additional)
-            {
-                _context.SetCurrentPosition(_document.ExecutorPositionId);
-            }
-            else
-            {
-                _context.SetCurrentPosition(_file.ExecutorPositionId);
-            }
+            _context.SetCurrentPosition(_file.ExecutorPositionId);
+
             _adminProc.VerifyAccess(_context, CommandType);
 
             if (!CanBeDisplayed(_context.CurrentPositionId))
@@ -87,25 +85,20 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
 
         public override object Execute()
         {
-            var docFile = new InternalDocumentFile
+            CommonDocumentUtilities.SetLastChange(_context, _file);
+            if (_file.IsDeleted)
             {
-                ClientId = _document.ClientId,
-                EntityTypeId = _document.EntityTypeId,
-                DocumentId = _file.DocumentId,
-                OrderInDocument = _file.OrderInDocument
-            };
-            //try
-            //{
-            //    //_fStore.DeleteFile(_context, docFile);
-            //}
-            //catch (CannotAccessToFile ex)
-            //{
-            //}
-            if (_document.IsRegistered.HasValue)
-            {
-                docFile.Event = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, docFile.DocumentId, EnumEventTypes.DeleteDocumentFile, null, null, _file.File.FileName);
+                _operationDb.DeleteDocumentFileFinal(_context, _file);
             }
-            _operationDb.DeleteAttachedFile(_context, docFile);
+            else
+            {
+                if (_document.IsRegistered.HasValue)
+                {
+                    _file.Event = CommonDocumentUtilities.GetNewDocumentEvent(_context, (int)EnumEntytiTypes.Document, _file.DocumentId,
+                        _file.IsMainVersion ? EnumEventTypes.DeleteDocumentFile : EnumEventTypes.DeleteDocumentFileVersion, null, null, _file.File.FileName, _file.EventId);
+                }
+                _operationDb.DeleteDocumentFile(_context, _file);
+            }
             return null;
         }
     }

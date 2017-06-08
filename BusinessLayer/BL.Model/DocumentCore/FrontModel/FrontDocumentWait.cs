@@ -1,4 +1,5 @@
-﻿using BL.Model.Extensions;
+﻿using BL.Model.Enums;
+using BL.Model.Extensions;
 using System;
 
 namespace BL.Model.DocumentCore.FrontModel
@@ -10,7 +11,7 @@ namespace BL.Model.DocumentCore.FrontModel
         public int? ParentId { get; set; }
         public int OnEventId { get; set; }
         public int? OffEventId { get; set; }
-        public int? ResultTypeId { get; set; }
+        public EnumResultTypes? ResultType { get; set; }
         public string ResultTypeName { get; set; }
 
         public DateTime? DueDate { get { return _DueDate; } set { _DueDate=value.ToUTC(); } }

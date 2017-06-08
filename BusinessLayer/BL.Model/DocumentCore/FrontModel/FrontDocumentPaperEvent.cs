@@ -1,4 +1,5 @@
-﻿using BL.Model.Extensions;
+﻿using BL.Model.Enums;
+using BL.Model.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,7 @@ namespace BL.Model.DocumentCore.FrontModel
     {
         public int Id { get; set; }
 
-        public int? EventType { get; set; }
+        public EnumEventTypes? EventType { get; set; }
         public string EventTypeName { get; set; }
 
         public DateTime? PlanDate { get { return _PlanDate; } set { _PlanDate = value.ToUTC(); } }

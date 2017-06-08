@@ -34,25 +34,13 @@ namespace BL.Model.DocumentCore.IncomingModel
         [Required]
         public EnumSendTypes SendType { get; set; }
         /// <summary>
-        /// ИД должности от кого идет рассылка
-        /// </summary>
-        public int? SourcePositionId { get; set; }
-        /// <summary>
         /// ИД должности кому направлена рассылка
         /// </summary>
         public int? TargetPositionId { get; set; }
         /// <summary>
-        /// ИД внешнего агента кому направлена рассылка
-        /// </summary>
-        public int? TargetAgentId { get; set; }
-        /// <summary>
         /// ИД Задачи
         /// </summary>
         public string Task { get; set; }
-        /// <summary>
-        /// В рамках рабочей группы
-        /// </summary>
-        public bool IsWorkGroup { get; set; }
         /// <summary>
         /// Добавлять самоконтроль для отправителя
         /// </summary>
@@ -71,11 +59,11 @@ namespace BL.Model.DocumentCore.IncomingModel
         public int? SelfDueDay { get; set; }
         /// <summary>
         /// Дата постоянное внимание для самоконтроля
-        /// </sumпmary>
+        /// </summary>
         public Nullable<DateTime> SelfAttentionDate { get; set; }
         /// <summary>
         /// Дни для определения даты постоянного внимания для самоконтроля
-        /// </sumпmary>
+        /// </summary>
         public int? SelfAttentionDay { get; set; }
         /// <summary>
         /// Комментарий

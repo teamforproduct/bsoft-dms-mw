@@ -9,6 +9,7 @@ namespace BL.Model.DocumentCore.InternalModel
     public class InternalDocumentSendList : LastChangeInfo
     {
         public int Id { get; set; }
+        public int? IdTemplateSendList { get; set; }
         public int ClientId { get; set; }
         public int EntityTypeId { get; set; }
         public int DocumentId { get; set; }
@@ -17,14 +18,10 @@ namespace BL.Model.DocumentCore.InternalModel
         public EnumSendTypes SendType { get; set; }
 
         public int? SourcePositionId { get; set; }
-        public int? SourceAgentId { get; set; }
-
         public int? TargetPositionId { get; set; }
-        public int? TargetAgentId { get; set; }
 
         public int? TaskId { get; set; }
         public string TaskName { get; set; }
-        public bool IsWorkGroup { get; set; }
         public bool IsAddControl { get; set; }
         public string SelfDescription { get; set; }
         public Nullable<DateTime> SelfDueDate { get; set; }
@@ -43,10 +40,6 @@ namespace BL.Model.DocumentCore.InternalModel
         public InternalDocumentEvent CloseEvent { get; set; }
         public InternalDocumentTask Task { get; set; }
         public List<InternalDocumentEvent> PaperEvents { get; set; }
-        public InternalDictionaryAgent TargetAgent { get; set; }
-
-        public string InitiatorPositionName { get; set; }
-        public string InitiatorPositionExecutorAgentName { get; set; }
         public IEnumerable<InternalDocumentSendListAccessGroup> AccessGroups { get; set; }
 
     }

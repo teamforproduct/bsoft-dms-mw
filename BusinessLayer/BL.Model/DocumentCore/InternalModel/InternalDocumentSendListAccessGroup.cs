@@ -18,9 +18,6 @@ namespace BL.Model.DocumentCore.InternalModel
         public int? PositionId { get; set; }
         public int? AgentId { get; set; }
         public int? StandartSendListId { get; set; }
-
-
-
         public bool IsActive { get; set; }
     }
 }

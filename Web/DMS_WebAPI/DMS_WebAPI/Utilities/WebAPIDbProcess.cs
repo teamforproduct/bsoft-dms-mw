@@ -831,6 +831,7 @@ namespace DMS_WebAPI.Utilities
                 Id = model.Id,
                 Name = model.Name,
                 Code = model.Code,
+                LanguageId = model.LanguageId,
             };
         }
 

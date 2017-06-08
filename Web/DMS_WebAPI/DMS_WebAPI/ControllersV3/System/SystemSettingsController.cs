@@ -172,5 +172,22 @@ namespace DMS_WebAPI.ControllersV3.System
                 return res;
             });
         }
+
+        /// <summary>
+        /// Возвращает значение настройки: 
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        [Route(Features.Settings + "/GetClearTrashFilesTimeoutDayForClear")]
+        public async Task<IHttpActionResult> GetClearTrashFilesTimeoutDayForClear()
+        {
+            return await SafeExecuteAsync(ModelState, (context, param) =>
+            {
+                var tmpService = DmsResolver.Current.Get<ISettingValues>();
+                var tmpItem = tmpService.GetClearTrashFilesTimeoutDayForClear(context);
+                var res = new JsonResult(tmpItem, this);
+                return res;
+            });
+        }
     }
 }

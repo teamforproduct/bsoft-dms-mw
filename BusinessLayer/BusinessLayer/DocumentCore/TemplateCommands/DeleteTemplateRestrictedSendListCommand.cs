@@ -7,9 +7,9 @@ namespace BL.Logic.DocumentCore.TemplateCommands
 {
     public class DeleteTemplateRestrictedSendListCommand : BaseDocumentCommand
     {
-        private readonly ITemplateDocumentsDbProcess _operationDb;
+        private readonly ITemplateDbProcess _operationDb;
 
-        public DeleteTemplateRestrictedSendListCommand(ITemplateDocumentsDbProcess operationDb)
+        public DeleteTemplateRestrictedSendListCommand(ITemplateDbProcess operationDb)
         {
             _operationDb = operationDb;
 
