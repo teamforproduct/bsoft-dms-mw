@@ -745,7 +745,7 @@ namespace DMS_WebAPI.Utilities
 
                 var brInfo = HttpContext.Current.Request.Browser.Info();
 
-                var intContext = GetContextInternal(item.Token, user, clientCode, server, brInfo, item.Fingerprint);
+                var intContext = GetContextInternal(item.Token, user, clientCode, server, brInfo, item.Session.Fingerprint);
 
                 // TODO вернуть, когда перейдем к лицензиям 
                 //VerifyNumberOfConnectionsByNew(context, new List<DatabaseModelForAdminContext> { server });//LONG

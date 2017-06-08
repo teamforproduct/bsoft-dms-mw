@@ -388,6 +388,7 @@
     <Compile Include="DBModel\AspNetLicences.cs" />
     <Compile Include="DBModel\AspNetClients.cs" />
     <Compile Include="DBModel\AspNetUserFingerprints.cs" />
+    <Compile Include="DBModel\SessionLogs.cs" />
     <Compile Include="DBModel\SystemSettings.cs" />
     <Compile Include="DBModel\SystemValueTypes.cs" />
     <Compile Include="DependencyInjection\ApiModel.cs" />
@@ -442,6 +443,10 @@
     <Compile Include="Migrations\201706010335544_UserInvitations.cs" />
     <Compile Include="Migrations\201706010335544_UserInvitations.Designer.cs">
       <DependentUpon>201706010335544_UserInvitations.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706082211401_SessionLogs.cs" />
+    <Compile Include="Migrations\201706082211401_SessionLogs.Designer.cs">
+      <DependentUpon>201706082211401_SessionLogs.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="DBModel\AspNetUsers.cs" />
@@ -668,6 +673,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201706010335544_UserInvitations.resx">
       <DependentUpon>201706010335544_UserInvitations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706082211401_SessionLogs.resx">
+      <DependentUpon>201706082211401_SessionLogs.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
