@@ -104,17 +104,16 @@ namespace DMS_WebAPI.Infrastructure
                     continue;
                 }
 
-                // перевожу
-                m = languageService.GetTranslation(m);
+                List<string> parms = null;
 
                 // подстановка параметров в сообщение
                 if (exc is DmsExceptions)
                 {
-                    var p = (exc as DmsExceptions).Parameters;
-
-                    if (p?.Count > 0) m = InsertValues(m, p);
+                    parms = (exc as DmsExceptions).Parameters;
                 }
 
+                // перевожу
+                m = languageService.GetTranslation(m, parms);
 
                 // Без вложенных сообщений
                 if (string.IsNullOrEmpty(responceExpression)) responceExpression = m;
@@ -130,8 +129,8 @@ namespace DMS_WebAPI.Infrastructure
             }
 
             // Если в результате подстановки параметров подставили лейблы, нужно их перевести
-            descriptionExpression = languageService.GetTranslation(descriptionExpression);
-            responceExpression = languageService.GetTranslation(responceExpression);
+            //descriptionExpression = languageService.GetTranslation(descriptionExpression);
+            //responceExpression = languageService.GetTranslation(responceExpression);
 
             return responceExpression;
         }
@@ -229,16 +228,7 @@ namespace DMS_WebAPI.Infrastructure
 
         }
 
-        private static string InsertValues(string Message, List<string> Paramenters)
-        {
-            try
-            {
-                return string.Format(Message, Paramenters.ToArray());
-            }
-            catch
-            { }
-            return Message;
-        }
+
 
     }
 }

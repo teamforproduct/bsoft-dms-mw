@@ -11,6 +11,7 @@ using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Models;
 using Microsoft.AspNet.Identity;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -133,12 +134,15 @@ namespace DMS_WebAPI.Utilities
 
             builder.Query = newQuery.ToString();// string.Join("&", nvc.AllKeys.Select(key => string.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(nvc[key]))));
 
+            var languages = DmsResolver.Current.Get<ILanguages>();
 
             var m = new RestorePasswordModel()
             {
-                FirstName = user.FirstName,
+                Greeting = languages.GetTranslation(user.LanguageId, "##l@Mail:Greeting@l##", new List<string> { user.FirstName }),
+                Closing = languages.GetTranslation(user.LanguageId, "##l@Mail:Closing@l##"),
                 // сылка на восстановление пароля
-                Url = builder.ToString(),
+                CallToActionUrl = builder.ToString(),
+                CallToActionName = languages.GetTranslation(user.LanguageId, "##l@Mail.RestorePassword.CallToActionName@l##"),
             };
 
             // html с подставленной моделью
@@ -146,7 +150,6 @@ namespace DMS_WebAPI.Utilities
 
 
             var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-            var languages = DmsResolver.Current.Get<ILanguages>();
             mailService.SendMessage(null, MailServers.Noreply, model.Email, languages.GetTranslation(user.LanguageId, "##l@Mail.RestorePassword.Subject@l##"), htmlContent);
         }
 

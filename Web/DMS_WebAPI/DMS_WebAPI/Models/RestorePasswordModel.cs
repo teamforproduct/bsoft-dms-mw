@@ -1,9 +1,6 @@
 ﻿namespace DMS_WebAPI.Models
 {
-    public class RestorePasswordModel
+    public class RestorePasswordModel : BaseMailModel
     {
-        public string FirstName { get; set; }
-
-        public string Url { get; set; }
     }
 }

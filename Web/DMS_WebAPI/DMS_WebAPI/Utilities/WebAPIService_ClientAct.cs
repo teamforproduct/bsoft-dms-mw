@@ -454,18 +454,19 @@ namespace DMS_WebAPI.Utilities
 
                 var m = new NewCompanyRequestModel()
                 {
-                    Url = callbackurl,
+                    Greeting = languages.GetTranslation(model.Language, "##l@Mail:Greeting@l##", new List<string> { model.FirstName }),
+                    Closing = languages.GetTranslation(model.Language, "##l@Mail:Closing@l##"),
+                    CallToActionUrl = callbackurl,
+                    CallToActionName = languages.GetTranslation(model.Language, "##l@Mail.NewCompanyRequest.CallToActionName@l##"),
                     ClientCode = model.ClientCode,
                     ClientName = model.ClientName,
-                    FirstName = model.FirstName,
-                    Language = model.Language
                 };
 
                 var htmlContent = m.RenderPartialViewToString(RenderPartialView.NewCompanyRequest);
                 var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
 
 
-                mailService.SendMessage(null, MailServers.Docum, model.Email, languages.GetTranslation("##l@Mail.Welcome.Subject@l##"), htmlContent);
+                mailService.SendMessage(null, MailServers.Docum, model.Email, languages.GetTranslation(model.Language, "##l@Mail.NewCompanyRequest.Subject@l##"), htmlContent);
             }
             catch (Exception)
             {
