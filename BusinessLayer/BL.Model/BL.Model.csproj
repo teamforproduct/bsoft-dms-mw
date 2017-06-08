@@ -658,6 +658,7 @@
     <Compile Include="Users\ChangeLockoutAgentUser.cs" />
     <Compile Include="Users\ChangeNotifications.cs" />
     <Compile Include="Users\ConfirmEmail.cs" />
+    <Compile Include="Users\ValidatePassword.cs" />
     <Compile Include="Users\ResetPassword.cs" />
     <Compile Include="Users\FrontNotifications.cs" />
     <Compile Include="Users\FrontPermission.cs" />

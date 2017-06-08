@@ -78,15 +78,15 @@ namespace DMS_WebAPI.ControllersV3.Auth
         /// <summary>
         /// Сбрасывает пароль
         /// </summary>
-        /// <param name="password"></param>
+        /// <param name="model"></param>
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost]
         [Route("ValidatePassword")]
-        public async Task<IHttpActionResult> ValidatePassword([FromBody]string password)
+        public async Task<IHttpActionResult> ValidatePassword([FromBody]ValidatePassword model)
         {
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            await webService.ValidatePassword(password);
+            await webService.ValidatePassword(model.Password);
             return new JsonResult(null, this);
         }
 
