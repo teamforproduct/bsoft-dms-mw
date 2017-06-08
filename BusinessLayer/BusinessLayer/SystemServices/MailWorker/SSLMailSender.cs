@@ -33,7 +33,7 @@ namespace BL.Logic.SystemServices.MailWorker
             myMail.From = mailData.FromAddress;
             myMail.To = mailData.ToAddress;
             myMail.Subject = mailData.Subject;
-            myMail.BodyEncoding = Encoding.UTF8;
+            myMail.BodyEncoding = Encoding.UTF8; // Иначе для украинского текста приходят  знаки ?
             myMail.BodyFormat = MailFormat.Html;
             myMail.Body = mailData.Body;
             myMail.Priority = MailPriority.High;
