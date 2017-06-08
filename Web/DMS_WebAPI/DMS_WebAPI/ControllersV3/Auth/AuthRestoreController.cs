@@ -3,6 +3,7 @@ using BL.Model.SystemCore;
 using BL.Model.Users;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -72,6 +73,21 @@ namespace DMS_WebAPI.ControllersV3.Auth
             var webService = DmsResolver.Current.Get<WebAPIService>();
             var res = await webService.ResetPassword(model);
             return new JsonResult(new { UserName = res }, this);
+        }
+
+        /// <summary>
+        /// Сбрасывает пароль
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [AllowAnonymous]
+        [HttpPost]
+        [Route("ValidatePassword")]
+        public async Task<IHttpActionResult> ValidatePassword([FromBody]ValidatePassword model)
+        {
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            await webService.ValidatePassword(model.Password);
+            return new JsonResult(null, this);
         }
 
     }
