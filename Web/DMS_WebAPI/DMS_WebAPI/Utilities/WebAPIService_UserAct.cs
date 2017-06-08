@@ -144,6 +144,7 @@ namespace DMS_WebAPI.Utilities
                 CallToActionUrl = builder.ToString(),
                 CallToActionName = languages.GetTranslation(user.LanguageId, "##l@Mail.RestorePassword.CallToActionName@l##"),
                 CallToActionDescription = languages.GetTranslation(user.LanguageId, "##l@Mail.RestorePassword.CallToActionDescription@l##"),
+                PostScriptum = languages.GetTranslation(user.LanguageId, "##l@Mail.RestorePassword.PostScriptum@l##"),
             };
 
             // html с подставленной моделью
