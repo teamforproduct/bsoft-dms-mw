@@ -6,16 +6,15 @@
 
 <div>
   <br>
-  Здравствуйте, @Model.FirstName!
+  @Model.Greeting
   <br>
   <br>
   От Вас получен запрос на изменения вашего основного почтового ящика. Для продолжения нажмите на эту ссылку:
   <br>
   <br>
   <a style="border-radius: 4px;font-size: 15px;color: white;text-decoration: none;padding: 14px 7px 14px 7px;width: 210px;max-width: 210px;font-family: &quot;Open Sans&quot;, &quot;Helvetica Neue&quot;, Arial;margin: 0;display: block;background-color: #007ee6;text-align: center;"
-     href='@Model.Url' target="_blank" rel="noopener">Подтвердить</a>
+     href='@Model.CallToActionUrl' target="_blank" rel="noopener">@Model.CallToActionName</a>
   <br>
   <br>
-  С уважением,<br>
-  команда Ostrean.
+  @Model.Closing
 </div>

@@ -1,9 +1,7 @@
 ﻿namespace DMS_WebAPI.Models
 {
-    public class ChangeLoginModel
+    public class ChangeLoginModel : BaseMailModel
     {
-        public string FirstName { get; set; }
 
-        public string Url { get; set; }
     }
 }

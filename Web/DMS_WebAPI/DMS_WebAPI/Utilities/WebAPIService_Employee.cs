@@ -288,8 +288,10 @@ namespace DMS_WebAPI.Utilities
 
                     var we = new WelcomeEmailModel()
                     {
-                        Url = clickURL,
-                        FirstName = model.FirstName,
+                        Greeting = languages.GetTranslation(model.LanguageId, "##l@Mail:Greeting@l##", new List<string> { model.FirstName }),
+                        Closing = languages.GetTranslation(model.LanguageId, "##l@Mail:Closing@l##"),
+                        CallToActionUrl =clickURL,
+                        CallToActionName = languages.GetTranslation(model.LanguageId, "##l@Mail.Welcome.CallToActionName@l##"),
                         ClientName = settVal.GetClientAddress(clientCode),
                         InvitingName = context.Employee.Name,
                     };
