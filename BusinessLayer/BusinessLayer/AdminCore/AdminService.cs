@@ -152,7 +152,7 @@ namespace BL.Logic.AdminCore
             using (var transaction = Transactions.GetTransaction())
             {
                 var languageService = DmsResolver.Current.Get<ILanguages>();
-                var name = languageService.GetTranslation(context.User.LanguageId, $"##l@Roles:{roleTypeId.ToString()}@l##");
+                var name = languageService.GetTranslation(context.User.LanguageId, Labels.Get("Roles", roleTypeId.ToString()));
 
                 // предполагаю, что классификатор ролей загружен при инсталяции приложения
                 var role = new InternalAdminRole() { RoleTypeId = (int)roleTypeId, Name = name };

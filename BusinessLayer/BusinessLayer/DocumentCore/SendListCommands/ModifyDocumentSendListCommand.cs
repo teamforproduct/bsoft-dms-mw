@@ -11,6 +11,7 @@ using BL.Model.Exception;
 using BL.Logic.DocumentCore.Interfaces;
 using System.Transactions;
 using BL.Model.AdminCore;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DocumentCore.SendListCommands
 {
@@ -89,7 +90,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
                 throw new CouldNotPerformOperation();
             }
             _document.SendLists = tmpSendList;
-            
+
             var taskId = CommonDocumentUtilities.GetDocumentTaskOrCreateNew(_context, _document, Model.Task); //TODO исправление от кого????
             CommonDocumentUtilities.SetSendListAtrributes(_context, _sendList, Model, taskId);
             CommonDocumentUtilities.VerifySendLists(_document);
@@ -109,7 +110,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
                     SourcePositions = CommonDocumentUtilities.GetSourcePositionsForSubordinationVeification(_context, _sendList, _document, true),
                 }))
             {
-                _sendList.AddDescription = "##l@DmsExceptions:SubordinationForDueDateHasBeenViolated@l##";
+                _sendList.AddDescription = Labels.Get("DmsExceptions", "SubordinationForDueDateHasBeenViolated");
             }
 
             #region Paper

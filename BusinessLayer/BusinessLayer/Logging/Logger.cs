@@ -1,4 +1,5 @@
-﻿using BL.CrossCutting.Interfaces;
+﻿using BL.CrossCutting.Helpers;
+using BL.CrossCutting.Interfaces;
 using BL.Database.Common;
 using BL.Database.SystemDb;
 using BL.Logic.Common;
@@ -196,7 +197,7 @@ namespace BL.Logic.Logging
 
 
             res.Where(x => !string.IsNullOrEmpty(x.LogException) && x.LogException.StartsWith("DmsExceptions:")).ToList()
-                .ForEach(x => { x.TypeException = x.LogException; x.LogException = "##l@" + x.LogException + "@l##"; });
+                .ForEach(x => { x.TypeException = x.LogException; x.LogException = Labels.FirstSigns + x.LogException + Labels.LastSigns; });
 
             return res;
         }

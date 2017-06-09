@@ -46,8 +46,6 @@ namespace BL.Logic.ClientCore
         //    return res;
         //}
 
-        private static string GetLabel(string module, string item) => "##l@" + module.Trim() + ":" + item.Trim() + "@l##";
-
         public void AddDictionary(IContext context, AddClientSaaS client)
         {
             // SystemSettings
@@ -219,8 +217,8 @@ namespace BL.Logic.ClientCore
             var languageService = DmsResolver.Current.Get<ILanguages>();
 
             string specCode = ctype.ToString();
-            string code = languageService.GetTranslation(context.User.LanguageId, GetLabel("ContactTypesCode", ctype.ToString())); ;
-            string name = languageService.GetTranslation(context.User.LanguageId, GetLabel("ContactTypes", ctype.ToString()));
+            string code = languageService.GetTranslation(context.User.LanguageId, Labels.Get("ContactTypesCode", ctype.ToString())); ;
+            string name = languageService.GetTranslation(context.User.LanguageId, Labels.Get("ContactTypes", ctype.ToString()));
 
             var model = new AddContactType()
             {
@@ -248,8 +246,8 @@ namespace BL.Logic.ClientCore
 
         private static AddAddressType GetAddressType(EnumAddressTypes id)
         {
-            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
-            string code = GetLabel("AddressTypesCode", id.ToString());
+            string name = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string code = Labels.Get("AddressTypesCode", id.ToString());
             return new AddAddressType()
             {
                 Name = name,
@@ -280,20 +278,20 @@ namespace BL.Logic.ClientCore
             var languageService = DmsResolver.Current.Get<ILanguages>();
             var items = new List<AddTag>();
 
-            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.User.LanguageId, GetLabel("Tags", "Trade")) });
-            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.User.LanguageId, GetLabel("Tags", "Development")) });
-            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.User.LanguageId, GetLabel("Tags", "Production")) });
-            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.User.LanguageId, GetLabel("Tags", "Design")) });
-            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.User.LanguageId, GetLabel("Tags", "Finance")) });
-            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.User.LanguageId, GetLabel("Tags", "Accounting")) });
-            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.User.LanguageId, GetLabel("Tags", "Staff")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.User.LanguageId, Labels.Get("Tags", "Trade")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.User.LanguageId, Labels.Get("Tags", "Development")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.User.LanguageId, Labels.Get("Tags", "Production")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.User.LanguageId, Labels.Get("Tags", "Design")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.User.LanguageId, Labels.Get("Tags", "Finance")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.User.LanguageId, Labels.Get("Tags", "Accounting")) });
+            items.Add(new AddTag { IsActive = true, Name = languageService.GetTranslation(context.User.LanguageId, Labels.Get("Tags", "Staff")) });
 
             return items;
         }
 
         private static AddDocumentType GetDocumentTypes(EnumDocumentTypes id)
         {
-            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string name = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString());
             return new AddDocumentType()
             {
                 Name = name,

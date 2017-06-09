@@ -86,6 +86,7 @@
     <Compile Include="Helpers\CashService\CacheService.cs" />
     <Compile Include="Helpers\CashService\CasheBase.cs" />
     <Compile Include="Helpers\CashService\ICacheService.cs" />
+    <Compile Include="Helpers\Labels.cs" />
     <Compile Include="Interfaces\IConvertToDataSet.cs" />
     <Compile Include="Helpers\ConvertToDataSet.cs" />
     <Compile Include="Helpers\Logger.cs" />

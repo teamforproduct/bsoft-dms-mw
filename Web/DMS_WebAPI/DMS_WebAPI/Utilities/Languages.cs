@@ -382,12 +382,6 @@ namespace DMS_WebAPI.Utilities
             //AddAdminLanguageValues(ApplicationDbImportData.GetAdminLanguageValues());
         }
 
-
-
-
-
-        public string GetLabel(string module, string item) => "##l@" + module.Trim() + ":" + item.Trim() + "@l##";
-
         #endregion
 
         #region [+] DbProcess

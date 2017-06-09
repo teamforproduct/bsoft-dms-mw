@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.SystemServices.MailWorker;
@@ -156,13 +157,13 @@ namespace DMS_WebAPI.Utilities
 
             var m = new MailWithCallToActionModel()
             {
-                Greeting = languages.GetTranslation(user.LanguageId, "##l@Mail:Greeting@l##", new List<string> { user.FirstName }),
-                Closing = languages.GetTranslation(user.LanguageId, "##l@Mail:Closing@l##"),
+                Greeting = languages.GetTranslation(user.LanguageId, Labels.Get("Mail", "Greeting"), new List<string> { user.FirstName }),
+                Closing = languages.GetTranslation(user.LanguageId, Labels.Get("Mail", "Closing")),
                 // сылка на восстановление пароля
                 CallToActionUrl = builder.ToString(),
-                CallToActionName = languages.GetTranslation(user.LanguageId, "##l@Mail.RestorePassword.CallToActionName@l##"),
-                CallToActionDescription = languages.GetTranslation(user.LanguageId, "##l@Mail.RestorePassword.CallToActionDescription@l##"),
-                PostScriptum = languages.GetTranslation(user.LanguageId, "##l@Mail.RestorePassword.PostScriptum@l##"),
+                CallToActionName = languages.GetTranslation(user.LanguageId, Labels.Get("Mail", "RestorePassword", "CallToActionName")),
+                CallToActionDescription = languages.GetTranslation(user.LanguageId, Labels.Get("Mail", "RestorePassword", "CallToActionDescription")),
+                PostScriptum = languages.GetTranslation(user.LanguageId, Labels.Get("Mail", "RestorePassword", "PostScriptum")),
             };
 
             // html с подставленной моделью
@@ -170,7 +171,7 @@ namespace DMS_WebAPI.Utilities
 
 
             var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
-            mailService.SendMessage(null, MailServers.Noreply, model.Email, languages.GetTranslation(user.LanguageId, "##l@Mail.RestorePassword.Subject@l##"), htmlContent);
+            mailService.SendMessage(null, MailServers.Noreply, model.Email, languages.GetTranslation(user.LanguageId, Labels.Get("Mail", "RestorePassword", "Subject")), htmlContent);
         }
 
 

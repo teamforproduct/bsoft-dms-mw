@@ -1,4 +1,5 @@
-﻿using BL.Model.Enums;
+﻿using BL.CrossCutting.Helpers;
+using BL.Model.Enums;
 using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Logic.Settings
@@ -108,14 +109,13 @@ namespace BL.Logic.Settings
             }
 
             res.Key = key.ToString();
-            res.Name = GetLabel(key.GetType().Name.Replace("Enum", ""), key.ToString()+ ".Name");
-            res.Description = GetLabel(key.GetType().Name.Replace("Enum", ""), key.ToString() + ".Description");
+            res.Name = Labels.Get(key.GetType().Name.Replace("Enum", ""), key.ToString()+ ".Name");
+            res.Description = Labels.Get(key.GetType().Name.Replace("Enum", ""), key.ToString() + ".Description");
             res.AgentId = null;
             res.AccessType = 0;
             res.Order = 0;
             return res;
         }
 
-        private static string GetLabel(string group, string itemName) => "##l@" + group.Trim() + ":" + itemName.Trim() + "@l##";
     }
 }

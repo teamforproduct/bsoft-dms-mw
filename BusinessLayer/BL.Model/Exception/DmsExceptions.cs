@@ -1109,10 +1109,4 @@ namespace BL.Model.Exception
         public WrongCasheKey(System.Exception ex) : base(ex) { }
     }
 
-    //public class LockoutAgentUser : DmsExceptions
-    //{
-    //    private const string  = "##l@DmsExceptions:LockoutAgentUser@l##";
-    //    public LockoutAgentUser() : base() { }
-    //    public LockoutAgentUser(System.Exception ex) : base(ex) { }
-    //}
 }

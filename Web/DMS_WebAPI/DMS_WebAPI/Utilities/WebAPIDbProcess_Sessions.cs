@@ -26,12 +26,12 @@ namespace DMS_WebAPI.Utilities
             {
                 if (filter.DateFrom.HasValue)
                 {
-                    qry = qry.Where(x => x.LogDate >= filter.DateFrom.Value);
+                    qry = qry.Where(x => x.Date >= filter.DateFrom.Value);
                 }
 
                 if (filter.DateTo.HasValue)
                 {
-                    qry = qry.Where(x => x.LogDate <= filter.DateTo.Value);
+                    qry = qry.Where(x => x.Date <= filter.DateTo.Value);
                 }
 
                 if (!string.IsNullOrEmpty(filter.Message))
@@ -99,7 +99,7 @@ namespace DMS_WebAPI.Utilities
             {
                 var qry = GetSessionLogsQuery(dbContext, filter);
 
-                qry = qry.OrderByDescending(x => x.LogDate).ThenBy(x => x.Id);
+                qry = qry.OrderByDescending(x => x.Date).ThenBy(x => x.Id);
 
                 if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontSessionLog>();
 
@@ -108,7 +108,7 @@ namespace DMS_WebAPI.Utilities
                 var res = qry.Select(x => new FrontSessionLog
                 {
                     Id = x.Id,
-                    Date = x.LogDate,
+                    Date = x.Date,
                     LastUsage = x.LastUsage,
                     Message = x.Message,
                     Event = x.Event,
@@ -135,7 +135,7 @@ namespace DMS_WebAPI.Utilities
 
                     var item = new SessionLogs
                     {
-                        LogDate = model.Date,
+                        Date = model.Date,
                         LastUsage = model.LastUsage,
                         Enabled = true,
                         Type = (int)model.Type,
