@@ -4577,7 +4577,7 @@ namespace BL.Database.Dictionaries
                                 IsActive = y.IsActive,
                                 AgentId = y.Agent.Id,
                                 AgentName = y.Agent.Name,
-                                PositionExecutorTypeName = "##l@EnumPositionExecutionTypes:" + ((EnumPositionExecutionTypes)y.PositionExecutorTypeId).ToString() + "@l##",
+                                PositionExecutorTypeName = "##l@PositionExecutionTypes:" + ((EnumPositionExecutionTypes)y.PositionExecutorTypeId).ToString() + "@l##",
                                 PositionExecutorTypeId = (EnumPositionExecutionTypes)y.PositionExecutorTypeId,
                                 //StartDate = y.StartDate,
                                 //EndDate = y.EndDate,
@@ -5176,7 +5176,7 @@ namespace BL.Database.Dictionaries
                     DepartmentIndex = x.Position.Department.Index,
                     DepartmentName = x.Position.Department.Name,
                     AccessLevelName = "##l@AccessLevels:" + ((EnumAccessLevels)x.AccessLevelId).ToString() + "@l##",
-                    PositionExecutorTypeName = "##l@EnumPositionExecutionTypes:" + ((EnumPositionExecutionTypes)x.PositionExecutorTypeId).ToString() + "@l##",
+                    PositionExecutorTypeName = "##l@PositionExecutionTypes:" + ((EnumPositionExecutionTypes)x.PositionExecutorTypeId).ToString() + "@l##",
                     PositionExecutorTypeSuffix = x.PositionExecutorType.Suffix,
                 }).ToList();
 
@@ -5486,7 +5486,7 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     Code = ((EnumPositionExecutionTypes)x.Id).ToString(),
-                    Name = "##l@EnumPositionExecutionTypes:" + ((EnumPositionExecutionTypes)x.Id).ToString() + "@l##",
+                    Name = "##l@PositionExecutionTypes:" + ((EnumPositionExecutionTypes)x.Id).ToString() + "@l##",
                 }).ToList();
 
                 transaction.Complete();

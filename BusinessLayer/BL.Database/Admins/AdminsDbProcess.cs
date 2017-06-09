@@ -186,7 +186,7 @@ namespace BL.Database.Admins
                     ExecutorName = (x.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal ? string.Empty : x.Position.ExecutorAgent.Name),
                     ImageByteArray = (x.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal ? new byte[] { } : x.Position.ExecutorAgent.Image),
                     ExecutorTypeId = x.PositionExecutorTypeId,
-                    ExecutorTypeDescription = "##l@EnumPositionExecutionTypes" + ((EnumPositionExecutionTypes)x.PositionExecutorTypeId).ToString() + ".Description:@l##",
+                    ExecutorTypeDescription = "##l@PositionExecutionTypes:" + ((EnumPositionExecutionTypes)x.PositionExecutorTypeId).ToString() + ".Description@l##",
                 }).ToList();
 
                 //IsLastChosen
