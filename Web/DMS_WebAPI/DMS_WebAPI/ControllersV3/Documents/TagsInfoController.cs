@@ -84,7 +84,7 @@ namespace DMS_WebAPI.ControllersV3.Tags
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   var tmpItem = Action.Execute(context, EnumDictionaryActions.AddTag, model);
+                   var tmpItem = Action.ExecuteDocumentAction(context, EnumActions.AddTag, model);
                    return GetById(context, tmpItem);
                });
         }
@@ -100,7 +100,7 @@ namespace DMS_WebAPI.ControllersV3.Tags
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDictionaryActions.ModifyTag, model);
+                   Action.ExecuteDocumentAction(context, EnumActions.ModifyTag, model);
                    return GetById(context, model.Id);
                });
         }
@@ -116,7 +116,7 @@ namespace DMS_WebAPI.ControllersV3.Tags
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDictionaryActions.DeleteTag, Id);
+                   Action.ExecuteDocumentAction(context, EnumActions.DeleteTag, Id);
                    var tmpItem = new FrontDeleteModel(Id);
                    var res = new JsonResult(tmpItem, this);
                    return res;

@@ -83,7 +83,7 @@ namespace DMS_WebAPI.ControllersV3.User
             {
                 var address = new AddAgentAddress(model);
                 address.AgentId = context.CurrentAgentId;
-                var tmpItem = Action.Execute(context, EnumDictionaryActions.AddEmployeeAddress, address);
+                var tmpItem = Action.ExecuteDictionaryAction(context, EnumActions.AddEmployeeAddress, address);
                 return GetById(context, tmpItem);
             });
         }
@@ -101,7 +101,7 @@ namespace DMS_WebAPI.ControllersV3.User
             {
                 var address = new ModifyAgentAddress(model);
                 address.AgentId = context.CurrentAgentId;
-                Action.Execute(context, EnumDictionaryActions.ModifyEmployeeAddress, address);
+                Action.ExecuteDictionaryAction(context, EnumActions.ModifyEmployeeAddress, address);
                 return GetById(context, model.Id);
             });
         }
@@ -117,7 +117,7 @@ namespace DMS_WebAPI.ControllersV3.User
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDictionaryActions.DeleteEmployeeAddress, Id);
+                Action.ExecuteDictionaryAction(context, EnumActions.DeleteEmployeeAddress, Id);
                 var tmpItem = new FrontDeleteModel(Id);
                 var res = new JsonResult(tmpItem, this);
                 return res;

@@ -9,7 +9,7 @@ namespace BL.Logic.DictionaryCore
 
         public override object Execute()
         {
-            _dictService.ExecuteAction(EnumDictionaryActions.ModifyExecutor, _context, Model);
+            _dictService.ExecuteAction(EnumActions.ModifyExecutor, _context, Model);
             return null;
         }
     }

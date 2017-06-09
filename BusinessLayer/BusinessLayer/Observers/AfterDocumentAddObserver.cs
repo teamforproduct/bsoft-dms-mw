@@ -8,9 +8,9 @@ namespace BL.Logic.Observers
     {
         public EnumObserverType ObserverType => EnumObserverType.After;
 
-        public void Inform(IContext context, InternalDocument document, EnumDocumentActions previousAction, object previousParameter)
+        public void Inform(IContext context, InternalDocument document, EnumActions previousAction, object previousParameter)
         {
-            if (previousAction == EnumDocumentActions.AddDocument)
+            if (previousAction == EnumActions.AddDocument)
             {
                 //do some code hire
             }

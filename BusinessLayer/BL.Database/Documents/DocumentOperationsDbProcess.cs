@@ -433,11 +433,11 @@ namespace BL.Database.Documents
                                         y.Role.UserRoles.Any(z => z.PositionExecutor.AgentId == context.CurrentAgentId))));
                     var qryActLst = qry.OrderBy(x => x.CategoryId).ThenBy(x => x.Id).Select(x => new InternalSystemActionForDocument
                     {
-                        DocumentAction = (EnumDocumentActions)x.Id,
+                        DocumentAction = (EnumActions)x.Id,
                         Object = (EnumObjects)x.ObjectId,
                         ActionCode = x.Code,
                         ObjectCode = x.Object.Code,
-                        Description = "##l@Actions:" + ((EnumDocumentActions)x.Id).ToString() + "@l##",
+                        Description = "##l@Actions:" + ((EnumActions)x.Id).ToString() + "@l##",
                         Category = (EnumActionCategories)x.CategoryId,
                         
                     });

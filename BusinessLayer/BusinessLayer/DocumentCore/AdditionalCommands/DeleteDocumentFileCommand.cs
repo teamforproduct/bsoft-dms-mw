@@ -39,11 +39,11 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             if ((_document.Accesses?.Count() ?? 0) != 0 && !_document.Accesses.Any(x => x.PositionId == positionId && x.IsInWork))
                 return false;
             var qry = _document.DocumentFiles.Where(x => x.ExecutorPositionId == positionId);
-            if (CommandType == EnumDocumentActions.DeleteDocumentFile)
+            if (CommandType == EnumActions.DeleteDocumentFile)
                 qry = qry.Where(x => !x.IsDeleted && x.IsMainVersion);
-            else if (CommandType == EnumDocumentActions.DeleteDocumentFileVersion)
+            else if (CommandType == EnumActions.DeleteDocumentFileVersion)
                 qry = qry.Where(x => !x.IsDeleted && !x.IsMainVersion);
-            else if (CommandType == EnumDocumentActions.DeleteDocumentFileVersionFinal)
+            else if (CommandType == EnumActions.DeleteDocumentFileVersionFinal)
                 qry = qry.Where(x => x.IsDeleted && !x.IsContentDeleted);
             else return false;
             _actionRecords = qry.Select(x => new InternalActionRecord

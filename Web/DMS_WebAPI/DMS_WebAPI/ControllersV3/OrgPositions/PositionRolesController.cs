@@ -83,7 +83,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.SetPositionRole, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.SetPositionRole, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -101,7 +101,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.DuplicatePositionRoles, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.DuplicatePositionRoles, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });

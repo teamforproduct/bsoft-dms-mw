@@ -1,4 +1,6 @@
-﻿using DMS_WebAPI.ControllersV3.Utilities;
+﻿using BL.Logic.AdminCore.Interfaces;
+using DMS_WebAPI.ControllersV3.Utilities;
+using DMS_WebAPI.Models;
 using System.IO;
 using System.Web;
 using System.Web.Mvc;
@@ -9,10 +11,7 @@ namespace DMS_WebAPI.Utilities
     public static class RenderPartialView
     {
         public static string ControllerName { get { return "WebPartialViewController"; } }
-        public static string ChangeLogin { get { return "~/Views/WebPartialView/ChangeLogin.cshtml"; } }
-        public static string RestorePassword { get { return "~/Views/WebPartialView/RestorePassword.cshtml"; } }
-        public static string WelcomeEmail { get { return "~/Views/WebPartialView/WelcomeEmail.cshtml"; } }
-        public static string NewCompanyRequest { get { return "~/Views/WebPartialView/NewCompanyRequest.cshtml"; } }
+        public static string MailWithCallToAction { get { return "~/Views/WebPartialView/MailWithCallToAction.cshtml"; } }
 
 
         public static string RenderPartialViewToString<T>(this T model, string partialViewName) where T : class

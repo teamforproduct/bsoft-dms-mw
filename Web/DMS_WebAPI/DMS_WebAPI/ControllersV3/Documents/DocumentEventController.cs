@@ -99,7 +99,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDocumentActions.MarkDocumentEventAsRead, model);
+                Action.ExecuteDocumentAction(context, EnumActions.MarkDocumentEventAsRead, model);
                 var res = new JsonResult(null, this);
                 return res;
             });
@@ -116,7 +116,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDocumentActions.SendMessage, model, model.CurrentPositionId);
+                Action.ExecuteDocumentAction(context, EnumActions.SendMessage, model, model.CurrentPositionId);
                 var res = new JsonResult(null, this);
                 return res;
             });
@@ -133,7 +133,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDocumentActions.AddNote, model, model.CurrentPositionId);
+                Action.ExecuteDocumentAction(context, EnumActions.AddNote, model, model.CurrentPositionId);
                 var res = new JsonResult(null, this);
                 return res;
             });
@@ -152,7 +152,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             {
                 context.SetCurrentPosition(model.First().CurrentPositionId);
                 var docProc = DmsResolver.Current.Get<IDocumentService>();
-                var tmpItem = (Dictionary<int, string>)docProc.ExecuteAction(EnumDocumentActions.SendDocument, context, model);
+                var tmpItem = (Dictionary<int, string>)docProc.ExecuteAction(EnumActions.SendDocument, context, model);
                 var res = new JsonResult(tmpItem, !tmpItem.Any(), this);
                 return res;
             });

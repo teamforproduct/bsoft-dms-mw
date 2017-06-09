@@ -61,12 +61,12 @@ namespace DMS_WebAPI.DatabaseContext
 
         public virtual DbSet<AspNetClients> AspNetClientsSet { get; set; }
         public virtual DbSet<AspNetClientRequests> AspNetClientRequestsSet { get; set; }
-        
+
         public virtual DbSet<AspNetClientLicences> AspNetClientLicencesSet { get; set; }
         public virtual DbSet<AspNetClientServers> AspNetClientServersSet { get; set; }
         public virtual DbSet<AspNetClientInvitations> AspNetClientInvitationsSet { get; set; }
 
-        public virtual DbSet<AspNetUserClients> AspNetUserClientServerSet { get; set; }
+        public virtual DbSet<AspNetUserClients> AspNetUserClientsSet { get; set; }
         public virtual DbSet<AspNetUserFingerprints> AspNetUserFingerprintsSet { get; set; }
         public virtual DbSet<AspNetUserContexts> AspNetUserContextsSet { get; set; }
         public virtual DbSet<AspNetLicences> AspNetLicencesSet { get; set; }
@@ -74,6 +74,7 @@ namespace DMS_WebAPI.DatabaseContext
         public virtual DbSet<SystemControlQuestions> SystemControlQuestionsSet { get; set; }
         public virtual DbSet<SystemSettings> SystemSettingsSet { get; set; }
         public virtual DbSet<SystemValueTypes> SystemValueTypesSet { get; set; }
+        public virtual DbSet<SessionLogs> SessionLogsSet { get; set; }
 
     }
 }

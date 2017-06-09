@@ -77,7 +77,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.AddDocumentLink, model, model.CurrentPositionId);
+                   Action.ExecuteDocumentAction(context, EnumActions.AddDocumentLink, model, model.CurrentPositionId);
                    var res = new JsonResult(null, this);
                    return GetById(context, model.DocumentId);
                });
@@ -94,7 +94,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.DeleteDocumentLink, Id);
+                   Action.ExecuteDocumentAction(context, EnumActions.DeleteDocumentLink, Id);
                    var res = new JsonResult(null, this);
                    return res;
                });

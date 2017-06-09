@@ -41,7 +41,7 @@ namespace BL.Logic.DictionaryCore
             _commandService = commandService;
         }
 
-        public object ExecuteAction(EnumDictionaryActions act, IContext context, object param)
+        public object ExecuteAction(EnumActions act, IContext context, object param)
         {
             var cmd = DictionaryCommandFactory.GetDictionaryCommand(act, context, param);
             var res = _commandService.ExecuteCommand(cmd);
@@ -778,7 +778,7 @@ namespace BL.Logic.DictionaryCore
 
                 foreach (var executor in executors)
                 {
-                    ExecuteAction(EnumDictionaryActions.DeleteExecutor, context, executor);
+                    ExecuteAction(EnumActions.DeleteExecutor, context, executor);
                 }
 
                 #endregion

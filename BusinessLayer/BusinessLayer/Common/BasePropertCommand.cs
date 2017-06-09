@@ -9,14 +9,14 @@ namespace BL.Logic.Common
     {
         protected IContext _context;
         protected object _param;
-        private EnumPropertyActions _action;
+        private EnumActions _action;
 
-        public void InitializeCommand(EnumPropertyActions action, IContext ctx)
+        public void InitializeCommand(EnumActions action, IContext ctx)
         {
             InitializeCommand(action,ctx, null);
         }
 
-        public void InitializeCommand(EnumPropertyActions action, IContext ctx, object param)
+        public void InitializeCommand(EnumActions action, IContext ctx, object param)
         {
             _action = action;
             _context = ctx;
@@ -33,7 +33,7 @@ namespace BL.Logic.Common
 
         public abstract object Execute();
 
-        public virtual EnumPropertyActions CommandType => _action;
+        public virtual EnumActions CommandType => _action;
 
         public bool TypeModelIs<T>() => _param is T;
 

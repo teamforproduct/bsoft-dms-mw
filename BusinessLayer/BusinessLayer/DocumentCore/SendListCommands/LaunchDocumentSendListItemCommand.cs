@@ -76,10 +76,10 @@ namespace BL.Logic.DocumentCore.SendListCommands
         public override object Execute()
         {
             var docProc = DmsResolver.Current.Get<IDocumentService>();
-            docProc.ExecuteAction((EnumDocumentActions)Enum.Parse(typeof(EnumDocumentActions), _sendList.SendType.ToString()), _context, _sendList);
+            docProc.ExecuteAction((EnumActions)Enum.Parse(typeof(EnumActions), _sendList.SendType.ToString()), _context, _sendList);
             return _document.Id;
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.LaunchDocumentSendListItem;
+        public override EnumActions CommandType => EnumActions.LaunchDocumentSendListItem;
     }
 }

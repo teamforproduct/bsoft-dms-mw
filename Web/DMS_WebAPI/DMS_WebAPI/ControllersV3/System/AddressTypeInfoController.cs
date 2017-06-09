@@ -80,7 +80,7 @@ namespace DMS_WebAPI.ControllersV3.System
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumDictionaryActions.AddAddressType, model);
+                var tmpItem = Action.ExecuteDictionaryAction(context, EnumActions.AddAddressType, model);
                 return GetById(context, tmpItem);
             });
         }
@@ -96,7 +96,7 @@ namespace DMS_WebAPI.ControllersV3.System
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDictionaryActions.ModifyAddressType, model);
+                Action.ExecuteDictionaryAction(context, EnumActions.ModifyAddressType, model);
                 return GetById(context, model.Id);
             });
         }
@@ -112,7 +112,7 @@ namespace DMS_WebAPI.ControllersV3.System
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDictionaryActions.DeleteAddressType, Id);
+                Action.ExecuteDictionaryAction(context, EnumActions.DeleteAddressType, Id);
                 var tmpItem = new FrontDeleteModel(Id);
                 var res = new JsonResult(tmpItem, this);
                 return res;

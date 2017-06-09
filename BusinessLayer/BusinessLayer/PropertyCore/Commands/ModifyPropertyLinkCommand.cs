@@ -37,6 +37,6 @@ namespace BL.Logic.PropertyCore.Commands
             return null;
         }
 
-        public override EnumPropertyActions CommandType => EnumPropertyActions.ModifyPropertyLink;
+        public override EnumActions CommandType => EnumActions.ModifyPropertyLink;
     }
 }

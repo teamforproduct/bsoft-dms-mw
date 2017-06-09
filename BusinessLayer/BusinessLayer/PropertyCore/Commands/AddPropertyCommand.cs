@@ -50,6 +50,6 @@ namespace BL.Logic.PropertyCore.Commands
             return _systDb.AddProperty(_context, item);
         }
 
-        public override EnumPropertyActions CommandType => EnumPropertyActions.AddProperty;
+        public override EnumActions CommandType => EnumActions.AddProperty;
     }
 }

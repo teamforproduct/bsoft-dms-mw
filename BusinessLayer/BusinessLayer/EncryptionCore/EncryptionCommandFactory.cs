@@ -9,7 +9,7 @@ namespace BL.Logic.EncryptionCore
 {
     public static class EncryptionCommandFactory
     {
-        public static IEncryptionCommand GetEncryptionCommand(EnumEncryptionActions act, IContext ctx, object param)
+        public static IEncryptionCommand GetEncryptionCommand(EnumActions act, IContext ctx, object param)
         {
             if (ctx.ClientLicence?.LicenceError != null)
             {
@@ -20,18 +20,18 @@ namespace BL.Logic.EncryptionCore
             switch (act)
             {
                 #region EncryptionCertificates
-                case EnumEncryptionActions.AddEncryptionCertificate:
+                case EnumActions.AddEncryptionCertificate:
                     cmd = DmsResolver.Current.Get<AddEncryptionCertificateCommand>();
                     break;
-                case EnumEncryptionActions.ModifyEncryptionCertificate:
+                case EnumActions.ModifyEncryptionCertificate:
                     cmd = DmsResolver.Current.Get<ModifyEncryptionCertificateCommand>();
                     break;
-                case EnumEncryptionActions.DeleteEncryptionCertificate:
+                case EnumActions.DeleteEncryptionCertificate:
                     cmd = DmsResolver.Current.Get<DeleteEncryptionCertificateCommand>();
                     break;
                 #endregion EncryptionCertificates
 
-                case EnumEncryptionActions.VerifyPdf:
+                case EnumActions.VerifyPdf:
                     cmd = DmsResolver.Current.Get<VerifyPdfCommand>();
                     break;
                 default:

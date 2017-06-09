@@ -52,7 +52,7 @@ namespace BL.Logic.AdminCore
 
         protected void SetRegistrationJournalByDepartment(SetJournalAccessByDepartment_Journal model)
         {
-            _adminService.ExecuteAction(EnumAdminActions.SetJournalAccessByDepartment_Journal, _context, model);
+            _adminService.ExecuteAction(EnumActions.SetJournalAccessByDepartment_Journal, _context, model);
         }
     }
 }

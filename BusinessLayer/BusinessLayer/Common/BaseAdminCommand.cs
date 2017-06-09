@@ -15,7 +15,7 @@ namespace BL.Logic.Common
     {
         protected IContext _context;
         protected object _param;
-        private EnumAdminActions _action;
+        private EnumActions _action;
         protected IAdminService _adminService;
         protected AdminsDbProcess _adminDb;
         protected ISystemDbProcess _systemDb;
@@ -23,12 +23,12 @@ namespace BL.Logic.Common
         protected DictionariesDbProcess _dictDb;
         protected ILogger _logger;
 
-        public void InitializeCommand(EnumAdminActions action, IContext ctx)
+        public void InitializeCommand(EnumActions action, IContext ctx)
         {
             InitializeCommand(action,ctx, null);
         }
 
-        public void InitializeCommand(EnumAdminActions action, IContext ctx, object param)
+        public void InitializeCommand(EnumActions action, IContext ctx, object param)
         {
             _action = action;
             _context = ctx;
@@ -51,7 +51,7 @@ namespace BL.Logic.Common
 
         public abstract object Execute();
 
-        public virtual EnumAdminActions CommandType => _action;
+        public virtual EnumActions CommandType => _action;
 
         public bool TypeModelIs<T>() => _param is T;
 

@@ -83,7 +83,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.AddRole, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.AddRole, model);
                 return GetById(context, tmpItem);
             });
         }
@@ -99,7 +99,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumAdminActions.ModifyRole, model);
+                Action.ExecuteAdminAction(context, EnumActions.ModifyRole, model);
                 return GetById(context, model.Id);
             });
         }
@@ -115,7 +115,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumAdminActions.DeleteRole, Id);
+                Action.ExecuteAdminAction(context, EnumActions.DeleteRole, Id);
                 var tmpItem = new FrontDeleteModel(Id);
                 var res = new JsonResult(tmpItem, this);
                 return res;

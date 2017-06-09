@@ -38,7 +38,7 @@ namespace BL.Logic.SystemServices.AutoPlan
             {
                 try
                 {
-                    var cmd = DocumentCommandFactory.GetDocumentCommand(EnumDocumentActions.LaunchDocumentSendListItem, admCtx, null, id);
+                    var cmd = DocumentCommandFactory.GetDocumentCommand(EnumActions.LaunchDocumentSendListItem, admCtx, null, id);
                     _cmdService.ExecuteCommand(cmd);
                 }
                 catch (Exception ex)
@@ -50,7 +50,7 @@ namespace BL.Logic.SystemServices.AutoPlan
                         var docId = _docDb.GetDocumentIdBySendListId(admCtx, id);
                         if (docId > 0)
                         {
-                            var cmdStop = DocumentCommandFactory.GetDocumentCommand(EnumDocumentActions.StopPlan, admCtx, null, docId);
+                            var cmdStop = DocumentCommandFactory.GetDocumentCommand(EnumActions.StopPlan, admCtx, null, docId);
                             _cmdService.ExecuteCommand(cmdStop);
                         }
                     }

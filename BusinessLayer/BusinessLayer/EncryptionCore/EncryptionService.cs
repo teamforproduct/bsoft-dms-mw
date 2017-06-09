@@ -22,7 +22,7 @@ namespace BL.Logic.EncryptionCore
             _commandService = commandService;
         }
 
-        public object ExecuteAction(EnumEncryptionActions act, IContext ctx, object param)
+        public object ExecuteAction(EnumActions act, IContext ctx, object param)
         {
             var cmd = EncryptionCommandFactory.GetEncryptionCommand(act, ctx, param);
             var res = _commandService.ExecuteCommand(cmd);

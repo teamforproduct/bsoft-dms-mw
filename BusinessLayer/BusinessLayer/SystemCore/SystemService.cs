@@ -25,7 +25,7 @@ namespace BL.Logic.SystemCore
 
         private readonly ICommandService _commandService;
 
-        public object ExecuteAction(EnumSystemActions act, IContext context, object param)
+        public object ExecuteAction(EnumActions act, IContext context, object param)
         {
             var cmd = SystemCommandFactory.GetCommand(act, context, param);
             var res = _commandService.ExecuteCommand(cmd);

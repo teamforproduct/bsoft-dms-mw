@@ -53,8 +53,8 @@ namespace BL.Logic.DocumentCore.Commands
                         {
                             EventId = x.OnEvent.Id,
                             WaitId = x.Id,
-                            IsHideInMainMenu =  x.OnEvent.EventType == EnumEventTypes.MarkExecution && CommandType == EnumDocumentActions.CancelExecution ||
-                                                x.OnEvent.EventType != EnumEventTypes.MarkExecution && CommandType == EnumDocumentActions.AcceptResult && x.IsHasMarkExecution
+                            IsHideInMainMenu =  x.OnEvent.EventType == EnumEventTypes.MarkExecution && CommandType == EnumActions.CancelExecution ||
+                                                x.OnEvent.EventType != EnumEventTypes.MarkExecution && CommandType == EnumActions.AcceptResult && x.IsHasMarkExecution
                         });
             if (!_actionRecords.Any())
             {
@@ -111,7 +111,7 @@ namespace BL.Logic.DocumentCore.Commands
                 if (Model.AddDocumentFiles?.Any() ?? false)
                 {
                     Model.AddDocumentFiles.ForEach(x => { x.DocumentId = _document.Id; x.EventId = _document.Waits.Select(y => y.OffEventId).First(); });
-                    _documentProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, _context, Model.AddDocumentFiles);
+                    _documentProc.ExecuteAction(EnumActions.AddDocumentFile, _context, Model.AddDocumentFiles);
                 }
                 transaction.Complete();
             }

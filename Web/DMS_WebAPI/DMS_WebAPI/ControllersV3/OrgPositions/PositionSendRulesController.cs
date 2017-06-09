@@ -82,7 +82,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.SetSubordination, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.SetSubordination, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -99,7 +99,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.SetSubordinationByDepartment, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.SetSubordinationByDepartment, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -116,7 +116,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.SetSubordinationByCompany, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.SetSubordinationByCompany, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -134,7 +134,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.SetDefaultSubordination, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.SetDefaultSubordination, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -151,7 +151,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.SetAllSubordination, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.SetAllSubordination, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -168,7 +168,7 @@ namespace DMS_WebAPI.ControllersV3.OrgPositions
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.DuplicateSubordinations, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.DuplicateSubordinations, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });

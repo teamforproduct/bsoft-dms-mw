@@ -58,7 +58,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             model.ServerPath = Properties.Settings.Default.ServerPath;
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.RejectSigning, model);
+                   Action.ExecuteDocumentAction(context, EnumActions.RejectSigning, model);
                    var res = new JsonResult(null, this);
                    return res;
                });
@@ -75,7 +75,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             model.ServerPath = Properties.Settings.Default.ServerPath;
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.RejectVisaing, model);
+                   Action.ExecuteDocumentAction(context, EnumActions.RejectVisaing, model);
                    var res = new JsonResult(null, this);
                    return res;
                });
@@ -92,7 +92,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             model.ServerPath = Properties.Settings.Default.ServerPath;
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.RejectАgreement, model);
+                   Action.ExecuteDocumentAction(context, EnumActions.RejectАgreement, model);
                    var res = new JsonResult(null, this);
                    return res;
                });
@@ -109,7 +109,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             model.ServerPath = Properties.Settings.Default.ServerPath;
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.RejectАpproval, model);
+                   Action.ExecuteDocumentAction(context, EnumActions.RejectАpproval, model);
                    var res = new JsonResult(null, this);
                    return res;
                });
@@ -127,7 +127,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             model.ServerPath = Properties.Settings.Default.ServerPath;
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.WithdrawSigning, model);
+                   Action.ExecuteDocumentAction(context, EnumActions.WithdrawSigning, model);
                    var res = new JsonResult(null, this);
                    return res;
                });
@@ -144,7 +144,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             model.ServerPath = Properties.Settings.Default.ServerPath;
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.WithdrawVisaing, model);
+                   Action.ExecuteDocumentAction(context, EnumActions.WithdrawVisaing, model);
                    var res = new JsonResult(null, this);
                    return res;
                });
@@ -161,7 +161,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             model.ServerPath = Properties.Settings.Default.ServerPath;
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.WithdrawАgreement, model);
+                   Action.ExecuteDocumentAction(context, EnumActions.WithdrawАgreement, model);
                    var res = new JsonResult(null, this);
                    return res;
                });
@@ -178,7 +178,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             model.ServerPath = Properties.Settings.Default.ServerPath;
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.WithdrawАpproval, model);
+                   Action.ExecuteDocumentAction(context, EnumActions.WithdrawАpproval, model);
                    var res = new JsonResult(null, this);
                    return res;
                });
@@ -196,7 +196,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             model.ServerPath = Properties.Settings.Default.ServerPath;
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.AffixSigning, model);
+                   Action.ExecuteDocumentAction(context, EnumActions.AffixSigning, model);
                    var res = new JsonResult(null, this);
                    return res;
                });
@@ -213,7 +213,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             model.ServerPath = Properties.Settings.Default.ServerPath;
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.AffixVisaing, model);
+                   Action.ExecuteDocumentAction(context, EnumActions.AffixVisaing, model);
                    var res = new JsonResult(null, this);
                    return res;
                });
@@ -230,7 +230,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             model.ServerPath = Properties.Settings.Default.ServerPath;
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.AffixАgreement, model);
+                   Action.ExecuteDocumentAction(context, EnumActions.AffixАgreement, model);
                    var res = new JsonResult(null, this);
                    return res;
                });
@@ -247,7 +247,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             model.ServerPath = Properties.Settings.Default.ServerPath;
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.AffixАpproval, model);
+                   Action.ExecuteDocumentAction(context, EnumActions.AffixАpproval, model);
                    var res = new JsonResult(null, this);
                    return res;
                });
@@ -265,7 +265,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             model.ServerPath = Properties.Settings.Default.ServerPath;
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.SelfAffixSigning, model, model.CurrentPositionId);
+                   Action.ExecuteDocumentAction(context, EnumActions.SelfAffixSigning, model, model.CurrentPositionId);
                    var res = new JsonResult(null, this);
                    return res;
                });
@@ -289,7 +289,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var mod = (VerifySignCertificate) param;
-                Action.Execute(context, EnumDocumentActions.VerifySigning, mod);
+                Action.ExecuteDocumentAction(context, EnumActions.VerifySigning, mod);
                 var res = new JsonResult(null, this);
                 return res;
             }, md);

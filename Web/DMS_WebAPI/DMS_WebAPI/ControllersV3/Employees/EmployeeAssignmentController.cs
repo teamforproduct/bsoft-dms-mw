@@ -135,7 +135,7 @@ return await SafeExecuteAsync(ModelState, (context, param) =>
         {return await SafeExecuteAsync(ModelState, (context, param) =>
             {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            var tmpItem = (int)tmpService.ExecuteAction(EnumDictionaryActions.AddExecutor, context,  model);
+            var tmpItem = (int)tmpService.ExecuteAction(EnumActions.AddExecutor, context,  model);
             return GetById(context, tmpItem);});
         }
 
@@ -150,7 +150,7 @@ return await SafeExecuteAsync(ModelState, (context, param) =>
         {return await SafeExecuteAsync(ModelState, (context, param) =>
             {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
-            tmpService.ExecuteAction(EnumDictionaryActions.ModifyExecutor, context, model);
+            tmpService.ExecuteAction(EnumActions.ModifyExecutor, context, model);
             return GetById(context, model.Id);});
         }
 
@@ -166,7 +166,7 @@ return await SafeExecuteAsync(ModelState, (context, param) =>
             {
             var tmpService = DmsResolver.Current.Get<IDictionaryService>();
 
-            tmpService.ExecuteAction(EnumDictionaryActions.DeleteExecutor, context, Id);
+            tmpService.ExecuteAction(EnumActions.DeleteExecutor, context, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
             return res;});

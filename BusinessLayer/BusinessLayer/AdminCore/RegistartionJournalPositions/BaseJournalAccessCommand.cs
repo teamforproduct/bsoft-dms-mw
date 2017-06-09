@@ -27,7 +27,7 @@ namespace BL.Logic.AdminCore
 
         protected void SetJournalAccess(SetJournalAccess model)
         {
-            _adminService.ExecuteAction(EnumAdminActions.SetJournalAccess, _context, model);
+            _adminService.ExecuteAction(EnumActions.SetJournalAccess, _context, model);
         }
 
         public void SetAll_Position(int positionId, bool IsChecked, bool IsViewing, bool IsRegistration)

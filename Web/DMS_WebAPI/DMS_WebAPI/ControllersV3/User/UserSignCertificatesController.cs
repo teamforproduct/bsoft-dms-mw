@@ -89,7 +89,7 @@ namespace DMS_WebAPI.ControllersV3.User
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 model.AgentId = context.CurrentAgentId;
-                var tmpItem = Action.Execute(context, EnumEncryptionActions.AddEncryptionCertificate, model);
+                var tmpItem = Action.ExecuteEncryptionAction(context, EnumActions.AddEncryptionCertificate, model);
                 return GetById(context, tmpItem);
             });
         }
@@ -105,7 +105,7 @@ namespace DMS_WebAPI.ControllersV3.User
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumEncryptionActions.ModifyEncryptionCertificate, model);
+                Action.ExecuteEncryptionAction(context, EnumActions.ModifyEncryptionCertificate, model);
                 return GetById(context, model.Id);
             });
         }
@@ -121,7 +121,7 @@ namespace DMS_WebAPI.ControllersV3.User
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumEncryptionActions.DeleteEncryptionCertificate, Id);
+                Action.ExecuteEncryptionAction(context, EnumActions.DeleteEncryptionCertificate, Id);
                 var tmpItem = new FrontDeleteModel(Id);
                 var res = new JsonResult(tmpItem, this);
                 return res;

@@ -38,7 +38,7 @@ namespace BL.Logic.DocumentCore
 
         }
 
-        public object ExecuteAction(EnumDocumentActions act, IContext context, object param)
+        public object ExecuteAction(EnumActions act, IContext context, object param)
         {
             //var cmd = TemplateCommandFactory.GetTemplateCommand(act, context, null, param);
             //var res = _commandService.ExecuteCommand(cmd);
@@ -65,7 +65,7 @@ namespace BL.Logic.DocumentCore
 
         public IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontTemplate templateDoc)
         {
-            var uiElements = _systemDb.GetSystemUIElements(ctx, new FilterSystemUIElement { ActionId = new List<int> { (int)EnumDocumentActions.ModifyTemplate } }).ToList();
+            var uiElements = _systemDb.GetSystemUIElements(ctx, new FilterSystemUIElement { ActionId = new List<int> { (int)EnumActions.ModifyTemplate } }).ToList();
             uiElements = CommonDocumentUtilities.VerifyTemplate(ctx, templateDoc, uiElements).ToList();
             var uiPropertyElements = CommonSystemUtilities.GetPropertyUIElements(ctx, EnumObjects.Template, CommonDocumentUtilities.GetFilterTemplateByTemplate(templateDoc).ToArray());
             uiElements.AddRange(uiPropertyElements);

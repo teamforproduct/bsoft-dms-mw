@@ -82,7 +82,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.SetRolePermission, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.SetRolePermission, model);
 
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 var tmpItems = tmpService.GetRolePermissions(context, new FilterAdminRolePermissionsDIP
@@ -109,7 +109,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.SetRolePermissionByModuleAccessType, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.SetRolePermissionByModuleAccessType, model);
 
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 var tmpItems = tmpService.GetRolePermissions(context, new FilterAdminRolePermissionsDIP
@@ -135,7 +135,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.SetRolePermissionByModuleFeature, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.SetRolePermissionByModuleFeature, model);
 
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 var tmpItems = tmpService.GetRolePermissions(context, new FilterAdminRolePermissionsDIP
@@ -161,7 +161,7 @@ namespace DMS_WebAPI.ControllersV3.Roles
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.SetRolePermissionByModule, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.SetRolePermissionByModule, model);
 
                 var tmpService = DmsResolver.Current.Get<IAdminService>();
                 var tmpItems = tmpService.GetRolePermissions(context, new FilterAdminRolePermissionsDIP

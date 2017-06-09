@@ -33,7 +33,7 @@ namespace DMS_WebAPI.Controllers.Properties
         {
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpServ = DmsResolver.Current.Get<IPropertyService>();
-            return Get((int)tmpServ.ExecuteAction(EnumPropertyActions.AddProperty,  ctx, model));
+            return Get((int)tmpServ.ExecuteAction(EnumActions.AddProperty,  ctx, model));
         }
 
         public IHttpActionResult Put(int id, [FromBody]ModifyProperty model)
@@ -41,7 +41,7 @@ namespace DMS_WebAPI.Controllers.Properties
             model.Id = id;
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpServ = DmsResolver.Current.Get<IPropertyService>();
-            tmpServ.ExecuteAction(EnumPropertyActions.ModifyProperty, ctx, model);
+            tmpServ.ExecuteAction(EnumActions.ModifyProperty, ctx, model);
             return Get(model.Id);
         }
 
@@ -50,7 +50,7 @@ namespace DMS_WebAPI.Controllers.Properties
             var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var tmpServ = DmsResolver.Current.Get<IPropertyService>();
 
-            tmpServ.ExecuteAction(EnumPropertyActions.DeleteProperty, ctx, id);
+            tmpServ.ExecuteAction(EnumActions.DeleteProperty, ctx, id);
             FrontProperty tmp = new FrontProperty();
             tmp.Id = id;
 

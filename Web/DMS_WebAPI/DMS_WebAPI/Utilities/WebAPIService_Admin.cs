@@ -135,15 +135,16 @@ namespace DMS_WebAPI.Utilities
 
             var languages = DmsResolver.Current.Get<ILanguages>();
 
-            var m = new ChangeLoginModel
+            var m = new MailWithCallToActionModel
             {
                 Greeting = languages.GetTranslation(User.LanguageId, "##l@Mail:Greeting@l##", new List<string> { User.FirstName }),
                 Closing = languages.GetTranslation(User.LanguageId, "##l@Mail:Closing@l##"),
                 CallToActionUrl = callbackurl,
                 CallToActionName = languages.GetTranslation(User.LanguageId, "##l@Mail.EmailConfirmation.CallToActionName@l##"),
+                CallToActionDescription = languages.GetTranslation(User.LanguageId, "##l@Mail.EmailConfirmation.CallToActionDescription@l##"),
             };
 
-            var htmlContent = m.RenderPartialViewToString(RenderPartialView.ChangeLogin);
+            var htmlContent = m.RenderPartialViewToString(RenderPartialView.MailWithCallToAction);
 
             var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
 

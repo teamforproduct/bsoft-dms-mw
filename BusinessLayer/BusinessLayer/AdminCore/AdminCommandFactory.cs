@@ -8,7 +8,7 @@ namespace BL.Logic.AdminCore
 {
     public static class AdminCommandFactory
     {
-        public static IAdminCommand GetAdminCommand(EnumAdminActions act, IContext ctx, object param)
+        public static IAdminCommand GetAdminCommand(EnumActions act, IContext ctx, object param)
         {
             if (ctx.ClientLicence?.LicenceError != null)
             {
@@ -20,47 +20,47 @@ namespace BL.Logic.AdminCore
             {
 
                 #region Roles
-                case EnumAdminActions.AddRole:
+                case EnumActions.AddRole:
                     cmd = DmsResolver.Current.Get<AddRoleCommand>();
                     break;
-                case EnumAdminActions.ModifyRole:
+                case EnumActions.ModifyRole:
                     cmd = DmsResolver.Current.Get<ModifyRoleCommand>();
                     break;
-                case EnumAdminActions.DeleteRole:
+                case EnumActions.DeleteRole:
                     cmd = DmsResolver.Current.Get<DeleteRoleCommand>();
                     break;
                 #endregion
 
                 #region AdminRolePermission
-                case EnumAdminActions.SetRolePermission:
+                case EnumActions.SetRolePermission:
                     cmd = DmsResolver.Current.Get<SetRolePermissionCommand>();
                     break;
-                case EnumAdminActions.SetRolePermissionByModuleAccessType:
+                case EnumActions.SetRolePermissionByModuleAccessType:
                     cmd = DmsResolver.Current.Get<SetRolePermissionByModuleAccessTypeCommand>();
                     break;
-                case EnumAdminActions.SetRolePermissionByModuleFeature:
+                case EnumActions.SetRolePermissionByModuleFeature:
                     cmd = DmsResolver.Current.Get<SetRolePermissionByModuleFeatureCommand>();
                     break;
-                case EnumAdminActions.SetRolePermissionByModule:
+                case EnumActions.SetRolePermissionByModule:
                     cmd = DmsResolver.Current.Get<SetRolePermissionByModuleCommand>();
                     break;
                 #endregion
 
                 #region AdminPositionRoles
-                case EnumAdminActions.SetPositionRole:
+                case EnumActions.SetPositionRole:
                     cmd = DmsResolver.Current.Get<SetPositionRoleCommand>();
                     break;
-                case EnumAdminActions.DuplicatePositionRoles:
+                case EnumActions.DuplicatePositionRoles:
                     cmd = DmsResolver.Current.Get<DuplicatePositionRolesCommand>();
                     break;
 
                 #endregion
 
                 #region AdminUserRoles
-                case EnumAdminActions.SetUserRole:
+                case EnumActions.SetUserRole:
                     cmd = DmsResolver.Current.Get<SetUserRoleCommand>();
                     break;
-                case EnumAdminActions.SetUserRoleByAssignment:
+                case EnumActions.SetUserRoleByAssignment:
                     cmd = DmsResolver.Current.Get<SetUserRoleByAssignmentCommand>();
                     break;
                 #endregion
@@ -75,31 +75,31 @@ namespace BL.Logic.AdminCore
                 //case EnumAdminActions.DeleteSubordination:
                 //    cmd = DmsResolver.Current.Get<DeleteSubordinationCommand>();
                 //    break;
-                case EnumAdminActions.SetSubordination:
+                case EnumActions.SetSubordination:
                     cmd = DmsResolver.Current.Get<SetSubordinationCommand>();
                     break;
-                case EnumAdminActions.DuplicateSubordinations:
+                case EnumActions.DuplicateSubordinations:
                     cmd = DmsResolver.Current.Get<DuplicateSubordinationsCommand>();
                     break;
-                case EnumAdminActions.SetSubordinationByDepartment:
+                case EnumActions.SetSubordinationByDepartment:
                     cmd = DmsResolver.Current.Get<SetSubordinationByDepartmentCommand>();
                     break;
-                case EnumAdminActions.SetSubordinationByCompany:
+                case EnumActions.SetSubordinationByCompany:
                     cmd = DmsResolver.Current.Get<SetSubordinationByCompanyCommand>();
                     break;
-                case EnumAdminActions.SetDefaultSubordination:
+                case EnumActions.SetDefaultSubordination:
                     cmd = DmsResolver.Current.Get<SetDefaultSubordinationsCommand>();
                     break;
-                case EnumAdminActions.SetAllSubordination:
+                case EnumActions.SetAllSubordination:
                     cmd = DmsResolver.Current.Get<SetAllSubordinationsCommand>();
                     break;
 
 
 
-                case EnumAdminActions.AddDepartmentAdmin:
+                case EnumActions.AddDepartmentAdmin:
                     cmd = DmsResolver.Current.Get<AddDepartmentAdminCommand>();
                     break;
-                case EnumAdminActions.DeleteDepartmentAdmin:
+                case EnumActions.DeleteDepartmentAdmin:
                     cmd = DmsResolver.Current.Get<DeleteDepartmentAdminCommand>();
                     break;
 
@@ -108,37 +108,37 @@ namespace BL.Logic.AdminCore
                 #endregion
 
                 #region RegistrationJournalPosition
-                case EnumAdminActions.SetJournalAccess:
+                case EnumActions.SetJournalAccess:
                     cmd = DmsResolver.Current.Get<SetJournalAccessCommand>();
                     break;
-                case EnumAdminActions.DuplicateJournalAccess_Journal:
+                case EnumActions.DuplicateJournalAccess_Journal:
                     cmd = DmsResolver.Current.Get<DuplicateJournalAccess_JournalCommand>();
                     break;
-                case EnumAdminActions.DuplicateJournalAccess_Position:
+                case EnumActions.DuplicateJournalAccess_Position:
                     cmd = DmsResolver.Current.Get<DuplicateJournalAccess_PositionCommand>();
                     break;
-                case EnumAdminActions.SetJournalAccessByDepartment_Journal:
+                case EnumActions.SetJournalAccessByDepartment_Journal:
                     cmd = DmsResolver.Current.Get<SetJournalAccessByDepartment_JournalCommand>();
                     break;
-                case EnumAdminActions.SetJournalAccessByDepartment_Position:
+                case EnumActions.SetJournalAccessByDepartment_Position:
                     cmd = DmsResolver.Current.Get<SetJournalAccessByDepartment_PositionCommand>();
                     break;
-                case EnumAdminActions.SetJournalAccessByCompany_Journal:
+                case EnumActions.SetJournalAccessByCompany_Journal:
                     cmd = DmsResolver.Current.Get<SetJournalAccessByCompany_JournalCommand>();
                     break;
-                case EnumAdminActions.SetJournalAccessByCompany_Position:
+                case EnumActions.SetJournalAccessByCompany_Position:
                     cmd = DmsResolver.Current.Get<SetJournalAccessByCompany_PositionCommand>();
                     break;
-                case EnumAdminActions.SetJournalAccessDefault_Journal:
+                case EnumActions.SetJournalAccessDefault_Journal:
                     cmd = DmsResolver.Current.Get<SetJournalAccessDefault_JournalCommand>();
                     break;
-                case EnumAdminActions.SetJournalAccessDefault_Position:
+                case EnumActions.SetJournalAccessDefault_Position:
                     cmd = DmsResolver.Current.Get<SetJournalAccessDefault_PositionCommand>();
                     break;
-                case EnumAdminActions.SetJournalAccessAll_Journal:
+                case EnumActions.SetJournalAccessAll_Journal:
                     cmd = DmsResolver.Current.Get<SetJournalAccessAll_JournalCommand>();
                     break;
-                case EnumAdminActions.SetJournalAccessAll_Position:
+                case EnumActions.SetJournalAccessAll_Position:
                     cmd = DmsResolver.Current.Get<SetJournalAccessAll_PositionCommand>();
                     break;
                 

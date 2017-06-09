@@ -342,7 +342,7 @@ namespace BL.Database.SystemDb
                 {
                     NotContainsIDs = new List<int> { ctx.LoginLogId.HasValue ? ctx.LoginLogId.Value : 0 },
                     ObjectIDs = new List<int> { (int)EnumObjects.System },
-                    ActionIDs = new List<int> { (int)EnumSystemActions.Login },
+                    ActionIDs = new List<int> { (int)EnumActions.Login },
                     ExecutorAgentIDs = new List<int> { ctx.CurrentAgentId },
                     LogLevels = new List<int> { (int)EnumLogTypes.Information },
                 });
@@ -360,7 +360,7 @@ namespace BL.Database.SystemDb
                 var qry = GetSystemLogsQuery(ctx, dbContext, new FilterSystemLog
                 {
                     ObjectIDs = new List<int> { (int)EnumObjects.System },
-                    ActionIDs = new List<int> { (int)EnumSystemActions.Login },
+                    ActionIDs = new List<int> { (int)EnumActions.Login },
                     ExecutorAgentIDs = new List<int> { ctx.CurrentAgentId },
                     LogLevels = new List<int> { (int)EnumLogTypes.Error },
                 });

@@ -62,6 +62,6 @@ namespace BL.Logic.DocumentCore.AdditionalCommands
             return ids.FirstOrDefault();
         }
 
-        public override EnumDocumentActions CommandType => EnumDocumentActions.AddSavedFilter;
+        public override EnumActions CommandType => EnumActions.AddSavedFilter;
     }
 }

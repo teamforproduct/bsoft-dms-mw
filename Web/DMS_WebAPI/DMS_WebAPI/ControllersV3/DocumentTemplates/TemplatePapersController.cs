@@ -83,7 +83,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   var tmpItem = Action.Execute(context, EnumDocumentActions.AddTemplatePaper, model);
+                   var tmpItem = Action.ExecuteDocumentAction(context, EnumActions.AddTemplatePaper, model);
                    return GetById(context, tmpItem);
                });
         }
@@ -99,7 +99,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.ModifyTemplatePaper, model);
+                   Action.ExecuteDocumentAction(context, EnumActions.ModifyTemplatePaper, model);
                    return GetById(context, model.Id);
                });
         }
@@ -115,7 +115,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.DeleteTemplatePaper, Id);
+                   Action.ExecuteDocumentAction(context, EnumActions.DeleteTemplatePaper, Id);
                    var tmpItem = new FrontDeleteModel(Id);
                    var res = new JsonResult(tmpItem, this);
                    return res;

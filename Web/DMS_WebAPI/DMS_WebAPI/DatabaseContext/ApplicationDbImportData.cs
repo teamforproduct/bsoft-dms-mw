@@ -195,12 +195,12 @@ namespace DMS_WebAPI.DatabaseContext
             list.AddRange(GetListByEnum<EnumSubscriptionStates>());
 
             list.AddRange(GetListByEnum<EnumObjects>());
-            list.AddRange(GetListByEnum<EnumSystemActions>());
-            list.AddRange(GetListByEnum<EnumAdminActions>());
-            list.AddRange(GetListByEnum<EnumDictionaryActions>());
-            list.AddRange(GetListByEnum<EnumDocumentActions>());
-            list.AddRange(GetListByEnum<EnumEncryptionActions>());
-            list.AddRange(GetListByEnum<EnumPropertyActions>());
+            list.AddRange(GetListByEnum<EnumActions>());
+            list.AddRange(GetListByEnum<EnumActions>());
+            list.AddRange(GetListByEnum<EnumActions>());
+            list.AddRange(GetListByEnum<EnumActions>());
+            list.AddRange(GetListByEnum<EnumActions>());
+            list.AddRange(GetListByEnum<EnumActions>());
             list.AddRange(GetListByEnum<EnumSystemFormulas>());
             list.AddRange(GetListByEnum<EnumSystemPatterns>());
             list.AddRange(GetListByEnum<EnumSystemFormats>());

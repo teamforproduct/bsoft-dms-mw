@@ -1145,7 +1145,7 @@ namespace DMS_WebAPI.Utilities
 
         private IQueryable<AspNetUserClients> GetUserClientQuery(ApplicationDbContext dbContext, FilterAspNetUserClient filter)
         {
-            var qry = dbContext.AspNetUserClientServerSet.AsQueryable();
+            var qry = dbContext.AspNetUserClientsSet.AsQueryable();
 
             if (filter != null)
             {
@@ -1187,7 +1187,7 @@ namespace DMS_WebAPI.Utilities
                     UserId = model.UserId,
                     ClientId = model.ClientId,
                 };
-                dbContext.AspNetUserClientServerSet.Add(item);
+                dbContext.AspNetUserClientsSet.Add(item);
                 dbContext.SaveChanges();
 
                 transaction.Complete();
@@ -1200,7 +1200,7 @@ namespace DMS_WebAPI.Utilities
             using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetUserClientQuery(dbContext, filter);
-                dbContext.AspNetUserClientServerSet.RemoveRange(qry);
+                dbContext.AspNetUserClientsSet.RemoveRange(qry);
                 dbContext.SaveChanges();
                 transaction.Complete();
             }

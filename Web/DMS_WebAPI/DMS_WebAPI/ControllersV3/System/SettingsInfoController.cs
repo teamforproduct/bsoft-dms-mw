@@ -53,7 +53,7 @@ namespace DMS_WebAPI.ControllersV3.System
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumSystemActions.SetSetting, model);
+                var tmpItem = Action.ExecuteSystemAction(context, EnumActions.SetSetting, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });

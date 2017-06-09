@@ -11,7 +11,7 @@ namespace BL.Logic.SystemCore.Interfaces
 {
     public interface ISystemService
     {
-        object ExecuteAction(EnumSystemActions act, IContext context, object param);
+        object ExecuteAction(EnumActions act, IContext context, object param);
 
         void InitializerDatabase(IContext ctx);
 

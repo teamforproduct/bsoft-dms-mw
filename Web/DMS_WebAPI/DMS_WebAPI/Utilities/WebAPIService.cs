@@ -294,13 +294,13 @@ namespace DMS_WebAPI.Utilities
 
         private void DeleteUsersInClient(int clientId, List<string> userIDs)
         {
-            if (userIDs == null)
-            {
-                // запоминаю пользователей клиента, которых потенциально нужно удалить
-                userIDs = _webDb.GetUserClientList(new FilterAspNetUserClient { ClientIDs = new List<int> { clientId } }).Select(x => x.UserId).ToList();
-            }
+            //if (userIDs == null)
+            //{
+            //    // запоминаю пользователей клиента, которых потенциально нужно удалить
+            //    userIDs = _webDb.GetUserClientList(new FilterAspNetUserClient { ClientIDs = new List<int> { clientId } }).Select(x => x.UserId).ToList();
+            //}
 
-            if (userIDs.Count() == 0) return;
+            //if (userIDs.Count() == 0) return;
 
             //using (var transaction = Transactions.GetTransaction())
             {
@@ -311,25 +311,25 @@ namespace DMS_WebAPI.Utilities
                     ClientIDs = new List<int> { clientId }
                 });
 
-                // пользователи, которые завязаны на других клиентов удалять нельзя, но они в списке для удаления
-                var safeList = _webDb.GetUserClientList(new FilterAspNetUserClient { UserIDs = userIDs }).Select(x => x.UserId).ToList();
+                //// пользователи, которые завязаны на других клиентов удалять нельзя, но они в списке для удаления
+                //var safeList = _webDb.GetUserClientList(new FilterAspNetUserClient { UserIDs = userIDs }).Select(x => x.UserId).ToList();
 
-                if (safeList.Any()) userIDs.RemoveAll(x => safeList.Contains(x));
+                //if (safeList.Any()) userIDs.RemoveAll(x => safeList.Contains(x));
 
-                if (userIDs.Any())
-                {
-                    _webDb.DeleteUserContexts(new FilterAspNetUserContext { UserIDs = userIDs });
-                    _webDb.DeleteUserFingerprints(new FilterAspNetUserFingerprint { UserIDs = userIDs });
+                //if (userIDs.Any())
+                //{
+                //    _webDb.DeleteUserContexts(new FilterAspNetUserContext { UserIDs = userIDs });
+                //    _webDb.DeleteUserFingerprints(new FilterAspNetUserFingerprint { UserIDs = userIDs });
 
-                    foreach (var userId in userIDs)
-                    {
-                        var user = GetUserById(userId);
+                //    foreach (var userId in userIDs)
+                //    {
+                //        var user = GetUserById(userId);
 
-                        IdentityResult result = UserManager.Delete(user);
+                //        IdentityResult result = UserManager.Delete(user);
 
-                        if (!result.Succeeded) throw new UserCouldNotBeDeleted(user.Email, result.Errors);
-                    }
-                }
+                //        if (!result.Succeeded) throw new UserCouldNotBeDeleted(user.Email, result.Errors);
+                //    }
+                //}
 
                 //transaction.Complete();
             }
@@ -424,7 +424,7 @@ namespace DMS_WebAPI.Utilities
             }
 
             var exceptionText = ExceptionHandling.GetExceptionText(ex);
-            var loginLogId = logger.Error(ctx, message, exceptionText, objectId: (int)EnumObjects.System, actionId: (int)EnumSystemActions.Login, logObject: errorInfo, agentId: agentId);
+            var loginLogId = logger.Error(ctx, message, exceptionText, objectId: (int)EnumObjects.System, actionId: (int)EnumActions.Login, logObject: errorInfo, agentId: agentId);
 
             // Эти исключения отлавливает Application_Error в Global.asax
             throw ex;

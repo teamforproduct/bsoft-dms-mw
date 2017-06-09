@@ -23,7 +23,7 @@ namespace BL.Logic.DocumentCore.Interfaces
         IEnumerable<FrontDocumentTag> GetDocumentTags(IContext context, FilterDocumentTag filter);
         int GetDocumentTagsCounter(IContext context, FilterDocumentTag filter);
         IEnumerable<BaseSystemUIElement> GetModifyMetaData(IContext ctx, FrontDocument doc);
-        object ExecuteAction(EnumDocumentActions act, IContext context, object param);
+        object ExecuteAction(EnumActions act, IContext context, object param);
         FrontDocumentEvent GetDocumentEvent(IContext ctx, int eventId);
         IEnumerable<FrontDocumentEvent> GetDocumentEvents(IContext ctx, FilterBase filter, UIPaging paging);
         IEnumerable<FrontDocumentWait> GetDocumentWaits(IContext ctx, FilterBase filter, UIPaging paging);

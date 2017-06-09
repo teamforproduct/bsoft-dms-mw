@@ -74,7 +74,7 @@ namespace BL.Logic.DocumentCore.Commands
                 if (Model.AddDocumentFiles?.Any() ?? false)
                 {
                     Model.AddDocumentFiles.ForEach(x => { x.DocumentId = _document.Id; x.EventId = _document.Events.Select(y => y.Id).First(); });
-                    _documentProc.ExecuteAction(EnumDocumentActions.AddDocumentFile, _context, Model.AddDocumentFiles);
+                    _documentProc.ExecuteAction(EnumActions.AddDocumentFile, _context, Model.AddDocumentFiles);
                 }
                 transaction.Complete();
             }

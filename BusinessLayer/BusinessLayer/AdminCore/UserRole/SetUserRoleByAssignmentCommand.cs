@@ -51,7 +51,7 @@ namespace BL.Logic.AdminCore
 
         private void SetUserRole(SetUserRole model)
         {
-            _adminService.ExecuteAction(EnumAdminActions.SetUserRole, _context, model);
+            _adminService.ExecuteAction(EnumActions.SetUserRole, _context, model);
         }
 
     }

@@ -80,7 +80,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.SetJournalAccess, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.SetJournalAccess, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -97,7 +97,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.SetJournalAccessByDepartment_Journal, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.SetJournalAccessByDepartment_Journal, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -114,7 +114,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.SetJournalAccessByCompany_Journal, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.SetJournalAccessByCompany_Journal, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -132,7 +132,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.SetJournalAccessDefault_Journal, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.SetJournalAccessDefault_Journal, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -149,7 +149,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.SetJournalAccessAll_Journal, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.SetJournalAccessAll_Journal, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });
@@ -166,7 +166,7 @@ namespace DMS_WebAPI.ControllersV3.Journals
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumAdminActions.DuplicateJournalAccess_Journal, model);
+                var tmpItem = Action.ExecuteAdminAction(context, EnumActions.DuplicateJournalAccess_Journal, model);
                 var res = new JsonResult(tmpItem, this);
                 return res;
             });

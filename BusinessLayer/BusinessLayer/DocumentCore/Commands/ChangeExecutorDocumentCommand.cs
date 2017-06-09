@@ -69,7 +69,7 @@ namespace BL.Logic.DocumentCore.Commands
 
             if (Model.PaperEvents != null && Model.PaperEvents.Any())
             {
-                _adminProc.VerifyAccess(_context, EnumDocumentActions.PlanDocumentPaperEvent);
+                _adminProc.VerifyAccess(_context, EnumActions.PlanDocumentPaperEvent);
                 _document.Papers = _operationDb.PlanDocumentPaperEventPrepare(_context, Model.PaperEvents.Select(x => x.Id).ToList()).Papers;
                 if (_document.Papers.Any(x => x.LastPaperEvent.TargetPositionId == null || x.LastPaperEvent.TargetPositionId.Value != _document.ExecutorPositionId
                                             || !x.IsInWork || x.LastPaperEvent.PaperRecieveDate == null))

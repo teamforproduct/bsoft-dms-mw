@@ -9,7 +9,7 @@ namespace BL.Logic.DictionaryCore
 {
     public static class DictionaryCommandFactory
     {
-        public static IDictionaryCommand GetDictionaryCommand(EnumDictionaryActions act, IContext ctx, object param)
+        public static IDictionaryCommand GetDictionaryCommand(EnumActions act, IContext ctx, object param)
         {
             var dmsExceptions = ctx.ClientLicence?.LicenceError as DmsExceptions;
             if (dmsExceptions != null)
@@ -20,13 +20,13 @@ namespace BL.Logic.DictionaryCore
             {
                 // Типы документов
                 #region DictionaryDocumentTypes
-                case EnumDictionaryActions.AddDocumentType:
+                case EnumActions.AddDocumentType:
                     cmd = DmsResolver.Current.Get<AddDictionaryDocumentTypeCommand>();
                     break;
-                case EnumDictionaryActions.ModifyDocumentType:
+                case EnumActions.ModifyDocumentType:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryDocumentTypeCommand>();
                     break;
-                case EnumDictionaryActions.DeleteDocumentType:
+                case EnumActions.DeleteDocumentType:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryDocumentTypeCommand>();
                     break;
                 #endregion DictionaryDocumentTypes
@@ -42,192 +42,192 @@ namespace BL.Logic.DictionaryCore
                 //case EnumDictionaryActions.DeleteAgent:
                 //    cmd = DmsResolver.Current.Get<DeleteDictionaryAgentCommand>();
                 //    break;
-                case EnumDictionaryActions.SetAgentImage:
+                case EnumActions.SetAgentImage:
                     cmd = DmsResolver.Current.Get<SetDictionaryAgentImageCommand>();
                     break;
-                case EnumDictionaryActions.DeleteAgentImage:
+                case EnumActions.DeleteAgentImage:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAgentImageCommand>();
                     break;
                 #endregion DictionaryAgents
 
-                case EnumDictionaryActions.ModifyAgentPeoplePassport:
+                case EnumActions.ModifyAgentPeoplePassport:
                     cmd = DmsResolver.Current.Get<ModifyAgentPeoplePassportCommand>();
                     break;
 
                 // Сотрудники
                 #region DictionaryAgentPersons
-                case EnumDictionaryActions.AddAgentPerson:
+                case EnumActions.AddAgentPerson:
                     cmd = DmsResolver.Current.Get<AddDictionaryAgentPersonCommand>();
                     break;
-                case EnumDictionaryActions.AddAgentPersonExisting:
+                case EnumActions.AddAgentPersonExisting:
                     cmd = DmsResolver.Current.Get<AddDictionaryAgentPersonExistingCommand>();
                     break;
-                case EnumDictionaryActions.ModifyAgentPerson:
+                case EnumActions.ModifyAgentPerson:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryAgentPersonCommand>();
                     break;
-                case EnumDictionaryActions.DeleteAgentPerson:
+                case EnumActions.DeleteAgentPerson:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAgentPersonCommand>();
                     break;
                 #endregion DictionaryAgentPersons
-                case EnumDictionaryActions.ModifyAgentEmployee:
+                case EnumActions.ModifyAgentEmployee:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryAgentEmployeeCommand>();
                     break;
-                case EnumDictionaryActions.AddAgentEmployee:
+                case EnumActions.AddAgentEmployee:
                     cmd = DmsResolver.Current.Get<AddDictionaryAgentEmployeeCommand>();
                     break;
-                case EnumDictionaryActions.DeleteAgentEmployee:
+                case EnumActions.DeleteAgentEmployee:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAgentEmployeeCommand>();
                     break;
                 //case EnumDictionaryActions.ModifyAgentEmployeeLanguage:
                 //cmd = DmsResolver.Current.Get<ModifyDictionaryAgentUserLanguageCommand>();
                 //break;
-                case EnumDictionaryActions.ModifyAgentCompany:
+                case EnumActions.ModifyAgentCompany:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryAgentCompanyCommand>();
                     break;
-                case EnumDictionaryActions.AddAgentCompany:
+                case EnumActions.AddAgentCompany:
                     cmd = DmsResolver.Current.Get<AddDictionaryAgentCompanyCommand>();
                     break;
-                case EnumDictionaryActions.DeleteAgentCompany:
+                case EnumActions.DeleteAgentCompany:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAgentCompanyCommand>();
                     break;
 
-                case EnumDictionaryActions.ModifyAgentBank:
+                case EnumActions.ModifyAgentBank:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryAgentBankCommand>();
                     break;
-                case EnumDictionaryActions.AddAgentBank:
+                case EnumActions.AddAgentBank:
                     cmd = DmsResolver.Current.Get<AddDictionaryAgentBankCommand>();
                     break;
-                case EnumDictionaryActions.DeleteAgentBank:
+                case EnumActions.DeleteAgentBank:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAgentBankCommand>();
                     break;
 
-                case EnumDictionaryActions.ModifyAgentAccount:
+                case EnumActions.ModifyAgentAccount:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryAgentAccountCommand>();
                     break;
-                case EnumDictionaryActions.AddAgentAccount:
+                case EnumActions.AddAgentAccount:
                     cmd = DmsResolver.Current.Get<AddDictionaryAgentAccountCommand>();
                     break;
-                case EnumDictionaryActions.DeleteAgentAccount:
+                case EnumActions.DeleteAgentAccount:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAgentAccountCommand>();
                     break;
 
                 // Адреса
                 #region DictionaryAgentAddress
-                case EnumDictionaryActions.AddAgentAddress:
-                case EnumDictionaryActions.AddBankAddress:
-                case EnumDictionaryActions.AddCompanyAddress:
-                case EnumDictionaryActions.AddClientCompanyAddress:
-                case EnumDictionaryActions.AddEmployeeAddress:
-                case EnumDictionaryActions.AddPersonAddress:
+                case EnumActions.AddAgentAddress:
+                case EnumActions.AddBankAddress:
+                case EnumActions.AddCompanyAddress:
+                case EnumActions.AddClientCompanyAddress:
+                case EnumActions.AddEmployeeAddress:
+                case EnumActions.AddPersonAddress:
                     cmd = DmsResolver.Current.Get<AddDictionaryAgentAddressCommand>();
                     break;
-                case EnumDictionaryActions.ModifyAgentAddress:
-                case EnumDictionaryActions.ModifyBankAddress:
-                case EnumDictionaryActions.ModifyCompanyAddress:
-                case EnumDictionaryActions.ModifyClientCompanyAddress:
-                case EnumDictionaryActions.ModifyEmployeeAddress:
-                case EnumDictionaryActions.ModifyPersonAddress:
+                case EnumActions.ModifyAgentAddress:
+                case EnumActions.ModifyBankAddress:
+                case EnumActions.ModifyCompanyAddress:
+                case EnumActions.ModifyClientCompanyAddress:
+                case EnumActions.ModifyEmployeeAddress:
+                case EnumActions.ModifyPersonAddress:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryAgentAddressCommand>();
                     break;
-                case EnumDictionaryActions.DeleteAgentAddress:
-                case EnumDictionaryActions.DeleteBankAddress:
-                case EnumDictionaryActions.DeleteCompanyAddress:
-                case EnumDictionaryActions.DeleteClientCompanyAddress:
-                case EnumDictionaryActions.DeleteEmployeeAddress:
-                case EnumDictionaryActions.DeletePersonAddress:
+                case EnumActions.DeleteAgentAddress:
+                case EnumActions.DeleteBankAddress:
+                case EnumActions.DeleteCompanyAddress:
+                case EnumActions.DeleteClientCompanyAddress:
+                case EnumActions.DeleteEmployeeAddress:
+                case EnumActions.DeletePersonAddress:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAgentAddressCommand>();
                     break;
                 #endregion DictionaryAgentAddress
 
                 // Типы адресов
                 #region DictionaryAddressType
-                case EnumDictionaryActions.AddAddressType:
+                case EnumActions.AddAddressType:
                     cmd = DmsResolver.Current.Get<AddDictionaryAddressTypeCommand>();
                     break;
-                case EnumDictionaryActions.ModifyAddressType:
+                case EnumActions.ModifyAddressType:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryAddressTypeCommand>();
                     break;
-                case EnumDictionaryActions.DeleteAddressType:
+                case EnumActions.DeleteAddressType:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAddressTypeCommand>();
                     break;
                 #endregion DictionaryAddressType
 
                 // Контакты
                 #region DictionaryContacts
-                case EnumDictionaryActions.AddAgentContact:
-                case EnumDictionaryActions.AddBankContact:
-                case EnumDictionaryActions.AddCompanyContact:
-                case EnumDictionaryActions.AddClientCompanyContact:
-                case EnumDictionaryActions.AddEmployeeContact:
-                case EnumDictionaryActions.AddPersonContact:
+                case EnumActions.AddAgentContact:
+                case EnumActions.AddBankContact:
+                case EnumActions.AddCompanyContact:
+                case EnumActions.AddClientCompanyContact:
+                case EnumActions.AddEmployeeContact:
+                case EnumActions.AddPersonContact:
                     cmd = DmsResolver.Current.Get<AddDictionaryContactCommand>();
                     break;
-                case EnumDictionaryActions.ModifyAgentContact:
-                case EnumDictionaryActions.ModifyBankContact:
-                case EnumDictionaryActions.ModifyCompanyContact:
-                case EnumDictionaryActions.ModifyClientCompanyContact:
-                case EnumDictionaryActions.ModifyEmployeeContact:
-                case EnumDictionaryActions.ModifyPersonContact:
+                case EnumActions.ModifyAgentContact:
+                case EnumActions.ModifyBankContact:
+                case EnumActions.ModifyCompanyContact:
+                case EnumActions.ModifyClientCompanyContact:
+                case EnumActions.ModifyEmployeeContact:
+                case EnumActions.ModifyPersonContact:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryContactCommand>();
                     break;
-                case EnumDictionaryActions.DeleteAgentContact:
-                case EnumDictionaryActions.DeleteBankContact:
-                case EnumDictionaryActions.DeleteCompanyContact:
-                case EnumDictionaryActions.DeleteClientCompanyContact:
-                case EnumDictionaryActions.DeleteEmployeeContact:
-                case EnumDictionaryActions.DeletePersonContact:
+                case EnumActions.DeleteAgentContact:
+                case EnumActions.DeleteBankContact:
+                case EnumActions.DeleteCompanyContact:
+                case EnumActions.DeleteClientCompanyContact:
+                case EnumActions.DeleteEmployeeContact:
+                case EnumActions.DeletePersonContact:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryContactCommand>();
                     break;
                 #endregion DictionaryContacts
 
                 // Типы контактов
                 #region DictionaryContactTypes
-                case EnumDictionaryActions.AddContactType:
+                case EnumActions.AddContactType:
                     cmd = DmsResolver.Current.Get<AddDictionaryContactTypeCommand>();
                     break;
-                case EnumDictionaryActions.ModifyContactType:
+                case EnumActions.ModifyContactType:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryContactTypeCommand>();
                     break;
-                case EnumDictionaryActions.DeleteContactType:
+                case EnumActions.DeleteContactType:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryContactTypeCommand>();
                     break;
                 #endregion DictionaryContactTypes
 
                 // Теги
                 #region DictionaryTags
-                case EnumDictionaryActions.AddTag:
+                case EnumActions.AddTag:
                     cmd = DmsResolver.Current.Get<AddDictionaryTagCommand>();
                     break;
-                case EnumDictionaryActions.ModifyTag:
+                case EnumActions.ModifyTag:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryTagCommand>();
                     break;
-                case EnumDictionaryActions.DeleteTag:
+                case EnumActions.DeleteTag:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryTagCommand>();
                     break;
                 #endregion DictionaryTags
 
                 // CustomDictionaryTypes
                 #region CustomDictionaryType
-                case EnumDictionaryActions.AddCustomDictionaryType:
+                case EnumActions.AddCustomDictionaryType:
                     cmd = DmsResolver.Current.Get<AddCustomDictionaryTypeCommand>();
                     break;
-                case EnumDictionaryActions.ModifyCustomDictionaryType:
+                case EnumActions.ModifyCustomDictionaryType:
                     cmd = DmsResolver.Current.Get<ModifyCustomDictionaryTypeCommand>();
                     break;
-                case EnumDictionaryActions.DeleteCustomDictionaryType:
+                case EnumActions.DeleteCustomDictionaryType:
                     cmd = DmsResolver.Current.Get<DeleteCustomDictionaryTypeCommand>();
                     break;
                 #endregion CustomDictionaryType
 
                 // CustomDictionarys
                 #region CustomDictionarys
-                case EnumDictionaryActions.AddCustomDictionary:
+                case EnumActions.AddCustomDictionary:
                     cmd = DmsResolver.Current.Get<AddCustomDictionaryCommand>();
                     break;
-                case EnumDictionaryActions.ModifyCustomDictionary:
+                case EnumActions.ModifyCustomDictionary:
                     cmd = DmsResolver.Current.Get<ModifyCustomDictionaryCommand>();
                     break;
-                case EnumDictionaryActions.DeleteCustomDictionary:
+                case EnumActions.DeleteCustomDictionary:
                     cmd = DmsResolver.Current.Get<DeleteCustomDictionaryCommand>();
                     break;
                 #endregion CustomDictionarys
@@ -235,101 +235,101 @@ namespace BL.Logic.DictionaryCore
 
                 // Журналы регистрации
                 #region DictionaryRegistrationJournals
-                case EnumDictionaryActions.AddRegistrationJournal:
+                case EnumActions.AddRegistrationJournal:
                     cmd = DmsResolver.Current.Get<AddDictionaryRegistrationJournalCommand>();
                     break;
-                case EnumDictionaryActions.ModifyRegistrationJournal:
+                case EnumActions.ModifyRegistrationJournal:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryRegistrationJournalCommand>();
                     break;
-                case EnumDictionaryActions.DeleteRegistrationJournal:
+                case EnumActions.DeleteRegistrationJournal:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryRegistrationJournalCommand>();
                     break;
                 #endregion DictionaryRegistrationJournals
 
                 // Структура предприятия
                 #region DictionaryDepartmentss
-                case EnumDictionaryActions.AddDepartment:
+                case EnumActions.AddDepartment:
                     cmd = DmsResolver.Current.Get<AddDictionaryDepartmentCommand>();
                     break;
-                case EnumDictionaryActions.ModifyDepartment:
+                case EnumActions.ModifyDepartment:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryDepartmentCommand>();
                     break;
-                case EnumDictionaryActions.DeleteDepartment:
+                case EnumActions.DeleteDepartment:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryDepartmentCommand>();
                     break;
                 #endregion DictionaryDepartmentss
 
                 // Штатное расписание
                 #region DictionaryPositionss
-                case EnumDictionaryActions.AddPosition:
+                case EnumActions.AddPosition:
                     cmd = DmsResolver.Current.Get<AddDictionaryPositionCommand>();
                     break;
-                case EnumDictionaryActions.ModifyPosition:
+                case EnumActions.ModifyPosition:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryPositionCommand>();
                     break;
-                case EnumDictionaryActions.DeletePosition:
+                case EnumActions.DeletePosition:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryPositionCommand>();
                     break;
                 #endregion DictionaryPositionss
 
                 // Компании
                 #region DictionaryCompanies
-                case EnumDictionaryActions.AddOrg:
+                case EnumActions.AddOrg:
                     cmd = DmsResolver.Current.Get<AddDictionaryAgentClientCompanyCommand>();
                     break;
-                case EnumDictionaryActions.ModifyOrg:
+                case EnumActions.ModifyOrg:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryAgentClientCompanyCommand>();
                     break;
-                case EnumDictionaryActions.DeleteOrg:
+                case EnumActions.DeleteOrg:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryAgentClientCompanyCommand>();
                     break;
                 #endregion DictionaryCompanies
 
                 // Исполнители
                 #region DictionaryPositionExecutors
-                case EnumDictionaryActions.AddExecutor:
+                case EnumActions.AddExecutor:
                     cmd = DmsResolver.Current.Get<AddPositionExecutorCommand>();
                     break;
-                case EnumDictionaryActions.ModifyExecutor:
+                case EnumActions.ModifyExecutor:
                     cmd = DmsResolver.Current.Get<ModifyPositionExecutorCommand>();
                     break;
-                case EnumDictionaryActions.DeleteExecutor:
+                case EnumActions.DeleteExecutor:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryPositionExecutorCommand>();
                     break;
 
                 // Делегирование полномочий
-                case EnumDictionaryActions.AddUserPositionExecutor:
+                case EnumActions.AddUserPositionExecutor:
                     cmd = DmsResolver.Current.Get<AddUserPositionExecutorCommand>();
                     break;
-                case EnumDictionaryActions.ModifyUserPositionExecutor:
+                case EnumActions.ModifyUserPositionExecutor:
                     cmd = DmsResolver.Current.Get<ModifyUserPositionExecutorCommand>();
                     break;
-                case EnumDictionaryActions.DeleteUserPositionExecutor:
+                case EnumActions.DeleteUserPositionExecutor:
                     cmd = DmsResolver.Current.Get<DeleteUserPositionExecutorCommand>();
                     break;
                 #endregion 
 
 
                 #region DictionaryStandartSendList
-                case EnumDictionaryActions.AddStandartSendList:
+                case EnumActions.AddStandartSendList:
                     cmd = DmsResolver.Current.Get<AddDictionaryStandartSendListCommand>();
                     break;
-                case EnumDictionaryActions.ModifyStandartSendList:
+                case EnumActions.ModifyStandartSendList:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryStandartSendListCommand>();
                     break;
-                case EnumDictionaryActions.DeleteStandartSendList:
+                case EnumActions.DeleteStandartSendList:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryStandartSendListCommand>();
                     break;
                 #endregion DictionaryStandartSendList
 
                 #region DictionaryStandartSendListContent
-                case EnumDictionaryActions.AddStandartSendListContent:
+                case EnumActions.AddStandartSendListContent:
                     cmd = DmsResolver.Current.Get<AddDictionaryStandartSendListContentCommand>();
                     break;
-                case EnumDictionaryActions.ModifyStandartSendListContent:
+                case EnumActions.ModifyStandartSendListContent:
                     cmd = DmsResolver.Current.Get<ModifyDictionaryStandartSendListContentCommand>();
                     break;
-                case EnumDictionaryActions.DeleteStandartSendListContent:
+                case EnumActions.DeleteStandartSendListContent:
                     cmd = DmsResolver.Current.Get<DeleteDictionaryStandartSendListContentCommand>();
                     break;
                 #endregion DictionaryStandartSendListContent

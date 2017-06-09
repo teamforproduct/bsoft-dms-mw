@@ -28,6 +28,9 @@ namespace DMS_WebAPI.DBModel
         [ForeignKey("UserId")]
         public virtual ICollection<AspNetUserContexts> Contexts { get; set; }
 
+        [ForeignKey("UserId")]
+        public virtual ICollection<SessionLogs> SessionLogs { get; set; }
+
         [MaxLength(2000)]
         [Column("FullName")]
         public string FirstName { get; set; }

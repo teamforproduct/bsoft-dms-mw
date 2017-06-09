@@ -80,7 +80,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         public async Task<IHttpActionResult> Post([FromBody]AddTemplateRestrictedSendList model)
         {return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-            var tmpItem = Action.Execute(context, EnumDocumentActions.AddTemplateRestrictedSendList, model);
+            var tmpItem = Action.ExecuteDocumentAction(context, EnumActions.AddTemplateRestrictedSendList, model);
             return GetById(context, tmpItem);});
         }
 
@@ -94,7 +94,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         public async Task<IHttpActionResult> Put([FromBody]ModifyTemplateRestrictedSendList model)
         {return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-            Action.Execute(context, EnumDocumentActions.ModifyTemplateRestrictedSendList, model);
+            Action.ExecuteDocumentAction(context, EnumActions.ModifyTemplateRestrictedSendList, model);
             return GetById(context, model.Id);});
         }
 
@@ -108,7 +108,7 @@ namespace DMS_WebAPI.ControllersV3.DocumentTemplates
         public async Task<IHttpActionResult> Delete([FromUri] int Id)
         {return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-            Action.Execute(context, EnumDocumentActions.DeleteTemplateRestrictedSendList, Id);
+            Action.ExecuteDocumentAction(context, EnumActions.DeleteTemplateRestrictedSendList, Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
             return res;});

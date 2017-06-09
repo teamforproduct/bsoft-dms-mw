@@ -82,7 +82,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentPaper, model, model.CurrentPositionId);
+                   var tmpItem = Action.ExecuteDocumentAction(context, EnumActions.AddDocumentPaper, model, model.CurrentPositionId);
                    var res = new JsonResult(tmpItem, this);
                    return res;
                });
@@ -99,7 +99,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   var tmpItem = Action.Execute(context, EnumDocumentActions.ModifyDocumentPaper, model);
+                   var tmpItem = Action.ExecuteDocumentAction(context, EnumActions.ModifyDocumentPaper, model);
                    var res = new JsonResult(tmpItem, this);
                    return res;
                });
@@ -116,7 +116,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.DeleteDocumentPaper, Id);
+                   Action.ExecuteDocumentAction(context, EnumActions.DeleteDocumentPaper, Id);
                    var tmpItem = new FrontDeleteModel(Id);
                    var res = new JsonResult(tmpItem, this);
                    return res;
@@ -153,7 +153,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.MarkOwnerDocumentPaper, model, model.CurrentPositionId);
+                   Action.ExecuteDocumentAction(context, EnumActions.MarkOwnerDocumentPaper, model, model.CurrentPositionId);
                    var res = new JsonResult(null, this);
                    return res;
                });
@@ -170,7 +170,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.MarkСorruptionDocumentPaper, model);
+                   Action.ExecuteDocumentAction(context, EnumActions.MarkСorruptionDocumentPaper, model);
                    var res = new JsonResult(null, this);
                    return res;
                });
@@ -187,7 +187,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.PlanDocumentPaperEvent, model);
+                   Action.ExecuteDocumentAction(context, EnumActions.PlanDocumentPaperEvent, model);
                    var res = new JsonResult(null, this);
                    return res;
                });
@@ -204,7 +204,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.CancelPlanDocumentPaperEvent, new PaperList { PaperId = model });
+                   Action.ExecuteDocumentAction(context, EnumActions.CancelPlanDocumentPaperEvent, new PaperList { PaperId = model });
                    var res = new JsonResult(null, this);
                    return res;
                });
@@ -221,7 +221,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDocumentActions.SendDocumentPaperEvent, new PaperList { PaperId = model });
+                Action.ExecuteDocumentAction(context, EnumActions.SendDocumentPaperEvent, new PaperList { PaperId = model });
                 var res = new JsonResult(null, this);
                 return res;
             });
@@ -238,7 +238,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.CancelSendDocumentPaperEvent, new PaperList { PaperId = model });
+                   Action.ExecuteDocumentAction(context, EnumActions.CancelSendDocumentPaperEvent, new PaperList { PaperId = model });
                    var res = new JsonResult(null, this);
                    return res;
                });
@@ -255,7 +255,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
                {
-                   Action.Execute(context, EnumDocumentActions.RecieveDocumentPaperEvent, new PaperList { PaperId = model });
+                   Action.ExecuteDocumentAction(context, EnumActions.RecieveDocumentPaperEvent, new PaperList { PaperId = model });
                    var res = new JsonResult(null, this);
                    return res;
                });

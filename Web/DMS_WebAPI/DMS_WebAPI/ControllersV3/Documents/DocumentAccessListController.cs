@@ -115,7 +115,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpItem = Action.Execute(context, EnumDocumentActions.AddDocumentRestrictedSendList, model);
+                var tmpItem = Action.ExecuteDocumentAction(context, EnumActions.AddDocumentRestrictedSendList, model);
                 return GetById(context, tmpItem);
             });
         }
@@ -131,7 +131,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDocumentActions.AddByStandartSendListDocumentRestrictedSendList, model);
+                Action.ExecuteDocumentAction(context, EnumActions.AddByStandartSendListDocumentRestrictedSendList, model);
                 var res = new JsonResult(null, this);
                 return res;
             });
@@ -148,7 +148,7 @@ namespace DMS_WebAPI.ControllersV3.Documents
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                Action.Execute(context, EnumDocumentActions.DeleteDocumentRestrictedSendList, Id);
+                Action.ExecuteDocumentAction(context, EnumActions.DeleteDocumentRestrictedSendList, Id);
                 var tmpItem = new FrontDeleteModel(Id);
                 var res = new JsonResult(tmpItem, this);
                 return res;
