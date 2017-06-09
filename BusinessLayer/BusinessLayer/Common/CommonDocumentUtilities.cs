@@ -1230,7 +1230,7 @@ namespace BL.Logic.Common
 
         public static List<AccessGroup> GetAccessGroupsFileExecutors(IContext context, int documentId, List<AddDocumentFile> addDocumentFiles)
         {
-            if (!addDocumentFiles?.Any(x => x.OrderInDocument.HasValue) ?? false) return new List<AccessGroup>();
+            if (!(addDocumentFiles?.Any(x => x.OrderInDocument.HasValue) ?? false)) return new List<AccessGroup>();
             return DmsResolver.Current.Get<IDocumentFileDbProcess>()
                 .GetDocumentFileExecutors(context, documentId, addDocumentFiles.Where(x => x.OrderInDocument.HasValue).Select(x => x.OrderInDocument.Value).ToList())
                 .Select(x => new AccessGroup { AccessType = EnumEventAccessTypes.TargetCopy, AccessGroupType = EnumEventAccessGroupTypes.Position, RecordId = x }).ToList();
