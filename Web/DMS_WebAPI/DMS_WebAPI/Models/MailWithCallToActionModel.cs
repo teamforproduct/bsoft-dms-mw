@@ -1,6 +1,6 @@
 ﻿namespace DMS_WebAPI.Models
 {
-    public class BaseMailModel
+    public class MailWithCallToActionModel
     {
         /// <summary>
         /// Приветствие
@@ -16,6 +16,16 @@
         /// Целевая кнопка. Ссылка
         /// </summary>
         public string CallToActionUrl { get; set; }
+
+        /// <summary>
+        /// Целевая кнопка. Описание, почему я должен нажать на целевую кнопку
+        /// </summary>
+        public string CallToActionDescription { get; set; }
+
+        /// <summary>
+        /// Постскриптум, приписка
+        /// </summary>
+        public string PostScriptum { get; set; }
 
         /// <summary>
         /// Завершение

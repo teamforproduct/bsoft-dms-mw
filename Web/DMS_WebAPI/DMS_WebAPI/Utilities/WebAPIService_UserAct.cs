@@ -136,17 +136,19 @@ namespace DMS_WebAPI.Utilities
 
             var languages = DmsResolver.Current.Get<ILanguages>();
 
-            var m = new RestorePasswordModel()
+            var m = new MailWithCallToActionModel()
             {
                 Greeting = languages.GetTranslation(user.LanguageId, "##l@Mail:Greeting@l##", new List<string> { user.FirstName }),
                 Closing = languages.GetTranslation(user.LanguageId, "##l@Mail:Closing@l##"),
                 // сылка на восстановление пароля
                 CallToActionUrl = builder.ToString(),
                 CallToActionName = languages.GetTranslation(user.LanguageId, "##l@Mail.RestorePassword.CallToActionName@l##"),
+                CallToActionDescription = languages.GetTranslation(user.LanguageId, "##l@Mail.RestorePassword.CallToActionDescription@l##"),
+                PostScriptum = languages.GetTranslation(user.LanguageId, "##l@Mail.RestorePassword.PostScriptum@l##"),
             };
 
             // html с подставленной моделью
-            var htmlContent = m.RenderPartialViewToString(RenderPartialView.RestorePassword);
+            var htmlContent = m.RenderPartialViewToString(RenderPartialView.MailWithCallToAction);
 
 
             var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();

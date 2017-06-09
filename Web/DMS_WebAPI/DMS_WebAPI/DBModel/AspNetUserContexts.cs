@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DMS_WebAPI.DBModel
 {
@@ -24,7 +25,10 @@ namespace DMS_WebAPI.DBModel
         
         public DateTime LastChangeDate { get; set; }
 
-        [MaxLength(36)]
-        public string Fingerprint { get; set; }
+        public int? SessionId { get; set; }
+
+        [ForeignKey("SessionId")]
+        public SessionLogs Session { get; set; }
+        
     }
 }

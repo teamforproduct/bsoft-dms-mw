@@ -452,17 +452,16 @@ namespace DMS_WebAPI.Utilities
 
                 callbackurl += $"?hash={model.HashCode}&login={model.Email}&code={model.ClientCode}&isNew={isNew}&language={model.Language}";
 
-                var m = new NewCompanyRequestModel()
+                var m = new MailWithCallToActionModel()
                 {
                     Greeting = languages.GetTranslation(model.Language, "##l@Mail:Greeting@l##", new List<string> { model.FirstName }),
                     Closing = languages.GetTranslation(model.Language, "##l@Mail:Closing@l##"),
                     CallToActionUrl = callbackurl,
                     CallToActionName = languages.GetTranslation(model.Language, "##l@Mail.NewCompanyRequest.CallToActionName@l##"),
-                    ClientCode = model.ClientCode,
-                    ClientName = model.ClientName,
+                    CallToActionDescription = languages.GetTranslation(model.Language, "##l@Mail.NewCompanyRequest.CallToActionDescription@l##", new List<string> { model.ClientName }),
                 };
 
-                var htmlContent = m.RenderPartialViewToString(RenderPartialView.NewCompanyRequest);
+                var htmlContent = m.RenderPartialViewToString(RenderPartialView.MailWithCallToAction);
                 var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
 
 
