@@ -9,7 +9,7 @@ namespace DMS_WebAPI.Providers
             var userAgent = HttpContext.Current.Request.UserAgent;
             var mobile = string.Empty;
 
-            if(userAgent != null) mobile = userAgent.Contains("Mobile") ? "Mobile; " : string.Empty;
+            if (userAgent != null) mobile = userAgent.Contains("Mobile") ? "Mobile; " : string.Empty;
 
             var ip = HttpContext.Current.Request.Headers["X-Real-IP"];
             if (string.IsNullOrEmpty(ip))
@@ -24,5 +24,20 @@ namespace DMS_WebAPI.Providers
 
             return message;
         }
+
+        public static string IP(this HttpBrowserCapabilities browser)
+        {
+            var ip = HttpContext.Current.Request.Headers["X-Real-IP"];
+            if (string.IsNullOrEmpty(ip))
+                ip = HttpContext.Current.Request.UserHostAddress;
+
+            return ip;
+        }
+
+        public static string Name(this HttpBrowserCapabilities browser)
+        {
+            return browser.Browser + " v" + browser.Version;
+        }
+
     }
 }

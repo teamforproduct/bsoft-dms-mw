@@ -112,20 +112,17 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(List<FrontSystemSession>))]
         public async Task<IHttpActionResult> Get([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
-            var ctxs = DmsResolver.Current.Get<UserContexts>();
-            var sessions = ctxs.GetContextListQuery();
 
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var pSessions = (IQueryable<FrontSystemSession>)param;
                 var tmpService = DmsResolver.Current.Get<ILogger>();
                 if (filter == null) filter = new FilterSystemSession();
                 filter.ExecutorAgentIDs = new List<int> { context.CurrentAgentId };
-                var tmpItems = tmpService.GetSystemSessions(context, pSessions, filter, paging);
+                var tmpItems = tmpService.GetSystemSessions(context, filter, paging);
                 var res = new JsonResult(tmpItems, this);
                 res.Paging = paging;
                 return res;
-            }, sessions);
+            });
         }
 
         /// <summary>

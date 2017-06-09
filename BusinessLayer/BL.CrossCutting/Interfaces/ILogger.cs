@@ -12,7 +12,7 @@ namespace BL.CrossCutting.Interfaces
 {
     public interface ILogger
     {
-        IEnumerable<FrontSystemSession> GetSystemSessions(IContext context, IQueryable<FrontSystemSession> sessions, FilterSystemSession filter, UIPaging paging);
+        IEnumerable<FrontSystemSession> GetSystemSessions(IContext context, FilterSystemSession filter, UIPaging paging);
         IEnumerable<int> GetOnlineUsers(IContext context, IQueryable<FrontSystemSession> sessions);
         FrontAgentEmployeeUser GetLastUserLoginInfo(IContext context);
         IEnumerable<FrontSystemLog> GetSystemLogs(IContext context, FilterSystemLog filter, UIPaging paging);

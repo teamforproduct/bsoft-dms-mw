@@ -340,7 +340,7 @@ namespace BL.Database.SystemDb
             {
                 var qry = GetSystemLogsQuery(ctx, dbContext, new FilterSystemLog
                 {
-                    NotContainsIDs = new List<int> { ctx.LoginLogId.HasValue ? ctx.LoginLogId.Value : 0 },
+                    NotContainsIDs = new List<int> { ctx.Session.Id },
                     ObjectIDs = new List<int> { (int)EnumObjects.System },
                     ActionIDs = new List<int> { (int)EnumActions.Login },
                     ExecutorAgentIDs = new List<int> { ctx.CurrentAgentId },
@@ -509,6 +509,11 @@ namespace BL.Database.SystemDb
                 if (filter.LogDateTo.HasValue)
                 {
                     qry = qry.Where(x => x.LogDate <= filter.LogDateTo.Value);
+                }
+
+                if (filter.LogDate1From.HasValue)
+                {
+                    qry = qry.Where(x => x.LogDate1 >= filter.LogDate1From.Value);
                 }
                 if (!String.IsNullOrEmpty(filter.FullTextSearchString))
                 {

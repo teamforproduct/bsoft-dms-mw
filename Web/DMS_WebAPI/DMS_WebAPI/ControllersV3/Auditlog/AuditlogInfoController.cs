@@ -39,13 +39,12 @@ namespace DMS_WebAPI.ControllersV3.Auditlog
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctxs = DmsResolver.Current.Get<UserContexts>();
             var ctx = ctxs.Get();
-            var sesions = ctxs.GetContextListQuery();
             var tmpService = DmsResolver.Current.Get<ILogger>();
 
             if (filter == null) filter = new FilterSystemSession();
             filter.FullTextSearchString = ftSearch?.FullTextSearchString;
 
-            var tmpItems = tmpService.GetSystemSessions(ctx, sesions, filter, paging);
+            var tmpItems = tmpService.GetSystemSessions(ctx, filter, paging);
             var res = new JsonResult(tmpItems, this);
             res.Paging = paging;
             res.SpentTime = stopWatch;
@@ -67,11 +66,10 @@ namespace DMS_WebAPI.ControllersV3.Auditlog
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctxs = DmsResolver.Current.Get<UserContexts>();
             var ctx = ctxs.Get();
-            var sesions = ctxs.GetContextListQuery();
             var tmpService = DmsResolver.Current.Get<ILogger>();
             if (filter == null) filter = new FilterSystemSession();
             filter.ExecutorAgentIDs = new List<int> { Id };
-            var tmpItems = tmpService.GetSystemSessions(ctx, sesions, filter, paging);
+            var tmpItems = tmpService.GetSystemSessions(ctx, filter, paging);
             var res = new JsonResult(tmpItems, this);
             res.Paging = paging;
             res.SpentTime = stopWatch;
@@ -93,12 +91,11 @@ namespace DMS_WebAPI.ControllersV3.Auditlog
             if (!stopWatch.IsRunning) stopWatch.Restart();
             var ctxs = DmsResolver.Current.Get<UserContexts>();
             var ctx = ctxs.Get();
-            var sesions = ctxs.GetContextListQuery();
             var tmpService = DmsResolver.Current.Get<ILogger>();
             if (filter == null) filter = new FilterSystemSession();
             filter.ExecutorAgentIDs = new List<int> { Id };
             filter.IsOnlyActive = true;
-            var tmpItems = tmpService.GetSystemSessions(ctx, sesions, filter, paging);
+            var tmpItems = tmpService.GetSystemSessions(ctx, filter, paging);
             var res = new JsonResult(tmpItems, this);
             res.Paging = paging;
             res.SpentTime = stopWatch;

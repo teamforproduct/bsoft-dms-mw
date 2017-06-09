@@ -419,19 +419,13 @@ namespace DMS_WebAPI.ControllersV3.Lists
         [HttpGet]
         [Route(Features.OnlineUsers)]
         [ResponseType(typeof(List<int>))]
-        public async Task<IHttpActionResult> GetOnlineUsers()
+        public IHttpActionResult GetOnlineUsers()
         {
             var ctxs = DmsResolver.Current.Get<UserContexts>();
-            var sesions = ctxs.GetContextListQuery();
-
-            return await SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                var cSess = (IQueryable<FrontSystemSession>)param;
-                var tmpService = DmsResolver.Current.Get<ILogger>();
-                var tmpItems = tmpService.GetOnlineUsers(context, cSess);
-                var res = new JsonResult(tmpItems, this);
-                return res;
-            }, sesions);
+            var context = ctxs.Get();
+            var tmpItems = ctxs.GetActiveAgentsList(context.Client.Id);
+            var res = new JsonResult(tmpItems, this);
+            return res;
         }
     }
 }

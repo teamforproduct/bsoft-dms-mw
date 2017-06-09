@@ -19,7 +19,7 @@ namespace DMS_WebAPI.Utilities
 
             var model = new AspNetUserContexts
             {
-                Token = context.Token,
+                Token = context.Key,
                 ClientId = context.Client.Id,
                 CurrentPositionsIdList = string.Join(",", context.CurrentPositionsIdList),
                 UserId = context.User.Id,

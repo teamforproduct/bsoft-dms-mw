@@ -40,6 +40,12 @@ namespace BL.Model.SystemCore.Filters
         /// </summary>
         public DateTime? LogDateFrom { get { return _LogDateFrom; } set { _LogDateFrom = value.ToUTC(); } }
         private DateTime? _LogDateFrom;
+
+        /// <summary>
+        /// Дата записи лог с
+        /// </summary>
+        public DateTime? LogDate1From { get { return _LogDate1From; } set { _LogDate1From = value.ToUTC(); } }
+        private DateTime? _LogDate1From;
         /// <summary>
         /// Дата записи лог по
         /// </summary>

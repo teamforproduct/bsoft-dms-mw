@@ -15,8 +15,6 @@
         /// </summary>
         public string Name { get; set; }
 
-        public string Fingerprint { get; set; }
-
         /// <summary>
         /// Код языка
         /// </summary>
