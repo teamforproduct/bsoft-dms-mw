@@ -37,6 +37,42 @@ namespace BL.Logic.SystemServices.FullTextSearch
             _systemDb = systemDb;
             _settings = setting;
         }
+
+        protected override void InitializeServers()
+        {
+            try
+            {
+                Dispose();
+            }
+            catch
+            {
+                // ignored
+            }
+
+            foreach (var keyValuePair in ServerContext)
+            {
+                try
+                {
+                    var ftsSetting = new FullTextSettings
+                    {
+                        TimeToUpdate = SettingValues.GetFulltextRefreshTimeout(),
+                        DatabaseKey = keyValuePair.Key,
+                        StorePath = SettingValues.GetFulltextStorePath(),
+                        IsFullTextInitialized = SettingValues.GetFulltextWasInitialized(keyValuePair.Value)
+                    };
+                    var worker = new FullTextIndexWorker(ftsSetting.DatabaseKey, ftsSetting.StorePath);
+                    _workers.Add(worker);
+                    // start timer only once. Do not do it regulary in case we don't know how much time sending of email take. So we can continue sending only when previous iteration was comlete
+                    var tmr = new Timer(OnSinchronize, ftsSetting, ftsSetting.TimeToUpdate * 60000, Timeout.Infinite);
+                    _timers.Add(ftsSetting, tmr);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(keyValuePair.Value, ex, "Could not initialize Full text service for server");
+                }
+            }
+        }
+
         private void ReindexObject(IContext ctx, IFullTextIndexWorker worker, EnumObjects dataType)
         {
             var data = _systemDb.GetItemsToReindex(ctx, dataType, null, null);
@@ -221,7 +257,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
         public List<int> SearchItemParentId(out bool IsNotAll, IContext ctx, string text, FullTextSearchFilter filter, UIPaging paging = null)
         {
             ReindexBeforeSearch(ctx);
-            List<int> res = null;
+            List<int> res;
             if (filter.IsNotSplitText)
             {
                 res = SearchItemsInternal(out IsNotAll, ctx, text, filter, paging).Select(x => x.ParentId).Distinct().ToList();
@@ -280,7 +316,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
                 res = res.Join(sRes, a => new { a.ParentId, a.ParentObjectType },
                     b => new { b.ParentId, b.ParentObjectType }, (a, b) => a).ToList();
             }
-            FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{text}' JoinWords: {res.Count()} rows", @"C:\TEMPLOGS\fulltext.log");
+            FileLogger.AppendTextToFile($"{DateTime.Now.ToString()} '{text}' JoinWords: {res.Count} rows", @"C:\TEMPLOGS\fulltext.log");
             return res;
         }
 
@@ -334,40 +370,7 @@ namespace BL.Logic.SystemServices.FullTextSearch
             }
         }
 
-        protected override void InitializeServers()
-        {
-            try
-            {
-                Dispose();
-            }
-            catch
-            {
-                // ignored
-            }
 
-            foreach (var keyValuePair in ServerContext)
-            {
-                try
-                {
-                    var ftsSetting = new FullTextSettings
-                    {
-                        TimeToUpdate = SettingValues.GetFulltextRefreshTimeout(),
-                        DatabaseKey = keyValuePair.Key,
-                        StorePath = SettingValues.GetFulltextStorePath(),
-                        IsFullTextInitialized = SettingValues.GetFulltextWasInitialized(keyValuePair.Value)
-                    };
-                    var worker = new FullTextIndexWorker(ftsSetting.DatabaseKey, ftsSetting.StorePath);
-                    _workers.Add(worker);
-                    // start timer only once. Do not do it regulary in case we don't know how much time sending of email take. So we can continue sending only when previous iteration was comlete
-                    var tmr = new Timer(OnSinchronize, ftsSetting, ftsSetting.TimeToUpdate * 60000, Timeout.Infinite);
-                    _timers.Add(ftsSetting, tmr);
-                }
-                catch (Exception ex)
-                {
-                    Logger.Error(keyValuePair.Value, ex, "Could not initialize Full text service for server");
-                }
-            }
-        }
         private Timer GetTimer(FullTextSettings key)
         {
             Timer res = null;
