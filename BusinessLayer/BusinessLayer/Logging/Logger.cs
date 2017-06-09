@@ -1,20 +1,19 @@
-﻿using System;
-using BL.CrossCutting.Interfaces;
+﻿using BL.CrossCutting.Interfaces;
+using BL.Database.Common;
 using BL.Database.SystemDb;
+using BL.Logic.Common;
+using BL.Model.DictionaryCore.FrontModel;
+using BL.Model.DictionaryCore.FrontModel.Employees;
 using BL.Model.Enums;
 using BL.Model.SystemCore;
-using System.Collections.Generic;
-using BL.Model.SystemCore.FrontModel;
 using BL.Model.SystemCore.Filters;
-using System.Web.Script.Serialization;
-using System.Linq;
-using BL.CrossCutting.Context;
-using BL.Model.DictionaryCore.FrontModel;
-using LinqKit;
-using BL.Database.Common;
-using BL.Logic.Common;
-using BL.Model.DictionaryCore.FrontModel.Employees;
+using BL.Model.SystemCore.FrontModel;
 using BL.Model.WebAPI.FrontModel;
+using LinqKit;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web.Script.Serialization;
 
 namespace BL.Logic.Logging
 {

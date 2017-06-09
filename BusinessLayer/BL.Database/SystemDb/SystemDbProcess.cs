@@ -340,7 +340,7 @@ namespace BL.Database.SystemDb
             {
                 var qry = GetSystemLogsQuery(ctx, dbContext, new FilterSystemLog
                 {
-                    NotContainsIDs = new List<int> { ctx.LoginLogId.HasValue ? ctx.LoginLogId.Value : 0 },
+                    NotContainsIDs = new List<int> { ctx.Session.Id },
                     ObjectIDs = new List<int> { (int)EnumObjects.System },
                     ActionIDs = new List<int> { (int)EnumActions.Login },
                     ExecutorAgentIDs = new List<int> { ctx.CurrentAgentId },

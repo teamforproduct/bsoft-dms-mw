@@ -160,6 +160,7 @@
     <Compile Include="Common\AutocompleteItem.cs" />
     <Compile Include="Context\Client.cs" />
     <Compile Include="Context\DatabaseModelForAdminContext.cs" />
+    <Compile Include="Context\Session.cs" />
     <Compile Include="Context\User.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgentPeoples.cs" />
     <Compile Include="DictionaryCore\FilterModel\FilterDictionaryAgentUsers.cs" />
@@ -667,6 +668,7 @@
     <Compile Include="Users\ChangePasswordAgentUser.cs" />
     <Compile Include="Context\Employee.cs" />
     <Compile Include="Users\CurrentPosition.cs" />
+    <Compile Include="WebAPI\Filters\FilterSessionsLog.cs" />
     <Compile Include="WebAPI\Filters\FilterAspNetClientRequests.cs" />
     <Compile Include="WebAPI\Filters\FilterAspNetClientServer.cs" />
     <Compile Include="WebAPI\Filters\FilterAspNetLicences.cs" />
@@ -688,8 +690,10 @@
     <Compile Include="WebAPI\FrontModel\FrontAspNetUserFingerprint.cs" />
     <Compile Include="WebAPI\FrontModel\FrontAspNetUserControlQuestion.cs" />
     <Compile Include="WebAPI\FrontModel\FrontAspNetUserClient.cs" />
+    <Compile Include="WebAPI\FrontModel\FrontSessionLog.cs" />
     <Compile Include="WebAPI\FrontModel\FrontSystemSession.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetUserControlQuestion.cs" />
+    <Compile Include="WebAPI\IncomingModel\AddSessionLog.cs" />
     <Compile Include="WebAPI\IncomingModel\SetClientServer.cs" />
     <Compile Include="WebAPI\IncomingModel\ChangeUserPassword.cs" />
     <Compile Include="WebAPI\IncomingModel\SetUserPassword.cs" />

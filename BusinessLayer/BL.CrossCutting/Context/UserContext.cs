@@ -55,13 +55,12 @@ namespace BL.CrossCutting.Context
                 {
                     CurrentDB = null;
                 }
-                Token = ctx.Token;
+                Key = ctx.Key;
                 DbContext = ctx.DbContext;
                 User = new User
                 {
                    Id = ctx.User.Id,
                    Name = ctx.User.Name,
-                   Fingerprint = ctx.User.Fingerprint,
                    IsChangePasswordRequired = ctx.User.IsChangePasswordRequired,
                    LanguageId = ctx.User.LanguageId,
                 };
@@ -77,11 +76,14 @@ namespace BL.CrossCutting.Context
                     Id = ctx.Client.Id,
                     Code = ctx.Client.Code,
                 };
+                Session = new Session
+                {
+                    Id = ctx.Session.Id,
+                    LastUpdate = ctx.Session.LastUpdate,
+                };
 
                 ClientLicence = ctx.ClientLicence;
                 IsFormed = ctx.IsFormed;
-                LoginLogId = ctx.LoginLogId;
-                LoginLogInfo = ctx.LoginLogInfo;
 
                 // тут поднимается коннекшн к базе
                 DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
@@ -101,9 +103,9 @@ namespace BL.CrossCutting.Context
         }
 
         /// <summary>
-        /// Токен из авторизации
+        /// Ключ
         /// </summary>
-        public string Token { get; set; }
+        public string Key { get; set; }
 
 
         public Employee Employee { get; set; }
@@ -111,6 +113,8 @@ namespace BL.CrossCutting.Context
         public Client Client { get; set; }
 
         public User User { get; set; }
+
+        public Session Session { get; set; }
 
         /// <summary>
         ///  Флаг TRUE если контекст сформирован и готов к работе
@@ -217,13 +221,19 @@ namespace BL.CrossCutting.Context
         }
         private DatabaseModel _currentDb;
 
-        public DateTime CreateDate { get; } = DateTime.UtcNow;
-        public DateTime LastChangeDate { get; set; } = DateTime.UtcNow;
-
-        public int? LoginLogId { get; set; }
-
-        public string LoginLogInfo { get; set; }
         public IDmsDatabaseContext DbContext { get; set; }
+
+
+        public override int GetHashCode()
+        {
+            return Key.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            UserContext ctx = obj as UserContext;
+            return ctx != null && string.Equals(this.Key, ctx.Key);
+        }
 
     }
 }

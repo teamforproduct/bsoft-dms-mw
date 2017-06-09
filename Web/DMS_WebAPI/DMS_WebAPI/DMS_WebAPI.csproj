@@ -476,6 +476,11 @@
     <Compile Include="Utilities\CommonUtilities.cs" />
     <Compile Include="Utilities\GeneralSettings.cs" />
     <Compile Include="Utilities\GoogleRecapcha.cs" />
+    <Compile Include="Utilities\WebAPIDbProcess_Licences.cs" />
+    <Compile Include="Utilities\WebAPIDbProcess_Clients.cs" />
+    <Compile Include="Utilities\WebAPIDbProcess_Sessions.cs" />
+    <Compile Include="Utilities\WebAPIDbProcess_Servers.cs" />
+    <Compile Include="Utilities\WebAPIDbProcess_Settings.cs" />
     <Compile Include="Utilities\WebApiHelper.cs" />
     <Compile Include="Utilities\DimanicAuthorizeAttribute.cs" />
     <Compile Include="Utilities\StringExtentions.cs" />

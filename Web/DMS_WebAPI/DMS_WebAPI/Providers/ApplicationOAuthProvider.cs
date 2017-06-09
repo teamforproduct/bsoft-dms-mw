@@ -235,7 +235,10 @@ namespace DMS_WebAPI.Providers
 
                 AspNetUsers user = await userManager.FindByIdAsync(userId);
 
+                var key = Guid.NewGuid().ToString();
+
                 context.AdditionalResponseParameters.Add("ChangePasswordRequired", user.IsChangePasswordRequired);
+                context.AdditionalResponseParameters.Add("IdentityToken", key);
 
                 var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
 
@@ -269,7 +272,7 @@ namespace DMS_WebAPI.Providers
                     var userContexts = DmsResolver.Current.Get<UserContexts>();
 
                     // Создаю пользовательский контекст
-                    var ctx = userContexts.Set(token, user, clientCode, server, brInfo, fingerPrint);
+                    var ctx = userContexts.Add(token, user, clientCode, server, brInfo, fingerPrint);
 
                 }
 
