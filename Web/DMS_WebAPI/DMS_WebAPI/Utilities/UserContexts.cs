@@ -7,11 +7,9 @@ using BL.Model.Context;
 using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.WebAPI.Filters;
-using BL.Model.WebAPI.FrontModel;
 using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Providers;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -64,17 +62,17 @@ namespace DMS_WebAPI.Utilities
         /// <returns>Typed setting value.</returns>
         public IContext Get(int? currentPositionId = null, bool isThrowExeception = true, bool keepAlive = true, bool restoreToken = true)
         {
-            string token = Key;
+            string key = Key;
 
             // пробую восстановить контекст из базы
-            if (restoreToken && !Contains(token))
+            if (restoreToken && !Contains(key))
             {
-                Restore(token);
+                Restore(key);
             }
 
-            if (!Contains(token)) throw new UserUnauthorized();
+            if (!Contains(key)) throw new UserUnauthorized();
 
-            var ctx = GetContextInternal(token);
+            var ctx = GetContextInternal(key);
 
 
             //TODO Licence
@@ -91,7 +89,7 @@ namespace DMS_WebAPI.Utilities
                 throw new UserMustChangePassword();
 
             // KeepAlive: Продление жизни пользовательского контекста
-            if (keepAlive) KeepAlive(token);
+            if (keepAlive) KeepAlive(key);
 
             return request_ctx;
         }
@@ -127,7 +125,7 @@ namespace DMS_WebAPI.Utilities
             // запись в лог создает новый дб контекст, поэтому передаю internal
             WriteSessionLog(intContext, model);
 
-            AddWithLock(intContext);
+            Add(intContext);
 
             return intContext;
 
@@ -252,22 +250,17 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        private void Add(UserContext item)
+        private void Add(UserContext context, bool withLocker = true)
         {
-            // контекст добавленный в коллекцию считаю внутренним, его нельзя использовать для подключения к базе
-            _cacheContexts.Add(item);
-        }
-
-        private void AddWithLock(UserContext context)
-        {
-            locker.EnterWriteLock();
+            if (withLocker) locker.EnterWriteLock();
             try
             {
-                Add(context);
+                // контекст добавленный в коллекцию считаю внутренним, его нельзя использовать для подключения к базе
+                _cacheContexts.Add(context);
             }
             finally
             {
-                locker.ExitWriteLock();
+                if (withLocker) locker.ExitWriteLock();
             }
 
         }
@@ -587,17 +580,17 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        private bool Contains(string key)
+        private bool Contains(string key, bool withLocker = true)
         {
-            locker.EnterReadLock();
+            var res = false;
+            if (withLocker) locker.EnterReadLock();
             try
             {
-                return _cacheContexts.Any(x => x.Key == key);
+                res = _cacheContexts.Any(x => x.Key == key);
             }
             finally
-            {
-                locker.ExitReadLock();
-            }
+            { if (withLocker) locker.ExitReadLock(); }
+            return res;
         }
 
 
@@ -610,35 +603,32 @@ namespace DMS_WebAPI.Utilities
         {
             get
             {
+                var res = 0;
                 locker.EnterReadLock();
                 try
                 {
-                    return _cacheContexts.Count;
+                    res = _cacheContexts.Count;
                 }
                 finally
-                {
-                    locker.ExitReadLock();
-                }
+                { locker.ExitReadLock(); }
+                return res;
             }
         }
 
 
         private UserContext GetContextInternal(string key)
         {
+            UserContext res = null;
             locker.EnterReadLock();
             try
             {
-                if (Contains(key))
-                {
-                    var storeInfo = _cacheContexts.Where(x => x.Key == key).FirstOrDefault();
-                    return storeInfo;
-                }
-                return null;
+                res = _cacheContexts.Where(x => x.Key == key).FirstOrDefault();
             }
             finally
             {
                 locker.ExitReadLock();
             }
+            return res;
         }
 
         private void KeepAlive(string key)
@@ -668,7 +658,7 @@ namespace DMS_WebAPI.Utilities
             try
             {
                 // Попытка восстановить восстановленный контекст
-                if (Contains(key)) return;
+                if (Contains(key, false)) return;
 
                 var webService = DmsResolver.Current.Get<WebAPIService>();
                 var item = webService.GetUserContexts(new FilterAspNetUserContext()
@@ -712,7 +702,7 @@ namespace DMS_WebAPI.Utilities
                 //TODO надоли это если мы только что отресторили токен? - Да, дата проставляется свежая
                 SaveInBase(intContext);
 
-                Add(intContext);
+                Add(intContext, false);
             }
             finally
             {

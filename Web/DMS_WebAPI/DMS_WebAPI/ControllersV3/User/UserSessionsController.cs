@@ -2,6 +2,7 @@
 using BL.CrossCutting.Interfaces;
 using BL.Model.SystemCore;
 using BL.Model.SystemCore.Filters;
+using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.FrontModel;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
@@ -32,15 +33,14 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Sessions)]
         [ResponseType(typeof(FrontSystemSession))]
-        public async Task<IHttpActionResult> Get([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> Get([FromUri]FilterSessionsLog filter, [FromUri]UIPaging paging)
         {
-
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpService = DmsResolver.Current.Get<ILogger>();
-                if (filter == null) filter = new FilterSystemSession();
-                filter.ExecutorAgentIDs = new List<int> { context.CurrentAgentId };
-                var tmpItems = tmpService.GetSystemSessions(context, filter, paging);
+                if (filter == null) filter = new FilterSessionsLog();
+                filter.UserId = context.User.Id;
+                var webService = DmsResolver.Current.Get<WebAPIService>();
+                var tmpItems = webService.GetSessionLogs(filter, paging);
                 var res = new JsonResult(tmpItems, this);
                 return res;
             });
@@ -55,15 +55,15 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Sessions + "/Current")]
         [ResponseType(typeof(FrontSystemSession))]
-        public async Task<IHttpActionResult> GetCurrent([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> GetCurrent([FromUri]FilterSessionsLog filter, [FromUri]UIPaging paging)
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpService = DmsResolver.Current.Get<ILogger>();
-                if (filter == null) filter = new FilterSystemSession();
-                filter.ExecutorAgentIDs = new List<int> { context.CurrentAgentId };
-                filter.IsOnlyActive = true;
-                var tmpItems = tmpService.GetSystemSessions(context, filter, paging);
+                if (filter == null) filter = new FilterSessionsLog();
+                filter.UserId = context.User.Id;
+                filter.IsActive = true;
+                var webService = DmsResolver.Current.Get<WebAPIService>();
+                var tmpItems = webService.GetSessionLogs(filter, paging);
                 var res = new JsonResult(tmpItems, this);
                 return res;
             });

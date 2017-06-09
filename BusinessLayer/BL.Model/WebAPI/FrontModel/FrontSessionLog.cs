@@ -26,19 +26,6 @@ namespace BL.Model.WebAPI.FrontModel
         public string Event { get; set; }
 
         /// <summary>
-        /// ИД веб пользователя
-        /// </summary>
-        public string UserId { get; set; }
-        /// <summary>
-        /// ФИО
-        /// </summary>
-        public string UserName { get; set; }
-
-        /// <summary>
-        /// Признак успешности входа
-        /// </summary>
-        public bool IsSuccess { get; set; } = true;
-        /// <summary>
         /// Активная сессия
         /// </summary>
         public bool IsActive { get; set; }

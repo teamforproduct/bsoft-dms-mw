@@ -99,6 +99,8 @@ namespace DMS_WebAPI.Utilities
             {
                 var qry = GetSessionLogsQuery(dbContext, filter);
 
+                qry = qry.OrderByDescending(x => x.LogDate).ThenBy(x => x.Id);
+
                 if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontSessionLog>();
 
                 var time = DateTime.UtcNow.AddMinutes(-2);
@@ -108,8 +110,6 @@ namespace DMS_WebAPI.Utilities
                     Id = x.Id,
                     Date = x.LogDate,
                     LastUsage = x.LastUsage,
-                    UserId = x.UserId,
-                    UserName = x.User.UserName,
                     Message = x.Message,
                     Event = x.Event,
                     Platform = x.Platform,
@@ -118,8 +118,7 @@ namespace DMS_WebAPI.Utilities
                     Host = "*.ostrean.com",
                     Browser = x.Browser,
                     Fingerprint = x.Fingerprint,
-                    IsSuccess = x.Type == 0,
-                    IsActive = x.LastUsage > time
+                    IsActive = x.LastUsage.HasValue ? x.LastUsage.Value > time : false,
                 }).ToList();
 
                 transaction.Complete();

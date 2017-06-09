@@ -232,8 +232,18 @@ namespace DMS_WebAPI.Utilities
 
         private string InsertValues(string Message, List<string> Paramenters)
         {
-            
-            return Message;
+            var res = Message;
+
+            if (Paramenters == null) return res;
+
+            try
+            {
+                res = string.Format(Message, Paramenters.ToArray());
+            }
+            catch
+            { }
+
+            return res;
         }
 
         public int GetLanguageIdByCode(string languageCode)
@@ -374,7 +384,7 @@ namespace DMS_WebAPI.Utilities
 
 
 
-       
+
 
         public string GetLabel(string module, string item) => "##l@" + module.Trim() + ":" + item.Trim() + "@l##";
 
