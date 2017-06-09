@@ -55,110 +55,149 @@ namespace BL.Logic.Logging
         }
 
 
-        public IEnumerable<FrontSystemSession> GetSystemSessions(IContext context, IQueryable<FrontSystemSession> sessions, FilterSystemSession filter, UIPaging paging)
+        public IEnumerable<FrontSystemSession> GetSystemSessions(IContext context, FilterSystemSession filter, UIPaging paging)
         {
             List<FrontSystemSession> res;
 
+            //if (filter?.IsOnlyActive ?? false)
+            //{
+            //    var qry = sessions;
+
+            //    if (filter != null)
+            //    {
+            //        if (filter.ExecutorAgentIDs?.Count > 0)
+            //        {
+            //            qry = qry.Where(x => x.AgentId != null && filter.ExecutorAgentIDs.Contains(x.AgentId.Value));
+            //        }
+            //        if (filter.CreateDateFrom.HasValue)
+            //        {
+            //            qry = qry.Where(x => x.CreateDate >= filter.CreateDateFrom.Value);
+            //        }
+            //        if (filter.CreateDateTo.HasValue)
+            //        {
+            //            qry = qry.Where(x => x.CreateDate <= filter.CreateDateTo.Value);
+            //        }
+            //        if (!string.IsNullOrEmpty(filter.LoginLogInfo))
+            //        {
+            //            var filterContains = PredicateBuilder.New<FrontSystemSession>(false);
+            //            filterContains = CommonFilterUtilites.GetWhereExpressions(filter.LoginLogInfo)
+            //                        .Aggregate(filterContains, (current, value) => current.Or(e => e.LoginLogInfo.Contains(value)).Expand());
+            //            qry = qry.Where(filterContains);
+            //        }
+            //        if (!string.IsNullOrEmpty(filter.ExecutorAgentName))
+            //        {
+            //            var filterContains = PredicateBuilder.New<FrontSystemSession>(false);
+            //            filterContains = CommonFilterUtilites.GetWhereExpressions(filter.ExecutorAgentName)
+            //                        .Aggregate(filterContains, (current, value) => current.Or(e => e.Name.ToLower().Contains(value)).Expand());
+            //            qry = qry.Where(filterContains);
+            //        }
+            //        if (!string.IsNullOrEmpty(filter.FullTextSearchString))
+            //        {
+            //            var filterContains = PredicateBuilder.New<FrontSystemSession>(true);
+            //            filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullTextSearchString)
+            //                        .Aggregate(filterContains, (current, value) => current.And(e => (e.LoginLogInfo + " " + e.Name).ToLower().Contains(value)).Expand());
+            //            qry = qry.Where(filterContains);
+            //        }
+            //        qry = qry.OrderByDescending(x => x.CreateDate);
+            //    }
+            //    if (paging != null)
+            //    {
+            //        if (paging.IsOnlyCounter ?? true)
+            //        {
+            //            paging.TotalItemsCount = qry.Count();
+            //        }
+
+            //        if (paging.IsOnlyCounter ?? false)
+            //        {
+            //            return new List<FrontSystemSession>();
+            //        }
+
+            //        if (!paging.IsAll)
+            //        {
+            //            var skip = paging.PageSize * (paging.CurrentPage - 1);
+            //            var take = paging.PageSize;
+            //            qry = qry.Skip(skip).Take(take);
+            //        }
+            //    }
+            //    res = qry.ToList();
+            //}
+            //else
+            //{
+            //    res = _systemDb.GetSystemLogs(context,
+            //        new FilterSystemLog
+            //        {
+            //            ObjectIDs = new List<int> { (int)EnumObjects.System },
+            //            ActionIDs = new List<int> { (int)EnumActions.Login },
+            //            ExecutorAgentIDs = filter?.ExecutorAgentIDs,
+            //            ExecutorAgentName = filter?.ExecutorAgentName,
+            //            LogDateFrom = filter?.CreateDateFrom,
+            //            LogDateTo = filter?.CreateDateTo,
+            //            FullTextSearchString = filter?.FullTextSearchString,
+            //        }, paging).Select(x => new FrontSystemSession
+            //        {
+            //            CreateDate = x.LogDate,
+            //            LastUsage = x.LogDate1,
+            //            LoginLogId = x.Id,
+            //            LoginLogInfo = x.Message,
+            //            LogException = x.LogException,
+            //            ObjectLog = x.ObjectLog,
+            //            AgentId = x.ExecutorAgentId,
+            //            Name = x.ExecutorAgent,
+            //            ClientId = x.ClientId ?? 0,
+            //            IsSuccess = x.LogLevel == 0,
+            //            Host = "*.ostrean.com"
+            //        }).ToList();
+            //    res.Where(x => !string.IsNullOrEmpty(x.LogException) && x.LogException.StartsWith("DmsExceptions:")).ToList()
+            //        .ForEach(x => { x.TypeException = x.LogException; x.LogException = "##l@" + x.LogException + "@l##"; });
+            //    res.Join(sessions, x => x.LoginLogId, y => y.LoginLogId, (x, y) => new { x, y }).ToList()
+            //        .ForEach(r =>
+            //        {
+            //            r.x.CreateDate = r.y.CreateDate;
+            //            r.x.LastUsage = r.y.LastUsage;
+            //            r.x.UserId = r.y.UserId;
+            //            r.x.IsActive = true;
+            //        });
+            //}
+
+            var time = DateTime.UtcNow.AddMinutes(-1);
+
+            var filterLogs = new FilterSystemLog
+            {
+                ObjectIDs = new List<int> { (int)EnumObjects.System },
+                ActionIDs = new List<int> { (int)EnumActions.Login },
+                ExecutorAgentIDs = filter?.ExecutorAgentIDs,
+                ExecutorAgentName = filter?.ExecutorAgentName,
+                LogDateFrom = filter?.CreateDateFrom,
+                LogDateTo = filter?.CreateDateTo,
+                FullTextSearchString = filter?.FullTextSearchString,
+            };
+
             if (filter?.IsOnlyActive ?? false)
             {
-                var qry = sessions;
-
-                if (filter != null)
-                {
-                    if (filter.ExecutorAgentIDs?.Count > 0)
-                    {
-                        qry = qry.Where(x => x.AgentId != null && filter.ExecutorAgentIDs.Contains(x.AgentId.Value));
-                    }
-                    if (filter.CreateDateFrom.HasValue)
-                    {
-                        qry = qry.Where(x => x.CreateDate >= filter.CreateDateFrom.Value);
-                    }
-                    if (filter.CreateDateTo.HasValue)
-                    {
-                        qry = qry.Where(x => x.CreateDate <= filter.CreateDateTo.Value);
-                    }
-                    if (!string.IsNullOrEmpty(filter.LoginLogInfo))
-                    {
-                        var filterContains = PredicateBuilder.New<FrontSystemSession>(false);
-                        filterContains = CommonFilterUtilites.GetWhereExpressions(filter.LoginLogInfo)
-                                    .Aggregate(filterContains, (current, value) => current.Or(e => e.LoginLogInfo.Contains(value)).Expand());
-                        qry = qry.Where(filterContains);
-                    }
-                    if (!string.IsNullOrEmpty(filter.ExecutorAgentName))
-                    {
-                        var filterContains = PredicateBuilder.New<FrontSystemSession>(false);
-                        filterContains = CommonFilterUtilites.GetWhereExpressions(filter.ExecutorAgentName)
-                                    .Aggregate(filterContains, (current, value) => current.Or(e => e.Name.ToLower().Contains(value)).Expand());
-                        qry = qry.Where(filterContains);
-                    }
-                    if (!string.IsNullOrEmpty(filter.FullTextSearchString))
-                    {
-                        var filterContains = PredicateBuilder.New<FrontSystemSession>(true);
-                        filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullTextSearchString)
-                                    .Aggregate(filterContains, (current, value) => current.And(e => (e.LoginLogInfo + " " + e.Name).ToLower().Contains(value)).Expand());
-                        qry = qry.Where(filterContains);
-                    }
-                    qry = qry.OrderByDescending(x => x.CreateDate);
-                }
-                if (paging != null)
-                {
-                    if (paging.IsOnlyCounter ?? true)
-                    {
-                        paging.TotalItemsCount = qry.Count();
-                    }
-
-                    if (paging.IsOnlyCounter ?? false)
-                    {
-                        return new List<FrontSystemSession>();
-                    }
-
-                    if (!paging.IsAll)
-                    {
-                        var skip = paging.PageSize * (paging.CurrentPage - 1);
-                        var take = paging.PageSize;
-                        qry = qry.Skip(skip).Take(take);
-                    }
-                }
-                res = qry.ToList();
+                filterLogs.LogDate1From = time;
             }
-            else
-            {
-                res = _systemDb.GetSystemLogs(context,
-                    new FilterSystemLog
-                    {
-                        ObjectIDs = new List<int> { (int)EnumObjects.System },
-                        ActionIDs = new List<int> { (int)EnumActions.Login },
-                        ExecutorAgentIDs = filter?.ExecutorAgentIDs,
-                        ExecutorAgentName = filter?.ExecutorAgentName,
-                        LogDateFrom = filter?.CreateDateFrom,
-                        LogDateTo = filter?.CreateDateTo,
-                        FullTextSearchString = filter?.FullTextSearchString,
-                    }, paging).Select(x => new FrontSystemSession
-                    {
-                        CreateDate = x.LogDate,
-                        LastUsage = x.LogDate1,
-                        LoginLogId = x.Id,
-                        LoginLogInfo = x.Message,
-                        LogException = x.LogException,
-                        ObjectLog = x.ObjectLog,
-                        AgentId = x.ExecutorAgentId,
-                        Name = x.ExecutorAgent,
-                        ClientId = x.ClientId ?? 0,
-                        IsSuccess = x.LogLevel == 0,
-                        Host = "*.ostrean.com"
-                    }).ToList();
-                res.Where(x => !string.IsNullOrEmpty(x.LogException) && x.LogException.StartsWith("DmsExceptions:")).ToList()
-                    .ForEach(x => { x.TypeException = x.LogException; x.LogException = "##l@" + x.LogException + "@l##"; });
-                res.Join(sessions, x => x.LoginLogId, y => y.LoginLogId, (x, y) => new { x, y }).ToList()
-                    .ForEach(r =>
-                    {
-                        r.x.CreateDate = r.y.CreateDate;
-                        //r.x.Token = r.y.Token;
-                        r.x.LastUsage = r.y.LastUsage;
-                        r.x.UserId = r.y.UserId;
-                        r.x.IsActive = true;
-                    });
-            }
+
+            res = _systemDb.GetSystemLogs(context, filterLogs, paging)
+                .Select(x => new FrontSystemSession
+                {
+                    CreateDate = x.LogDate,
+                    LastUsage = x.LogDate1,
+                    LoginLogId = x.Id,
+                    LoginLogInfo = x.Message,
+                    LogException = x.LogException,
+                    ObjectLog = x.ObjectLog,
+                    AgentId = x.ExecutorAgentId,
+                    Name = x.ExecutorAgent,
+                    ClientId = x.ClientId ?? 0,
+                    IsSuccess = x.LogLevel == 0,
+                    Host = "*.ostrean.com",
+                    IsActive = x.LogDate1.HasValue ? x.LogDate1.Value > time : false
+                }).ToList();
+
+
+            res.Where(x => !string.IsNullOrEmpty(x.LogException) && x.LogException.StartsWith("DmsExceptions:")).ToList()
+                .ForEach(x => { x.TypeException = x.LogException; x.LogException = "##l@" + x.LogException + "@l##"; });
+
             return res;
         }
 

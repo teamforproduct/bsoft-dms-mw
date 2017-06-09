@@ -34,19 +34,16 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontSystemSession))]
         public async Task<IHttpActionResult> Get([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
-            var ctxs = DmsResolver.Current.Get<UserContexts>();
-            var sesions = ctxs.GetContextListQuery();
 
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var sessParam = (IQueryable<FrontSystemSession>) param;
                 var tmpService = DmsResolver.Current.Get<ILogger>();
                 if (filter == null) filter = new FilterSystemSession();
                 filter.ExecutorAgentIDs = new List<int> { context.CurrentAgentId };
-                var tmpItems = tmpService.GetSystemSessions(context, sessParam, filter, paging);
+                var tmpItems = tmpService.GetSystemSessions(context, filter, paging);
                 var res = new JsonResult(tmpItems, this);
                 return res;
-            }, sesions);
+            });
         }
 
         /// <summary>
@@ -60,16 +57,13 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(FrontSystemSession))]
         public async Task<IHttpActionResult> GetCurrent([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
-            var ctxs = DmsResolver.Current.Get<UserContexts>();
-            var sesions = ctxs.GetContextListQuery();
-
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
                 var tmpService = DmsResolver.Current.Get<ILogger>();
                 if (filter == null) filter = new FilterSystemSession();
                 filter.ExecutorAgentIDs = new List<int> { context.CurrentAgentId };
                 filter.IsOnlyActive = true;
-                var tmpItems = tmpService.GetSystemSessions(context, sesions, filter, paging);
+                var tmpItems = tmpService.GetSystemSessions(context, filter, paging);
                 var res = new JsonResult(tmpItems, this);
                 return res;
             });

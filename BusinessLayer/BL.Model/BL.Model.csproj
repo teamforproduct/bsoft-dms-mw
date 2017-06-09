@@ -692,6 +692,7 @@
     <Compile Include="WebAPI\FrontModel\FrontAspNetUserClient.cs" />
     <Compile Include="WebAPI\FrontModel\FrontSessionLog.cs" />
     <Compile Include="WebAPI\FrontModel\FrontSystemSession.cs" />
+    <Compile Include="WebAPI\IncomingModel\SessionEnviroment.cs" />
     <Compile Include="WebAPI\IncomingModel\ModifyAspNetUserControlQuestion.cs" />
     <Compile Include="WebAPI\IncomingModel\AddSessionLog.cs" />
     <Compile Include="WebAPI\IncomingModel\SetClientServer.cs" />

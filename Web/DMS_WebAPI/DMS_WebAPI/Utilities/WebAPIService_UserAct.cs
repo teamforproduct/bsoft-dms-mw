@@ -9,6 +9,7 @@ using BL.Model.Users;
 using BL.Model.WebAPI.IncomingModel;
 using DMS_WebAPI.DBModel;
 using DMS_WebAPI.Models;
+using DMS_WebAPI.Providers;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
@@ -105,6 +106,23 @@ namespace DMS_WebAPI.Utilities
 
             if (!result.Succeeded) throw new DatabaseError(result.Errors);
 
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+
+            var m = new AddSessionLog
+            {
+                Platform = HttpContext.Current.Request.Browser.Platform,
+                Browser = HttpContext.Current.Request.Browser.Name(),
+                IP = HttpContext.Current.Request.Browser.IP(),
+
+                Date = DateTime.UtcNow,
+                UserId = userId,
+                Type = EnumLogTypes.Information,
+                Event = "ChangeSecurityQuestion",
+                Message = "SecurityQuestionChanged",
+            };
+
+            webService.AddSessionLog(m);
+
         }
 
         public async Task RestorePassword(RestorePassword model)
@@ -166,6 +184,23 @@ namespace DMS_WebAPI.Utilities
             var result = await UserManager.ConfirmEmailAsync(userId, code);
 
             if (!result.Succeeded) throw new UserEmailCouldNotBeConfirmd(result.Errors);
+
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+
+            var m = new AddSessionLog
+            {
+                Platform = HttpContext.Current.Request.Browser.Platform,
+                Browser = HttpContext.Current.Request.Browser.Name(),
+                IP = HttpContext.Current.Request.Browser.IP(),
+
+                Date = DateTime.UtcNow,
+                UserId = userId,
+                Type = EnumLogTypes.Information,
+                Event = "ConfirmEmail",
+                Message = "EmailConfirmed",
+            };
+
+            webService.AddSessionLog(m);
         }
 
         public async Task<string> ResetPassword(ResetPassword model)
@@ -192,6 +227,24 @@ namespace DMS_WebAPI.Utilities
 
             var userContexts = DmsResolver.Current.Get<UserContexts>();
             userContexts.RemoveByUserId(model.UserId);
+
+
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+
+            var m = new AddSessionLog
+            {
+                Platform = HttpContext.Current.Request.Browser.Platform,
+                Browser = HttpContext.Current.Request.Browser.Name(),
+                IP = HttpContext.Current.Request.Browser.IP(),
+
+                Date = DateTime.UtcNow,
+                UserId = model.UserId,
+                Type = EnumLogTypes.Information,
+                Event = "ResetPassword",
+                Message = "PasswordReset",
+            };
+
+            webService.AddSessionLog(m);
 
             return user.Email;
         }

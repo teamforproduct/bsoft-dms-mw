@@ -510,6 +510,11 @@ namespace BL.Database.SystemDb
                 {
                     qry = qry.Where(x => x.LogDate <= filter.LogDateTo.Value);
                 }
+
+                if (filter.LogDate1From.HasValue)
+                {
+                    qry = qry.Where(x => x.LogDate1 >= filter.LogDate1From.Value);
+                }
                 if (!String.IsNullOrEmpty(filter.FullTextSearchString))
                 {
                     var filterContains = PredicateBuilder.New<SystemLogs>(true);

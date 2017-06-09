@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.IncomingModel;
@@ -93,7 +94,7 @@ namespace DMS_WebAPI.Providers
             // Если для пользователя включена возможность самоблокировки
             if (userManager.SupportsUserLockout && userLockoutEnabled && userIsLockedOut)
             {
-                await webService.ThrowErrorGrantResourceOwnerCredentials(context, new UserIsLockout());
+                await webService.ThrowError(new UserIsLockout(), user.Id, EnumLogTypes.Warning, "SignIn");
             }
 
             var passwordIsValid = await userManager.CheckPasswordAsync(user, context.Password);
@@ -118,14 +119,14 @@ namespace DMS_WebAPI.Providers
                 }
             }
 
-            if (!passwordIsValid) await webService.ThrowErrorGrantResourceOwnerCredentials(context, new UserPasswordIsIncorrect());
+            if (!passwordIsValid) await webService.ThrowError(new UserPasswordIsIncorrect(), user.Id, EnumLogTypes.Error, "SignIn");
 
             /////////////////////////////
             // Лигин и пароль верные!!!
             ////////////////////////////
 
             // Проверка подтверждения адреса
-            if (!user.EmailConfirmed) await webService.ThrowErrorGrantResourceOwnerCredentials(context, new UserMustConfirmEmail());
+            if (!user.EmailConfirmed) await webService.ThrowError(new UserMustConfirmEmail(), user.Id, EnumLogTypes.Warning, "SignIn");
 
             // Проверка Fingerprint: Если пользователь включил Fingerprint
             if (user.IsFingerprintEnabled)
@@ -140,7 +141,7 @@ namespace DMS_WebAPI.Providers
                 {
                     // Проверка ответа на секретный вопрос
                     if (!(user.ControlAnswer == answer))
-                        await webService.ThrowErrorGrantResourceOwnerCredentials(context, new UserAnswerIsIncorrect());
+                        await webService.ThrowError(new UserAnswerIsIncorrect(), user.Id, EnumLogTypes.Error, "CheckUpSecurityQuestion");
 
                     // Добавление текущего отпечатка в доверенные
                     if (rememberFingerprint)
@@ -159,7 +160,7 @@ namespace DMS_WebAPI.Providers
                         UserIDs = new List<string> { user.Id },
                         FingerprintExact = fingerprint,
                         IsActive = true,
-                    })) await webService.ThrowErrorGrantResourceOwnerCredentials(context, new UserFingerprintIsIncorrect());
+                    })) await webService.ThrowError(new UserFingerprintIsIncorrect(), user.Id, EnumLogTypes.Error, "CheckUpFingerprint");
                 }
             }
 
@@ -255,8 +256,6 @@ namespace DMS_WebAPI.Providers
                     if (server == null) throw new DatabaseIsNotFound();
 
                     // Получаю информацию о браузере
-                    var brInfo = HttpContext.Current.Request.Browser.Info();
-
                     var fingerPrint = await context.Request.Body.GetFingerprintAsync();
 
                     #region Подпорка для соапа
@@ -269,10 +268,21 @@ namespace DMS_WebAPI.Providers
                     }
                     #endregion
 
+                    var sesEnv = new SessionEnviroment
+                    {
+                        Platform = HttpContext.Current.Request.Browser.Platform,
+                        Browser = HttpContext.Current.Request.Browser.Name(),
+                        IP = HttpContext.Current.Request.Browser.IP(),
+                        Fingerprint = fingerPrint,
+                    };
+
+
+                    
+
                     var userContexts = DmsResolver.Current.Get<UserContexts>();
 
                     // Создаю пользовательский контекст
-                    var ctx = userContexts.Add(token, user, clientCode, server, brInfo, fingerPrint);
+                    var ctx = userContexts.Add(token, user, clientCode, server, sesEnv);
 
                 }
 

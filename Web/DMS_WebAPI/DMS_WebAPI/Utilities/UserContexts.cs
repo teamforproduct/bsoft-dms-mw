@@ -4,6 +4,7 @@ using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
 using BL.Model.Context;
+using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.FrontModel;
@@ -38,27 +39,14 @@ namespace DMS_WebAPI.Utilities
         }
 
 
-        public IQueryable<FrontSystemSession> GetContextListQuery()
+        public IEnumerable<int> GetActiveAgentsList(int clientId)
         {
             locker.EnterReadLock();
             try
             {
-                var res = _cacheContexts.AsQueryable()
-                    .Where(x => x.Session.LastUsage > DateTime.UtcNow.AddMinutes(-1))
-                    .Select(x => new FrontSystemSession
-                    {
-                        LastUsage = x.Session.LastUsage,
-                        CreateDate = x.Session.CreateDate,
-                        LoginLogInfo = x.Session.LoginLogInfo,
-                        LoginLogId = x.Session.Id,
-                        UserId = x.User.Id,
-                        AgentId = x.Employee.Id,
-                        Name = x.Employee.Name,
-                        ClientId = x.Client.Id,
-                        IsActive = true,
-                        IsSuccess = true,
-                        Host = "_.ostrean.com"
-                    });
+                var res = _cacheContexts
+                    .Where(x => x.Employee != null && x.Client != null && x.Client.Id == clientId && x.Session.LastUsage > DateTime.UtcNow.AddMinutes(-1))
+                    .Select(x => x.Employee.Id).Distinct().ToList();
                 return res;
             }
             finally
@@ -122,11 +110,10 @@ namespace DMS_WebAPI.Utilities
         /// <param name="user">Id Web-пользователя</param>
         /// <param name="clientCode">доменное имя клиента</param>
         /// <param name="db">new server parameters</param>
-        /// <param name="browserInfo">clientId</param>
-        /// <param name="fingerPrint">clientId</param>
+        /// <param name="model">SessionEnviroment</param>
         /// <returns></returns>
         /// <exception cref="TokenAlreadyExists"></exception>
-        public UserContext Add(string key, AspNetUsers user, string clientCode, DatabaseModelForAdminContext db, string browserInfo, string fingerPrint)
+        public UserContext Add(string key, AspNetUsers user, string clientCode, DatabaseModelForAdminContext db, SessionEnviroment model)
         {
             key = key.ToLower();
 
@@ -138,7 +125,7 @@ namespace DMS_WebAPI.Utilities
             //VerifyNumberOfConnectionsByNew(intContext, new List<DatabaseModelForAdminContext> { db });
 
             // запись в лог создает новый дб контекст, поэтому передаю internal
-            WriteSessionLog(intContext, browserInfo, fingerPrint);
+            WriteSessionLog(intContext, model);
 
             AddWithLock(intContext);
 
@@ -165,6 +152,7 @@ namespace DMS_WebAPI.Utilities
                     LanguageId = user.LanguageId,
                 },
                 Employee = new Employee { },
+                Session = new Session { },
                 Client = new Client
                 {
                     Id = clientId,
@@ -264,7 +252,7 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        public void Add(UserContext item)
+        private void Add(UserContext item)
         {
             // контекст добавленный в коллекцию считаю внутренним, его нельзя использовать для подключения к базе
             _cacheContexts.Add(item);
@@ -612,7 +600,7 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        
+
 
 
         /// <summary>
@@ -702,15 +690,22 @@ namespace DMS_WebAPI.Utilities
 
                 if (user == null) return;
 
-                var brInfo = HttpContext.Current.Request.Browser.Info();
 
                 var intContext = FormContextInternal(item.Token, user, clientCode, server);
 
                 // TODO вернуть, когда перейдем к лицензиям 
                 //VerifyNumberOfConnectionsByNew(context, new List<DatabaseModelForAdminContext> { server });//LONG
 
-                WriteSessionLog(intContext, brInfo, item.Session.Fingerprint);
+                var s = new SessionEnviroment
+                {
+                    Browser = HttpContext.Current.Request.Browser.Name(),
+                    IP = HttpContext.Current.Request.Browser.IP(),
+                    Platform = HttpContext.Current.Request.Browser.Platform,
+                    // Fingerprint вычитываю из предыдущего лога, так как на фронте он повторно не расчитывается
+                    Fingerprint = item.Session?.Fingerprint
+                };
 
+                WriteSessionLog(intContext, s, true);
 
                 SetUserPositions(intContext, item.CurrentPositionsIdList.Split(',').Select(n => Convert.ToInt32(n)).ToList());
 
@@ -725,27 +720,58 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        private void WriteSessionLog(IContext context, string browserInfo, string fingerPrint)
+        private void WriteSessionLog(UserContext context, SessionEnviroment model, bool SessionRestore = false)
         {
-            var logInfo = browserInfo;
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            if (!string.IsNullOrEmpty(fingerPrint))
+
+            var finger = string.Empty;
+
+            if (!string.IsNullOrEmpty(model.Fingerprint))
             {
-                var fp = webService.GetUserFingerprints(new FilterAspNetUserFingerprint { UserIDs = new List<string> { context.User.Id }, FingerprintExact = fingerPrint }).FirstOrDefault();
+                var fp = webService.GetUserFingerprints(new FilterAspNetUserFingerprint { UserIDs = new List<string> { context.User.Id }, FingerprintExact = model.Fingerprint }).FirstOrDefault();
 
                 if (fp != null)
                 {
-                    logInfo = $"{logInfo};{fp.Fingerprint};{fp.Name}";
+                    finger = fp.Name;
                 }
                 else
                 {
-                    logInfo = $"{logInfo};{fingerPrint.TruncateHard(8)}...;Not Saved";
+                    finger = model.Fingerprint.TruncateHard(8);
                 }
             }
 
-            // TODO SESSION LOG
-            //var logger = DmsResolver.Current.Get<ILogger>();
-            //context.Session.Id = logger.Information(context, logInfo, (int)EnumObjects.System, (int)EnumActions.Login, logDate: context.CreateDate, isCopyDate1: true);
+            var log = new AddSessionLog
+            {
+                Type = EnumLogTypes.Information,
+                Event = SessionRestore ? "SessionRestore" : "SessionStart",
+                Message = SessionRestore ? "SessionRestored" : "SessionStarted",
+                Date = context.Session.CreateDate,
+                LastUsage = context.Session.LastUsage,
+
+                UserId = context.User.Id,
+
+                Fingerprint = finger,
+                Browser = model.Browser,
+                Platform = model.Platform,
+                IP = model.IP,
+            };
+
+            context.Session.Id = webService.AddSessionLog(log);
+
+            // При успешном входе в систему деактивирую записи об угадывании ответа на сектерный вопрос
+
+            var e = new UserAnswerIsIncorrect();
+
+            webService.SetSessionLogEnabled(false, new FilterSessionsLog
+            {
+                Message = e.GetType().Name,
+                UserId = context.User.Id,
+                Types = new List<EnumLogTypes> { EnumLogTypes.Error },
+                DateFrom = DateTime.UtcNow.AddMinutes(-60),
+                IPExact = model.IP
+            });
+
+            //new UserAnswerIsIncorrect(), user.Id, EnumLogTypes.Error,
 
             // не понятно чего это такое
             //if (!string.IsNullOrEmpty(context.User.Fingerprint))
@@ -761,9 +787,9 @@ namespace DMS_WebAPI.Utilities
 
         }
 
-        
 
-        
+
+
 
     }
 }
