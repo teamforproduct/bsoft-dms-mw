@@ -456,6 +456,10 @@
     <Compile Include="Migrations\201706102122371_fixSessions2.Designer.cs">
       <DependentUpon>201706102122371_fixSessions2.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201706102231511_UserContextsKey.cs" />
+    <Compile Include="Migrations\201706102231511_UserContextsKey.Designer.cs">
+      <DependentUpon>201706102231511_UserContextsKey.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="DBModel\AspNetUsers.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
@@ -696,6 +700,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201706102122371_fixSessions2.resx">
       <DependentUpon>201706102122371_fixSessions2.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706102231511_UserContextsKey.resx">
+      <DependentUpon>201706102231511_UserContextsKey.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
