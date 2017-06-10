@@ -288,17 +288,17 @@ namespace DMS_WebAPI.Utilities
 
                     var m = new MailWithCallToActionModel()
                     {
-                        Greeting = languages.GetTranslation(model.LanguageId, "##l@Mail:Greeting@l##", new List<string> { model.FirstName }),
-                        Closing = languages.GetTranslation(model.LanguageId, "##l@Mail:Closing@l##"),
-                        CallToActionUrl =clickURL,
-                        CallToActionName = languages.GetTranslation(model.LanguageId, "##l@Mail.Welcome.CallToActionName@l##"),
-                        CallToActionDescription = languages.GetTranslation(model.LanguageId, "##l@Mail.Welcome.CallToActionDescription@l##", new List<string> { context.Employee.Name, settVal.GetClientAddress(clientCode) }),
+                        Greeting = languages.GetTranslation(model.LanguageId, Labels.Get("Mail", "Greeting"), new List<string> { model.FirstName }),
+                        Closing = languages.GetTranslation(model.LanguageId, Labels.Get("Mail", "Closing")),
+                        CallToActionUrl = clickURL,
+                        CallToActionName = languages.GetTranslation(model.LanguageId, Labels.Get("Mail", "Welcome", "CallToActionName")),
+                        CallToActionDescription = languages.GetTranslation(model.LanguageId, Labels.Get("Mail", "Welcome", "CallToActionDescription"), new List<string> { context.Employee.Name, settVal.GetClientAddress(clientCode) }),
                     };
 
                     var htmlContent = m.RenderPartialViewToString(RenderPartialView.MailWithCallToAction);
                     var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
 
-                    mailService.SendMessage(null, MailServers.Noreply, res.Email, languages.GetTranslation(model.LanguageId, "##l@Mail.Welcome.Subject@l##"), htmlContent);
+                    mailService.SendMessage(null, MailServers.Noreply, res.Email, languages.GetTranslation(model.LanguageId, Labels.Get("Mail", "Welcome.Subject")), htmlContent);
                 }
 
                 return res.EmployeeId;

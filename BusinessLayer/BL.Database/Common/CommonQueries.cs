@@ -128,7 +128,7 @@ namespace BL.Database.Common
         public static void SetAccessGroupsFromTemplate(IContext context, List<InternalDocumentSendList> items)
         {
             var dbContext = context.DbContext as DmsContext;
-            var ids = items.Where(x => x != null).Where(x=>x.IdTemplateSendList.HasValue).Select(x => x.IdTemplateSendList.Value).ToList();
+            var ids = items.Where(x => x != null).Where(x => x.IdTemplateSendList.HasValue).Select(x => x.IdTemplateSendList.Value).ToList();
             if (!ids.Any()) return;
             var filterContains = PredicateBuilder.New<TemplateDocumentSendListAccessGroups>(false);
             filterContains = ids.Aggregate(filterContains, (current, value) => current.Or(e => e.SendListId == value).Expand());
@@ -225,6 +225,8 @@ namespace BL.Database.Common
             filterContains = ids.Aggregate(filterContains, (current, value) => current.Or(e => e.EventId == value).Expand());
             var qryFL = dbContext.DocumentFileLinksSet.Where(filterContains);
 
+            var module = Labels.GetEnumName<EnumFileTypes>();
+
             var filesQry = qryFL.Join(qry, x => x.FileId, y => y.Id, (x, y) => new { FileLink = x, File = y })
                 .GroupBy(x => x.FileLink.EventId).Select(x => new
                 {
@@ -238,7 +240,7 @@ namespace BL.Database.Common
                         Date = y.file.Date,
                         DocumentId = y.file.DocumentId,
                         Type = (EnumFileTypes)y.file.TypeId,
-                        TypeName = "##l@FileTypes:" + ((EnumFileTypes)y.file.TypeId).ToString() + "@l##",
+                        TypeName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumFileTypes)y.file.TypeId).ToString() + Labels.LastSigns,
                         IsMainVersion = y.file.IsMainVersion,
                         IsDeleted = y.file.IsDeleted,
                         IsWorkedOut = y.file.IsWorkedOut ?? true,
@@ -260,7 +262,7 @@ namespace BL.Database.Common
                             Extension = y.file.IsDeleted ? null : y.file.Extension,
                             FileType = y.file.IsDeleted ? null : y.file.FileType,
                             FileSize = y.file.IsDeleted ? (long?)null : y.file.FileSize,
-                            Name = y.file.IsDeleted ? "##l@General:FileHasBeenDeleted@l##" : y.file.Name,
+                            Name = y.file.IsDeleted ? Labels.FirstSigns + "General" + Labels.Delimiter + "FileHasBeenDeleted" + Labels.LastSigns : y.file.Name,
                         }
                     }
                 ).ToList(),
@@ -1728,6 +1730,8 @@ namespace BL.Database.Common
                 throw new WrongAPIParameters();
             }
 
+            var module = Labels.GetEnumName<EnumDocumentDirections>();
+
             var tasks = tasksDb.Select(x => new FrontDocumentTask
             {
                 Id = x.Id,
@@ -1743,7 +1747,7 @@ namespace BL.Database.Common
 
                 DocumentDescription = x.Document.Description,
                 DocumentTypeName = x.Document.DocumentType.Name,
-                DocumentDirectionName = "##l@DocumentDirections:" + ((EnumDocumentDirections)x.Document.DocumentDirectionId).ToString() + "@l##",
+                DocumentDirectionName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumDocumentDirections)x.Document.DocumentDirectionId).ToString() + Labels.LastSigns,
 
                 PositionId = x.PositionId,
                 PositionExecutorAgentId = x.PositionExecutorAgentId,
@@ -2729,6 +2733,7 @@ namespace BL.Database.Common
             doc.SendLists = CommonQueries.GetInternalDocumentSendList(context, new FilterDocumentSendList { DocumentId = new List<int> { documentId } });
 
             var maxDateTime = DateTime.UtcNow.AddYears(50);
+            var module = Labels.GetEnumName<EnumEventTypes>();
 
             doc.Waits = CommonQueries.GetDocumentWaitQuery(context, new FilterDocumentWait { DocumentId = new List<int> { doc.Id } })
                 .Select(x => new InternalDocumentWait
@@ -2746,7 +2751,7 @@ namespace BL.Database.Common
                     IsClosed = x.OffEventId != null,
                     ResultTypeName = x.ResultType.Name,
                     AttentionDate = x.AttentionDate,
-                    OnEventTypeName = "##l@EventTypes:" + ((EnumEventTypes)x.OnEvent.EventTypeId).ToString() + "@l##",
+                    OnEventTypeName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumEventTypes)x.OnEvent.EventTypeId).ToString() + Labels.LastSigns,
                     OffEventDate = x.OffEventId.HasValue ? x.OffEvent.CreateDate : (DateTime?)null
                 }).ToList();
 

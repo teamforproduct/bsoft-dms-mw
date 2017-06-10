@@ -1,12 +1,10 @@
-﻿using BL.CrossCutting.Interfaces;
+﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Interfaces;
+using BL.Logic.AdminCore.Interfaces;
+using BL.Logic.DocumentCore.Interfaces;
 using BL.Model.DocumentCore.InternalModel;
 using BL.Model.Enums;
 using System.Collections.Generic;
-using BL.CrossCutting.DependencyInjection;
-using BL.Logic.AdminCore.Interfaces;
-using BL.Logic.DependencyInjection;
-using BL.Model.Constants;
-using BL.Logic.DocumentCore.Interfaces;
 
 namespace BL.Logic.Common
 {

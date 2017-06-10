@@ -152,28 +152,32 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 //Контрагенты(Тип: Физ.лицо / Юр.лицо / Банк, ИНН / ОКПО / МФО)
+
+                var label = Labels.Get("Agents", "Person");
                 var qryPersons = GetAgentPersonsQuery(ctx, new FilterDictionaryAgentPerson { IsActive = true });
                 var resPersons = qryPersons.Select(x => new AutocompleteItem
                 {
                     Id = x.Id,
                     Name = x.Agent.Name,
-                    Details = new List<string> { "##l@Agents:Person@l##", x.People.TaxCode ?? string.Empty }
+                    Details = new List<string> { label, x.People.TaxCode ?? string.Empty }
                 }).ToList();
 
+                label = Labels.Get("Agents", "Company");
                 var qryCompanies = GetAgentCompaniesQuery(ctx, new FilterDictionaryAgentCompany { IsActive = true });
                 var resCompanies = qryCompanies.Select(x => new AutocompleteItem
                 {
                     Id = x.Id,
                     Name = x.Agent.Name,
-                    Details = new List<string> { "##l@Agents:Company@l##", x.OKPOCode ?? string.Empty }
+                    Details = new List<string> { label, x.OKPOCode ?? string.Empty }
                 }).ToList();
 
+                label = Labels.Get("Agents", "Bank");
                 var qryBanks = GetAgentBanksQuery(ctx, new FilterDictionaryAgentBank { IsActive = true });
                 var resBanks = qryBanks.Select(x => new AutocompleteItem
                 {
                     Id = x.Id,
                     Name = x.Agent.Name,
-                    Details = new List<string> { "##l@Agents:Bank@l##", x.MFOCode ?? string.Empty }
+                    Details = new List<string> { label, x.MFOCode ?? string.Empty }
                 }).ToList();
 
                 var res = resCompanies.Union(resBanks).Union(resPersons).OrderBy(x => x.Name).ToList();
@@ -950,7 +954,7 @@ namespace BL.Database.Dictionaries
                     PersonnelNumber = x.PersonnelNumber,
                     TaxCode = x.Agent.AgentPeople.TaxCode,
 
-                    
+
                     IsActive = x.IsActive,
                     Description = x.Description,
 
@@ -1269,7 +1273,7 @@ namespace BL.Database.Dictionaries
             }
         }
 
-        
+
 
         public void SetAgentUserLastPositionChose(IContext ctx, InternalDictionaryAgentUser User)
         {
@@ -3926,11 +3930,13 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetDocumentDirectionQuery(ctx, filter);
 
+                var module = Labels.GetEnumName<EnumDocumentDirections>();
+
                 var res = qry.Select(x => new FrontDictionaryDocumentDirection
                 {
                     Id = x.Id,
                     Code = ((EnumDocumentDirections)x.Id).ToString(),
-                    Name = "##l@DocumentDirections:" + ((EnumDocumentDirections)x.Id).ToString() + "@l##",
+                    Name = Labels.FirstSigns + module + Labels.Delimiter + ((EnumDocumentDirections)x.Id).ToString() + Labels.LastSigns,
                 }).ToList();
 
                 transaction.Complete();
@@ -4246,17 +4252,20 @@ namespace BL.Database.Dictionaries
                         filterContains = filter.DocumentIDs.Aggregate(filterContains, (current, value) => current.Or(e => e.DocumentId == value).Expand());
 
                         qry = qry.Where(x => CommonQueries.GetDocumentEventQuery(ctx, null)
-                                                .Where(filterContains).Select(y => y.EventTypeId).Contains(x.Id) );
+                                                .Where(filterContains).Select(y => y.EventTypeId).Contains(x.Id));
                     }
                 }
+                var et = Labels.GetEnumName<EnumEventTypes>();
+                var iet = Labels.GetEnumName<EnumImportanceEventTypes>();
+
                 var res = qry.Select(x => new FrontDictionaryEventType
                 {
                     EventType = (EnumEventTypes)x.Id,
                     Id = x.Id,
                     Code = x.Id.ToString(),
-                    Name = "##l@EventTypes:" + x.Id.ToString() + "@l##",
+                    Name = Labels.FirstSigns + et + Labels.Delimiter + x.Id.ToString() + Labels.LastSigns,
                     ImportanceEventTypeId = x.ImportanceEventTypeId,
-                    ImportanceEventTypeName = "##l@ImportanceEventTypes:" + x.ImportanceEventTypeId.ToString() + "@l##"
+                    ImportanceEventTypeName = Labels.FirstSigns + iet + Labels.Delimiter + x.ImportanceEventTypeId.ToString() + Labels.LastSigns
                 }).ToList();
                 transaction.Complete();
                 return res;
@@ -4314,15 +4323,17 @@ namespace BL.Database.Dictionaries
                         filterContains = filter.DocumentIDs.Aggregate(filterContains,
                             (current, value) => current.Or(e => e.DocumentId == value).Expand());
                         qry = qry.Where(x => CommonQueries.GetDocumentEventQuery(ctx, null)
-                                                .Where(filterContains).Select(y => y.EventType.ImportanceEventTypeId).Contains(x.Id) );
+                                                .Where(filterContains).Select(y => y.EventType.ImportanceEventTypeId).Contains(x.Id));
                     }
                 }
+
+                var iet = Labels.GetEnumName<EnumImportanceEventTypes>();
 
                 var res = qry.Select(x => new FrontDictionaryImportanceEventType
                 {
                     Id = x.Id,
                     Code = x.Id.ToString(),
-                    Name = "##l@ImportanceEventTypes:" + x.Id.ToString() + "@l##",
+                    Name = Labels.FirstSigns + iet + Labels.Delimiter + x.Id.ToString() + Labels.LastSigns,
                 }).ToList();
 
                 transaction.Complete();
@@ -4376,10 +4387,12 @@ namespace BL.Database.Dictionaries
                     //}
                 }
 
+                var module = Labels.GetEnumName<EnumLinkTypes>();
+
                 var res = qry.Select(x => new FrontDictionaryLinkType
                 {
                     Id = x.Id,
-                    Name = "##l@LinkTypes:" + ((EnumLinkTypes)x.Id).ToString() + "@l##",
+                    Name = Labels.FirstSigns + module + Labels.Delimiter + ((EnumLinkTypes)x.Id).ToString() + Labels.LastSigns,
                     IsImportant = x.IsImportant,
                 }).ToList();
 
@@ -4547,6 +4560,7 @@ namespace BL.Database.Dictionaries
             using (var transaction = Transactions.GetTransaction())
             {
                 var now = DateTime.UtcNow;
+                var module = Labels.GetEnumName<EnumPositionExecutionTypes>();
 
                 var res = dbContext.DictionaryPositionsSet.Where(x => x.Department.Company.ClientId == ctx.Client.Id).Where(x => x.Id == id)
                     .Select(x => new FrontDictionaryPosition
@@ -4577,7 +4591,7 @@ namespace BL.Database.Dictionaries
                                 IsActive = y.IsActive,
                                 AgentId = y.Agent.Id,
                                 AgentName = y.Agent.Name,
-                                PositionExecutorTypeName = "##l@PositionExecutionTypes:" + ((EnumPositionExecutionTypes)y.PositionExecutorTypeId).ToString() + "@l##",
+                                PositionExecutorTypeName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumPositionExecutionTypes)y.PositionExecutorTypeId).ToString() + Labels.LastSigns,
                                 PositionExecutorTypeId = (EnumPositionExecutionTypes)y.PositionExecutorTypeId,
                                 //StartDate = y.StartDate,
                                 //EndDate = y.EndDate,
@@ -4760,10 +4774,12 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.OrderBy(x => x.ExecutorAgent.Name);
 
+                var vacant = Labels.Get("Message", "PositionIsVacant");
+
                 var res = qry.Select(x => new AutocompleteItem
                 {
                     Id = x.Id,
-                    Name = x.ExecutorAgentId.HasValue ? x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : null) : "##l@Message:PositionIsVacant@l##",
+                    Name = x.ExecutorAgentId.HasValue ? x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : null) : vacant,
                     Details = new List<string>
                     {
                         x.Name,
@@ -4784,6 +4800,8 @@ namespace BL.Database.Dictionaries
 
                 qry = qry.OrderBy(x => x.Name);
 
+                var vacant = Labels.Get("Message", "PositionIsVacant");
+
                 var res = qry.Select(x => new AutocompleteItem
                 {
                     Id = x.Id,
@@ -4791,7 +4809,7 @@ namespace BL.Database.Dictionaries
                     Details = new List<string>
                     {
                         x.Department.Code + " " + x.Department.Name,
-                        x.ExecutorAgentId.HasValue ? x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : null) : "##l@Message:PositionIsVacant@l##"
+                        x.ExecutorAgentId.HasValue ? x.ExecutorAgent.Name + (x.ExecutorType.Suffix != null ? " (" + x.ExecutorType.Suffix + ")" : null) : vacant
                     },
                 }).ToList();
 
@@ -5158,6 +5176,8 @@ namespace BL.Database.Dictionaries
 
 
                 DateTime? maxDateTime = DateTime.UtcNow.AddYears(50);
+                var al = Labels.GetEnumName<EnumAccessLevels>();
+                var pet = Labels.GetEnumName<EnumPositionExecutionTypes>();
 
                 var res = qry.Select(x => new FrontDictionaryPositionExecutor
                 {
@@ -5175,8 +5195,8 @@ namespace BL.Database.Dictionaries
                     PositionFullName = x.Position.FullName,
                     DepartmentIndex = x.Position.Department.Index,
                     DepartmentName = x.Position.Department.Name,
-                    AccessLevelName = "##l@AccessLevels:" + ((EnumAccessLevels)x.AccessLevelId).ToString() + "@l##",
-                    PositionExecutorTypeName = "##l@PositionExecutionTypes:" + ((EnumPositionExecutionTypes)x.PositionExecutorTypeId).ToString() + "@l##",
+                    AccessLevelName = Labels.FirstSigns + al + Labels.Delimiter + ((EnumAccessLevels)x.AccessLevelId).ToString() + Labels.LastSigns,
+                    PositionExecutorTypeName = Labels.FirstSigns + pet + Labels.Delimiter + ((EnumPositionExecutionTypes)x.PositionExecutorTypeId).ToString() + Labels.LastSigns,
                     PositionExecutorTypeSuffix = x.PositionExecutorType.Suffix,
                 }).ToList();
 
@@ -5267,7 +5287,7 @@ namespace BL.Database.Dictionaries
                     TreeParentId = x.PositionId.ToString() + "_" + parObjId,
                     IsActive = x.IsActive,
                     IsLeaf = true,
-                    Description = ((EnumPositionExecutionTypes) x.PositionExecutorType.Id).ToString()
+                    Description = ((EnumPositionExecutionTypes)x.PositionExecutorType.Id).ToString()
                 }).ToList();
 
                 transaction.Complete();
@@ -5467,8 +5487,8 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     IsActive = x.IsActive,
-//                    Code = ((EnumPositionExecutionTypes)x.Id).ToString(),
-//                    Name = x.Name,
+                    //                    Code = ((EnumPositionExecutionTypes)x.Id).ToString(),
+                    //                    Name = x.Name,
                 }).ToList();
 
                 transaction.Complete();
@@ -5482,11 +5502,13 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetPositionExecutorTypesQuery(ctx, filter);
 
+                var pet = Labels.GetEnumName<EnumPositionExecutionTypes>();
+
                 var res = qry.Select(x => new FrontDictionaryPositionExecutorType
                 {
                     Id = x.Id,
                     Code = ((EnumPositionExecutionTypes)x.Id).ToString(),
-                    Name = "##l@PositionExecutionTypes:" + ((EnumPositionExecutionTypes)x.Id).ToString() + "@l##",
+                    Name = Labels.FirstSigns + pet + Labels.Delimiter + ((EnumPositionExecutionTypes)x.Id).ToString() + Labels.LastSigns,
                 }).ToList();
 
                 transaction.Complete();
@@ -6234,6 +6256,8 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetStandartSendListContentsQuery(ctx, filter);
 
+                var module = Labels.GetEnumName<EnumAccessLevels>();
+
                 var res = qry.Select(x => new FrontDictionaryStandartSendListContent
                 {
                     Id = x.Id,
@@ -6258,7 +6282,7 @@ namespace BL.Database.Dictionaries
                     TargetDepartmentName = x.TargetPosition.Department.Name,
 
 
-                    AccessLevelName = "##l@AccessLevels:" + ((EnumAccessLevels)x.AccessLevelId).ToString() + "@l##",
+                    AccessLevelName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumAccessLevels)x.AccessLevelId).ToString() + Labels.LastSigns,
                     SendTypeIsExternal = x.SendTypeId == 45
                 }).ToList();
 
@@ -6839,11 +6863,13 @@ namespace BL.Database.Dictionaries
             {
                 var qry = GetAccessLevelsQuery(ctx, filter);
 
+                var module = Labels.GetEnumName<EnumAccessLevels>();
+
                 var res = qry.Select(x => new FrontAdminAccessLevel
                 {
                     Id = x.Id,
                     Code = ((EnumAccessLevels)x.Id).ToString(),
-                    Name = "##l@AccessLevels:" + ((EnumAccessLevels)x.Id).ToString() + "@l##",
+                    Name = Labels.FirstSigns + module + Labels.Delimiter + ((EnumAccessLevels)x.Id).ToString() + Labels.LastSigns,
                 }).ToList();
                 transaction.Complete();
                 return res;

@@ -9,6 +9,7 @@ using BL.Model.AdminCore;
 using BL.Model.DictionaryCore.InternalModel;
 using BL.Model.Enums;
 using BL.Model.SystemCore.InternalModel;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DocumentCore
 {
@@ -107,11 +108,12 @@ namespace BL.Logic.DocumentCore
         }
         private static void MenuCategoryGrouping(IContext ctx, DocumentActionsModel model)
         {
+            var module = Labels.GetEnumName<EnumActionCategories>();
             model.PositionWithActions?.ForEach(x =>
                x.Categories = x.Actions?.GroupBy(y => y.Category).Select(y => new InternalSystemActionCategoryForDocument
                {
                    Category = y.Key ?? EnumActionCategories.Actions,
-                   CategoryName = y.Key.HasValue ? "##l@ActionCategories:" + ((EnumActionCategories)y.Key).ToString() + "@l##" : "##l@ActionCategories:Actions@l##",
+                   CategoryName = y.Key.HasValue ? Labels.Get(module, ((EnumActionCategories)y.Key).ToString()) : Labels.Get(module, "Actions"),
                    Actions = y.ToList()
                }).ToList()
             );

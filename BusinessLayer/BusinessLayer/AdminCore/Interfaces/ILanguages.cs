@@ -20,7 +20,5 @@ namespace BL.Logic.AdminCore.Interfaces
         int GetLanguageIdByHttpContext();
 
         InternalAdminLanguage GetDefaultLanguage();
-
-        string GetLabel(string module, string item);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.DatabaseContext;
 using BL.Database.DBModel.System;
@@ -45,7 +46,7 @@ namespace BL.Logic.SystemCore
 
         public IEnumerable<FrontDictionarySettingType> GetSystemSettings(IContext context, FilterSystemSetting filter)
         {
-            var tmpSettings= DmsResolver.Current.Get<ISettings>();
+            var tmpSettings = DmsResolver.Current.Get<ISettings>();
 
             var list = _systemDb.GetSystemSettings(context, filter).Select(x => new FrontSystemSetting()
             {
@@ -73,7 +74,7 @@ namespace BL.Logic.SystemCore
 
         }
 
-        
+
 
         public IEnumerable<FrontSystemFormat> GetSystemFormats(IContext context, FilterSystemFormat filter)
         {
@@ -109,15 +110,16 @@ namespace BL.Logic.SystemCore
                 Id = x.Id,
                 Code = x.Code,
                 Description = x.Description,
-            }).ToList(); 
+            }).ToList();
         }
 
         public IEnumerable<FrontSystemObject> GetImportSystemObjects()
         {
-            return DmsDbImportData.GetSystemObjects().Select(x => new FrontSystemObject {
+            return DmsDbImportData.GetSystemObjects().Select(x => new FrontSystemObject
+            {
                 Id = x.Id,
                 Code = x.Code,
-                Description = "##l@Objects:"+ x.Code + "@l##",
+                Description = Labels.Get("Objects", x.Code),
             }).ToList();
         }
 
@@ -130,7 +132,7 @@ namespace BL.Logic.SystemCore
                 Code = x.Code,
                 Name = x.Name,
                 Order = x.Order
-            } ).ToList();
+            }).ToList();
         }
 
         public IEnumerable<FrontSystemFeatures> GetImportSystemFeatures()
@@ -182,7 +184,7 @@ namespace BL.Logic.SystemCore
             }
         }
 
-        
+
 
         private bool EqualsAction(InternalSystemAction intAction, SystemActions dbAction)
         {

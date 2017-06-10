@@ -104,13 +104,15 @@ namespace BL.Database.Admins
 
                 qry = qry.OrderBy(x => x.PositionExecutorTypeId).ThenBy(x => x.Position.Order);
 
+                var module = Labels.GetEnumName<EnumPositionExecutionTypes>();
+
                 var res = qry.Select(x => new FrontUserAssignments
                 {
                     RolePositionId = x.PositionId,
                     RolePositionName = x.Position.Name,
                     RolePositionExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null),
                     RolePositionExecutorTypeId = x.PositionExecutorTypeId,
-                    RolePositionExecutorTypeName = "##l@EnumPositionExecutionTypes:" + ((EnumPositionExecutionTypes)x.PositionExecutorTypeId).ToString() + "@l##",
+                    RolePositionExecutorTypeName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumPositionExecutionTypes)x.PositionExecutorTypeId).ToString() + Labels.LastSigns,
                     StartDate = x.StartDate,
                     EndDate = x.EndDate > maxDateTime ? (DateTime?)null : x.EndDate,
                     DepartmentName = x.Position.Department.Name,
@@ -178,6 +180,8 @@ namespace BL.Database.Admins
 
                 qry = qry.Where(x => x.AgentId == agentId && x.Position.ExecutorAgentId.HasValue && x.IsActive && now >= x.StartDate && now <= x.EndDate);
 
+                var module = Labels.GetEnumName<EnumPositionExecutionTypes>();
+
                 var res = qry.Select(x => new FrontUserAssignmentsAvailable
                 {
                     PositionId = x.PositionId,
@@ -186,7 +190,7 @@ namespace BL.Database.Admins
                     ExecutorName = (x.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal ? string.Empty : x.Position.ExecutorAgent.Name),
                     ImageByteArray = (x.PositionExecutorTypeId == (int)EnumPositionExecutionTypes.Personal ? new byte[] { } : x.Position.ExecutorAgent.Image),
                     ExecutorTypeId = x.PositionExecutorTypeId,
-                    ExecutorTypeDescription = "##l@PositionExecutionTypes:" + ((EnumPositionExecutionTypes)x.PositionExecutorTypeId).ToString() + ".Description@l##",
+                    ExecutorTypeDescription = Labels.FirstSigns + module + Labels.Delimiter + ((EnumPositionExecutionTypes)x.PositionExecutorTypeId).ToString() + Labels.Delimiter + "Description" + Labels.LastSigns,
                 }).ToList();
 
                 //IsLastChosen

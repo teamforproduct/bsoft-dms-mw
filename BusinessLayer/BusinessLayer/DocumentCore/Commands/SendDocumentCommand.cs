@@ -61,7 +61,7 @@ namespace BL.Logic.DocumentCore.Commands
                     }
                     catch (Exception ex)
                     {
-                        res.Add(i, ((ex is DmsExceptions) ? "##l@DmsExceptions:" + ex.GetType().Name + "@l##" : ex.Message));
+                        res.Add(i, ((ex is DmsExceptions) ? Labels.Get("DmsExceptions", ex.GetType().Name) : ex.Message));
                         break;
                     }
                 }

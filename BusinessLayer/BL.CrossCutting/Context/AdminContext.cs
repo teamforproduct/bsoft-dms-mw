@@ -36,7 +36,6 @@ namespace BL.CrossCutting.Context
             {
                 Id = string.Empty,
                 Name = string.Empty,
-                Fingerprint = string.Empty,
                 IsChangePasswordRequired = false,// for admin context that is not required
                 LanguageId = -1,
             };
@@ -80,7 +79,6 @@ namespace BL.CrossCutting.Context
             {
                 Id = string.Empty,
                 Name = string.Empty,
-                Fingerprint = string.Empty,
                 IsChangePasswordRequired = false,// for admin context that is not required
                 LanguageId = -1,
             };
@@ -99,9 +97,9 @@ namespace BL.CrossCutting.Context
         }
 
         /// <summary>
-        /// Токен из авторизации
+        /// Ключ
         /// </summary>
-        public string Token { get; set; }
+        public string Key { get; set; }
 
         /// <summary>
         ///  Флаг TRUE если контекст сформирован и готов к работе
@@ -115,6 +113,8 @@ namespace BL.CrossCutting.Context
         public User User { get; set; }
 
         public DatabaseModel CurrentDB { get; set; }
+
+        public Session Session { get; set; }
 
         public bool CurrentPositionsIdListDefined => true;
 

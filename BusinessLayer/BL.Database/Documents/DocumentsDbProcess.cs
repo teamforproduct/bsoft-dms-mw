@@ -474,11 +474,12 @@ namespace BL.Database.Documents
 
 
                     #region model filling
+                    var module = Labels.GetEnumName<EnumDocumentDirections>();
 
                     var res = qry.Select(x => new FrontDocument
                     {
                         Id = x.Id,
-                        DocumentDirectionName = "##l@DocumentDirections:" + ((EnumDocumentDirections)x.DocumentDirectionId).ToString() + "@l##",
+                        DocumentDirectionName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumDocumentDirections)x.DocumentDirectionId).ToString() + Labels.LastSigns,
                         DocumentTypeName = x.DocumentType.Name,
 
                         RegistrationNumber = x.RegistrationNumber,
@@ -623,6 +624,8 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
+                var al = Labels.GetEnumName<EnumAccessLevels>();
+                var dd = Labels.GetEnumName<EnumDocumentDirections>();
                 var qry = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { documentId }, IsIgnoreRegistered = true, }, false);
                 var accs = CommonQueries.GetDocumentAccessesQuery(context, null)
                         .Where(x => x.DocumentId == documentId)
@@ -634,7 +637,7 @@ namespace BL.Database.Documents
                             DocumentId = x.DocumentId,
                             IsFavourite = x.IsFavourite,
                             AccessLevel = (EnumAccessLevels)x.AccessLevelId,
-                            AccessLevelName = "##l@AccessLevels:" + ((EnumAccessLevels)x.AccessLevelId).ToString() + "@l##",
+                            AccessLevelName = Labels.FirstSigns + al + Labels.Delimiter + ((EnumAccessLevels)x.AccessLevelId).ToString() + Labels.LastSigns,
                             CountNewEvents = x.CountNewEvents,
                             CountWaits = x.CountWaits,
                             OverDueCountWaits = x.OverDueCountWaits,
@@ -644,7 +647,7 @@ namespace BL.Database.Documents
                 {
                     Id = x.Id,
                     DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
-                    DocumentDirectionName = "##l@DocumentDirections:" + ((EnumDocumentDirections)x.DocumentDirectionId).ToString() + "@l##",
+                    DocumentDirectionName = Labels.FirstSigns + dd + Labels.Delimiter + ((EnumDocumentDirections)x.DocumentDirectionId).ToString() + Labels.LastSigns,
                     DocumentTypeId = x.DocumentTypeId,
                     DocumentTypeName = x.DocumentType.Name,
                     DocumentDate = x.RegistrationDate ?? x.CreateDate,
@@ -778,13 +781,14 @@ namespace BL.Database.Documents
                 var filterAccessPositionContains = PredicateBuilder.New<DocumentAccesses>(false);
                 filterAccessPositionContains = context.CurrentPositionsAccessLevel.Aggregate(filterAccessPositionContains,
                     (current, value) => current.Or(e => (e.PositionId == value.Key && e.AccessLevelId >= value.Value)).Expand());
-
+                var dd = Labels.GetEnumName<EnumDocumentDirections>();
+                var lt = Labels.GetEnumName<EnumLinkTypes>();
                 var items = CommonQueries.GetDocumentQuery(context, new FilterDocument { LinkId = new List<int> { linkId } })
                             .OrderBy(x => x.RegistrationDate ?? x.CreateDate)
                             .Select(x => new FrontDocument
                             {
                                 Id = x.Id,
-                                DocumentDirectionName = "##l@DocumentDirections:" + ((EnumDocumentDirections)x.DocumentDirectionId).ToString() + "@l##",
+                                DocumentDirectionName = Labels.FirstSigns + dd + Labels.Delimiter + ((EnumDocumentDirections)x.DocumentDirectionId).ToString() + Labels.LastSigns,
                                 DocumentTypeName = x.DocumentType.Name,
 
                                 RegistrationNumber = x.RegistrationNumber,
@@ -807,7 +811,7 @@ namespace BL.Database.Documents
                                             Id = z.Id,
                                             DocumentId = z.DocumentId,
                                             ParentDocumentId = z.ParentDocumentId,
-                                            LinkTypeName = "##l@LinkTypes:" + ((EnumLinkTypes)z.LinkType.Id).ToString() + "@l##",
+                                            LinkTypeName = Labels.FirstSigns + lt + Labels.Delimiter + ((EnumLinkTypes)z.LinkType.Id).ToString() + Labels.LastSigns,
                                             IsParent = true,
                                             RegistrationNumber = z.ParentDocument.RegistrationNumber,
                                             RegistrationNumberPrefix = z.ParentDocument.RegistrationNumberPrefix,
@@ -825,7 +829,7 @@ namespace BL.Database.Documents
                                             Id = z.Id,
                                             DocumentId = z.DocumentId,
                                             ParentDocumentId = z.ParentDocumentId,
-                                            LinkTypeName = "##l@LinkTypes:" + ((EnumLinkTypes)z.LinkType.Id).ToString() + "@l##",
+                                            LinkTypeName = Labels.FirstSigns + lt + Labels.Delimiter + ((EnumLinkTypes)z.LinkType.Id).ToString() + Labels.LastSigns,
                                             IsParent = false,
                                             RegistrationNumber = z.Document.RegistrationNumber,
                                             RegistrationNumberPrefix = z.Document.RegistrationNumberPrefix,
@@ -987,6 +991,7 @@ namespace BL.Database.Documents
                 var docIds = new List<int> { res.Id };
 
                 var maxDateTime = DateTime.UtcNow.AddYears(50);
+                var module = Labels.GetEnumName<EnumEventTypes>();
 
                 res.Waits = CommonQueries.GetDocumentWaitQuery(context, new FilterDocumentWait { DocumentId = new List<int> { res.Id } })
                         .Select(x => new InternalDocumentWait
@@ -1012,7 +1017,7 @@ namespace BL.Database.Documents
                             IsClosed = x.OffEventId != null,
                             ResultTypeName = x.ResultType.Name,
                             AttentionDate = x.AttentionDate,
-                            OnEventTypeName = "##l@EventTypes:" + ((EnumEventTypes)x.OnEvent.EventTypeId).ToString() + "@l##",
+                            OnEventTypeName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumEventTypes)x.OnEvent.EventTypeId).ToString() + Labels.LastSigns,
                             OffEventDate = x.OffEventId.HasValue ? x.OffEvent.CreateDate : (DateTime?)null
                         }).ToList();
 
@@ -2197,6 +2202,8 @@ namespace BL.Database.Documents
                 {
                     throw new WrongAPIParameters();
                 }
+                var module = Labels.GetEnumName<EnumAccessLevels>();
+
                 var res = qry.Select(x => new FrontDocumentAccess
                 {
                     Id = x.Id,
@@ -2205,7 +2212,7 @@ namespace BL.Database.Documents
                     DocumentId = x.DocumentId,
                     IsFavourite = x.IsFavourite,
                     AccessLevel = (EnumAccessLevels)x.AccessLevelId,
-                    AccessLevelName = "##l@AccessLevels:" + ((EnumAccessLevels)x.AccessLevelId).ToString() + "@l##",
+                    AccessLevelName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumAccessLevels)x.AccessLevelId).ToString() + Labels.LastSigns,
                     CountNewEvents = x.CountNewEvents,
                     CountWaits = x.CountWaits,
                     OverDueCountWaits = x.OverDueCountWaits,

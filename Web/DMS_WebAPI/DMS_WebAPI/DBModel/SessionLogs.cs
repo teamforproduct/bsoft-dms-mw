@@ -8,8 +8,8 @@ namespace DMS_WebAPI.DBModel
     {
         public int Id { get; set; }
 
-        [Index("IX_LogDate", 1)]
-        public DateTime LogDate { get; set; }
+        [Index("IX_Date", 1)]
+        public DateTime Date { get; set; }
 
         public int Type { get; set; }
 

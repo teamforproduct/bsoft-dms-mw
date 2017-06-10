@@ -262,6 +262,8 @@ namespace BL.Database.SystemDb
 
                 Paging.Set(ref qry, paging);
 
+                var module = Labels.GetEnumName<EnumObjects>();
+
                 var res = qry.Select(x => new FrontSystemLog
                 {
                     Id = x.Id,
@@ -276,7 +278,7 @@ namespace BL.Database.SystemDb
                     LogDate = x.LogDate,
                     LogDate1 = x.LogDate1,
                     ObjectId = x.ObjectId,
-                    ObjectName = "##l@Objects:" + x.Object.Code + "@l##",
+                    ObjectName = Labels.FirstSigns + module + Labels.Delimiter + x.Object.Code + Labels.LastSigns,
                     ActionId = x.ActionId,
                     ActionName = x.Action.Description,
                     RecordId = x.RecordId,
@@ -340,7 +342,7 @@ namespace BL.Database.SystemDb
             {
                 var qry = GetSystemLogsQuery(ctx, dbContext, new FilterSystemLog
                 {
-                    NotContainsIDs = new List<int> { ctx.LoginLogId.HasValue ? ctx.LoginLogId.Value : 0 },
+                    NotContainsIDs = new List<int> { ctx.Session.Id },
                     ObjectIDs = new List<int> { (int)EnumObjects.System },
                     ActionIDs = new List<int> { (int)EnumActions.Login },
                     ExecutorAgentIDs = new List<int> { ctx.CurrentAgentId },
@@ -509,6 +511,11 @@ namespace BL.Database.SystemDb
                 if (filter.LogDateTo.HasValue)
                 {
                     qry = qry.Where(x => x.LogDate <= filter.LogDateTo.Value);
+                }
+
+                if (filter.LogDate1From.HasValue)
+                {
+                    qry = qry.Where(x => x.LogDate1 >= filter.LogDate1From.Value);
                 }
                 if (!String.IsNullOrEmpty(filter.FullTextSearchString))
                 {
@@ -871,12 +878,12 @@ namespace BL.Database.SystemDb
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetSystemObjectsQuery(ctx, dbContext, filter);
-
+                var module = Labels.GetEnumName<EnumObjects>();
                 var res = qry.Select(x => new FrontSystemObject
                 {
                     Id = x.Id,
                     Code = x.Code,
-                    Description = "##l@Objects:" + x.Code + "@l##",
+                    Description = Labels.FirstSigns + module + Labels.Delimiter + x.Code + Labels.LastSigns,
                 }).ToList();
 
                 transaction.Complete();
@@ -949,7 +956,7 @@ namespace BL.Database.SystemDb
                 transaction.Complete();
 
             }
-            
+
         }
 
         public void AddSystemAction(IContext ctx, SystemActions item)
@@ -963,7 +970,7 @@ namespace BL.Database.SystemDb
                 _cacheService.RefreshKey(ctx, SettingConstants.ACTION_CASHE_KEY);
                 transaction.Commit();
             }
-            
+
         }
 
         public void UpdateSystemAction(IContext ctx, SystemActions item)
@@ -974,7 +981,7 @@ namespace BL.Database.SystemDb
                 dbContext.SafeAttach(item);
                 dbContext.Entry(item).State = EntityState.Modified;
                 dbContext.SaveChanges();
-               
+
                 _cacheService.RefreshKey(ctx, SettingConstants.ACTION_CASHE_KEY);
                 transaction.Complete();
             }
@@ -986,7 +993,7 @@ namespace BL.Database.SystemDb
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetSystemActionsQuery(ctx, dbContext, filter);
-
+                var module = Labels.GetEnumName<EnumObjects>();
                 var res = qry.Select(x => new FrontSystemAction
                 {
                     Id = x.Id,
@@ -994,7 +1001,7 @@ namespace BL.Database.SystemDb
                     Description = x.Description,
                     ObjectId = x.ObjectId,
                     ObjectCode = x.Object.Code,
-                    ObjectDescription = "##l@Objects:" + x.Object.Code + "@l##"
+                    ObjectDescription = Labels.FirstSigns + module + Labels.Delimiter + x.Object.Code + Labels.LastSigns
                 }).ToList();
 
                 transaction.Complete();
@@ -1574,7 +1581,7 @@ namespace BL.Database.SystemDb
             {
                 // TODO DestinationAgentEmail = "sergozubr@rambler.ru"
                 var res = dbContext.DocumentEventsSet.Where(x => x.ClientId == ctx.Client.Id)
-                        .Where(x => x.Accesses.Any(y=>!y.SendDate.HasValue)) //TODO уточнить критерии рассылки
+                        .Where(x => x.Accesses.Any(y => !y.SendDate.HasValue)) //TODO уточнить критерии рассылки
                         .Select(x => new InternalDataForMail
                         {
                             EventId = x.Id,
