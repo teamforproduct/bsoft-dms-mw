@@ -459,7 +459,7 @@ namespace DMS_WebAPI.Utilities
 
                 var s = new SessionEnviroment
                 {
-                    Session = key,
+                    Session = HttpContext.Current.Request.Browser.Identifier(),// key,
                     Browser = HttpContext.Current.Request.Browser.Name(),
                     IP = HttpContext.Current.Request.Browser.IP(),
                     Platform = HttpContext.Current.Request.Browser.Platform,
