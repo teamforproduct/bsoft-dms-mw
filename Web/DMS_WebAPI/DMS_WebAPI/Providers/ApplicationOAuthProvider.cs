@@ -236,8 +236,9 @@ namespace DMS_WebAPI.Providers
 
                 AspNetUsers user = await userManager.FindByIdAsync(userId);
 
+                var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
                 //var identityToken = Guid.NewGuid().ToString();
-                var identityToken = $"{context.Identity.AuthenticationType} {context.AccessToken}".md5();
+                var identityToken = token.ToLower().md5();
 
                 context.AdditionalResponseParameters.Add("identity_token", identityToken);
                 context.AdditionalResponseParameters.Add("ChangePasswordRequired", user.IsChangePasswordRequired);

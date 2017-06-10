@@ -32,7 +32,7 @@ namespace DMS_WebAPI.Utilities
             get
             {
                 var t = HttpContext.Current.Request.Headers[_TOKEN_KEY];
-                return string.IsNullOrEmpty(t) ? string.Empty : t.md5();
+                return string.IsNullOrEmpty(t) ? string.Empty : t.ToLower().md5();
             }
         }
 
