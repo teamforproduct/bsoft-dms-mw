@@ -10,7 +10,7 @@ namespace BL.Model.WebAPI.Filters
         public List<string> UserIDs { get; set; }
 
         [IgnoreDataMember]
-        public string TokenExact { get; set; }
+        public string Key { get; set; }
 
         [IgnoreDataMember]
         public List<int> ClientIDs { get; set; }

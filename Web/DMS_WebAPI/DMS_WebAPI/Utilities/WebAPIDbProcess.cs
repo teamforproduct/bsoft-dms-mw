@@ -305,9 +305,9 @@ namespace DMS_WebAPI.Utilities
                     qry = qry.Where(filterContains);
                 }
 
-                if (!string.IsNullOrEmpty(filter.TokenExact))
+                if (!string.IsNullOrEmpty(filter.Key))
                 {
-                    qry = qry.Where(x => filter.TokenExact.Equals(x.Token, StringComparison.OrdinalIgnoreCase));
+                    qry = qry.Where(x => filter.Key.Equals(x.Key, StringComparison.OrdinalIgnoreCase));
                 }
 
                 if (filter.LastUsegeDateLess.HasValue)
@@ -372,7 +372,7 @@ namespace DMS_WebAPI.Utilities
         {
             using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                var qry = GetUserContextQuery(dbContext, new FilterAspNetUserContext { TokenExact = token });
+                var qry = GetUserContextQuery(dbContext, new FilterAspNetUserContext { Key = token });
 
                 qry.Update(x => new AspNetUserContexts { LastChangeDate = date });
 
@@ -381,11 +381,11 @@ namespace DMS_WebAPI.Utilities
 
         }
 
-        public void DeleteUserContext(string token)
+        public void DeleteUserContext(string key)
         {
             using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                dbContext.AspNetUserContextsSet.Where(x => x.Token == token).Delete();
+                dbContext.AspNetUserContextsSet.Where(x => x.Key == key).Delete();
                 transaction.Complete();
             }
         }

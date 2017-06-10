@@ -434,7 +434,7 @@ namespace DMS_WebAPI.Utilities
                 var webService = DmsResolver.Current.Get<WebAPIService>();
                 var item = webService.GetUserContexts(new FilterAspNetUserContext()
                 {
-                    TokenExact = key
+                    Key = key
                 }).FirstOrDefault();
 
                 if (item == null) return;
@@ -452,7 +452,7 @@ namespace DMS_WebAPI.Utilities
                 if (user == null) return;
 
 
-                var intContext = FormContextInternal(item.Token, user, clientCode, server);
+                var intContext = FormContextInternal(item.Key, user, clientCode, server);
 
                 // TODO вернуть, когда перейдем к лицензиям 
                 //VerifyNumberOfConnectionsByNew(context, new List<DatabaseModelForAdminContext> { server });//LONG

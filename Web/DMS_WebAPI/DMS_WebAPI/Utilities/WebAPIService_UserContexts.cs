@@ -19,18 +19,18 @@ namespace DMS_WebAPI.Utilities
 
             var model = new AspNetUserContexts
             {
-                Token = context.Key,
+                Key = context.Key,
                 ClientId = context.Client.Id,
                 CurrentPositionsIdList = string.Join(",", context.CurrentPositionsIdList),
                 UserId = context.User.Id,
                 LastChangeDate = DateTime.UtcNow,
-                SessionId = context.Session.SignInId,
+                SignInId = context.Session.SignInId,
             };
 
 
             var uc = _webDb.GetUserContexts(new FilterAspNetUserContext
             {
-                TokenExact = model.Token
+                Key = model.Key
             }).FirstOrDefault();
 
             if (uc == null)
