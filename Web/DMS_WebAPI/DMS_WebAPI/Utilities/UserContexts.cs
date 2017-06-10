@@ -32,7 +32,7 @@ namespace DMS_WebAPI.Utilities
             get
             {
                 var t = HttpContext.Current.Request.Headers[_TOKEN_KEY];
-                return string.IsNullOrEmpty(t) ? string.Empty : t.ToLower();
+                return string.IsNullOrEmpty(t) ? string.Empty : t.md5();
             }
         }
 
@@ -123,7 +123,7 @@ namespace DMS_WebAPI.Utilities
         /// <exception cref="TokenAlreadyExists"></exception>
         public UserContext Add(string key, AspNetUsers user, string clientCode, DatabaseModelForAdminContext db, SessionEnviroment model)
         {
-            key = key.ToLower();
+            //key = key.ToLower();
 
             if (Contains(key)) throw new TokenAlreadyExists();
 
@@ -459,7 +459,7 @@ namespace DMS_WebAPI.Utilities
 
                 var s = new SessionEnviroment
                 {
-                    Session = HttpContext.Current.Request.Browser.Identifier(),// key,
+                    Session = key,
                     Browser = HttpContext.Current.Request.Browser.Name(),
                     IP = HttpContext.Current.Request.Browser.IP(),
                     Platform = HttpContext.Current.Request.Browser.Platform,

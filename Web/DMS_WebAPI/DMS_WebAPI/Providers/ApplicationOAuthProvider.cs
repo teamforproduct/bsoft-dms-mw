@@ -236,12 +236,12 @@ namespace DMS_WebAPI.Providers
 
                 AspNetUsers user = await userManager.FindByIdAsync(userId);
 
-                var identityToken = Guid.NewGuid().ToString();
+                //var identityToken = Guid.NewGuid().ToString();
+                var identityToken = $"{context.Identity.AuthenticationType} {context.AccessToken}".md5();
 
                 context.AdditionalResponseParameters.Add("identity_token", user.IsChangePasswordRequired);
                 context.AdditionalResponseParameters.Add("ChangePasswordRequired", user.IsChangePasswordRequired);
 
-                var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
 
                 var clientCode = await context.Request.Body.GetClientCodeAsync();
 
@@ -280,7 +280,7 @@ namespace DMS_WebAPI.Providers
                     var userContexts = DmsResolver.Current.Get<UserContexts>();
 
                     // Создаю пользовательский контекст
-                    var ctx = userContexts.Add(token, user, clientCode, server, sesEnv);
+                    var ctx = userContexts.Add(identityToken, user, clientCode, server, sesEnv);
 
                 }
 
