@@ -452,6 +452,10 @@
     <Compile Include="Migrations\201706092252056_fixSessions.Designer.cs">
       <DependentUpon>201706092252056_fixSessions.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201706102122371_fixSessions2.cs" />
+    <Compile Include="Migrations\201706102122371_fixSessions2.Designer.cs">
+      <DependentUpon>201706102122371_fixSessions2.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="DBModel\AspNetUsers.cs" />
     <Compile Include="Models\ClientViewModels.cs" />
@@ -689,6 +693,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201706092252056_fixSessions.resx">
       <DependentUpon>201706092252056_fixSessions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706102122371_fixSessions2.resx">
+      <DependentUpon>201706102122371_fixSessions2.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

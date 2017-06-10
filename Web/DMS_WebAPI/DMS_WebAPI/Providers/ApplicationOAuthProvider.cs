@@ -236,10 +236,10 @@ namespace DMS_WebAPI.Providers
 
                 AspNetUsers user = await userManager.FindByIdAsync(userId);
 
-                var key = Guid.NewGuid().ToString();
+                var identityToken = Guid.NewGuid().ToString();
 
+                context.AdditionalResponseParameters.Add("identity_token", user.IsChangePasswordRequired);
                 context.AdditionalResponseParameters.Add("ChangePasswordRequired", user.IsChangePasswordRequired);
-                context.AdditionalResponseParameters.Add("identity_token", key);
 
                 var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
 
@@ -270,14 +270,12 @@ namespace DMS_WebAPI.Providers
 
                     var sesEnv = new SessionEnviroment
                     {
+                        Session = identityToken,
                         Platform = HttpContext.Current.Request.Browser.Platform,
                         Browser = HttpContext.Current.Request.Browser.Name(),
                         IP = HttpContext.Current.Request.Browser.IP(),
                         Fingerprint = fingerPrint,
                     };
-
-
-                    
 
                     var userContexts = DmsResolver.Current.Get<UserContexts>();
 
@@ -286,7 +284,6 @@ namespace DMS_WebAPI.Providers
 
                 }
 
-                //!!! WriteLog
             }
 
             //return Task.FromResult<object>(null);

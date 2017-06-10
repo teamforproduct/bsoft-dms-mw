@@ -19,7 +19,7 @@ using System.Web;
 
 namespace DMS_WebAPI.Utilities
 {
-    // Тут собраны действия, которые пользователь пожет делать со своей учеткой
+    // Тут собраны действия, которые пользователь может делать со своей учеткой
     internal partial class WebAPIService
     {
 
@@ -111,6 +111,7 @@ namespace DMS_WebAPI.Utilities
 
             var m = new AddSessionLog
             {
+                Session = HttpContext.Current.Request.Browser.Identifier(),
                 Platform = HttpContext.Current.Request.Browser.Platform,
                 Browser = HttpContext.Current.Request.Browser.Name(),
                 IP = HttpContext.Current.Request.Browser.IP(),

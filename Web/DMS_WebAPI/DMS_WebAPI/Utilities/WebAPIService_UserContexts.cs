@@ -24,7 +24,7 @@ namespace DMS_WebAPI.Utilities
                 CurrentPositionsIdList = string.Join(",", context.CurrentPositionsIdList),
                 UserId = context.User.Id,
                 LastChangeDate = DateTime.UtcNow,
-                //SessionId = context.LoginLogId,
+                SessionId = context.Session.SignInId,
             };
 
 

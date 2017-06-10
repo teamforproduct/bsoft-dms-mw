@@ -7,14 +7,13 @@ namespace BL.Model.Context
     /// </summary>
     public class Session
     {
-        
+        public string Key { get; set; }
         /// <summary>
         /// ИД лога сесии
         /// </summary>
-        public int Id { get; set; }
+        public int SignInId { get; set; }
         public DateTime CreateDate { get; } = DateTime.UtcNow;
         public DateTime LastUsage { get; set; } = DateTime.UtcNow;
-        public DateTime LastUpdate { get; set; } = DateTime.UtcNow;
 
     }
 }

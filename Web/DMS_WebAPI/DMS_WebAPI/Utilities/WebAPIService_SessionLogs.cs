@@ -4,6 +4,7 @@ using BL.Model.WebAPI.FrontModel;
 using DMS_WebAPI.DBModel;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DMS_WebAPI.Utilities
 {
@@ -13,6 +14,13 @@ namespace DMS_WebAPI.Utilities
         public IEnumerable<FrontSessionLog> GetSessionLogs(FilterSessionsLog filter, UIPaging paging)
         {
             return _webDb.GetSessionLogs(filter, paging);
+        }
+
+        public string GetSessionLogFingerprint(int id)
+        {
+            var res  = _webDb.GetSessionLogs(new FilterSessionsLog {IDs = new List<int> { id } }, null).FirstOrDefault();
+            if (res != null) return res.Fingerprint;
+            return string.Empty;
         }
 
         public int AddSessionLog(AddSessionLog model)

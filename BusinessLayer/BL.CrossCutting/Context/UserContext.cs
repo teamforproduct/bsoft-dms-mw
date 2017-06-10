@@ -1,14 +1,13 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
+using BL.Model.Context;
+using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
-using BL.Model.Context;
-using System;
-using BL.CrossCutting.DependencyInjection;
-using BL.Model.Enums;
 using Ninject;
 using Ninject.Parameters;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace BL.CrossCutting.Context
 {
@@ -78,13 +77,15 @@ namespace BL.CrossCutting.Context
                 };
                 Session = new Session
                 {
-                    Id = ctx.Session.Id,
-                    LastUpdate = ctx.Session.LastUpdate,
+                    Key = ctx.Session.Key,
+                    SignInId = ctx.Session.SignInId,
+                    LastUsage = ctx.Session.LastUsage,
                 };
 
                 ClientLicence = ctx.ClientLicence;
                 IsFormed = ctx.IsFormed;
 
+                //TODO CurrentDB может быть null
                 // тут поднимается коннекшн к базе
                 DbContext = DmsResolver.Current.Kernel.Get<IDmsDatabaseContext>(new ConstructorArgument("dbModel", CurrentDB));
 

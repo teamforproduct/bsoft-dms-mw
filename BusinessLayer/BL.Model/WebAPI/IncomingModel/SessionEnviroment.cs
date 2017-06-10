@@ -2,6 +2,8 @@
 {
     public class SessionEnviroment
     {
+        public string Session { get; set; }
+
         public string IP { get; set; }
 
         public string Platform { get; set; }

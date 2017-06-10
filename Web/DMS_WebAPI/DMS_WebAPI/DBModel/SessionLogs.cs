@@ -8,6 +8,10 @@ namespace DMS_WebAPI.DBModel
     {
         public int Id { get; set; }
 
+        [Index("IX_Identifier", 1)]
+        [MaxLength(40)]
+        public string Session { get; set; }
+
         [Index("IX_Date", 1)]
         public DateTime Date { get; set; }
 

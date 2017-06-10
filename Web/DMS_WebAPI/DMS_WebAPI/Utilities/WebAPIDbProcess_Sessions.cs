@@ -24,6 +24,21 @@ namespace DMS_WebAPI.Utilities
 
             if (filter != null)
             {
+                if (filter.IDs.Count() > 0)
+                {
+                    var filterContains = PredicateBuilder.New<SessionLogs>(false);
+
+                    filterContains = filter.IDs.Aggregate(filterContains,
+                        (current, value) => current.Or(e => e.Id == value).Expand());
+
+                    qry = qry.Where(filterContains);
+                }
+
+                if (!string.IsNullOrEmpty(filter.Session))
+                {
+                    qry = qry.Where(x => x.Session == filter.Session);
+                }
+
                 if (filter.DateFrom.HasValue)
                 {
                     qry = qry.Where(x => x.Date >= filter.DateFrom.Value);
@@ -108,9 +123,10 @@ namespace DMS_WebAPI.Utilities
                 var res = qry.Select(x => new FrontSessionLog
                 {
                     Id = x.Id,
+                    Session = x.Session,
                     Date = x.Date,
                     LastUsage = x.LastUsage,
-                    Message = Labels.FirstSigns + "Sessions" + Labels.Delimiter + "Message" +Labels.Delimiter + x.Message + Labels.LastSigns,
+                    Message = Labels.FirstSigns + "Sessions" + Labels.Delimiter + "Message" + Labels.Delimiter + x.Message + Labels.LastSigns,
                     Event = Labels.FirstSigns + "Sessions" + Labels.Delimiter + "Event" + Labels.Delimiter + x.Event + Labels.LastSigns,
                     Platform = x.Platform,
                     IP = x.IP,
@@ -128,39 +144,32 @@ namespace DMS_WebAPI.Utilities
 
         public int AddSessionLog(AddSessionLog model)
         {
-            try
+            using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
             {
-                using (var dbContext = new ApplicationDbContext()) using (var transaction = Transactions.GetTransaction())
+
+                var item = new SessionLogs
                 {
+                    Session = model.Session,
+                    Date = model.Date,
+                    LastUsage = model.LastUsage,
+                    Enabled = true,
+                    Type = (int)model.Type,
+                    UserId = model.UserId,
+                    Event = model.Event,
+                    Browser = model.Browser,
+                    Message = model.Message,
+                    Platform = model.Platform,
+                    Fingerprint = model.Fingerprint,
+                    IP = model.IP,
+                };
 
-                    var item = new SessionLogs
-                    {
-                        Date = model.Date,
-                        LastUsage = model.LastUsage,
-                        Enabled = true,
-                        Type = (int)model.Type,
-                        UserId = model.UserId,
-                        Event = model.Event,
-                        Browser = model.Browser,
-                        Message = model.Message,
-                        Platform = model.Platform,
-                        Fingerprint = model.Fingerprint,
-                        IP = model.IP,
-                    };
+                dbContext.SessionLogsSet.Add(item);
+                dbContext.SaveChanges();
 
-                    dbContext.SessionLogsSet.Add(item);
-                    dbContext.SaveChanges();
-
-                    transaction.Complete();
-                    return item.Id;
-                }
-            }
-            catch
-            {
-                throw new DictionaryRecordCouldNotBeAdded();
+                transaction.Complete();
+                return item.Id;
             }
         }
-
 
         public void SetSessionLogLastUsage(DateTime lastUsage, FilterSessionsLog filter)
         {

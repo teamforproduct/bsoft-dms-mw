@@ -8,6 +8,12 @@ namespace BL.Model.WebAPI.Filters
 {
     public class FilterSessionsLog
     {
+        [IgnoreDataMember]
+        public List<int> IDs { get; set; }
+
+        [IgnoreDataMember]
+        public string Session { get; set; }
+
         public string Message { get; set; }
 
         [IgnoreDataMember]

@@ -30,6 +30,8 @@ namespace BL.Model.WebAPI.FrontModel
         /// </summary>
         public bool IsActive { get; set; }
 
+        public string Session { get; set; }
+
         public string Host { get; set; }
 
         public string IP { get; set; }

@@ -34,6 +34,11 @@ namespace DMS_WebAPI.Providers
             return ip;
         }
 
+        public static string Identifier(this HttpBrowserCapabilities browser)
+        {
+            return HttpContext.Current.Request.Headers["identity_token"];
+        }
+
         public static string Name(this HttpBrowserCapabilities browser)
         {
             return browser.Browser + " v" + browser.Version;
