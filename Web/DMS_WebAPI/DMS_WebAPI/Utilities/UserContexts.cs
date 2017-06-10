@@ -204,28 +204,20 @@ namespace DMS_WebAPI.Utilities
 
             if (intContext == null) return false;
 
-            var sessionId = intContext.Session.SignInId;
-            var userId = intContext.User.Id;
-
-            intContext = null;
-
             locker.EnterWriteLock();
             try
             {
-                // удаляю пользовательский контекст из коллекции
-                _cacheContexts.RemoveAll(x => x.Key == key);
-
                 var webService = DmsResolver.Current.Get<WebAPIService>();
 
-                var fingerprint = webService.GetSessionLogFingerprint(sessionId);
+                var fingerprint = webService.GetSessionLogFingerprint(intContext.Session.SignInId);
 
                 var log = new AddSessionLog
                 {
-                    UserId = userId,
+                    UserId = intContext.User.Id,
                     Type = EnumLogTypes.Information,
                     Event = removeFromBase ? "SessionStop" : "SessionSuspend",
                     Message = removeFromBase ? "SessionStopped" : "SessionSuspended",
-                    Date = DateTime.UtcNow,
+                    Date = intContext.Session.LastUsage,
 
                     Session = HttpContext.Current.Request.Browser.Identifier(),
                     Platform = HttpContext.Current.Request.Browser.Platform,
@@ -233,6 +225,11 @@ namespace DMS_WebAPI.Utilities
                     IP = HttpContext.Current.Request.Browser.IP(),
                     Fingerprint = fingerprint,
                 };
+
+                intContext = null;
+
+                // удаляю пользовательский контекст из коллекции
+                _cacheContexts.RemoveAll(x => x.Key == key);
 
                 webService.AddSessionLog(log);
 
@@ -776,8 +773,9 @@ namespace DMS_WebAPI.Utilities
             locker.EnterReadLock();
             try
             {
+                var time = DateTime.UtcNow.AddMinutes(-1);
                 var res = _cacheContexts
-                    .Where(x => x.Employee != null && x.Client != null && x.Client.Id == clientId && x.Session.LastUsage > DateTime.UtcNow.AddMinutes(-1))
+                    .Where(x => x.Employee != null && x.Client != null && x.Client.Id == clientId && x.Session.LastUsage > time)
                     .Select(x => x.Employee.Id).Distinct().ToList();
                 return res;
             }
