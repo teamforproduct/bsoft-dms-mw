@@ -54,8 +54,8 @@ namespace DMS_WebAPI.Utilities
                 {
                     var filterContains = PredicateBuilder.New<SessionLogs>(true);
                     filterContains = CommonFilterUtilites.GetWhereExpressions(filter.FullTextSearchString)
-                                .Aggregate(filterContains, (current, value) => current.And(e => 
-                                (e.Message + " " + e.Event + " " + e.User.UserName + " " + e.User.FirstName + " "+ e.IP + " "+ e.Fingerprint + " " + e.Platform + " " + e.Browser + " ").Contains(value)).Expand());
+                                .Aggregate(filterContains, (current, value) => current.And(e =>
+                                (e.Message + " " + e.Event + " " + e.User.UserName + " " + e.User.FirstName + " " + e.IP + " " + e.Fingerprint + " " + e.Platform + " " + e.Browser + " ").Contains(value)).Expand());
                     qry = qry.Where(filterContains);
                 }
 
@@ -110,8 +110,8 @@ namespace DMS_WebAPI.Utilities
                     Id = x.Id,
                     Date = x.Date,
                     LastUsage = x.LastUsage,
-                    Message = x.Message,
-                    Event = x.Event,
+                    Message = Labels.FirstSigns + "Sessions" + Labels.Delimiter + "Message" +Labels.Delimiter + x.Message + Labels.LastSigns,
+                    Event = Labels.FirstSigns + "Sessions" + Labels.Delimiter + "Event" + Labels.Delimiter + x.Event + Labels.LastSigns,
                     Platform = x.Platform,
                     IP = x.IP,
                     Type = ((EnumLogTypes)x.Type).ToString(),

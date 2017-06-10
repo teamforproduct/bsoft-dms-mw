@@ -239,7 +239,7 @@ namespace DMS_WebAPI.Providers
                 var key = Guid.NewGuid().ToString();
 
                 context.AdditionalResponseParameters.Add("ChangePasswordRequired", user.IsChangePasswordRequired);
-                context.AdditionalResponseParameters.Add("IdentityToken", key);
+                context.AdditionalResponseParameters.Add("identity_token", key);
 
                 var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
 
