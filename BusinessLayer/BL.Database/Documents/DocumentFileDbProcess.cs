@@ -113,6 +113,8 @@ namespace BL.Database.Documents
                 }
                 var isNeedRegistrationFullNumber = !(filter?.File?.DocumentId?.Any() ?? false);
 
+                var module = Labels.GetEnumName<EnumFileTypes>();
+
                 var qryFE = dbContext.DocumentFilesSet  //Without security restrictions
                     .Where(x => qryRes.Select(y => y.Id).Contains(x.Id)).OrderByDescending(x => x.LastChangeDate)
                     .Join(dbContext.DictionaryAgentsSet, o => o.LastChangeUserId, i => i.Id,
@@ -123,7 +125,7 @@ namespace BL.Database.Documents
                         Date = x.file.Date,
                         DocumentId = x.file.DocumentId,
                         Type = (EnumFileTypes)x.file.TypeId,
-                        TypeName = "##l@FileTypes:" + ((EnumFileTypes)x.file.TypeId).ToString() + "@l##",
+                        TypeName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumFileTypes)x.file.TypeId).ToString() + Labels.LastSigns,
                         IsMainVersion = x.file.IsMainVersion,
                         IsDeleted = x.file.IsDeleted,
                         IsWorkedOut = x.file.IsWorkedOut ?? true,
@@ -154,7 +156,7 @@ namespace BL.Database.Documents
                             Extension = x.file.IsDeleted ? null : x.file.Extension,
                             FileType = x.file.IsDeleted ? null : x.file.FileType,
                             FileSize = x.file.IsDeleted ? (long?)null : x.file.FileSize,
-                            Name = x.file.IsDeleted ? "##l@General:FileHasBeenDeleted@l##" : x.file.Name,
+                            Name = x.file.IsDeleted ? Labels.FirstSigns + "General" + Labels.Delimiter + "FileHasBeenDeleted" + Labels.LastSigns : x.file.Name,
                         },
 
                     });
@@ -176,6 +178,8 @@ namespace BL.Database.Documents
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
+                var module = Labels.GetEnumName<EnumFileTypes>();
+
                 var res = CommonQueries.GetDocumentFileQuery(ctx, new FilterDocumentFile { FileId = new List<int> { id } })
                     .Join(dbContext.DictionaryAgentsSet, o => o.LastChangeUserId, i => i.Id,
                             (file, agent) => new { file, agent, source = file.Event.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source && file.ExecutorPositionId != y.PositionId) })
@@ -185,7 +189,7 @@ namespace BL.Database.Documents
                         Date = x.file.Date,
                         DocumentId = x.file.DocumentId,
                         Type = (EnumFileTypes)x.file.TypeId,
-                        TypeName = "##l@FileTypes:" + ((EnumFileTypes)x.file.TypeId).ToString() + "@l##",
+                        TypeName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumFileTypes)x.file.TypeId).ToString() + Labels.LastSigns,
                         Hash = x.file.Hash,
                         LastChangeDate = x.file.LastChangeDate,
                         LastChangeUserId = x.file.LastChangeUserId,
@@ -207,7 +211,7 @@ namespace BL.Database.Documents
                             Extension = x.file.IsDeleted ? null : x.file.Extension,
                             FileType = x.file.IsDeleted ? null : x.file.FileType,
                             FileSize = x.file.IsDeleted ? (long?)null : x.file.FileSize,
-                            Name = x.file.IsDeleted ? "##l@General:FileHasBeenDeleted@l##" : x.file.Name,
+                            Name = x.file.IsDeleted ? Labels.FirstSigns + "General" + Labels.Delimiter + "FileHasBeenDeleted" + Labels.LastSigns : x.file.Name,
                         },
                     }).FirstOrDefault();
                 transaction.Complete();

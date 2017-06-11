@@ -27,6 +27,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetDocumentRestrictedSendListQuery(ctx, new FilterDocumentRestrictedSendList { Id = new List<int> { id } });
+                var module = Labels.GetEnumName<EnumAccessLevels>();
                 var res = qry.Select(x => new FrontDocumentRestrictedSendList
                 {
                     Id = x.Id,
@@ -35,7 +36,7 @@ namespace BL.Database.Documents
                     PositionName = x.Position.Name,
                     PositionExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null),
                     AccessLevel = (EnumAccessLevels)x.AccessLevelId,
-                    AccessLevelName = "##l@AccessLevels:" + ((EnumAccessLevels)x.AccessLevelId).ToString() + "@l##",
+                    AccessLevelName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumAccessLevels)x.AccessLevelId).ToString() + Labels.LastSigns,
                     DepartmentName = x.Position.Department.Name,
                 }).FirstOrDefault();
                 transaction.Complete();
@@ -61,6 +62,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetDocumentRestrictedSendListQuery(ctx, new FilterDocumentRestrictedSendList { DocumentId = new List<int> { documentId } });
+                var module = Labels.GetEnumName<EnumAccessLevels>();
                 var res = qry.Select(x => new FrontDocumentRestrictedSendList
                 {
                     Id = x.Id,
@@ -69,7 +71,7 @@ namespace BL.Database.Documents
                     PositionName = x.Position.Name,
                     PositionExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null),
                     AccessLevel = (EnumAccessLevels)x.AccessLevelId,
-                    AccessLevelName = "##l@AccessLevels:" + ((EnumAccessLevels)x.AccessLevelId).ToString() + "@l##",
+                    AccessLevelName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumAccessLevels)x.AccessLevelId).ToString() + Labels.LastSigns,
                     DepartmentName = x.Position.Department.Name,
                 }).ToList();
 
@@ -84,10 +86,11 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetDocumentRestrictedSendListQuery(ctx, new FilterDocumentRestrictedSendList { DocumentId = new List<int> { documentId } });
+                var vacant = Labels.Get("Message", "PositionIsVacant");
                 var res = qry.Select(x => new AutocompleteItem
                 {
                     Id = x.Position.Id,
-                    Name = x.Position.ExecutorAgentId.HasValue ? x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null) : "##l@Message:PositionIsVacant@l##",
+                    Name = x.Position.ExecutorAgentId.HasValue ? x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null) : vacant,
                     Details = new List<string>
                     {
                         x.Position.Name,
@@ -108,6 +111,10 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetDocumentSendListQuery(context, new FilterDocumentSendList { DocumentId = new List<int> { documentId } });
+                var al = Labels.GetEnumName<EnumAccessLevels>();
+                var et = Labels.GetEnumName<EnumEventTypes>();
+
+
                 var res = qry.Select(x => new FrontDocumentSendList
                 {
                     Id = x.Id,
@@ -135,14 +142,14 @@ namespace BL.Database.Documents
                     CloseEventId = x.CloseEventId,
                     IsInitial = x.IsInitial,
                     AccessLevel = (EnumAccessLevels)x.AccessLevelId,
-                    AccessLevelName = "##l@AccessLevels:" + ((EnumAccessLevels)x.AccessLevelId).ToString() + "@l##",
+                    AccessLevelName = Labels.FirstSigns + al + Labels.Delimiter + ((EnumAccessLevels)x.AccessLevelId).ToString() + Labels.LastSigns,
                     StartEvent = x.StartEvent == null
                                         ? null
                                         : new FrontDocumentEvent
                                         {
                                             Id = x.StartEvent.Id,
                                             EventType = (EnumEventTypes)x.StartEvent.EventTypeId,
-                                            EventTypeName = "##l@EventTypes:" + ((EnumEventTypes)x.StartEvent.EventTypeId).ToString() + "@l##",
+                                            EventTypeName = Labels.FirstSigns + et + Labels.Delimiter + ((EnumEventTypes)x.StartEvent.EventTypeId).ToString() + Labels.LastSigns,
                                             Date = x.StartEvent.Date,
                                             Description = x.StartEvent.Description,
                                             AddDescription = x.StartEvent.AddDescription,
@@ -154,7 +161,7 @@ namespace BL.Database.Documents
                                         {
                                             Id = x.CloseEvent.Id,
                                             EventType = (EnumEventTypes)x.CloseEvent.EventTypeId,
-                                            EventTypeName = "##l@EventTypes:" + ((EnumEventTypes)x.CloseEvent.EventTypeId).ToString() + "@l##",
+                                            EventTypeName = Labels.FirstSigns + et + Labels.Delimiter + ((EnumEventTypes)x.CloseEvent.EventTypeId).ToString() + Labels.LastSigns,
                                             Date = x.CloseEvent.Date,
                                             Description = x.CloseEvent.Description,
                                             AddDescription = x.CloseEvent.AddDescription,
@@ -184,6 +191,8 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = CommonQueries.GetDocumentSendListQuery(ctx, new FilterDocumentSendList { Id = new List<int> { id } });
+                var al = Labels.GetEnumName<EnumAccessLevels>();
+                var et = Labels.GetEnumName<EnumEventTypes>();
                 var res = qry.Select(x => new FrontDocumentSendList
                 {
                     Id = x.Id,
@@ -209,14 +218,14 @@ namespace BL.Database.Documents
                     CloseEventId = x.CloseEventId,
                     IsInitial = x.IsInitial,
                     AccessLevel = (EnumAccessLevels)x.AccessLevelId,
-                    AccessLevelName = "##l@AccessLevels:" + ((EnumAccessLevels)x.AccessLevelId).ToString() + "@l##",
+                    AccessLevelName = Labels.FirstSigns + al + Labels.Delimiter + ((EnumAccessLevels)x.AccessLevelId).ToString() + Labels.LastSigns,
                     StartEvent = x.StartEvent == null
                                         ? null
                                         : new FrontDocumentEvent
                                         {
                                             Id = x.StartEvent.Id,
                                             EventType = (EnumEventTypes)x.StartEvent.EventTypeId,
-                                            EventTypeName = "##l@EventTypes:" + ((EnumEventTypes)x.StartEvent.EventTypeId).ToString() + "@l##",
+                                            EventTypeName = Labels.FirstSigns + et + Labels.Delimiter + ((EnumEventTypes)x.StartEvent.EventTypeId).ToString() + Labels.LastSigns,
                                             Date = x.StartEvent.Date,
                                             Description = x.StartEvent.Description,
                                             AddDescription = x.StartEvent.AddDescription,
@@ -228,7 +237,7 @@ namespace BL.Database.Documents
                                         {
                                             Id = x.CloseEvent.Id,
                                             EventType = (EnumEventTypes)x.CloseEvent.EventTypeId,
-                                            EventTypeName = "##l@EventTypes:" + ((EnumEventTypes)x.CloseEvent.EventTypeId).ToString() + "@l##",
+                                            EventTypeName = Labels.FirstSigns + et + Labels.Delimiter + ((EnumEventTypes)x.CloseEvent.EventTypeId).ToString() + Labels.LastSigns,
                                             Date = x.CloseEvent.Date,
                                             Description = x.CloseEvent.Description,
                                             AddDescription = x.CloseEvent.AddDescription,
@@ -263,11 +272,14 @@ namespace BL.Database.Documents
                     PositionId = x.PositionId
                 }
                 ).ToList();
+
+                var module = Labels.GetEnumName<EnumDocumentDirections>();
+
                 var docs = CommonQueries.GetDocumentQuery(ctx, new FilterDocument { LinkId = new List<int> { linkId.Value }, NotContainsDocumentId = new List<int> { model.DocumentId }, IsInWork = true })
                     .Select(x => new FrontDocument
                     {
                         Id = x.Id,
-                        DocumentDirectionName = "##l@DocumentDirections:" + ((EnumDocumentDirections)x.DocumentDirectionId).ToString() + "@l##",
+                        DocumentDirectionName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumDocumentDirections)x.DocumentDirectionId).ToString() + Labels.LastSigns,
                         DocumentTypeName = x.DocumentType.Name,
                         RegistrationNumber = x.RegistrationNumber,
                         RegistrationNumberPrefix = x.RegistrationNumberPrefix,

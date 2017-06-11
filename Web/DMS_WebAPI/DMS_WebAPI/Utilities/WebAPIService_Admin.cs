@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Logic.DictionaryCore.Interfaces;
@@ -137,11 +138,11 @@ namespace DMS_WebAPI.Utilities
 
             var m = new MailWithCallToActionModel
             {
-                Greeting = languages.GetTranslation(User.LanguageId, "##l@Mail:Greeting@l##", new List<string> { User.FirstName }),
-                Closing = languages.GetTranslation(User.LanguageId, "##l@Mail:Closing@l##"),
+                Greeting = languages.GetTranslation(User.LanguageId, Labels.Get("Mail", "Greeting"), new List<string> { User.FirstName }),
+                Closing = languages.GetTranslation(User.LanguageId, Labels.Get("Mail", "Closing")),
                 CallToActionUrl = callbackurl,
-                CallToActionName = languages.GetTranslation(User.LanguageId, "##l@Mail.EmailConfirmation.CallToActionName@l##"),
-                CallToActionDescription = languages.GetTranslation(User.LanguageId, "##l@Mail.EmailConfirmation.CallToActionDescription@l##"),
+                CallToActionName = languages.GetTranslation(User.LanguageId, Labels.Get("Mail", "EmailConfirmation", "CallToActionName")),
+                CallToActionDescription = languages.GetTranslation(User.LanguageId, Labels.Get("Mail", "EmailConfirmation", "CallToActionDescription")),
             };
 
             var htmlContent = m.RenderPartialViewToString(RenderPartialView.MailWithCallToAction);
@@ -149,7 +150,7 @@ namespace DMS_WebAPI.Utilities
             var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
 
 
-            mailService.SendMessage(null, MailServers.Noreply, User.Email, languages.GetTranslation(User.LanguageId, "##l@Mail.EmailConfirmation.Subject@l##"), htmlContent);
+            mailService.SendMessage(null, MailServers.Noreply, User.Email, languages.GetTranslation(User.LanguageId, Labels.Get("Mail", "EmailConfirmation", "Subject")), htmlContent);
         }
 
         public async Task SwitchOffFingerprint(IContext context, Item model)

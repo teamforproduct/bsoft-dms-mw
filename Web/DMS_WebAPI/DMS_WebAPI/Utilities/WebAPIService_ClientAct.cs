@@ -260,10 +260,10 @@ namespace DMS_WebAPI.Utilities
                     FirstName = model.FirstName,
                     LastName = model.LastName,
                     MiddleName = model.MiddleName,
-                    OrgName = model.OrgName, // languages.GetTranslation(ctx.Employee.LanguageId, "##l@Clients:" + "MyCompany" + "@l##"),
+                    OrgName = model.OrgName,
                     DepartmentIndex = "01",
-                    DepartmentName = model.DepartmentName, // languages.GetTranslation(ctx.Employee.LanguageId, "##l@Clients:" + "MyDepartment" + "@l##"),
-                    PositionName = model.PositionName, // languages.GetTranslation(ctx.Employee.LanguageId, "##l@Clients:" + "MyPosition" + "@l##"),
+                    DepartmentName = model.DepartmentName,
+                    PositionName = model.PositionName,
                     ExecutorType = EnumPositionExecutionTypes.Personal,
                     AccessLevel = EnumAccessLevels.Personally,
                     LanguageId = ctx.User.LanguageId,
@@ -279,13 +279,13 @@ namespace DMS_WebAPI.Utilities
                 new AddJournalsInOrg
                 {
                     IncomingJournalIndex = "01",
-                    IncomingJournalName = languages.GetTranslation(ctx.User.LanguageId, languages.GetLabel("Journals", EnumDocumentDirections.Incoming.ToString())),
+                    IncomingJournalName = languages.GetTranslation(ctx.User.LanguageId, Labels.Get("Journals", EnumDocumentDirections.Incoming.ToString())),
 
                     OutcomingJournalIndex = "02",
-                    OutcomingJournalName = languages.GetTranslation(ctx.User.LanguageId, languages.GetLabel("Journals", EnumDocumentDirections.Outcoming.ToString())),
+                    OutcomingJournalName = languages.GetTranslation(ctx.User.LanguageId, Labels.Get("Journals", EnumDocumentDirections.Outcoming.ToString())),
 
                     InternalJournalIndex = "03",
-                    InternalJournalName = languages.GetTranslation(ctx.User.LanguageId, languages.GetLabel("Journals", EnumDocumentDirections.Internal.ToString())),
+                    InternalJournalName = languages.GetTranslation(ctx.User.LanguageId, Labels.Get("Journals", EnumDocumentDirections.Internal.ToString())),
                 },
                 sendEmail: false);
 
@@ -454,18 +454,18 @@ namespace DMS_WebAPI.Utilities
 
                 var m = new MailWithCallToActionModel()
                 {
-                    Greeting = languages.GetTranslation(model.Language, "##l@Mail:Greeting@l##", new List<string> { model.FirstName }),
-                    Closing = languages.GetTranslation(model.Language, "##l@Mail:Closing@l##"),
+                    Greeting = languages.GetTranslation(model.Language, Labels.Get("Mail", "Greeting"), new List<string> { model.FirstName }),
+                    Closing = languages.GetTranslation(model.Language, Labels.Get("Mail", "Closing")),
                     CallToActionUrl = callbackurl,
-                    CallToActionName = languages.GetTranslation(model.Language, "##l@Mail.NewCompanyRequest.CallToActionName@l##"),
-                    CallToActionDescription = languages.GetTranslation(model.Language, "##l@Mail.NewCompanyRequest.CallToActionDescription@l##", new List<string> { model.ClientName }),
+                    CallToActionName = languages.GetTranslation(model.Language, Labels.Get("Mail", "NewCompanyRequest", "CallToActionName")),
+                    CallToActionDescription = languages.GetTranslation(model.Language, Labels.Get("Mail", "NewCompanyRequest", "CallToActionDescription"), new List<string> { model.ClientName }),
                 };
 
                 var htmlContent = m.RenderPartialViewToString(RenderPartialView.MailWithCallToAction);
                 var mailService = DmsResolver.Current.Get<IMailSenderWorkerService>();
 
 
-                mailService.SendMessage(null, MailServers.Docum, model.Email, languages.GetTranslation(model.Language, "##l@Mail.NewCompanyRequest.Subject@l##"), htmlContent);
+                mailService.SendMessage(null, MailServers.Docum, model.Email, languages.GetTranslation(model.Language, Labels.Get("Mail", "NewCompanyRequest", "Subject")), htmlContent);
             }
             catch (Exception)
             {

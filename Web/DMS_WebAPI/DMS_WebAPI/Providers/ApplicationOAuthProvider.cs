@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.IncomingModel;
@@ -63,7 +64,6 @@ namespace DMS_WebAPI.Providers
         /// <returns></returns>
         public override async Task GrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context)
         {
-            var clientCode = await context.Request.Body.GetClientCodeAsync();
             var clientSecret = await context.Request.Body.GetClientSecretAsync();
             var fingerprint = await context.Request.Body.GetFingerprintAsync();
 
@@ -93,7 +93,7 @@ namespace DMS_WebAPI.Providers
             // Если для пользователя включена возможность самоблокировки
             if (userManager.SupportsUserLockout && userLockoutEnabled && userIsLockedOut)
             {
-                await webService.ThrowErrorGrantResourceOwnerCredentials(context, new UserIsLockout());
+                await webService.ThrowError(new UserIsLockout(), user.Id, EnumLogTypes.Warning, "SignIn");
             }
 
             var passwordIsValid = await userManager.CheckPasswordAsync(user, context.Password);
@@ -118,14 +118,14 @@ namespace DMS_WebAPI.Providers
                 }
             }
 
-            if (!passwordIsValid) await webService.ThrowErrorGrantResourceOwnerCredentials(context, new UserPasswordIsIncorrect());
+            if (!passwordIsValid) await webService.ThrowError(new UserPasswordIsIncorrect(), user.Id, EnumLogTypes.Error, "SignIn");
 
             /////////////////////////////
             // Лигин и пароль верные!!!
             ////////////////////////////
 
             // Проверка подтверждения адреса
-            if (!user.EmailConfirmed) await webService.ThrowErrorGrantResourceOwnerCredentials(context, new UserMustConfirmEmail());
+            if (!user.EmailConfirmed) await webService.ThrowError(new UserMustConfirmEmail(), user.Id, EnumLogTypes.Warning, "SignIn");
 
             // Проверка Fingerprint: Если пользователь включил Fingerprint
             if (user.IsFingerprintEnabled)
@@ -140,7 +140,7 @@ namespace DMS_WebAPI.Providers
                 {
                     // Проверка ответа на секретный вопрос
                     if (!(user.ControlAnswer == answer))
-                        await webService.ThrowErrorGrantResourceOwnerCredentials(context, new UserAnswerIsIncorrect());
+                        await webService.ThrowError(new UserAnswerIsIncorrect(), user.Id, EnumLogTypes.Error, "CheckUpSecurityQuestion");
 
                     // Добавление текущего отпечатка в доверенные
                     if (rememberFingerprint)
@@ -159,29 +159,13 @@ namespace DMS_WebAPI.Providers
                         UserIDs = new List<string> { user.Id },
                         FingerprintExact = fingerprint,
                         IsActive = true,
-                    })) await webService.ThrowErrorGrantResourceOwnerCredentials(context, new UserFingerprintIsIncorrect());
+                    })) await webService.ThrowError(new UserFingerprintIsIncorrect(), user.Id, EnumLogTypes.Error, "CheckUpFingerprint");
                 }
             }
 
             //////////////////////////////
             // Проверка пользователя закончилась
             //////////////////////////////
-
-            // код клиента - обязательный параметр для создания контекста и работы в приложении
-            // Если НЕ передан код клиента, то выдаю токен без контекста. Доступ только к аккаунту.
-            if (!string.IsNullOrEmpty(clientCode?.Trim()) && clientCode != "-")
-            {
-                // Если передали несуществующие код клиента. дальше не пускаю GetClientId генерит throw new ClientIsNotFound()
-
-                var clientId = webService.GetClientId(clientCode);
-
-                if (clientId <= 0) throw new ClientIsNotFound();
-
-                // Тут нужно проерить нет ли приглашений пользователя и добавить линку клиент-пользователь
-
-                // Проверяю принадлежность пользователя к клиенту
-                if (!webService.ExistsUserInClient(user, clientId)) throw new ClientIsNotContainUser(clientCode);
-            }
 
 
             ClaimsIdentity oAuthIdentity = await user.GenerateUserIdentityAsync(userManager, OAuthDefaults.AuthenticationType);
@@ -235,46 +219,43 @@ namespace DMS_WebAPI.Providers
 
                 AspNetUsers user = await userManager.FindByIdAsync(userId);
 
+                var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
+                //var identityToken = Guid.NewGuid().ToString();
+                var identityToken = token.ToLower().md5();
+
+                context.AdditionalResponseParameters.Add("identity_token", identityToken);
                 context.AdditionalResponseParameters.Add("ChangePasswordRequired", user.IsChangePasswordRequired);
 
-                var token = $"{context.Identity.AuthenticationType} {context.AccessToken}";
 
-                var clientCode = await context.Request.Body.GetClientCodeAsync();
+                // Получаю информацию о браузере
+                var fingerPrint = await context.Request.Body.GetFingerprintAsync();
 
-                // код клиента - обязательный параметр для создания контекста и работы в приложении
-                // Если НЕ передан код клиента, то выдаю токен без контекста. Доступ только к аккаунту.
-
-                if (!string.IsNullOrEmpty(clientCode?.Trim()) && clientCode != "-")
+                #region Подпорка для соапа
+                if (string.IsNullOrEmpty(fingerPrint))
                 {
-                    var webService = DmsResolver.Current.Get<WebAPIService>();
+                    var scope = await context.Request.Body.GetScopeAsync();
 
-                    var server = webService.GetClientServer(clientCode);
-                    if (server == null) throw new DatabaseIsNotFound();
-
-                    // Получаю информацию о браузере
-                    var brInfo = HttpContext.Current.Request.Browser.Info();
-
-                    var fingerPrint = await context.Request.Body.GetFingerprintAsync();
-
-                    #region Подпорка для соапа
-                    if (string.IsNullOrEmpty(fingerPrint))
-                    {
-                        var scope = await context.Request.Body.GetScopeAsync();
-
-                        if (scope == "fingerprint") fingerPrint = "SoapUI finger";
-
-                    }
-                    #endregion
-
-                    var userContexts = DmsResolver.Current.Get<UserContexts>();
-
-                    // Создаю пользовательский контекст
-                    var ctx = userContexts.Set(token, user, clientCode, server, brInfo, fingerPrint);
+                    if (scope == "fingerprint") fingerPrint = "SoapUI finger";
 
                 }
+                #endregion
 
-                //!!! WriteLog
+                var sesEnv = new SessionEnviroment
+                {
+                    Session = identityToken,
+                    Platform = HttpContext.Current.Request.Browser.Platform,
+                    Browser = HttpContext.Current.Request.Browser.Name(),
+                    IP = HttpContext.Current.Request.Browser.IP(),
+                    Fingerprint = fingerPrint,
+                };
+
+
+                // Создаю пользовательский контекст
+                var userContexts = DmsResolver.Current.Get<UserContexts>();
+                var ctx = userContexts.Add(user, sesEnv);
+
             }
+
 
             //return Task.FromResult<object>(null);
 

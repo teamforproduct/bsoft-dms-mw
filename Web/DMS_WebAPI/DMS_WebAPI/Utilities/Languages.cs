@@ -214,26 +214,22 @@ namespace DMS_WebAPI.Utilities
             res = InsertValues(res, Paramenters);
 
             return res;
-
-            //var currLang = GetLanguageCodeFromRequestUserLanguages(HttpContext.Current);
-            //IContext defContext = null;
-
-            //try
-            //{
-            //    defContext = DmsResolver.Current.Get<UserContexts>().Get(keepAlive: false, restoreToken: false);
-
-            //    if (defContext.User.LanguageId <= 0) defContext = null;
-            //}
-            //catch
-            //{ }
-
-            //return defContext == null ? GetTranslation(currLang, text) : GetTranslation(defContext, text);
         }
 
         private string InsertValues(string Message, List<string> Paramenters)
         {
-            
-            return Message;
+            var res = Message;
+
+            if (Paramenters == null) return res;
+
+            try
+            {
+                res = string.Format(Message, Paramenters.ToArray());
+            }
+            catch
+            { }
+
+            return res;
         }
 
         public int GetLanguageIdByCode(string languageCode)
@@ -283,24 +279,19 @@ namespace DMS_WebAPI.Utilities
 
             var languageInfo = GetLanguageInfo();
 
-            var userName = string.Empty;
-
             InternalAdminLanguage res = null;
+
+            IContext defContext = null;
+
             try
             {
-                // тут я наблюдал, что Identity.Name возвращает имя последнего удачно авторизованного пользователя
-                userName = HttpContext.Current.User.Identity.Name; //Request.GetOwinContext().Authentication.User.Identity.Name;// 
-
+                defContext = DmsResolver.Current.Get<UserContexts>().Get(AsIs: true);
             }
             catch { }
 
-            if (!string.IsNullOrEmpty(userName))
-            {
-                var webService = DmsResolver.Current.Get<WebAPIService>();
-                var languageId = webService.GetUserLanguageId(userName);
+            if (defContext != null)
+                res = languageInfo.Languages.FirstOrDefault(x => x.Id == defContext.User.LanguageId);
 
-                res = languageInfo.Languages.FirstOrDefault(x => x.Id == languageId);
-            }
 
             if (res == null)
             {
@@ -371,12 +362,6 @@ namespace DMS_WebAPI.Utilities
             //DeleteAllAdminLanguageValues();
             //AddAdminLanguageValues(ApplicationDbImportData.GetAdminLanguageValues());
         }
-
-
-
-       
-
-        public string GetLabel(string module, string item) => "##l@" + module.Trim() + ":" + item.Trim() + "@l##";
 
         #endregion
 

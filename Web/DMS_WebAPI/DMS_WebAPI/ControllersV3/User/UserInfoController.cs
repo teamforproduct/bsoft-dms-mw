@@ -112,20 +112,17 @@ namespace DMS_WebAPI.ControllersV3.User
         [ResponseType(typeof(List<FrontSystemSession>))]
         public async Task<IHttpActionResult> Get([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
         {
-            var ctxs = DmsResolver.Current.Get<UserContexts>();
-            var sessions = ctxs.GetContextListQuery();
 
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var pSessions = (IQueryable<FrontSystemSession>)param;
                 var tmpService = DmsResolver.Current.Get<ILogger>();
                 if (filter == null) filter = new FilterSystemSession();
                 filter.ExecutorAgentIDs = new List<int> { context.CurrentAgentId };
-                var tmpItems = tmpService.GetSystemSessions(context, pSessions, filter, paging);
+                var tmpItems = tmpService.GetSystemSessions(context, filter, paging);
                 var res = new JsonResult(tmpItems, this);
                 res.Paging = paging;
                 return res;
-            }, sessions);
+            });
         }
 
         /// <summary>
@@ -176,7 +173,8 @@ namespace DMS_WebAPI.ControllersV3.User
             if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
 
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            webService.SetUserLanguage(User.Identity.GetUserId(), model.LanguageCode);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            webService.SetUserLanguage(ctx.User.Id, model.LanguageCode);
 
             return new JsonResult(null, this);
         }
@@ -212,7 +210,8 @@ namespace DMS_WebAPI.ControllersV3.User
             if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
 
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            await webService.ChangeUserPasswordAsync(User.Identity.GetUserId(), model);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            await webService.ChangeUserPasswordAsync(ctx.User.Id, model);
 
             return new JsonResult(null, this);
         }

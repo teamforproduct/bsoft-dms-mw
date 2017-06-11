@@ -87,7 +87,7 @@ namespace BL.Database.Documents
                     res.Document.IsInWork = res.Document.Accesses.Any(x => x.IsInWork);
                     res.Document.IsFavourite = res.Document.Accesses.Any(x => x.IsFavourite);
 
-                    var qryEvents = CommonQueries.GetDocumentEventQuery(context,null);
+                    var qryEvents = CommonQueries.GetDocumentEventQuery(context, null);
                     if (id.HasValue)
                         qryEvents = qryEvents.Where(x => x.Id == id);
                     else
@@ -426,6 +426,7 @@ namespace BL.Database.Documents
             {
                 if (positionAccesses.Contains(posId))
                 {
+                    var module = Labels.GetEnumName<EnumActions>();
                     var qry = dbContext.SystemActionsSet.Where(filterObjectsContains);
                     if (IsNotEmptyCategory)
                         qry = qry.Where(x => x.CategoryId.HasValue);
@@ -437,9 +438,9 @@ namespace BL.Database.Documents
                         ObjectCode = ((EnumObjects)x.ObjectId).ToString(),
                         DocumentAction = (EnumActions)x.Id,                        
                         ActionCode = ((EnumActions)x.Id).ToString(),
-                        Description = "##l@Actions:" + ((EnumActions)x.Id).ToString() + "@l##",
+                        Description = Labels.FirstSigns + module + Labels.Delimiter + ((EnumActions)x.Id).ToString() + Labels.LastSigns,
                         Category = (EnumActionCategories)x.CategoryId,
-                        
+
                     });
                     var actLst = qryActLst.ToList();
                     res.Add(posId, actLst);
@@ -458,13 +459,15 @@ namespace BL.Database.Documents
 
             using (var transaction = Transactions.GetTransaction())
             {
+                var module = Labels.GetEnumName<EnumDocumentDirections>();
+
                 var res = CommonQueries.GetDocumentEventQuery(context, new FilterDocumentEvent { EventId = new List<int> { eventId } })
                     .Select(x => new FrontDocumentEvent
                     {
                         Id = x.Id,
                         DocumentDescription = x.Document.LinkId.HasValue ? x.Document.Description : null,
                         DocumentTypeName = x.Document.LinkId.HasValue ? x.Document.DocumentType.Name : null,
-                        DocumentDirectionName = x.Document.LinkId.HasValue ? "##l@DocumentDirections:" + ((EnumDocumentDirections)x.Document.DocumentDirectionId).ToString() + "@l##" : null,
+                        DocumentDirectionName = x.Document.LinkId.HasValue ? Labels.FirstSigns + module + Labels.Delimiter + ((EnumDocumentDirections)x.Document.DocumentDirectionId).ToString() + Labels.LastSigns : null,
                         PaperPlanAgentName = x.PaperPlanAgent.Name,
                         PaperSendAgentName = x.PaperSendAgent.Name,
                         PaperRecieveAgentName = x.PaperRecieveAgent.Name,
@@ -588,6 +591,8 @@ namespace BL.Database.Documents
                 filterPositionContains = context.CurrentPositionsAccessLevel.Aggregate(filterPositionContains,
                     (current, value) => current.Or(e => e.PositionId == value.Key && e.Document.Accesses.Any(x => x.PositionId == value.Key && x.AccessLevelId >= value.Value)).Expand());
 
+                var module = Labels.GetEnumName<EnumEventTypes>();
+
                 var qryView = dbContext.DocumentEventsSet  //Without security restrictions
                     .Where(x => qryRes.Select(y => y.Id).Contains(x.Id))
                     .OrderByDescending(x => x.Date)
@@ -596,7 +601,7 @@ namespace BL.Database.Documents
                         Id = x.Id,
                         DocumentId = x.DocumentId,
                         EventType = (EnumEventTypes)x.EventTypeId,
-                        EventTypeName = "##l@EventTypes:" + ((EnumEventTypes)x.EventTypeId).ToString() + "@l##",
+                        EventTypeName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumEventTypes)x.EventTypeId).ToString() + Labels.LastSigns,
                         Date = x.Date,
                         CreateDate = x.Date != x.CreateDate ? (DateTime?)x.CreateDate : null,
                         Task = x.Task.Task,
@@ -770,7 +775,10 @@ namespace BL.Database.Documents
                 }
 
                 var maxDateTime = DateTime.UtcNow.AddYears(50);
+                var module = Labels.GetEnumName<EnumEventTypes>();
                 var isNeedRegistrationFullNumber = !(filter?.Wait?.DocumentId?.Any() ?? false);
+
+
 
                 var qryFE = dbContext.DocumentWaitsSet  //Without security restrictions
                     .Where(x => qryRes.Select(y => y.Id).Contains(x.Id))
@@ -821,7 +829,7 @@ namespace BL.Database.Documents
                             Description = x.OffEvent.Description,
                             AddDescription = x.OffEvent.AddDescription,
                             EventType = (EnumEventTypes)x.OffEvent.EventTypeId,
-                            EventTypeName = "##l@EventTypes:" + ((EnumEventTypes)x.OffEvent.EventTypeId).ToString() + "@l##",
+                            EventTypeName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumEventTypes)x.OffEvent.EventTypeId).ToString() + Labels.LastSigns,
                             Date = x.OffEvent.Date,
                         }
                     });
@@ -875,6 +883,7 @@ namespace BL.Database.Documents
                 }
 
                 var maxDateTime = DateTime.UtcNow.AddYears(50);
+                var module = Labels.GetEnumName<EnumEventTypes>();
 
                 var res = subscriptionsRes.Select(x => new FrontDocumentSubscription
                 {
@@ -903,7 +912,7 @@ namespace BL.Database.Documents
                             Id = x.SendEvent.Id,
                             DocumentId = x.SendEvent.DocumentId,
                             EventType = (EnumEventTypes)x.SendEvent.EventTypeId,
-                            EventTypeName = "##l@EventTypes:" + ((EnumEventTypes)x.SendEvent.EventTypeId).ToString() + "@l##",
+                            EventTypeName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumEventTypes)x.SendEvent.EventTypeId).ToString() + Labels.LastSigns,
                             DueDate = x.SendEvent.OnWait.FirstOrDefault().DueDate > maxDateTime ? null : x.SendEvent.OnWait.FirstOrDefault().DueDate,
                             Date = x.SendEvent.Date,
                             Description = x.SendEvent.Description,
@@ -916,7 +925,7 @@ namespace BL.Database.Documents
                             Id = x.DoneEvent.Id,
                             DocumentId = x.DoneEvent.DocumentId,
                             EventType = (EnumEventTypes)x.DoneEvent.EventTypeId,
-                            EventTypeName = "##l@EventTypes:" + ((EnumEventTypes)x.DoneEvent.EventTypeId).ToString() + "@l##",
+                            EventTypeName = Labels.FirstSigns + module + Labels.Delimiter + "EventTypes:" + ((EnumEventTypes)x.DoneEvent.EventTypeId).ToString() + Labels.LastSigns,
                             DueDate = null,
                             Date = x.DoneEvent.Date,
                             Description = x.DoneEvent.Description,
@@ -1295,9 +1304,12 @@ namespace BL.Database.Documents
 
                 var doc = CommonQueries.GetDocumentWaitQuery(context, new FilterDocumentWait { OnEventId = new List<int> { eventId } })
                     .Where(x => x.OnEvent.EventTypeId != (int)EnumEventTypes.AskPostponeDueDate)
-                    .Concat(CommonQueries.GetDocumentWaitQuery(context, new FilterDocumentWait {Id = dbContext.DocumentWaitsSet //Without security restrictions
+                    .Concat(CommonQueries.GetDocumentWaitQuery(context, new FilterDocumentWait
+                    {
+                        Id = dbContext.DocumentWaitsSet //Without security restrictions
                                                         .Where(y => y.ParentId.HasValue && y.OnEventId == eventId && y.OnEvent.EventTypeId == (int)EnumEventTypes.AskPostponeDueDate)
-                                                        .Select(y => y.ParentId.Value).ToList() })     )
+                                                        .Select(y => y.ParentId.Value).ToList()
+                    }))
                     .Select(x => new InternalDocument
                     {
                         Id = x.DocumentId,
@@ -1444,12 +1456,12 @@ namespace BL.Database.Documents
             {
                 var qry = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { documentId }, IsInWork = true });
                 var doc = qry.Select(x => new InternalDocument
-                            {
-                                Id = x.Id,
-                                ClientId = x.ClientId,
-                                EntityTypeId = x.EntityTypeId,
-                                ExecutorPositionId = x.ExecutorPositionId
-                            }).FirstOrDefault();
+                {
+                    Id = x.Id,
+                    ClientId = x.ClientId,
+                    EntityTypeId = x.EntityTypeId,
+                    ExecutorPositionId = x.ExecutorPositionId
+                }).FirstOrDefault();
                 transaction.Complete();
                 return doc;
             }
@@ -1461,11 +1473,11 @@ namespace BL.Database.Documents
             {
                 var qry = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { documentId }, IsInWork = true });
                 var doc = qry.Select(x => new InternalDocument
-                            {
-                                Id = x.Id,
-                                ClientId = x.ClientId,
-                                EntityTypeId = x.EntityTypeId,
-                            }).FirstOrDefault();
+                {
+                    Id = x.Id,
+                    ClientId = x.ClientId,
+                    EntityTypeId = x.EntityTypeId,
+                }).FirstOrDefault();
                 transaction.Complete();
                 return doc;
             }
@@ -1500,31 +1512,31 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
-                 var waitRes = CommonQueries.GetDocumentWaitQuery(context, new FilterDocumentWait { IsOpened = true, ParentId = document.Waits.Select(x => x.Id).ToList() })
-                    .Where(x => x.OnEvent.EventTypeId == (int)EnumEventTypes.AskPostponeDueDate)
-                    .Select(x => new InternalDocumentWait
-                    {
-                        Id = x.Id,
-                        ClientId = x.ClientId,
-                        EntityTypeId = x.EntityTypeId,
-                        ParentId = x.ParentId,
-                        DocumentId = x.OnEvent.DocumentId,
-                        OnEvent = new InternalDocumentEvent
-                        {
-                            Id = x.OnEvent.Id,
-                            ClientId = x.ClientId,
-                            EntityTypeId = x.EntityTypeId,
-                            DocumentId = x.OnEvent.DocumentId,
-                            EventType = (EnumEventTypes)x.OnEvent.EventTypeId,
-                            SourcePositionId = x.OnEvent.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
-                            ControllerPositionId = x.OnEvent.Accesses.Where(y => y.AccessTypeId <= (int)EnumEventAccessTypes.Controller)
-                                                                    .OrderByDescending(y => y.AccessTypeId).FirstOrDefault().PositionId,
-                            TargetPositionId = x.OnEvent.Accesses.Where(y => y.AccessTypeId <= (int)EnumEventAccessTypes.Target)
-                                                                    .OrderByDescending(y => y.AccessTypeId).FirstOrDefault().PositionId,
-                            TaskId = x.OnEvent.TaskId,
-                        }
-                    }
-                    ).ToList();
+                var waitRes = CommonQueries.GetDocumentWaitQuery(context, new FilterDocumentWait { IsOpened = true, ParentId = document.Waits.Select(x => x.Id).ToList() })
+                   .Where(x => x.OnEvent.EventTypeId == (int)EnumEventTypes.AskPostponeDueDate)
+                   .Select(x => new InternalDocumentWait
+                   {
+                       Id = x.Id,
+                       ClientId = x.ClientId,
+                       EntityTypeId = x.EntityTypeId,
+                       ParentId = x.ParentId,
+                       DocumentId = x.OnEvent.DocumentId,
+                       OnEvent = new InternalDocumentEvent
+                       {
+                           Id = x.OnEvent.Id,
+                           ClientId = x.ClientId,
+                           EntityTypeId = x.EntityTypeId,
+                           DocumentId = x.OnEvent.DocumentId,
+                           EventType = (EnumEventTypes)x.OnEvent.EventTypeId,
+                           SourcePositionId = x.OnEvent.Accesses.FirstOrDefault(y => y.AccessTypeId == (int)EnumEventAccessTypes.Source).PositionId,
+                           ControllerPositionId = x.OnEvent.Accesses.Where(y => y.AccessTypeId <= (int)EnumEventAccessTypes.Controller)
+                                                                   .OrderByDescending(y => y.AccessTypeId).FirstOrDefault().PositionId,
+                           TargetPositionId = x.OnEvent.Accesses.Where(y => y.AccessTypeId <= (int)EnumEventAccessTypes.Target)
+                                                                   .OrderByDescending(y => y.AccessTypeId).FirstOrDefault().PositionId,
+                           TaskId = x.OnEvent.TaskId,
+                       }
+                   }
+                   ).ToList();
                 ((List<InternalDocumentWait>)document.Waits).AddRange(waitRes);
                 transaction.Complete();
             }

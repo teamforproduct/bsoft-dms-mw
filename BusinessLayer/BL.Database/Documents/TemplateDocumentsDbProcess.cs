@@ -111,11 +111,13 @@ namespace BL.Database.Documents
 
                 if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontTemplate>();
 
+                var module = Labels.GetEnumName<EnumDocumentDirections>();
+
                 var res = qry.Select(x => new FrontTemplate
                 {
                     Id = x.Id,
                     DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
-                    DocumentDirectionName = "##l@DocumentDirections:" + ((EnumDocumentDirections)x.DocumentDirectionId).ToString() + "@l##",
+                    DocumentDirectionName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumDocumentDirections)x.DocumentDirectionId).ToString() + Labels.LastSigns,
                     IsHard = x.IsHard,
                     IsForProject = x.IsForProject,
                     IsForDocument = x.IsForDocument,
@@ -146,11 +148,13 @@ namespace BL.Database.Documents
 
                 if (Paging.Set(ref qry, paging) == EnumPagingResult.IsOnlyCounter) return new List<FrontMainTemplate>();
 
+                var module = Labels.GetEnumName<EnumDocumentDirections>();
+
                 var res = qry.Select(x => new FrontMainTemplate
                 {
                     Id = x.Id,
                     DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
-                    DocumentDirectionName = "##l@DocumentDirections:" + ((EnumDocumentDirections)x.DocumentDirectionId).ToString() + "@l##",
+                    DocumentDirectionName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumDocumentDirections)x.DocumentDirectionId).ToString() + Labels.LastSigns,
                     IsHard = x.IsHard,
                     IsForProject = x.IsForProject,
                     IsForDocument = x.IsForDocument,
@@ -194,7 +198,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 templateDocumentId = CommonQueries.GetDocumentQuery(context, new FilterDocument { DocumentId = new List<int> { documentId }, IsInWork = true })
-                    .Where(x => x.Id == documentId).Select(x => x.TemplateDocumentId) .FirstOrDefault();
+                    .Where(x => x.Id == documentId).Select(x => x.TemplateDocumentId).FirstOrDefault();
                 var res = GetTemplate(context, templateDocumentId);
                 transaction.Complete();
                 return res;
@@ -206,6 +210,8 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
+                var module = Labels.GetEnumName<EnumDocumentDirections>();
+
                 var templateDocument =
                     dbContext.TemplateDocumentsSet.Where(x => x.ClientId == context.Client.Id).Where(x => x.Id == templateDocumentId)
                         .Select(x => new FrontTemplate
@@ -217,7 +223,7 @@ namespace BL.Database.Documents
                             IsForDocument = x.IsForDocument,
                             IsActive = x.IsActive,
                             DocumentDirection = (EnumDocumentDirections)x.DocumentDirectionId,
-                            DocumentDirectionName = "##l@DocumentDirections:" + ((EnumDocumentDirections)x.DocumentDirectionId).ToString() + "@l##",
+                            DocumentDirectionName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumDocumentDirections)x.DocumentDirectionId).ToString() + Labels.LastSigns,
                             DocumentTypeId = x.DocumentTypeId,
                             DocumentTypeName = x.DocumentType.Name,
                             Description = x.Description,
@@ -499,6 +505,9 @@ namespace BL.Database.Documents
                     }
                 }
                 qry = qry.OrderBy(x => x.StageTypeId).ThenBy(x => x.Stage).ThenBy(x => x.SendTypeId).ThenBy(x => x.Id);
+
+                var module = Labels.GetEnumName<EnumAccessLevels>();
+
                 var res = qry.Select(x => new FrontTemplateSendList
                 {
                     Id = x.Id,
@@ -518,7 +527,7 @@ namespace BL.Database.Documents
                     AccessLevel = (EnumAccessLevels)x.AccessLevelId,
                     SendTypeName = "##l@SendTypes:" + ((EnumSendTypes)x.SendTypeId).ToString() + "@l##",
                     StageTypeName = "##l@StageTypes:" + ((EnumStageTypes)x.StageTypeId).ToString() + "@l##",
-                    AccessLevelName = "##l@AccessLevels:" + ((EnumAccessLevels)x.AccessLevelId).ToString() + "@l##",
+                    AccessLevelName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumAccessLevels)x.AccessLevelId).ToString() + Labels.LastSigns,
                 }).ToList();
                 CommonQueries.SetAccessGroups(context, res);
                 transaction.Complete();
@@ -531,6 +540,8 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
+                var module = Labels.GetEnumName<EnumAccessLevels>();
+
                 var res = dbContext.TemplateDocumentSendListsSet.Where(x => x.Document.ClientId == context.Client.Id).Where(x => x.Id == id)
                         .Select(x => new FrontTemplateSendList
                         {
@@ -546,7 +557,7 @@ namespace BL.Database.Documents
                             AccessLevel = (EnumAccessLevels)x.AccessLevelId,
                             SendTypeName = "##l@SendTypes:" + ((EnumSendTypes)x.SendTypeId).ToString() + "@l##",
                             StageTypeName = "##l@StageTypes:" + ((EnumStageTypes)x.StageTypeId).ToString() + "@l##",
-                            AccessLevelName = "##l@AccessLevels:" + ((EnumAccessLevels)x.AccessLevelId).ToString() + "@l##",
+                            AccessLevelName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumAccessLevels)x.AccessLevelId).ToString() + Labels.LastSigns,
                             IsAddControl = x.IsAddControl,
                             SelfDueDay = x.SelfDueDay,
                             SelfAttentionDay = x.SelfAttentionDay,
@@ -663,6 +674,9 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetTemplateRestrictedSendListsQuery(context, filter);
+
+                var module = Labels.GetEnumName<EnumAccessLevels>();
+
                 var res = qry.Select(x => new FrontTemplateRestrictedSendList
                 {
                     Id = x.Id,
@@ -671,7 +685,7 @@ namespace BL.Database.Documents
                     AccessLevel = (EnumAccessLevels)x.AccessLevelId,
                     PositionName = x.Position.Name,
                     PositionExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null),
-                    AccessLevelName = "##l@AccessLevels:" + ((EnumAccessLevels)x.AccessLevelId).ToString() + "@l##",
+                    AccessLevelName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumAccessLevels)x.AccessLevelId).ToString() + Labels.LastSigns,
                 }).ToList();
                 transaction.Complete();
                 return res;
@@ -695,6 +709,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
+                var module = Labels.GetEnumName<EnumAccessLevels>();
                 var res = dbContext.TemplateDocumentRestrictedSendListsSet.Where(x => x.Document.ClientId == context.Client.Id).Where(x => x.Id == id)
                         .Select(x => new FrontTemplateRestrictedSendList
                         {
@@ -703,7 +718,7 @@ namespace BL.Database.Documents
                             PositionId = x.Position.Id,
                             PositionName = x.Position.Name,
                             PositionExecutorAgentName = x.Position.ExecutorAgent.Name + (x.Position.ExecutorType.Suffix != null ? " (" + x.Position.ExecutorType.Suffix + ")" : null),
-                            AccessLevelName = "##l@AccessLevels:" + ((EnumAccessLevels)x.AccessLevelId).ToString() + "@l##",
+                            AccessLevelName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumAccessLevels)x.AccessLevelId).ToString() + Labels.LastSigns,
                         }).FirstOrDefault();
                 transaction.Complete();
                 return res;
@@ -1277,6 +1292,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 var qry = GetTemplateFilesQuery(context, filter);
+                var module = Labels.GetEnumName<EnumFileTypes>();
                 var res = qry.Join(dbContext.DictionaryAgentsSet, df => df.LastChangeUserId, da => da.Id,
                         (d, a) => new { fl = d, agName = a.Name })
                         .Select(x => new FrontTemplateFile
@@ -1284,7 +1300,7 @@ namespace BL.Database.Documents
                             Id = x.fl.Id,
                             DocumentId = x.fl.DocumentId,
                             Type = (EnumFileTypes)x.fl.TypeId,
-                            TypeName = "##l@FileTypes:" + ((EnumFileTypes)x.fl.TypeId).ToString() + "@l##",
+                            TypeName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumFileTypes)x.fl.TypeId).ToString() + Labels.LastSigns,
                             Hash = x.fl.Hash,
                             LastChangeDate = x.fl.LastChangeDate,
                             LastChangeUserId = x.fl.LastChangeUserId,
@@ -1311,6 +1327,7 @@ namespace BL.Database.Documents
             var dbContext = context.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
             {
+                var module = Labels.GetEnumName<EnumFileTypes>();
                 var res = dbContext.TemplateDocumentFilesSet
                         .Where(x => x.Document.ClientId == context.Client.Id)
                         .Where(x => x.Id == id)
@@ -1320,7 +1337,7 @@ namespace BL.Database.Documents
                             Id = x.fl.Id,
                             DocumentId = x.fl.DocumentId,
                             Type = (EnumFileTypes)x.fl.TypeId,
-                            TypeName = "##l@FileTypes:" + ((EnumFileTypes)x.fl.TypeId).ToString() + "@l##",
+                            TypeName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumFileTypes)x.fl.TypeId).ToString() + Labels.LastSigns,
                             Hash = x.fl.Hash,
                             LastChangeDate = x.fl.LastChangeDate,
                             LastChangeUserId = x.fl.LastChangeUserId,

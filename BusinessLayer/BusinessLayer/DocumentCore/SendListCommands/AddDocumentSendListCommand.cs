@@ -12,6 +12,7 @@ using BL.Logic.DocumentCore.Interfaces;
 using System.Transactions;
 using BL.Model.AdminCore;
 using System;
+using BL.CrossCutting.Helpers;
 
 namespace BL.Logic.DocumentCore.SendListCommands
 {
@@ -104,7 +105,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
                 }))
             {
                 if (_sendList.Stage.HasValue)
-                    _sendList.AddDescription = "##l@DmsExceptions:SubordinationForDueDateHasBeenViolated@l##";
+                    _sendList.AddDescription = Labels.Get("DmsExceptions", "SubordinationForDueDateHasBeenViolated");
                 else
                     throw new SubordinationForDueDateHasBeenViolated();
             }

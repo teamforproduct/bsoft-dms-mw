@@ -72,7 +72,7 @@ namespace DMS_WebAPI.Infrastructure
                 // для DmsExceptions Message формирую на основании названия класса
                 if (exc is DmsExceptions)
                 {
-                    m = "##l@DmsExceptions:" + exc.GetType().Name + "@l##";
+                    m = Labels.Get("DmsExceptions", exc.GetType().Name);
                     if ((exc as DmsExceptions).Errors != null) d = string.Join(" ", (exc as DmsExceptions).Errors);
                 }
                 else m = exc.Message;
@@ -86,11 +86,11 @@ namespace DMS_WebAPI.Infrastructure
                     {
                         // The DELETE statement conflicted with the REFERENCE constraint
                         case 547:
-                            m = "##l@SqlExceptions:" + "ConflictedWithReferenceConstraint" + "@l##";
+                            m = Labels.Get("SqlExceptions", "ConflictedWithReferenceConstraint");
                             break;
                         // {"Cannot insert duplicate key row in object '' with unique index ''.
                         case 2601:
-                            m = "##l@SqlExceptions:" + "CannotInsertDuplicateKeyRow" + "@l##";
+                            m = Labels.Get("SqlExceptions", "CannotInsertDuplicateKeyRow");
                             break;
                         default:
                             m = $"Number: {e.Number}; Msg: {e.Message}";
@@ -199,7 +199,7 @@ namespace DMS_WebAPI.Infrastructure
             #region [+] Получение параметров текущего UserContext ...
             try
             {
-                var uCont = DmsResolver.Current.Get<Utilities.UserContexts>().Get(keepAlive: false, restoreToken: false);
+                var uCont = DmsResolver.Current.Get<Utilities.UserContexts>().Get(AsIs: true);
                 user = uCont.User.Name;
                 client = uCont.Client.Code;
             }

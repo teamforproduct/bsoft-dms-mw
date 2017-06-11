@@ -1,4 +1,5 @@
-﻿using BL.Database.DBModel.Admin;
+﻿using BL.CrossCutting.Helpers;
+using BL.Database.DBModel.Admin;
 using BL.Database.DBModel.Dictionary;
 using BL.Database.DBModel.System;
 using BL.Model.Common;
@@ -18,7 +19,7 @@ namespace BL.Database.DatabaseContext
         private static List<SystemPermissions> systemPermissions = new List<SystemPermissions>();
         private static List<AdminRolePermissions> systemRolePermissions = new List<AdminRolePermissions>();
 
-        private static string GetLabel(string module, string item) => "##l@" + module.Trim() + ":" + item.Trim() + "@l##";
+        
         private static int GetConcatId(params int[] arr) => Convert.ToInt32(string.Join("", arr));
         public static int GetFeatureId(string module, string feature) => GetConcatId(Modules.GetId(module), Features.GetId(feature));
         public static int GetPermissionId(string module, string feature, EnumAccessTypes type) => GetConcatId(Modules.GetId(module), Features.GetId(feature), type.GetHashCode());
@@ -36,11 +37,11 @@ namespace BL.Database.DatabaseContext
 
             if (m == null)
             {
-                m = new SystemModules { Id = Modules.GetId(module), Code = module, Name = GetLabel("Modules", module), Order = order };
+                m = new SystemModules { Id = Modules.GetId(module), Code = module, Name = Labels.Get("Modules", module), Order = order };
                 systemModules.Add(m);
             }
 
-            var f = new SystemFeatures { Id = GetFeatureId(module, feature), ModuleId = Modules.GetId(module), Code = feature, Name = GetLabel(module, feature), Order = order };
+            var f = new SystemFeatures { Id = GetFeatureId(module, feature), ModuleId = Modules.GetId(module), Code = feature, Name = Labels.Get(module, feature), Order = order };
             systemFeatures.Add(f);
 
             if (r)
@@ -523,7 +524,6 @@ namespace BL.Database.DatabaseContext
             {
                 Id = (int)id,
                 Code = id.ToString(),
-                //Name = GetLabel("AccessTypes", id.ToString()),
                 Order = order,
             };
         }
@@ -622,7 +622,7 @@ namespace BL.Database.DatabaseContext
 
         private static SystemObjects GetSystemObjects(EnumObjects id)
         {
-            string description = GetLabel("Objects", id.ToString());
+            string description = Labels.Get("Objects", id.ToString());
 
             return new SystemObjects()
             {
@@ -1026,7 +1026,7 @@ namespace BL.Database.DatabaseContext
 
         private static SystemActions GetSysAct(EnumActions id, EnumObjects objId, int? permissionId = null, EnumActionCategories? category = null)
         {
-            string description = GetLabel("Actions", id.ToString());
+            string description = Labels.Get("Actions", id.ToString());
             return GetSystemAction((int)id, id.ToString(), objId, description, permissionId, category);
         }
 
@@ -1060,7 +1060,7 @@ namespace BL.Database.DatabaseContext
 
         private static AdminAccessLevels GetAdminAccessLevel(EnumAccessLevels id)
         {
-            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string name = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString());
             return new AdminAccessLevels()
             {
                 Id = (int)id,
@@ -1096,7 +1096,7 @@ namespace BL.Database.DatabaseContext
 
         private static AdminRoleTypes GetAdminRoleType(Roles id)
         {
-            string name = GetLabel("Roles", id.ToString());
+            string name = Labels.Get("Roles", id.ToString());
             return new AdminRoleTypes()
             {
                 Id = (int)id,
@@ -1135,9 +1135,9 @@ namespace BL.Database.DatabaseContext
 
         private static SystemUIElements GetSystemUIElement(int order, EnumUIElements id, string typeCode, EnumValueTypes valType)
         {
-            string label = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Label");
-            string descr = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Description");
-            string hint = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString()) + ".Hint";
+            string label = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Label");
+            string descr = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Description");
+            string hint = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString()) + ".Hint";
 
             return new SystemUIElements()
             {
@@ -1185,7 +1185,7 @@ namespace BL.Database.DatabaseContext
 
         private static DictionaryFileTypes GetDictionaryFileType(EnumFileTypes id)
         {
-//            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+//            string name = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString());
             return new DictionaryFileTypes()
             {
                 Id = (int)id,
@@ -1207,7 +1207,7 @@ namespace BL.Database.DatabaseContext
 
         private static DictionarySigningTypes GetDictionarySigningType(EnumSigningTypes id)
         {
-            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string name = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString());
             return new DictionarySigningTypes()
             {
                 Id = (int)id,
@@ -1229,7 +1229,7 @@ namespace BL.Database.DatabaseContext
 
         private static DictionaryDocumentDirections GetDictionaryDocumentDirection(EnumDocumentDirections id)
         {
-            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string name = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString());
             return new DictionaryDocumentDirections()
             {
                 Id = (int)id,
@@ -1304,7 +1304,7 @@ namespace BL.Database.DatabaseContext
 
         private static DictionaryEventTypes GetDictionaryEventType(EnumEventTypes id, EnumImportanceEventTypes importanceEventTypeId, string waitDescription = null)
         {
-            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string name = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString());
             return new DictionaryEventTypes()
             {
                 Id = (int)id,
@@ -1333,7 +1333,7 @@ namespace BL.Database.DatabaseContext
 
         private static DictionaryImportanceEventTypes GetDictionaryImportanceEventType(EnumImportanceEventTypes id)
         {
-            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string name = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString());
             return new DictionaryImportanceEventTypes()
             {
                 Id = (int)id,
@@ -1360,7 +1360,7 @@ namespace BL.Database.DatabaseContext
 
         private static DictionaryResultTypes GetDictionaryResultType(EnumResultTypes id, bool IsExecute, bool IsActive)
         {
-            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string name = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString());
             return new DictionaryResultTypes()
             {
                 Id = (int)id,
@@ -1389,7 +1389,7 @@ namespace BL.Database.DatabaseContext
 
         private static DictionarySendTypes GetDictionarySendType(int order, EnumSendTypes id, bool isImportant, int subordinationTypeId)
         {
-            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string name = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString());
             return new DictionarySendTypes()
             {
                 Id = (int)id,
@@ -1413,7 +1413,7 @@ namespace BL.Database.DatabaseContext
 
         private static DictionarySubordinationTypes GetDictionarySubordinationType(EnumSubordinationTypes id)
         {
-            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string name = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString());
             return new DictionarySubordinationTypes()
             {
                 Id = (int)id,
@@ -1434,7 +1434,7 @@ namespace BL.Database.DatabaseContext
 
         private static DictionaryStageTypes GetDictionaryStageType(EnumStageTypes id)
         {
-            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string name = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString());
             return new DictionaryStageTypes()
             {
                 Id = (int)id,
@@ -1455,7 +1455,7 @@ namespace BL.Database.DatabaseContext
 
         private static DicRegJournalAccessTypes GetDictionaryRegistrationJournalAccessType(EnumRegistrationJournalAccessTypes id)
         {
-            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string name = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString());
             return new DicRegJournalAccessTypes()
             {
                 Id = (int)id,
@@ -1480,7 +1480,7 @@ namespace BL.Database.DatabaseContext
 
         private static DictionarySubscriptionStates GetDictionarySubscriptionState(EnumSubscriptionStates id, bool isSuccess)
         {
-            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string name = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString());
             return new DictionarySubscriptionStates()
             {
                 Id = (int)id,
@@ -1503,9 +1503,9 @@ namespace BL.Database.DatabaseContext
 
         private static DictionaryPositionExecutorTypes GetDictionaryPositionExecutorType(EnumPositionExecutionTypes id, bool WithoutSuffix = false)
         {
-            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
-            string description = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Description");
-            string suffix = WithoutSuffix ? string.Empty : GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Suffix");
+            string name = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string description = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Description");
+            string suffix = WithoutSuffix ? string.Empty : Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Suffix");
 
             return new DictionaryPositionExecutorTypes()
             {
@@ -1533,7 +1533,7 @@ namespace BL.Database.DatabaseContext
 
         private static DictionaryLinkTypes GetDictionaryLinkType(EnumLinkTypes id, bool IsImportant)
         {
-            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string name = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString());
             return new DictionaryLinkTypes()
             {
                 Id = (int)id,
@@ -1567,8 +1567,8 @@ namespace BL.Database.DatabaseContext
 
         private static SystemFormulas GetSystemFormula(EnumSystemFormulas id, string example = "")
         {
-            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
-            string description = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Description");
+            string name = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string description = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Description");
             return new SystemFormulas()
             {
                 Id = (int)id,
@@ -1593,8 +1593,8 @@ namespace BL.Database.DatabaseContext
 
         private static SystemPatterns GetSystemPattern(EnumSystemPatterns id, string code)
         {
-            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
-            string description = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Description");
+            string name = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string description = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Description");
             return new SystemPatterns()
             {
                 Id = (int)id,
@@ -1618,8 +1618,8 @@ namespace BL.Database.DatabaseContext
 
         private static SystemFormats GetSystemFormat(EnumSystemFormats id, string code)
         {
-            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
-            string description = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Description");
+            string name = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string description = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Description");
             return new SystemFormats()
             {
                 Id = (int)id,
@@ -1641,7 +1641,7 @@ namespace BL.Database.DatabaseContext
 
         private static DictionarySettingTypes GetDictionarySettingType(EnumSettingTypes id, int order)
         {
-            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString());
+            string name = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString());
             return new DictionarySettingTypes()
             {
                 Id = (int)id,

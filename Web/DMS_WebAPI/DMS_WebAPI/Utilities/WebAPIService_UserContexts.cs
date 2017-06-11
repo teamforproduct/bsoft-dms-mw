@@ -17,20 +17,29 @@ namespace DMS_WebAPI.Utilities
         public int SaveUserContexts(IContext context)
         {
 
+            var list = string.Empty;
+
+            try
+            {
+                list = string.Join(",", context.CurrentPositionsIdList);
+            }
+            catch { }
+            
+
             var model = new AspNetUserContexts
             {
-                Token = context.Token,
+                Key = context.Key,
                 ClientId = context.Client.Id,
-                CurrentPositionsIdList = string.Join(",", context.CurrentPositionsIdList),
+                CurrentPositionsIdList = list,
                 UserId = context.User.Id,
                 LastChangeDate = DateTime.UtcNow,
-                //SessionId = context.LoginLogId,
+                SignInId = context.Session.SignInId,
             };
 
 
             var uc = _webDb.GetUserContexts(new FilterAspNetUserContext
             {
-                TokenExact = model.Token
+                Key = model.Key
             }).FirstOrDefault();
 
             if (uc == null)

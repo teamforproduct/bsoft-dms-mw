@@ -1,13 +1,9 @@
 ﻿using BL.CrossCutting.DependencyInjection;
-using BL.CrossCutting.Interfaces;
 using BL.Model.SystemCore;
-using BL.Model.SystemCore.Filters;
+using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.FrontModel;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using Microsoft.AspNet.Identity;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -32,21 +28,17 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Sessions)]
         [ResponseType(typeof(FrontSystemSession))]
-        public async Task<IHttpActionResult> Get([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> Get([FromUri]FilterSessionsLog filter, [FromUri]UIPaging paging)
         {
-            var ctxs = DmsResolver.Current.Get<UserContexts>();
-            var sesions = ctxs.GetContextListQuery();
-
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var sessParam = (IQueryable<FrontSystemSession>) param;
-                var tmpService = DmsResolver.Current.Get<ILogger>();
-                if (filter == null) filter = new FilterSystemSession();
-                filter.ExecutorAgentIDs = new List<int> { context.CurrentAgentId };
-                var tmpItems = tmpService.GetSystemSessions(context, sessParam, filter, paging);
+                if (filter == null) filter = new FilterSessionsLog();
+                filter.UserId = context.User.Id;
+                var webService = DmsResolver.Current.Get<WebAPIService>();
+                var tmpItems = webService.GetSessionLogs(filter, paging);
                 var res = new JsonResult(tmpItems, this);
                 return res;
-            }, sesions);
+            });
         }
 
         /// <summary>
@@ -58,18 +50,15 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Sessions + "/Current")]
         [ResponseType(typeof(FrontSystemSession))]
-        public async Task<IHttpActionResult> GetCurrent([FromUri]FilterSystemSession filter, [FromUri]UIPaging paging)
+        public async Task<IHttpActionResult> GetCurrent([FromUri]FilterSessionsLog filter, [FromUri]UIPaging paging)
         {
-            var ctxs = DmsResolver.Current.Get<UserContexts>();
-            var sesions = ctxs.GetContextListQuery();
-
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var tmpService = DmsResolver.Current.Get<ILogger>();
-                if (filter == null) filter = new FilterSystemSession();
-                filter.ExecutorAgentIDs = new List<int> { context.CurrentAgentId };
-                filter.IsOnlyActive = true;
-                var tmpItems = tmpService.GetSystemSessions(context, sesions, filter, paging);
+                if (filter == null) filter = new FilterSessionsLog();
+                filter.UserId = context.User.Id;
+                filter.IsActive = true;
+                var webService = DmsResolver.Current.Get<WebAPIService>();
+                var tmpItems = webService.GetSessionLogs(filter, paging);
                 var res = new JsonResult(tmpItems, this);
                 return res;
             });
@@ -84,7 +73,8 @@ namespace DMS_WebAPI.ControllersV3.User
         public async Task<IHttpActionResult> KillAll()
         {
             var ctxs = DmsResolver.Current.Get<UserContexts>();
-            ctxs.RemoveByUserId(User.Identity.GetUserId());
+            var ctx = ctxs.Get();
+            ctxs.RemoveByUserId(ctx.User.Id);
             return new JsonResult(null, this);
         }
 
@@ -97,7 +87,8 @@ namespace DMS_WebAPI.ControllersV3.User
         public async Task<IHttpActionResult> KillAllButThis()
         {
             var ctxs = DmsResolver.Current.Get<UserContexts>();
-            ctxs.RemoveByUserId(User.Identity.GetUserId());
+            var ctx = ctxs.Get();
+            ctxs.RemoveByUserId(ctx.User.Id, true);
             return new JsonResult(null, this);
         }
 

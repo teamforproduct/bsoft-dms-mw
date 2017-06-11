@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Helpers;
 using BL.Logic.SystemCore.Interfaces;
 using BL.Model.Enums;
 using DMS_WebAPI.DBModel;
@@ -32,21 +33,19 @@ namespace DMS_WebAPI.DatabaseContext
         }
         #endregion
 
-        private static string GetLabel(string group, string itemName) => "##l@" + group.Trim() + ":" + itemName.Trim() + "@l##";
-
         public static List<SystemControlQuestions> GetSystemControlQuestions()
         {
             var items = new List<SystemControlQuestions>();
 
-            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.FavoriteMusician, Name = GetLabel("ControlQuestions", EnumControlQuestion.FavoriteMusician.ToString()) });
-            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.StreetWhereGrewUp, Name = GetLabel("ControlQuestions", EnumControlQuestion.StreetWhereGrewUp.ToString()) });
-            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.FavoriteHero, Name = GetLabel("ControlQuestions", EnumControlQuestion.FavoriteHero.ToString()) });
-            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.GrandmaBirthday, Name = GetLabel("ControlQuestions", EnumControlQuestion.GrandmaBirthday.ToString()) });
-            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.ParentsIndex, Name = GetLabel("ControlQuestions", EnumControlQuestion.ParentsIndex.ToString()) });
-            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.FirstCar, Name = GetLabel("ControlQuestions", EnumControlQuestion.FirstCar.ToString()) });
-            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.FavoriteTeacher, Name = GetLabel("ControlQuestions", EnumControlQuestion.FavoriteTeacher.ToString()) });
-            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.FavoriteBook, Name = GetLabel("ControlQuestions", EnumControlQuestion.FavoriteBook.ToString()) });
-            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.FavoriteGame, Name = GetLabel("ControlQuestions", EnumControlQuestion.FavoriteGame.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.FavoriteMusician, Name = Labels.Get("ControlQuestions", EnumControlQuestion.FavoriteMusician.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.StreetWhereGrewUp, Name = Labels.Get("ControlQuestions", EnumControlQuestion.StreetWhereGrewUp.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.FavoriteHero, Name = Labels.Get("ControlQuestions", EnumControlQuestion.FavoriteHero.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.GrandmaBirthday, Name = Labels.Get("ControlQuestions", EnumControlQuestion.GrandmaBirthday.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.ParentsIndex, Name = Labels.Get("ControlQuestions", EnumControlQuestion.ParentsIndex.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.FirstCar, Name = Labels.Get("ControlQuestions", EnumControlQuestion.FirstCar.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.FavoriteTeacher, Name = Labels.Get("ControlQuestions", EnumControlQuestion.FavoriteTeacher.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.FavoriteBook, Name = Labels.Get("ControlQuestions", EnumControlQuestion.FavoriteBook.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.FavoriteGame, Name = Labels.Get("ControlQuestions", EnumControlQuestion.FavoriteGame.ToString()) });
 
             return items;
         }
@@ -80,8 +79,8 @@ namespace DMS_WebAPI.DatabaseContext
 
         private static SystemSettings GetSystemSettings(int order, EnumGeneralSettings id, string value, EnumValueTypes valueTypeId)
         {
-            string name = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Name");
-            string description = GetLabel(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Description");
+            string name = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Name");
+            string description = Labels.Get(id.GetType().Name.Replace("Enum", ""), id.ToString() + ".Description");
             return new SystemSettings()
             {
                 Key = id.ToString(),
@@ -220,7 +219,7 @@ namespace DMS_WebAPI.DatabaseContext
         {
             var qry = from t in System.Reflection.Assembly.GetAssembly(typeof(BL.Model.Exception.AccessIsDenied)).GetTypes()
                       where t.IsClass && t.Namespace == "BL.Model.Exception"
-                      select GetLabel("DmsExceptions", t.Name);
+                      select Labels.Get("DmsExceptions", t.Name);
             return qry.ToList();//.ForEach(t => Console.WriteLine(t.Name));
         }
 
@@ -230,7 +229,7 @@ namespace DMS_WebAPI.DatabaseContext
             var enumName = typeof(T).Name.Replace("Enum", "");
             return array
               .Select(a =>
-                 GetLabel(enumName, a.ToString())
+                 Labels.Get(enumName, a.ToString())
               )
               .ToList();
         }

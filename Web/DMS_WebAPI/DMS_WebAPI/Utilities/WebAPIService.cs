@@ -113,7 +113,7 @@ namespace DMS_WebAPI.Utilities
         public bool ExistsUserInClient(AspNetUsers user, int clientId)
         {
             if (user == null) return false;
-            return (GetUserClient(user.Id, clientId) != null);
+            return ExistsUserInClientByUserId(user.Id, clientId);
         }
 
         public FrontAspNetUserClient GetUserClient(string userId, int clientId)
@@ -130,6 +130,11 @@ namespace DMS_WebAPI.Utilities
             var user = GetUser(userName);
 
             return ExistsUserInClient(user, clientId);
+        }
+
+        public bool ExistsUserInClientByUserId(string userId, int clientId)
+        {
+            return (GetUserClient(userId, clientId) != null);
         }
 
         public int GetUserLanguageId(string userName)
@@ -394,37 +399,25 @@ namespace DMS_WebAPI.Utilities
             return _webDb.GetClientLicenceActive(clientId);
         }
 
-        public async Task ThrowErrorGrantResourceOwnerCredentials(OAuthGrantResourceOwnerCredentialsContext context, Exception ex)
+        public async Task ThrowError(Exception ex, string userId, EnumLogTypes type, string evt)
         {
-            string message = HttpContext.Current.Request.Browser.Info();
-            var clientCode = await context.Request.Body.GetClientCodeAsync();
-
-            if (string.IsNullOrEmpty(clientCode) || clientCode == "-") throw ex;
-
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            var server = webService.GetClientServer(clientCode);
 
-            var ctx = new AdminContext(server);
-            var logger = DmsResolver.Current.Get<ILogger>();
-            var errorInfo = new AuthError
+            var m = new AddSessionLog
             {
-                ClientCode = clientCode,
-                EMail = context.UserName,
-                FingerPrint = await context.Request.Body.GetFingerprintAsync()
+                Platform = HttpContext.Current.Request.Browser.Platform,
+                Browser = HttpContext.Current.Request.Browser.Name(),
+                IP = HttpContext.Current.Request.Browser.IP(),
+                Fingerprint = await HttpContext.Current.Request.InputStream.GetFingerprintAsync(),
+
+                Date = DateTime.UtcNow,
+                UserId = userId,
+                Type = type,
+                Event = evt,
+                Message = ex.GetType().Name,
             };
-            int? agentId = null;
-            var dbService = DmsResolver.Current.Get<WebAPIService>();
 
-            var user = await dbService.GetUserAsync(errorInfo.EMail);
-
-            if (user != null)
-            {
-                var agentUser = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(ctx, user.Id);
-                agentId = agentUser?.Id;
-            }
-
-            var exceptionText = ExceptionHandling.GetExceptionText(ex);
-            var loginLogId = logger.Error(ctx, message, exceptionText, objectId: (int)EnumObjects.System, actionId: (int)EnumActions.Login, logObject: errorInfo, agentId: agentId);
+            webService.AddSessionLog(m);
 
             // Эти исключения отлавливает Application_Error в Global.asax
             throw ex;

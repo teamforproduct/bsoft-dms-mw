@@ -1,4 +1,5 @@
 ﻿using BL.CrossCutting.DependencyInjection;
+using BL.CrossCutting.Helpers;
 using BL.CrossCutting.Interfaces;
 using BL.Database.Dictionaries;
 using BL.Database.Documents.Interfaces;
@@ -1201,7 +1202,7 @@ namespace BL.Logic.Common
             {
                 if (model.Stage.HasValue)
                 {
-                    model.AddDescription = (ex is DmsExceptions) ? "##l@DmsExceptions:" + ex.GetType().Name + "@l##" : ex.Message;
+                    model.AddDescription = (ex is DmsExceptions) ? Labels.Get("DmsExceptions", ex.GetType().Name) : ex.Message;
                     var _operationDb = DmsResolver.Current.Get<IDocumentOperationsDbProcess>();
                     _operationDb.ModifyDocumentSendListAddDescription(context, model);
                 }
