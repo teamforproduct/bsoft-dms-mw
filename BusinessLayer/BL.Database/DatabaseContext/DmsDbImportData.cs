@@ -1622,8 +1622,6 @@ namespace BL.Database.DatabaseContext
             {
                 Id = (int)id,
                 Code = id.ToString(),
-                //Name = "##l@SystemFormats:" + (id).ToString() + "@l##",
-                //Description = description,
             };
         }
         public static List<DictionarySettingTypes> GetDictionarySettingTypes()

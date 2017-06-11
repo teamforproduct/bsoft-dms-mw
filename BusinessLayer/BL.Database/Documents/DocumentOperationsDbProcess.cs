@@ -791,7 +791,7 @@ namespace BL.Database.Documents
                         OnEventId = x.OnEventId,
                         OffEventId = x.OffEventId,
                         ResultType = (EnumResultTypes)x.ResultTypeId,
-                        ResultTypeName = "##l@ResultTypes:" + ((EnumResultTypes)x.ResultTypeId).ToString() + "@l##",
+                        ResultTypeName = "##l@ResultTypes." + ((EnumResultTypes)x.ResultTypeId).ToString() + "@l##",
                         PlanDueDate = x.PlanDueDate,
                         DueDate = x.DueDate > maxDateTime ? null : x.DueDate,
                         AttentionDate = x.AttentionDate,
@@ -892,7 +892,7 @@ namespace BL.Database.Documents
                     SendEventId = x.SendEventId,
                     DoneEventId = x.DoneEventId,
                     SubscriptionStates = (EnumSubscriptionStates)x.SubscriptionStateId,
-                    SubscriptionStatesName = "##l@SubscriptionStates:" + ((EnumSubscriptionStates)x.SubscriptionStateId).ToString() + "@l##",
+                    SubscriptionStatesName = "##l@SubscriptionStates." + ((EnumSubscriptionStates)x.SubscriptionStateId).ToString() + "@l##",
                     IsSuccess = x.SubscriptionState.IsSuccess,
                     Description = x.Description,
 

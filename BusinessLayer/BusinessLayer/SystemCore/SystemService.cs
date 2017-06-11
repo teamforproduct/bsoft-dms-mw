@@ -109,7 +109,7 @@ namespace BL.Logic.SystemCore
             {
                 Id = x.Id,
                 Code = ((EnumActions)x.Id).ToString(),
-                Description = "##l@Actions:" + ((EnumActions)x.Id).ToString() + "@l##",
+                Description = "##l@Actions." + ((EnumActions)x.Id).ToString() + "@l##",
             }).ToList();
         }
 

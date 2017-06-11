@@ -2027,7 +2027,7 @@ namespace BL.Database.Admins
 
                     AccessTypeId = (EnumAccessTypes)x.AccessTypeId,
                     AccessTypeCode = ((EnumAccessTypes)x.AccessTypeId).ToString(),
-                    AccessTypeName = "##l@SubscriptionStates:" + ((EnumAccessTypes)x.AccessTypeId).ToString() + "@l##",
+                    AccessTypeName = "##l@SubscriptionStates." + ((EnumAccessTypes)x.AccessTypeId).ToString() + "@l##",
                     AccessTypeOrder = x.AccessType.Order,
 
                     ModuleId = x.Feature.Module.Id,

@@ -5999,7 +5999,7 @@ namespace BL.Database.Dictionaries
                 var res = qry.Select(x => new FrontDictionaryResultType
                 {
                     Id = x.Id,
-                    Name = "##l@ResultTypes:" + ((EnumResultTypes)x.Id).ToString() + "@l##",
+                    Name = "##l@ResultTypes." + ((EnumResultTypes)x.Id).ToString() + "@l##",
                     IsExecute = x.IsExecute,
                 }).ToList();
                 transaction.Complete();
@@ -6072,10 +6072,10 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     Code = ((EnumSendTypes)x.Id).ToString(),
-                    Name = "##l@SendTypes:" + ((EnumSendTypes)x.Id).ToString() + "@l##",
+                    Name = "##l@SendTypes." + ((EnumSendTypes)x.Id).ToString() + "@l##",
                     IsImportant = x.IsImportant,
                     SubordinationType = (EnumSubordinationTypes)x.SubordinationTypeId,
-                    SubordinationTypeName = "##l@SubordinationTypes:" + ((EnumSubordinationTypes)x.SubordinationTypeId).ToString() + "@l##",
+                    SubordinationTypeName = "##l@SubordinationTypes." + ((EnumSubordinationTypes)x.SubordinationTypeId).ToString() + "@l##",
                     IsExternal = x.Id == (int)EnumSendTypes.InformationExternal,
                 }).ToList();
 
@@ -6136,7 +6136,7 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     //Code = x.Code,
-                    Name = "##l@StageTypes:" + ((EnumStageTypes)x.Id).ToString() + "@l##",
+                    Name = "##l@StageTypes." + ((EnumStageTypes)x.Id).ToString() + "@l##",
                 }).ToList();
 
                 transaction.Complete();
@@ -6271,7 +6271,7 @@ namespace BL.Database.Dictionaries
                     DueDate = x.DueDate,
                     DueDay = x.DueDay,
                     AccessLevelId = x.AccessLevelId,
-                    SendTypeName = "##l@SendTypes:" + ((EnumSendTypes)x.SendTypeId).ToString() + "@l##",
+                    SendTypeName = "##l@SendTypes." + ((EnumSendTypes)x.SendTypeId).ToString() + "@l##",
                     TargetPositionName = x.TargetPosition.Name,
 
                     TargetExecutorName = x.TargetPosition.ExecutorAgent.Name ?? x.TargetAgent.Name,
@@ -6628,7 +6628,7 @@ namespace BL.Database.Dictionaries
                 {
                     Id = x.Id,
                     //Code = x.Code,
-                    Name = "##l@SubordinationTypes:" + ((EnumSubordinationTypes)x.Id).ToString() + "@l##",
+                    Name = "##l@SubordinationTypes." + ((EnumSubordinationTypes)x.Id).ToString() + "@l##",
                 }).ToList();
 
                 transaction.Complete();

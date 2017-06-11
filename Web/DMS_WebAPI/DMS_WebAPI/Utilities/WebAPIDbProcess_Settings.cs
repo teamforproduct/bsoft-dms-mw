@@ -71,8 +71,8 @@ namespace DMS_WebAPI.Utilities
                 var res = qry.Select(x => new InternalGeneralSetting
                 {
                     Key = x.Key,
-                    Name = "##l@SystemSettings:" + x.Key + "@l##",
-                    Description = "##l@SystemSettings:" + x.Key + ".Description@l##",
+                    Name = "##l@SystemSettings." + x.Key + "@l##",
+                    Description = "##l@SystemSettings." + x.Key + ".Description@l##",
                     Value = x.Value,
                     ValueType = (EnumValueTypes)x.ValueTypeId,
                     Order = x.Order

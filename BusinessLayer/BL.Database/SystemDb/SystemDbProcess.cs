@@ -119,8 +119,8 @@ namespace BL.Database.SystemDb
                 {
                     Id = x.Id,
                     Code = ((EnumSystemFormats)x.Id).ToString(),
-                    Name = "##l@SystemFormats:" + ((EnumSystemFormats)x.Id).ToString() + "@l##",
-                    Description = "##l@SystemFormats:" + ((EnumSystemFormats)x.Id).ToString() + ".Description@l##",
+                    Name = "##l@SystemFormats." + ((EnumSystemFormats)x.Id).ToString() + "@l##",
+                    Description = "##l@SystemFormats." + ((EnumSystemFormats)x.Id).ToString() + ".Description@l##",
                 }).ToList();
 
                 transaction.Complete();
@@ -140,8 +140,8 @@ namespace BL.Database.SystemDb
                 {
                     Id = x.Id,
                     Code = ((EnumSystemFormulas)x.Id).ToString(),
-                    Name = "##l@SystemFormulas:" + ((EnumSystemFormulas)x.Id).ToString() + "@l##",
-                    Description = "##l@SystemFormulas:" + ((EnumSystemFormulas)x.Id).ToString() + ".Description@l##",
+                    Name = "##l@SystemFormulas." + ((EnumSystemFormulas)x.Id).ToString() + "@l##",
+                    Description = "##l@SystemFormulas." + ((EnumSystemFormulas)x.Id).ToString() + ".Description@l##",
                     Example = x.Example
                 }).ToList();
 
@@ -161,8 +161,8 @@ namespace BL.Database.SystemDb
                 {
                     Id = x.Id,
                     Code = ((EnumSystemPatterns)x.Id).ToString(),
-                    Name = "##l@SystemPatterns:" + ((EnumSystemPatterns)x.Id).ToString() + "@l##",
-                    Description = "##l@SystemPatterns:" + ((EnumSystemPatterns)x.Id).ToString() + ".Description@l##",
+                    Name = "##l@SystemPatterns." + ((EnumSystemPatterns)x.Id).ToString() + "@l##",
+                    Description = "##l@SystemPatterns." + ((EnumSystemPatterns)x.Id).ToString() + ".Description@l##",
                 }).ToList();
 
                 transaction.Complete();
@@ -181,7 +181,7 @@ namespace BL.Database.SystemDb
                 {
                     Id = x.Id,
                     Code = ((EnumValueTypes)x.Id).ToString(),
-                    Description = "##l@ValueTypes:" + ((EnumValueTypes)x.Id).ToString() + "@l##",
+                    Description = "##l@ValueTypes." + ((EnumValueTypes)x.Id).ToString() + "@l##",
                 }).ToList();
 
                 transaction.Complete();
@@ -280,9 +280,9 @@ namespace BL.Database.SystemDb
                     LogDate = x.LogDate,
                     LogDate1 = x.LogDate1,
                     ObjectId = x.ObjectId,
-                    ObjectName = "##l@Objects:" + ((EnumObjects)x.ObjectId).ToString() + "@l##",
+                    ObjectName = "##l@Objects." + ((EnumObjects)x.ObjectId).ToString() + "@l##",
                     ActionId = x.ActionId,
-                    ActionName = "##l@Actions:" + ((EnumActions)x.ActionId).ToString() + "@l##",
+                    ActionName = "##l@Actions." + ((EnumActions)x.ActionId).ToString() + "@l##",
                     RecordId = x.RecordId,
                     ClientId = x.ClientId,
                 }).ToList();
@@ -740,9 +740,9 @@ namespace BL.Database.SystemDb
                     Value = x.Value,
                     ValueType = (EnumValueTypes)x.ValueTypeId,
                     ValueTypeCode = ((EnumValueTypes)x.ValueTypeId).ToString(),
-                    Name = "##l@SystemSettings:" + x.Key + "@l##",
-                    Description = "##l@SystemSettings:" + x.Key + ".Description@l##",
-                    SettingTypeName = "##l@SettingTypes:" + ((EnumSettingTypes)x.SettingTypeId).ToString() + "@l##",
+                    Name = "##l@SystemSettings." + x.Key + "@l##",
+                    Description = "##l@SystemSettings." + x.Key + ".Description@l##",
+                    SettingTypeName = "##l@SettingTypes." + ((EnumSettingTypes)x.SettingTypeId).ToString() + "@l##",
                     Order = x.Order,
                     OrderSettingType = x.SettingType.Order,
                 }).ToList();
@@ -885,7 +885,7 @@ namespace BL.Database.SystemDb
                 {
                     Id = x.Id,
                     Code = ((EnumObjects)x.Id).ToString(),
-                    Description = "##l@Objects:" + ((EnumObjects)x.Id).ToString() + "@l##",
+                    Description = "##l@Objects." + ((EnumObjects)x.Id).ToString() + "@l##",
                 }).ToList();
 
                 transaction.Complete();
@@ -1000,11 +1000,11 @@ namespace BL.Database.SystemDb
                 {
                     Id = x.Id,
                     Code = ((EnumActions)x.Id).ToString(),
-                    Description = "##l@Actions:" + ((EnumActions)x.Id).ToString() + "@l##",
+                    Description = "##l@Actions." + ((EnumActions)x.Id).ToString() + "@l##",
                     ObjectId = x.ObjectId,
 
                     ObjectCode = ((EnumObjects)x.ObjectId).ToString(),
-                    ObjectDescription = "##l@Objects:" + ((EnumObjects)x.ObjectId).ToString() + "@l##"
+                    ObjectDescription = "##l@Objects." + ((EnumObjects)x.ObjectId).ToString() + "@l##"
                 }).ToList();
 
                 transaction.Complete();
@@ -1026,7 +1026,7 @@ namespace BL.Database.SystemDb
                 {
                     Id = x.Id,
                     Code = ((EnumActions)x.Id).ToString(),
-                    Description = "##l@Actions:" + ((EnumActions)x.Id).ToString() + "@l##",
+                    Description = "##l@Actions." + ((EnumActions)x.Id).ToString() + "@l##",
                     Category = (EnumActionCategories)x.CategoryId,
                     ObjectId = (EnumObjects)x.ObjectId
                 }).ToList();
@@ -1202,7 +1202,7 @@ namespace BL.Database.SystemDb
 
                     AccessTypeId = (EnumAccessTypes)x.AccessTypeId,
                     AccessTypeCode = ((EnumAccessTypes)x.AccessTypeId).ToString(),
-                    AccessTypeName = "##l@SubscriptionStates:" + ((EnumAccessTypes)x.AccessTypeId).ToString() + "@l##",
+                    AccessTypeName = "##l@SubscriptionStates." + ((EnumAccessTypes)x.AccessTypeId).ToString() + "@l##",
                     AccessTypeOrder = x.AccessType.Order,
 
                     ModuleId = x.ModuleId,
@@ -1261,7 +1261,7 @@ namespace BL.Database.SystemDb
                     ValueFieldCode = x.Property.Code,
                     ValueType = (EnumValueTypes)x.Property.ValueTypeId,
                     ValueTypeCode = ((EnumValueTypes)x.Property.ValueTypeId).ToString(),
-                    ValueDescriptionFieldCode = "##l@ValueTypes:" + ((EnumValueTypes)x.Property.ValueTypeId).ToString() + "@l##",
+                    ValueDescriptionFieldCode = "##l@ValueTypes." + ((EnumValueTypes)x.Property.ValueTypeId).ToString() + "@l##",
                     Format = x.Property.OutFormat,
                 }).ToList();
 
@@ -1319,7 +1319,7 @@ namespace BL.Database.SystemDb
                         {
                             Id = x.ValueTypeId.Value,
                             Code = ((EnumValueTypes)x.ValueTypeId).ToString(),
-                            Description = "##l@ValueTypes:" + ((EnumValueTypes)x.ValueTypeId).ToString() + "@l##"
+                            Description = "##l@ValueTypes." + ((EnumValueTypes)x.ValueTypeId).ToString() + "@l##"
                         }
                 }).ToList();
 
@@ -1659,7 +1659,7 @@ namespace BL.Database.SystemDb
                     ValueFieldCode = x.Property.Code,
                     ValueType = (EnumValueTypes)x.Property.ValueTypeId,
                     ValueTypeCode = ((EnumValueTypes)x.Property.ValueTypeId).ToString(),
-                    ValueDescriptionFieldCode = "##l@ValueTypes:" + ((EnumValueTypes)x.Property.ValueTypeId).ToString() + "@l##",
+                    ValueDescriptionFieldCode = "##l@ValueTypes." + ((EnumValueTypes)x.Property.ValueTypeId).ToString() + "@l##",
                     Format = x.Property.OutFormat,
                 }).ToList();
 

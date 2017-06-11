@@ -1015,7 +1015,7 @@ namespace BL.Database.Documents
                             //        : null),
                             DueDate = x.DueDate > maxDateTime ? null : x.DueDate,
                             IsClosed = x.OffEventId != null,
-                            ResultTypeName = "##l@ResultTypes:" + ((EnumResultTypes)x.ResultTypeId).ToString() + "@l##",
+                            ResultTypeName = "##l@ResultTypes." + ((EnumResultTypes)x.ResultTypeId).ToString() + "@l##",
                             AttentionDate = x.AttentionDate,
                             OnEventTypeName = Labels.FirstSigns + module + Labels.Delimiter + ((EnumEventTypes)x.OnEvent.EventTypeId).ToString() + Labels.LastSigns,
                             OffEventDate = x.OffEventId.HasValue ? x.OffEvent.CreateDate : (DateTime?)null
@@ -1035,7 +1035,7 @@ namespace BL.Database.Documents
                             EntityTypeId = x.EntityTypeId,
                             DocumentId = x.DocumentId,
                             SubscriptionStates = (EnumSubscriptionStates)x.SubscriptionStateId,
-                            SubscriptionStatesName = "##l@SubscriptionStates:" + ((EnumSubscriptionStates)x.SubscriptionStateId).ToString() + "@l##",
+                            SubscriptionStatesName = "##l@SubscriptionStates." + ((EnumSubscriptionStates)x.SubscriptionStateId).ToString() + "@l##",
                             //DoneEventSourcePositionName =
                             //    x.DoneEventId.HasValue ? x.DoneEvent.SourcePosition.Name : string.Empty,
                             //DoneEventSourcePositionExecutorAgentName = x.DoneEventId.HasValue
