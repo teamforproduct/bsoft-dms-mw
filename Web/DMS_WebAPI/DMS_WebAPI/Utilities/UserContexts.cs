@@ -206,7 +206,7 @@ namespace DMS_WebAPI.Utilities
                     Message = removeFromBase ? "SessionStopped" : "SessionSuspended",
                     Date = intContext.Session.LastUsage,
 
-                    Session = HttpContext.Current.Request.Browser.Identifier(),
+                    Session = key,//HttpContext.Current.Request.Browser.Identifier(),
                     Platform = HttpContext.Current.Request.Browser.Platform,
                     Browser = HttpContext.Current.Request.Browser.Name(),
                     IP = HttpContext.Current.Request.Browser.IP(),
@@ -497,6 +497,9 @@ namespace DMS_WebAPI.Utilities
 
                 Add(intContext, false);
 
+                var fingerprint = string.Empty;
+                if (item.SignInId.HasValue) fingerprint = webService.GetSessionLogFingerprint(item.SignInId.Value);
+
                 var s = new SessionEnviroment
                 {
                     Session = key,
@@ -504,7 +507,7 @@ namespace DMS_WebAPI.Utilities
                     IP = HttpContext.Current.Request.Browser.IP(),
                     Platform = HttpContext.Current.Request.Browser.Platform,
                     // Fingerprint вычитываю из предыдущего лога, так как на фронте он повторно не расчитывается
-                    Fingerprint = item.Session?.Fingerprint
+                    Fingerprint = fingerprint
                 };
 
                 WriteSessionLog(intContext, s, true);
