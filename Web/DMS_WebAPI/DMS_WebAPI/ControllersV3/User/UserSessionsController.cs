@@ -1,14 +1,9 @@
 ﻿using BL.CrossCutting.DependencyInjection;
-using BL.CrossCutting.Interfaces;
 using BL.Model.SystemCore;
-using BL.Model.SystemCore.Filters;
 using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.FrontModel;
 using DMS_WebAPI.Results;
 using DMS_WebAPI.Utilities;
-using Microsoft.AspNet.Identity;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
@@ -78,7 +73,8 @@ namespace DMS_WebAPI.ControllersV3.User
         public async Task<IHttpActionResult> KillAll()
         {
             var ctxs = DmsResolver.Current.Get<UserContexts>();
-            ctxs.RemoveByUserId(User.Identity.GetUserId());
+            var ctx = ctxs.Get();
+            ctxs.RemoveByUserId(ctx.User.Id);
             return new JsonResult(null, this);
         }
 
@@ -91,7 +87,8 @@ namespace DMS_WebAPI.ControllersV3.User
         public async Task<IHttpActionResult> KillAllButThis()
         {
             var ctxs = DmsResolver.Current.Get<UserContexts>();
-            ctxs.RemoveByUserId(User.Identity.GetUserId());
+            var ctx = ctxs.Get();
+            ctxs.RemoveByUserId(ctx.User.Id, true);
             return new JsonResult(null, this);
         }
 

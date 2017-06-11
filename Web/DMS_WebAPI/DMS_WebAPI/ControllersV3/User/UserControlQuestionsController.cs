@@ -21,7 +21,8 @@ namespace DMS_WebAPI.ControllersV3.User
         private IHttpActionResult GetById()
         {
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            var user = webService.GetUserById(User.Identity.GetUserId());
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var user = webService.GetUserById(ctx.User.Id);
             var res = new JsonResult(new FrontAspNetUserControlQuestion
             {
                 Question = user.ControlQuestion?.Name,
@@ -52,8 +53,9 @@ namespace DMS_WebAPI.ControllersV3.User
         [Route(Features.ControlQuestion)]
         public IHttpActionResult Put([FromBody]ModifyAspNetUserControlQuestion model)
         {
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            webService.ChangeControlQuestion(User.Identity.GetUserId(), model);
+            webService.ChangeControlQuestion(ctx.User.Id, model);
             return GetById();
         }
 

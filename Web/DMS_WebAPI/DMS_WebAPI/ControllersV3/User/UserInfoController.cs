@@ -173,7 +173,8 @@ namespace DMS_WebAPI.ControllersV3.User
             if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
 
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            webService.SetUserLanguage(User.Identity.GetUserId(), model.LanguageCode);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            webService.SetUserLanguage(ctx.User.Id, model.LanguageCode);
 
             return new JsonResult(null, this);
         }
@@ -209,7 +210,8 @@ namespace DMS_WebAPI.ControllersV3.User
             if (!ModelState.IsValid) return new JsonResult(ModelState, false, this);
 
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            await webService.ChangeUserPasswordAsync(User.Identity.GetUserId(), model);
+            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            await webService.ChangeUserPasswordAsync(ctx.User.Id, model);
 
             return new JsonResult(null, this);
         }
