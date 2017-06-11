@@ -25,9 +25,10 @@ namespace DMS_WebAPI.Utilities
     {
         private readonly List<UserContext> _cacheContexts = new List<UserContext>();
         private const string _TOKEN_KEY = "Authorization";
+        private const string _HOST = "Host";
         private const int _TIME_OUT_MIN = 15;
         private ReaderWriterLockSlim locker = new ReaderWriterLockSlim();
-        private string Key
+        private string CurrentKey
         {
             get
             {
@@ -35,20 +36,31 @@ namespace DMS_WebAPI.Utilities
                 return string.IsNullOrEmpty(t) ? string.Empty : t.ToLower().md5();
             }
         }
+        private string GetClientCode()
+        {
+            var host = HttpContext.Current.Request.Headers[_HOST];
+
+            if (host.Contains("localhost")) return "docum";
+
+            var uri = new Uri(host);
+
+            // TODO определить доменное имя 3 уровня
+            return uri.Host.Substring(0, host.IndexOf('.'));
+        }
 
         /// <summary>
         /// Gets setting value by its name.
         /// </summary>
         /// <param name="currentPositionId"></param>
         /// <param name="isThrowExeception"></param>
-        /// <param name="keepAlive"></param>
+        /// <param name="AsIs"></param>
         /// <returns>Typed setting value.</returns>
-        public IContext Get(int? currentPositionId = null, bool isThrowExeception = true, bool keepAlive = true, bool restoreToken = true)
+        public IContext Get(int? currentPositionId = null, bool AsIs = false)
         {
-            string key = Key;
+            string key = CurrentKey;
 
             // пробую восстановить контекст из базы
-            if (restoreToken && !Contains(key))
+            if (!AsIs && !Contains(key))
             {
                 Restore(key);
             }
@@ -57,6 +69,12 @@ namespace DMS_WebAPI.Utilities
 
             var intContext = GetContextInternal(key);
 
+            if (!AsIs && string.IsNullOrEmpty(intContext.Client.Code))
+            {
+                // Тут нужно проерить нет ли приглашений пользователя и добавить линку клиент-пользователь
+                SetClientParms(intContext, GetClientCode());
+                SaveInBase(intContext);
+            };
 
             //TODO Licence
             //if (ctx.ClientLicence?.LicenceError != null)
@@ -67,12 +85,12 @@ namespace DMS_WebAPI.Utilities
             //VerifyNumberOfConnections(ctx, ctx.Client.Id);
 
             var ctx = new UserContext(intContext);
-            ctx.SetCurrentPosition(currentPositionId);
-            if (isThrowExeception && ctx.User.IsChangePasswordRequired)
-                throw new UserMustChangePassword();
+
+            if (!AsIs) ctx.SetCurrentPosition(currentPositionId);
+            if (!AsIs && ctx.User.IsChangePasswordRequired) throw new UserMustChangePassword();
 
             // KeepAlive: Продление жизни пользовательского контекста
-            if (keepAlive) KeepAlive(key);
+            if (!AsIs) KeepAlive(key);
 
             return ctx;
         }
@@ -121,29 +139,29 @@ namespace DMS_WebAPI.Utilities
         /// <param name="model">SessionEnviroment</param>
         /// <returns></returns>
         /// <exception cref="TokenAlreadyExists"></exception>
-        public UserContext Add(string key, AspNetUsers user, string clientCode, DatabaseModelForAdminContext db, SessionEnviroment model)
+        public UserContext Add(AspNetUsers user, SessionEnviroment model)
         {
-            //key = key.ToLower();
+            var key = model.Session;
 
             if (Contains(key)) throw new TokenAlreadyExists();
 
-            var intContext = FormContextInternal(key, user, clientCode, db);
+            var intContext = FormContextInternal(key, user);
 
             // TODO вернуть, когда перейдем к лицензиям
             //VerifyNumberOfConnectionsByNew(intContext, new List<DatabaseModelForAdminContext> { db });
 
-            WriteSessionLog(intContext, model);
-
             Add(intContext);
+
+            WriteSessionLog(intContext, model);
+            SaveInBase(intContext);
 
             return intContext;
 
         }
 
-        private UserContext FormContextInternal(string key, AspNetUsers user, string clientCode, DatabaseModelForAdminContext db)
+        private UserContext FormContextInternal(string key, AspNetUsers user)
         {
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            var clientId = webService.GetClientId(clientCode);
 
             var intContext = new UserContext
             {
@@ -157,36 +175,8 @@ namespace DMS_WebAPI.Utilities
                 },
                 Employee = new Employee { },
                 Session = new Session { },
-                Client = new Client
-                {
-                    Id = clientId,
-                    Code = clientCode
-                },
-
-                CurrentDB = db,
-                ClientLicence = webService.GetClientLicenceActive(clientId),
+                Client = new Client { },
             };
-
-            var context = new UserContext(intContext);
-            var employee = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(context, user.Id);
-
-            if (employee != null)
-            {
-                if (employee.IsLockout) throw new EmployeeIsLockoutByAdmin(employee.Name);
-
-                // проверка активности сотрудника
-                if (!employee.IsActive) throw new EmployeeIsDeactivated(employee.Name);
-
-
-                if (employee.AssigmentsCount == 0) throw new EmployeeNotExecuteAnyPosition(employee.Name);
-
-                intContext.Employee.Id = employee.Id;
-                intContext.Employee.Name = employee.Name;
-            }
-            else
-            {
-                throw new EmployeeIsNotDefined();
-            }
 
             return intContext;
         }
@@ -198,7 +188,7 @@ namespace DMS_WebAPI.Utilities
         /// <returns>Typed setting value.</returns>
         public bool Remove(string key = null, bool removeFromBase = true)
         {
-            if (string.IsNullOrEmpty(key)) key = Key;
+            if (string.IsNullOrEmpty(key)) key = CurrentKey;
 
             var intContext = GetContextInternal(key);
 
@@ -332,7 +322,7 @@ namespace DMS_WebAPI.Utilities
 
                 if (exceptCurrent)
                 {
-                    qry = qry.Where(x => x.Key != Key);
+                    qry = qry.Where(x => x.Key != CurrentKey);
                 }
 
                 keys = qry.Select(x => x.Key).ToList();
@@ -423,6 +413,54 @@ namespace DMS_WebAPI.Utilities
             //}
         }
 
+        private void SetClientParms(UserContext intContext, string clientCode)
+        {
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+
+            var clientId = webService.GetClientId(clientCode);
+
+            if (clientId <= 0) throw new ClientIsNotFound();
+
+            // Проверяю принадлежность пользователя к клиенту
+            if (!webService.ExistsUserInClientByUserId(intContext.User.Id, clientId)) throw new ClientIsNotContainUser(clientCode);
+
+            var server = webService.GetClientServer(clientCode);
+            if (server == null) throw new DatabaseIsNotFound();
+
+            // TODO вернуть, когда перейдем к лицензиям
+            //VerifyNumberOfConnectionsByNew(intContext, new List<DatabaseModelForAdminContext> { db });
+
+            intContext.Client.Id = clientId;
+            intContext.Client.Code = clientCode;
+
+            intContext.CurrentDB = server;
+
+            intContext.ClientLicence = webService.GetClientLicenceActive(clientId);
+
+
+            var context = new UserContext(intContext);
+            var employee = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(context, intContext.User.Id);
+
+            if (employee != null)
+            {
+                if (employee.IsLockout) throw new EmployeeIsLockoutByAdmin(employee.Name);
+
+                // проверка активности сотрудника
+                if (!employee.IsActive) throw new EmployeeIsDeactivated(employee.Name);
+
+
+                if (employee.AssigmentsCount == 0) throw new EmployeeNotExecuteAnyPosition(employee.Name);
+
+                intContext.Employee.Id = employee.Id;
+                intContext.Employee.Name = employee.Name;
+            }
+            else
+            {
+                throw new EmployeeIsNotDefined();
+            }
+
+        }
+
         private void Restore(string key)
         {
             locker.EnterWriteLock();
@@ -439,23 +477,28 @@ namespace DMS_WebAPI.Utilities
 
                 if (item == null) return;
 
-                var clientCode = webService.GetClientCode(item.ClientId);
-
-                if (string.IsNullOrEmpty(clientCode)) return;
-
-                var server = webService.GetClientServer(item.ClientId);
-
-                if (server == null) return;
-
                 var user = webService.GetUserById(item.UserId);
 
                 if (user == null) return;
 
+                var intContext = FormContextInternal(item.Key, user);
 
-                var intContext = FormContextInternal(item.Key, user, clientCode, server);
 
-                // TODO вернуть, когда перейдем к лицензиям 
-                //VerifyNumberOfConnectionsByNew(context, new List<DatabaseModelForAdminContext> { server });//LONG
+                if (item.ClientId > 0)
+                {
+                    var clientCode = webService.GetClientCode(item.ClientId);
+                    SetClientParms(intContext, clientCode);
+
+                    // TODO вернуть, когда перейдем к лицензиям 
+                    //VerifyNumberOfConnectionsByNew(context, new List<DatabaseModelForAdminContext> { server });//LONG
+
+                    if (!string.IsNullOrEmpty(item.CurrentPositionsIdList))
+                    {
+                        SetUserPositions(intContext, item.CurrentPositionsIdList.Split(',').Select(n => Convert.ToInt32(n)).ToList());
+                    }
+                }
+
+                Add(intContext, false);
 
                 var s = new SessionEnviroment
                 {
@@ -469,12 +512,8 @@ namespace DMS_WebAPI.Utilities
 
                 WriteSessionLog(intContext, s, true);
 
-                SetUserPositions(intContext, item.CurrentPositionsIdList.Split(',').Select(n => Convert.ToInt32(n)).ToList());
-
                 //TODO надоли это если мы только что отресторили токен? - Да, дата проставляется свежая
-                SaveInBase(intContext);
-
-                Add(intContext, false);
+                //SaveInBase(intContext);
             }
             finally
             {

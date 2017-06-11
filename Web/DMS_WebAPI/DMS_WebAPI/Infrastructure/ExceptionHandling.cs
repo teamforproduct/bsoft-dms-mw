@@ -199,7 +199,7 @@ namespace DMS_WebAPI.Infrastructure
             #region [+] Получение параметров текущего UserContext ...
             try
             {
-                var uCont = DmsResolver.Current.Get<Utilities.UserContexts>().Get(keepAlive: false, restoreToken: false);
+                var uCont = DmsResolver.Current.Get<Utilities.UserContexts>().Get(AsIs: true);
                 user = uCont.User.Name;
                 client = uCont.Client.Code;
             }

@@ -113,7 +113,7 @@ namespace DMS_WebAPI.Utilities
         public bool ExistsUserInClient(AspNetUsers user, int clientId)
         {
             if (user == null) return false;
-            return (GetUserClient(user.Id, clientId) != null);
+            return ExistsUserInClientByUserId(user.Id, clientId);
         }
 
         public FrontAspNetUserClient GetUserClient(string userId, int clientId)
@@ -130,6 +130,11 @@ namespace DMS_WebAPI.Utilities
             var user = GetUser(userName);
 
             return ExistsUserInClient(user, clientId);
+        }
+
+        public bool ExistsUserInClientByUserId(string userId, int clientId)
+        {
+            return (GetUserClient(userId, clientId) != null);
         }
 
         public int GetUserLanguageId(string userName)

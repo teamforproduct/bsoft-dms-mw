@@ -17,11 +17,20 @@ namespace DMS_WebAPI.Utilities
         public int SaveUserContexts(IContext context)
         {
 
+            var list = string.Empty;
+
+            try
+            {
+                list = string.Join(",", context.CurrentPositionsIdList);
+            }
+            catch { }
+            
+
             var model = new AspNetUserContexts
             {
                 Key = context.Key,
                 ClientId = context.Client.Id,
-                CurrentPositionsIdList = string.Join(",", context.CurrentPositionsIdList),
+                CurrentPositionsIdList = list,
                 UserId = context.User.Id,
                 LastChangeDate = DateTime.UtcNow,
                 SignInId = context.Session.SignInId,

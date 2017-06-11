@@ -7,11 +7,11 @@ namespace DMS_WebAPI.Providers
 {
     public static class StreamBodyExtensions
     {
-        public static async Task<string> GetClientCodeAsync(this Stream Body)
-        {
-            // ВНИМАНИЕ!!! в SoapUI параметр называется так client_id
-            return await GetFromBodyAsync(Body, "client_id"); ;
-        }
+        //public static async Task<string> GetClientCodeAsync(this Stream Body)
+        //{
+        //    // ВНИМАНИЕ!!! в SoapUI параметр называется так client_id
+        //    return await GetFromBodyAsync(Body, "client_id"); ;
+        //}
 
         public static async Task<string> GetFingerprintAsync(this Stream Body)
         {
