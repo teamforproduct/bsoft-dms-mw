@@ -1299,7 +1299,7 @@ namespace BL.Database.Admins
                     TargetPositionId = x.TargetPositionId,
                     TargetPositionName = x.TargetPosition.Name,
                     SubordinationTypeId = (EnumSubordinationTypes)x.SubordinationTypeId,
-                    SubordinationTypeName = x.SubordinationType.Name
+                    SubordinationTypeName = "##l@SubordinationTypes:" + ((EnumSubordinationTypes)x.SubordinationTypeId).ToString() + "@l##"
                 }).ToList();
 
                 transaction.Complete();
@@ -1742,7 +1742,7 @@ namespace BL.Database.Admins
                         ModuleCode = x.Module.Code,
                         ModuleId = x.ModuleId,
                         ModuleOrder = x.Module.Order,
-                        AccessTypeCode = x.AccessType.Code,
+                        AccessTypeCode = ((EnumAccessTypes)x.AccessTypeId).ToString(),
                         AccessTypeOrder = x.AccessType.Order
                     }).ToList();
 
@@ -1758,9 +1758,9 @@ namespace BL.Database.Admins
                     return dbCtx.SystemActionsSet.Select(x => new InternalSystemAction
                     {
                         Id = x.Id,
-                        Description = x.Description,
+                        Code = ((EnumActions)x.Id).ToString(),
+                        Description = "##l@Actions:" + ((EnumActions)x.Id).ToString() + "@l##",
                         PermissionId = x.PermissionId,
-                        Code = x.Code,
                         Category = (EnumActionCategories?)x.CategoryId,
                         ObjectId = (EnumObjects)x.ObjectId
                     }).ToList();
@@ -2022,8 +2022,8 @@ namespace BL.Database.Admins
                     Id = x.Id,
 
                     AccessTypeId = (EnumAccessTypes)x.AccessTypeId,
-                    AccessTypeCode = x.AccessType.Code,
-                    AccessTypeName = x.AccessType.Name,
+                    AccessTypeCode = ((EnumAccessTypes)x.AccessTypeId).ToString(),
+                    AccessTypeName = "##l@SubscriptionStates:" + ((EnumAccessTypes)x.AccessTypeId).ToString() + "@l##",
                     AccessTypeOrder = x.AccessType.Order,
 
                     ModuleId = x.Feature.Module.Id,

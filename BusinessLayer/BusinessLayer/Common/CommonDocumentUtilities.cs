@@ -1125,7 +1125,7 @@ namespace BL.Logic.Common
 
         public static void CorrectModel(IContext context, AddTemplateSendList model)
         {
-            if (model.SendType == EnumSendTypes.SendForInformation || model.SendType == EnumSendTypes.SendForConsideration)
+            if (model.SendType == EnumSendTypes.Information || model.SendType == EnumSendTypes.Consideration)
             {
                 model.DueDay = null;
             }
@@ -1158,7 +1158,7 @@ namespace BL.Logic.Common
             if (isTakeSendList && (document.SendLists?.Any() ?? false))
             {
                 res.AddRange(document.SendLists
-                    .Where(x => x.TargetPositionId.HasValue && x.Stage < sendList.Stage && (x.SendType == EnumSendTypes.SendForSigning || x.SendType == EnumSendTypes.SendForVisaing || x.SendType == EnumSendTypes.SendForАgreement || x.SendType == EnumSendTypes.SendForАpproval))
+                    .Where(x => x.TargetPositionId.HasValue && x.Stage < sendList.Stage && (x.SendType == EnumSendTypes.Signing || x.SendType == EnumSendTypes.Visaing || x.SendType == EnumSendTypes.Аgreement || x.SendType == EnumSendTypes.Аpproval))
                     .Select(x => x.TargetPositionId.Value));
             }
             return res;

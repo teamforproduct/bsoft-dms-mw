@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BL.Model.Enums;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,7 +17,7 @@ namespace BL.Model.SystemCore
         public string Description { get; set; }
         public string Label { get; set; }
         public string Hint { get; set; }
-        public Nullable<int> ValueTypeId { get; set; }
+        public EnumValueTypes? ValueType { get; set; }
         public string ValueTypeCode { get; set; }
         public bool IsMandatory { get; set; }
         public bool IsReadOnly { get; set; }

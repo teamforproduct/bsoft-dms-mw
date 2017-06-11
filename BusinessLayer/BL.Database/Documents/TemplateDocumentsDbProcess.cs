@@ -516,8 +516,8 @@ namespace BL.Database.Documents
                     SelfAttentionDay = x.SelfAttentionDay,
                     SelfDescription = x.SelfDescription,
                     AccessLevel = (EnumAccessLevels)x.AccessLevelId,
-                    SendTypeName = x.SendType.Name,
-                    StageTypeName = x.StageType.Name,
+                    SendTypeName = "##l@SendTypes:" + ((EnumSendTypes)x.SendTypeId).ToString() + "@l##",
+                    StageTypeName = "##l@StageTypes:" + ((EnumStageTypes)x.StageTypeId).ToString() + "@l##",
                     AccessLevelName = "##l@AccessLevels:" + ((EnumAccessLevels)x.AccessLevelId).ToString() + "@l##",
                 }).ToList();
                 CommonQueries.SetAccessGroups(context, res);
@@ -544,8 +544,8 @@ namespace BL.Database.Documents
                             TaskName = x.Task.Task,
                             DueDay = x.DueDay,
                             AccessLevel = (EnumAccessLevels)x.AccessLevelId,
-                            SendTypeName = x.SendType.Name,
-                            StageTypeName = x.StageType.Name,
+                            SendTypeName = "##l@SendTypes:" + ((EnumSendTypes)x.SendTypeId).ToString() + "@l##",
+                            StageTypeName = "##l@StageTypes:" + ((EnumStageTypes)x.StageTypeId).ToString() + "@l##",
                             AccessLevelName = "##l@AccessLevels:" + ((EnumAccessLevels)x.AccessLevelId).ToString() + "@l##",
                             IsAddControl = x.IsAddControl,
                             SelfDueDay = x.SelfDueDay,

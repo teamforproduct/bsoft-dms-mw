@@ -95,7 +95,7 @@ namespace BL.Logic.DocumentCore.SendListCommands
             int? res;
             if (Model.TargetPositionId.HasValue
                 && (Model.DueDate.HasValue || Model.DueDay.HasValue)
-                && (_sendList.SendType == EnumSendTypes.SendForSigning || _sendList.SendType == EnumSendTypes.SendForVisaing || _sendList.SendType == EnumSendTypes.SendForАgreement || _sendList.SendType == EnumSendTypes.SendForАpproval)
+                && (_sendList.SendType == EnumSendTypes.Signing || _sendList.SendType == EnumSendTypes.Visaing || _sendList.SendType == EnumSendTypes.Аgreement || _sendList.SendType == EnumSendTypes.Аpproval)
                 && !_adminProc.VerifySubordination(_context, new VerifySubordination
                 {
                     SubordinationType = EnumSubordinationTypes.Execution,

@@ -16,9 +16,9 @@ namespace BL.Database.DBModel.System
         public string Key { get; set; }
 
         [MaxLength(400)]
-        public string Name { get; set; }
+        public string Name { get; set; }    //TODO DEL!!!
         [MaxLength(2000)]
-        public string Description { get; set; }
+        public string Description { get; set; } //TODO DEL!!!
 
         [MaxLength(2000)]
         public string Value { get; set; }

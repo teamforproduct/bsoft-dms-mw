@@ -32,7 +32,7 @@ namespace BL.Logic.DocumentCore.Commands
                     throw new WrongParameterTypeError();
                 }
                 var model = (InternalDocumentSendList)_param;
-                if (model.SendType != EnumSendTypes.SendForExecution)
+                if (model.SendType != EnumSendTypes.Execution)
                 {
                     throw new WrongParameterTypeError();
                 }

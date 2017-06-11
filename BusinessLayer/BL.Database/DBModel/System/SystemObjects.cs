@@ -19,10 +19,10 @@ namespace BL.Database.DBModel.System
 
         [MaxLength(400)]
         [Index("IX_Code", 1, IsUnique = true)]
-        public string Code { get; set; }
+        public string Code { get; set; }    //TODO DEL!!!
 
         [MaxLength(2000)]
-        public string Description { get; set; }
+        public string Description { get; set; } //TODO DEL!!
 
         public virtual ICollection<SystemFields> Fields { get; set; }
 

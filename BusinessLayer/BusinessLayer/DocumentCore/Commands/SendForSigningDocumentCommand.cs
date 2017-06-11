@@ -32,10 +32,10 @@ namespace BL.Logic.DocumentCore.Commands
                     throw new WrongParameterTypeError();
                 }
                 var model = (InternalDocumentSendList)_param;
-                if (model.SendType != EnumSendTypes.SendForSigning
-                    && model.SendType != EnumSendTypes.SendForVisaing
-                    && model.SendType != EnumSendTypes.SendForАgreement
-                    && model.SendType != EnumSendTypes.SendForАpproval
+                if (model.SendType != EnumSendTypes.Signing
+                    && model.SendType != EnumSendTypes.Visaing
+                    && model.SendType != EnumSendTypes.Аgreement
+                    && model.SendType != EnumSendTypes.Аpproval
                     )
                 {
                     throw new WrongParameterTypeError();

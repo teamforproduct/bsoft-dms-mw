@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.Interfaces;
 using BL.Database.DBModel.System;
+using BL.Model.Enums;
 using BL.Model.SystemCore.InternalModel;
 
 namespace BL.Database.Common
@@ -14,7 +15,7 @@ namespace BL.Database.Common
             {
                 Id = item.Id,
                 CategoryId = (int?) item.Category,
-                Code = item.Code,
+                Code = ((EnumActions)item.Id).ToString(),
                 //Description = item.Description,
                 ObjectId = (int)item.ObjectId,
                 PermissionId = item.PermissionId,

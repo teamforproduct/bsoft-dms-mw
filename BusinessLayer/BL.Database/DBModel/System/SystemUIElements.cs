@@ -20,13 +20,14 @@ namespace BL.Database.DBModel.System
         public string TypeCode { get; set; }
 
         [MaxLength(2000)]
-        public string Description { get; set; }
+        public string Description { get; set; } //TODO DEL!!
 
         [MaxLength(2000)]
-        public string Label { get; set; }
+        public string Label { get; set; }   //TODO DEL!!
 
         [MaxLength(2000)]
-        public string Hint { get; set; }
+        public string Hint { get; set; }    //TODO DEL!!
+
         public int ValueTypeId { get; set; }
         public bool IsMandatory { get; set; }
         public bool IsReadOnly { get; set; }

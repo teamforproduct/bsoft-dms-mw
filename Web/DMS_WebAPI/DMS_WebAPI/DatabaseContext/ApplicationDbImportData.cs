@@ -56,12 +56,12 @@ namespace DMS_WebAPI.DatabaseContext
             // Синхронизировать с DmsDbImportData
             var items = new List<SystemValueTypes>();
 
-            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Text, Code = "text", Description = "text" });
-            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Number, Code = "number", Description = "number" });
-            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Date, Code = "date", Description = "date" });
-            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Api, Code = "api", Description = "api" });
-            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Bool, Code = "bool", Description = "boolean" });
-            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Password, Code = "pass", Description = "password" });
+            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Text, Code = EnumValueTypes.Text.ToString()});
+            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Number, Code = EnumValueTypes.Number.ToString() });
+            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Date, Code = EnumValueTypes.Date.ToString() });
+            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Api, Code = EnumValueTypes.Api.ToString() });
+            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Bool, Code = EnumValueTypes.Bool.ToString() });
+            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Password, Code = EnumValueTypes.Password.ToString() });
 
             return items;
         }
@@ -85,8 +85,8 @@ namespace DMS_WebAPI.DatabaseContext
             return new SystemSettings()
             {
                 Key = id.ToString(),
-                Name = name,
-                Description = description,
+                //Name = name,
+                //Description = description,
                 Value = value,
                 ValueTypeId = (int)valueTypeId,
                 Order = order,

@@ -78,8 +78,8 @@ namespace BL.Logic.DocumentCore
              var sendList = sendListQry.Select(x => new FrontDocumentSendList
                 {
                     DocumentId = x.DocumentId,
-                    SendType = EnumSendTypes.SendForInformation,
-                    SendTypeCode = EnumSendTypes.SendForInformation.ToString(),
+                    SendType = EnumSendTypes.Information,
+                    SendTypeCode = EnumSendTypes.Information.ToString(),
                     SendTypeName = data.SendTypeName,
                     AccessLevel = EnumAccessLevels.PersonallyAndIOAndReferents,
                     AccessGroups = new List<FrontDocumentSendListAccessGroup> { new FrontDocumentSendListAccessGroup

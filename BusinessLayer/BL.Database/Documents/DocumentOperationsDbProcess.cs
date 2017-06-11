@@ -433,10 +433,10 @@ namespace BL.Database.Documents
                                         y.Role.UserRoles.Any(z => z.PositionExecutor.AgentId == context.CurrentAgentId))));
                     var qryActLst = qry.OrderBy(x => x.CategoryId).ThenBy(x => x.Id).Select(x => new InternalSystemActionForDocument
                     {
-                        DocumentAction = (EnumActions)x.Id,
                         Object = (EnumObjects)x.ObjectId,
-                        ActionCode = x.Code,
-                        ObjectCode = x.Object.Code,
+                        ObjectCode = ((EnumObjects)x.ObjectId).ToString(),
+                        DocumentAction = (EnumActions)x.Id,                        
+                        ActionCode = ((EnumActions)x.Id).ToString(),
                         Description = "##l@Actions:" + ((EnumActions)x.Id).ToString() + "@l##",
                         Category = (EnumActionCategories)x.CategoryId,
                         
@@ -783,7 +783,7 @@ namespace BL.Database.Documents
                         OnEventId = x.OnEventId,
                         OffEventId = x.OffEventId,
                         ResultType = (EnumResultTypes)x.ResultTypeId,
-                        ResultTypeName = x.ResultType.Name,
+                        ResultTypeName = "##l@ResultTypes:" + ((EnumResultTypes)x.ResultTypeId).ToString() + "@l##",
                         PlanDueDate = x.PlanDueDate,
                         DueDate = x.DueDate > maxDateTime ? null : x.DueDate,
                         AttentionDate = x.AttentionDate,
@@ -882,8 +882,8 @@ namespace BL.Database.Documents
                     DocumentId = x.DocumentId,
                     SendEventId = x.SendEventId,
                     DoneEventId = x.DoneEventId,
-                    SubscriptionStatesId = x.SubscriptionStateId,
-                    SubscriptionStatesName = x.SubscriptionState.Name,
+                    SubscriptionStates = (EnumSubscriptionStates)x.SubscriptionStateId,
+                    SubscriptionStatesName = "##l@SubscriptionStates:" + ((EnumSubscriptionStates)x.SubscriptionStateId).ToString() + "@l##",
                     IsSuccess = x.SubscriptionState.IsSuccess,
                     Description = x.Description,
 

@@ -107,8 +107,8 @@ namespace BL.Logic.SystemCore
             return DmsDbImportData.GetSystemActions().Select(x => new FrontSystemAction
             {
                 Id = x.Id,
-                Code = x.Code,
-                Description = x.Description,
+                Code = ((EnumActions)x.Id).ToString(),
+                Description = "##l@Actions:" + ((EnumActions)x.Id).ToString() + "@l##",
             }).ToList(); 
         }
 
@@ -116,8 +116,8 @@ namespace BL.Logic.SystemCore
         {
             return DmsDbImportData.GetSystemObjects().Select(x => new FrontSystemObject {
                 Id = x.Id,
-                Code = x.Code,
-                Description = "##l@Objects:"+ x.Code + "@l##",
+                Code = ((EnumObjects)x.Id).ToString(),
+                Description = "##l@Objects:"+ ((EnumObjects)x.Id).ToString() + "@l##",
             }).ToList();
         }
 
@@ -190,8 +190,6 @@ namespace BL.Logic.SystemCore
 
             return (
               (int?)intAction.Category == dbAction.CategoryId
-              & intAction.Code == dbAction.Code
-              & intAction.Description == dbAction.Description
               & (int)intAction.PermissionId == dbAction.PermissionId
               & (int)intAction.ObjectId == dbAction.ObjectId);
 

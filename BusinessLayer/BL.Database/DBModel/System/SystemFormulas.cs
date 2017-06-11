@@ -14,10 +14,10 @@ namespace BL.Database.DBModel.System
         public string Code { get; set; }
 
         [MaxLength(2000)]
-        public string Name { get; set; }
+        public string Name { get; set; }    //TODO DEL!!!
 
         [MaxLength(2000)]
-        public string Description { get; set; }
+        public string Description { get; set; } //TODO DEL!!!
 
         [MaxLength(2000)]
         public string Example { get; set; }

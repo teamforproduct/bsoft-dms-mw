@@ -1010,7 +1010,7 @@ namespace BL.Database.Documents
                             //        : null),
                             DueDate = x.DueDate > maxDateTime ? null : x.DueDate,
                             IsClosed = x.OffEventId != null,
-                            ResultTypeName = x.ResultType.Name,
+                            ResultTypeName = "##l@ResultTypes:" + ((EnumResultTypes)x.ResultTypeId).ToString() + "@l##",
                             AttentionDate = x.AttentionDate,
                             OnEventTypeName = "##l@EventTypes:" + ((EnumEventTypes)x.OnEvent.EventTypeId).ToString() + "@l##",
                             OffEventDate = x.OffEventId.HasValue ? x.OffEvent.CreateDate : (DateTime?)null
@@ -1029,7 +1029,8 @@ namespace BL.Database.Documents
                             ClientId = x.ClientId,
                             EntityTypeId = x.EntityTypeId,
                             DocumentId = x.DocumentId,
-                            SubscriptionStatesName = x.SubscriptionState.Name,
+                            SubscriptionStates = (EnumSubscriptionStates)x.SubscriptionStateId,
+                            SubscriptionStatesName = "##l@SubscriptionStates:" + ((EnumSubscriptionStates)x.SubscriptionStateId).ToString() + "@l##",
                             //DoneEventSourcePositionName =
                             //    x.DoneEventId.HasValue ? x.DoneEvent.SourcePosition.Name : string.Empty,
                             //DoneEventSourcePositionExecutorAgentName = x.DoneEventId.HasValue
@@ -1675,7 +1676,7 @@ namespace BL.Database.Documents
                             .OrderBy(y => y.LastChangeDate).Take(1)
                             .Select(y => y.DoneEvent.Accesses.FirstOrDefault(z => z.AccessTypeId == (int)EnumEventAccessTypes.Source).Position.Department.Index).FirstOrDefault(),
                         DocumentSendListLastAgentExternalFirstSymbolName = x.SendLists
-                            .Where(y => y.SendTypeId == (int)EnumSendTypes.SendForInformationExternal)
+                            .Where(y => y.SendTypeId == (int)EnumSendTypes.InformationExternal)
                             .OrderByDescending(y => y.LastChangeDate).Take(1)
                             .Select(y => y.AccessGroups.FirstOrDefault(z => z.AccessTypeId == (int)EnumEventAccessTypes.Target).Agent.Name).FirstOrDefault()
                     }).FirstOrDefault();

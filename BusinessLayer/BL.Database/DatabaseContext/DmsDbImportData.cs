@@ -523,7 +523,7 @@ namespace BL.Database.DatabaseContext
             {
                 Id = (int)id,
                 Code = id.ToString(),
-                Name = GetLabel("AccessTypes", id.ToString()),
+                //Name = GetLabel("AccessTypes", id.ToString()),
                 Order = order,
             };
         }
@@ -1039,7 +1039,7 @@ namespace BL.Database.DatabaseContext
             {
                 Id = id,
                 ObjectId = (int)objId,
-                Code = code,
+                Code = ((EnumActions)id).ToString(),
                 //Description = description,
                 CategoryId = (int?)category,
                 PermissionId = permissionId
@@ -1145,9 +1145,9 @@ namespace BL.Database.DatabaseContext
                 Code = id.ToString(),
                 ActionId = (int)EnumActions.ModifyDocument,
                 TypeCode = typeCode,
-                Description = descr,
-                Label = label,
-                Hint = hint,
+                //Description = descr,
+                //Label = label,
+                //Hint = hint,
                 ValueTypeId = (int)valType,
                 IsMandatory = false,
                 IsReadOnly = false,
@@ -1162,12 +1162,12 @@ namespace BL.Database.DatabaseContext
             // Синхронизировать с ApplicationDbImportData
             var items = new List<SystemValueTypes>();
 
-            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Text, Code = "text", Description = "text" });
-            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Number, Code = "number", Description = "number" });
-            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Date, Code = "date", Description = "date" });
-            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Api, Code = "api", Description = "api" });
-            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Bool, Code = "bool", Description = "boolean" });
-            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Password, Code = "pass", Description = "password" });
+            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Text, Code = EnumValueTypes.Text.ToString() });
+            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Number, Code = EnumValueTypes.Number.ToString() });
+            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Date, Code = EnumValueTypes.Date.ToString() });
+            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Api, Code = EnumValueTypes.Api.ToString() });
+            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Bool, Code = EnumValueTypes.Bool.ToString() });
+            items.Add(new SystemValueTypes { Id = (int)EnumValueTypes.Password, Code = EnumValueTypes.Password.ToString() });
 
             return items;
         }
@@ -1212,7 +1212,7 @@ namespace BL.Database.DatabaseContext
             {
                 Id = (int)id,
                 Code = id.ToString(),
-                Name = name,
+                //Name = name,
             };
         }
 
@@ -1364,7 +1364,7 @@ namespace BL.Database.DatabaseContext
             return new DictionaryResultTypes()
             {
                 Id = (int)id,
-                Name = name,
+                //Name = name,
                 IsExecute = IsExecute,
             };
         }
@@ -1373,16 +1373,16 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<DictionarySendTypes>();
 
-            items.Add(GetDictionarySendType(10, EnumSendTypes.SendForInformation, isImportant: false, subordinationTypeId: 1));
-            items.Add(GetDictionarySendType(20, EnumSendTypes.SendForConsideration, isImportant: false, subordinationTypeId: 1));
-            items.Add(GetDictionarySendType(30, EnumSendTypes.SendForExecution, isImportant: true, subordinationTypeId: 2));
-            items.Add(GetDictionarySendType(40, EnumSendTypes.SendForАgreement, isImportant: true, subordinationTypeId: 1));
-            items.Add(GetDictionarySendType(50, EnumSendTypes.SendForSigning, isImportant: true, subordinationTypeId: 1));
-            items.Add(GetDictionarySendType(60, EnumSendTypes.SendForVisaing, isImportant: true, subordinationTypeId: 1));
-            items.Add(GetDictionarySendType(70, EnumSendTypes.SendForАpproval, isImportant: true, subordinationTypeId: 1));
+            items.Add(GetDictionarySendType(10, EnumSendTypes.Information, isImportant: false, subordinationTypeId: 1));
+            items.Add(GetDictionarySendType(20, EnumSendTypes.Consideration, isImportant: false, subordinationTypeId: 1));
+            items.Add(GetDictionarySendType(30, EnumSendTypes.Execution, isImportant: true, subordinationTypeId: 2));
+            items.Add(GetDictionarySendType(40, EnumSendTypes.Аgreement, isImportant: true, subordinationTypeId: 1));
+            items.Add(GetDictionarySendType(50, EnumSendTypes.Signing, isImportant: true, subordinationTypeId: 1));
+            items.Add(GetDictionarySendType(60, EnumSendTypes.Visaing, isImportant: true, subordinationTypeId: 1));
+            items.Add(GetDictionarySendType(70, EnumSendTypes.Аpproval, isImportant: true, subordinationTypeId: 1));
             //items.Add(GetDictionarySendType(80, EnumSendTypes.SendForControl, isImportant: true, subordinationTypeId: 2));
             //items.Add(GetDictionarySendType(90, EnumSendTypes.SendForResponsibleExecution, isImportant: true, subordinationTypeId: 2));
-            items.Add(GetDictionarySendType(100, EnumSendTypes.SendForInformationExternal, isImportant: false, subordinationTypeId: 1));
+            items.Add(GetDictionarySendType(100, EnumSendTypes.InformationExternal, isImportant: false, subordinationTypeId: 1));
 
             return items;
         }
@@ -1393,8 +1393,8 @@ namespace BL.Database.DatabaseContext
             return new DictionarySendTypes()
             {
                 Id = (int)id,
-                Code = id.ToString().Replace("SendFor", ""),
-                Name = name,
+                Code = id.ToString(),
+                //Name = name,
                 IsImportant = isImportant,
                 SubordinationTypeId = subordinationTypeId,
                 Order = order,
@@ -1418,7 +1418,7 @@ namespace BL.Database.DatabaseContext
             {
                 Id = (int)id,
                 Code = id.ToString(),
-                Name = name,
+                //Name = name,
             };
         }
 
@@ -1439,7 +1439,7 @@ namespace BL.Database.DatabaseContext
             {
                 Id = (int)id,
                 Code = id.ToString(),
-                Name = name,
+                //Name = name,
             };
         }
 
@@ -1460,7 +1460,7 @@ namespace BL.Database.DatabaseContext
             {
                 Id = (int)id,
                 Code = id.ToString(),
-                Name = name,
+                //Name = name,
             };
         }
 
@@ -1485,7 +1485,7 @@ namespace BL.Database.DatabaseContext
             {
                 Id = (int)id,
                 Code = id.ToString(),
-                Name = name,
+                //Name = name,
                 IsSuccess = isSuccess,
             };
         }
@@ -1537,7 +1537,7 @@ namespace BL.Database.DatabaseContext
             return new DictionaryLinkTypes()
             {
                 Id = (int)id,
-                Name = name,
+                //Name = name,
                 IsImportant = IsImportant,
             };
         }
@@ -1573,8 +1573,8 @@ namespace BL.Database.DatabaseContext
             {
                 Id = (int)id,
                 Code = id.ToString(),
-                Name = name,
-                Description = description,
+                //Name = name,
+                //Description = description,
                 Example = example,
             };
         }
@@ -1599,8 +1599,8 @@ namespace BL.Database.DatabaseContext
             {
                 Id = (int)id,
                 Code = code,
-                Name = name,
-                Description = description,
+                //Name = name,
+                //Description = description,
             };
         }
 
@@ -1623,9 +1623,9 @@ namespace BL.Database.DatabaseContext
             return new SystemFormats()
             {
                 Id = (int)id,
-                Code = code,
-                Name = name,
-                Description = description,
+                Code = id.ToString(),
+                //Name = "##l@SystemFormats:" + (id).ToString() + "@l##",
+                //Description = description,
             };
         }
         public static List<DictionarySettingTypes> GetDictionarySettingTypes()
@@ -1646,7 +1646,7 @@ namespace BL.Database.DatabaseContext
             {
                 Id = (int)id,
                 Code = id.ToString(),
-                Name = name,
+                //Name = name,
                 Order = order,
             };
         }

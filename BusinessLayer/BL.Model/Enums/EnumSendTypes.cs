@@ -4,13 +4,13 @@
     {
         //SendForResponsibleExecution = 10,
         //SendForControl = 20,
-        SendForExecution = 30,
-        SendForInformation = 40,
-        SendForInformationExternal = 45, //Для сведения внешнему агенту
-        SendForConsideration = 50,
-        SendForVisaing = 250,
-        SendForАgreement = 260,
-        SendForАpproval = 270,
-        SendForSigning = 280
+        Execution = 30,
+        Information = 40,
+        InformationExternal = 45, //Для сведения внешнему агенту
+        Consideration = 50,
+        Visaing = 250,
+        Аgreement = 260,
+        Аpproval = 270,
+        Signing = 280
     }
 }

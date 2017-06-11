@@ -114,11 +114,11 @@ namespace BL.Database.Documents
                     DocumentId = x.DocumentId,
                     Stage = x.Stage,
                     SendType = (EnumSendTypes)x.SendTypeId,
-                    SendTypeName = x.SendType.Name,
-                    SendTypeCode = x.SendType.Code,
+                    SendTypeName = "##l@SendTypes:" + ((EnumSendTypes)x.SendTypeId).ToString() + "@l##",
+                    SendTypeCode = ((EnumSendTypes)x.SendTypeId).ToString(),
                     StageType = (EnumStageTypes?)x.StageTypeId,
-                    StageTypeName = x.StageType.Name,
-                    StageTypeCode = x.StageType.Code,
+                    StageTypeName = "##l@StageTypes:" + ((EnumStageTypes)x.StageTypeId).ToString() + "@l##",
+                    StageTypeCode = ((EnumStageTypes)x.StageTypeId).ToString(),
                     SendTypeIsImportant = x.SendType.IsImportant,
                     Task = x.Task.Task,
                     IsAddControl = x.IsAddControl,
@@ -190,11 +190,9 @@ namespace BL.Database.Documents
                     DocumentId = x.DocumentId,
                     Stage = x.Stage,
                     SendType = (EnumSendTypes)x.SendTypeId,
-                    SendTypeName = x.SendType.Name,
-                    SendTypeCode = x.SendType.Code,
+                    SendTypeName = "##l@SendTypes:" + ((EnumSendTypes)x.SendTypeId).ToString() + "@l##",
                     StageType = (EnumStageTypes?)x.StageTypeId,
-                    StageTypeName = x.StageType.Name,
-                    StageTypeCode = x.StageType.Code,
+                    StageTypeName = "##l@StageTypes:" + ((EnumStageTypes)x.StageTypeId).ToString() + "@l##",
                     SendTypeIsImportant = x.SendType.IsImportant,
                     Task = x.Task.Task,
                     IsAddControl = x.IsAddControl,
@@ -250,7 +248,7 @@ namespace BL.Database.Documents
             using (var transaction = Transactions.GetTransaction())
             {
                 InternalAdditinalLinkedDocumentSendListsPrepare res = new InternalAdditinalLinkedDocumentSendListsPrepare();
-                res.SendTypeName = dbContext.DictionarySendTypesSet.Where(x => x.Id == (int)EnumSendTypes.SendForInformation).Select(x => x.Name).FirstOrDefault();
+                res.SendTypeName = "##l@SendTypes:" + EnumSendTypes.Information.ToString() + "@l##";
                 var linkId = CommonQueries.GetDocumentQuery(ctx, new FilterDocument { DocumentId = new List<int> { model.DocumentId }, IsInWork = true })
                     .Select(y => y.LinkId).FirstOrDefault();
                 var qry = dbContext.DocumentAccessesSet.Where(x => x.ClientId == ctx.Client.Id)

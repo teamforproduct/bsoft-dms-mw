@@ -13,7 +13,7 @@ namespace BL.Database.DBModel.System
         public string Code { get; set; }
 
         [MaxLength(2000)]
-        public string Name { get; set; }
+        public string Name { get; set; }    //TODO DEL!!!
 
         public int Order { get; set; }
     }
