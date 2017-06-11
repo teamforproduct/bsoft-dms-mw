@@ -17,19 +17,10 @@ namespace BL.Database.DBModel.Dictionary
         public int Id { get; set; }
 
         [MaxLength(400)]
-        [Index("IX_Code", 1, IsUnique = true)]
         public string Code { get; set; }
 
         [MaxLength(400)]
-        [Index("IX_Name", 1, IsUnique = true)]
-        public string Name { get; set; }    //TODO DEL!!!
-
-        [MaxLength(400)]
         public string Suffix { get; set; }
-
-        [MaxLength(400)]
-        public string Description { get; set; } //TODO DEL!!!
-
         public bool IsActive { get; set; }
 
         [ForeignKey("PositionExecutorTypeId")]

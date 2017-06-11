@@ -24,8 +24,6 @@ namespace DMS_WebAPI.Utilities
                         Key = model.Key,
                         Value = model.Value,
                         ValueTypeId = (int)model.ValueType,
-                        Name = model.Name,
-                        Description = model.Description,
                         Order = model.Order,
                     };
                     dbContext.SystemSettingsSet.Add(nsett);
@@ -73,10 +71,10 @@ namespace DMS_WebAPI.Utilities
                 var res = qry.Select(x => new InternalGeneralSetting
                 {
                     Key = x.Key,
-                    Name = x.Name,
+                    Name = "##l@SystemSettings:" + x.Key + "@l##",
+                    Description = "##l@SystemSettings:" + x.Key + ".Description@l##",
                     Value = x.Value,
                     ValueType = (EnumValueTypes)x.ValueTypeId,
-                    Description = x.Description,
                     Order = x.Order
                 }).ToList();
 

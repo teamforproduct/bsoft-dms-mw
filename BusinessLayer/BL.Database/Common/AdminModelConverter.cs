@@ -16,8 +16,7 @@ namespace BL.Database.Common
             return item == null ? null : new AdminRoleTypes
             {
                 Id = item.Id,
-                Code = item.Code,
-                Name = item.Name
+                Code = ((EnumRoleTypes)item.Id).ToString(),
             };
         }
         public static AdminRoles GetDbRole(IContext context, InternalAdminRole item)

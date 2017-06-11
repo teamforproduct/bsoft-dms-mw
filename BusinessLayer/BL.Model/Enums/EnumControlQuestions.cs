@@ -1,6 +1,6 @@
 ﻿namespace BL.Model.Enums
 {
-    public enum EnumControlQuestion
+    public enum EnumControlQuestions
     {
         /// <summary>
         /// Фамилия вашего любимого музыканта

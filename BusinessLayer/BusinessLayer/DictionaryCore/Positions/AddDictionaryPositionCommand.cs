@@ -47,10 +47,10 @@ namespace BL.Logic.DictionaryCore
                 { SetAllSubordinations(new SetSubordinations { IsChecked = true, PositionId = model.Id, SubordinationTypeId = EnumSubordinationTypes.Informing }); }
 
                 // базовые роли
-                Roles role = Roles.User;
+                EnumRoleTypes role = EnumRoleTypes.User;
                 if (Model.Role != null || Model.Role > 0) role = Model.Role.Value;
 
-                SetDefaultRoles(model.Id, new List<Roles> { role });
+                SetDefaultRoles(model.Id, new List<EnumRoleTypes> { role });
 
                 var frontObj = _dictDb.GetPositions(_context, new FilterDictionaryPosition { IDs = new List<int> { model.Id } }).FirstOrDefault();
                 if (frontObj != null) _logger.Information(_context, null, (int)EnumObjects.DictionaryPositions, (int)CommandType, frontObj.Id, frontObj);
@@ -76,7 +76,7 @@ namespace BL.Logic.DictionaryCore
             _adminService.ExecuteAction(EnumActions.SetAllSubordination, _context, model);
         }
 
-        private void SetDefaultRoles(int positionId, List<Roles> list)
+        private void SetDefaultRoles(int positionId, List<EnumRoleTypes> list)
         {
             var model = new SetAdminPositionRole() { IsChecked = true };
 

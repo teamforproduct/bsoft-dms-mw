@@ -30,8 +30,8 @@ namespace BL.Database.DatabaseContext
         public static List<AdminRolePermissions> GetAdminRolePermissions() => systemRolePermissions;
 
         private static void AddPermission(int order, string module, string feature, bool r = true, bool c = true, bool u = true, bool d = true,
-            List<Roles> readRoles = null, List<Roles> createRoles = null,
-            List<Roles> updateRoles = null, List<Roles> deleteRoles = null)
+            List<EnumRoleTypes> readRoles = null, List<EnumRoleTypes> createRoles = null,
+            List<EnumRoleTypes> updateRoles = null, List<EnumRoleTypes> deleteRoles = null)
         {
             var m = systemModules.Where(x => x.Code == module).FirstOrDefault();
 
@@ -84,408 +84,408 @@ namespace BL.Database.DatabaseContext
             systemRolePermissions.Clear();
 
             AddPermission(100, Modules.Org, Features.Info,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg }
                 );
             AddPermission(110, Modules.Org, Features.Addresses,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg }
                 );
             AddPermission(120, Modules.Org, Features.Contacts,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg }
                 );
             AddPermission(200, Modules.Department, Features.Info,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg }
                 );
             AddPermission(210, Modules.Department, Features.Admins, u: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg }
                 );
             AddPermission(300, Modules.Position, Features.Info,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments }
                 );
             AddPermission(310, Modules.Position, Features.SendRules, c: false, d: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments }
                 );
             AddPermission(320, Modules.Position, Features.Executors,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments }
                 );
             AddPermission(330, Modules.Position, Features.Roles, c: false, d: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments }
                 );
             AddPermission(340, Modules.Position, Features.Journals, c: false, d: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments }
                 );
             AddPermission(350, Modules.Position, Features.DocumentAccesses, r: false, c: false, d: false,
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.DocumAccess }
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.DocumAccess }
                 );
 
 
             AddPermission(400, Modules.Journal, Features.Info,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementJournals, Roles.ManagementDocumDictionaries },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementJournals, Roles.ManagementDocumDictionaries },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementJournals, Roles.ManagementDocumDictionaries },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementJournals, Roles.ManagementDocumDictionaries }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementJournals, EnumRoleTypes.ManagementDocumDictionaries },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementJournals, EnumRoleTypes.ManagementDocumDictionaries },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementJournals, EnumRoleTypes.ManagementDocumDictionaries },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementJournals, EnumRoleTypes.ManagementDocumDictionaries }
                 );
             AddPermission(410, Modules.Journal, Features.Positions, c: false, d: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementJournals, Roles.ManagementDocumDictionaries },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementJournals, Roles.ManagementDocumDictionaries }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementJournals, EnumRoleTypes.ManagementDocumDictionaries },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementJournals, EnumRoleTypes.ManagementDocumDictionaries }
                 );
 
             AddPermission(500, Modules.Templates, Features.Info,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries }
                 );
             AddPermission(510, Modules.Templates, Features.Tasks,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries }
                 );
             AddPermission(520, Modules.Templates, Features.Files,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries }
                 );
             AddPermission(530, Modules.Templates, Features.Papers,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries }
                 );
             AddPermission(540, Modules.Templates, Features.Plan,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries }
                 );
             AddPermission(550, Modules.Templates, Features.SignLists,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries }
                 );
             AddPermission(560, Modules.Templates, Features.AccessList, u: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries }
                 );
             AddPermission(570, Modules.Templates, Features.Accesses, u: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries }
                 );
 
             AddPermission(600, Modules.DocumentType, Features.Info,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries }
                 );
             AddPermission(610, Modules.DocumentType, Features.Parameters,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries }
                 );
 
             AddPermission(700, Modules.Role, Features.Info,
-                readRoles: new List<Roles> { Roles.Admin },
-                createRoles: new List<Roles> { Roles.Admin },
-                updateRoles: new List<Roles> { Roles.Admin },
-                deleteRoles: new List<Roles> { Roles.Admin }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin }
                 );
             AddPermission(710, Modules.Role, Features.Permissions, c: false, d: false,
-                readRoles: new List<Roles> { Roles.Admin },
-                updateRoles: new List<Roles> { Roles.Admin}
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin}
                 );
             AddPermission(720, Modules.Role, Features.Employees, c: false, u: false, d: false,
-                readRoles: new List<Roles> { Roles.Admin }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin }
                 );
             AddPermission(730, Modules.Role, Features.Positions, c: false, u: false, d: false,
-                readRoles: new List<Roles> { Roles.Admin }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin }
                 );
 
 
             AddPermission(800, Modules.Employee, Features.Info,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementEmployees },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementEmployees },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementEmployees },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementEmployees }
                 );
             AddPermission(810, Modules.Employee, Features.Assignments,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementEmployees },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementEmployees },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementEmployees },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementEmployees }
                 );
             AddPermission(820, Modules.Employee, Features.Roles, c: false, d: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementEmployees },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementEmployees }
                 );
             AddPermission(830, Modules.Employee, Features.Passport, c: false, d: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementEmployees },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementEmployees }
                 );
             AddPermission(840, Modules.Employee, Features.Addresses,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementEmployees },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementEmployees },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementEmployees },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementEmployees }
                 );
             AddPermission(850, Modules.Employee, Features.Contacts,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementOrg, Roles.ManagementDepartments, Roles.ManagementEmployees }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementEmployees },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementEmployees },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementEmployees },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementOrg, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementEmployees }
                 );
 
             AddPermission(860, Modules.Employee, Features.AddInOrg, r: false, u: false, d: false,
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementEmployees, Roles.ManagementDepartments, Roles.ManagementOrg }
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementEmployees, EnumRoleTypes.ManagementDepartments, EnumRoleTypes.ManagementOrg }
                 );
 
             AddPermission(900, Modules.Company, Features.Info,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents }
                 );
             AddPermission(910, Modules.Company, Features.ContactPersons,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents, Roles.ManagementContactPersons },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents, Roles.ManagementContactPersons },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents, Roles.ManagementContactPersons },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents, Roles.ManagementContactPersons }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents, EnumRoleTypes.ManagementContactPersons },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents, EnumRoleTypes.ManagementContactPersons },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents, EnumRoleTypes.ManagementContactPersons },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents, EnumRoleTypes.ManagementContactPersons }
                 );
             AddPermission(920, Modules.Company, Features.Addresses,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents }
                 );
             AddPermission(930, Modules.Company, Features.Contacts,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents }
                 );
             AddPermission(940, Modules.Company, Features.Accounts,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents }
                 );
 
 
             AddPermission(1000, Modules.Person, Features.Info,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents }
                 );
             AddPermission(1010, Modules.Person, Features.Passport, c: false, d: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents }
                 );
             AddPermission(1020, Modules.Person, Features.Addresses,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents }
                 );
             AddPermission(1030, Modules.Person, Features.Contacts,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents }
                 );
 
             AddPermission(1110, Modules.Bank, Features.Info,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents }
                 );
             AddPermission(1120, Modules.Bank, Features.Addresses,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents }
                 );
             AddPermission(1130, Modules.Bank, Features.Contacts,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementAgents }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAgents }
                 );
 
             AddPermission(1200, Modules.Tags, Features.Info,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries }
                 );
 
             AddPermission(1300, Modules.SendList, Features.Info,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementDepartments },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementDepartments },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementDepartments },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementDepartments }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries, EnumRoleTypes.ManagementDepartments },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries, EnumRoleTypes.ManagementDepartments },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries, EnumRoleTypes.ManagementDepartments },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries, EnumRoleTypes.ManagementDepartments }
                 );
             AddPermission(1310, Modules.SendList, Features.Contents,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementDepartments },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementDepartments },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementDepartments },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementDepartments }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries, EnumRoleTypes.ManagementDepartments },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries, EnumRoleTypes.ManagementDepartments },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries, EnumRoleTypes.ManagementDepartments },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries, EnumRoleTypes.ManagementDepartments }
                 );
 
             AddPermission(1400, Modules.ContactType, Features.Info,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementAgents, Roles.ManagementEmployees },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementAgents, Roles.ManagementEmployees },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementAgents, Roles.ManagementEmployees },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementAgents, Roles.ManagementEmployees }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries, EnumRoleTypes.ManagementAgents, EnumRoleTypes.ManagementEmployees },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries, EnumRoleTypes.ManagementAgents, EnumRoleTypes.ManagementEmployees },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries, EnumRoleTypes.ManagementAgents, EnumRoleTypes.ManagementEmployees },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries, EnumRoleTypes.ManagementAgents, EnumRoleTypes.ManagementEmployees }
                 );
             AddPermission(1410, Modules.AddressType, Features.Info,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementAgents, Roles.ManagementEmployees },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementAgents, Roles.ManagementEmployees },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementAgents, Roles.ManagementEmployees },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries, Roles.ManagementAgents, Roles.ManagementEmployees }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries, EnumRoleTypes.ManagementAgents, EnumRoleTypes.ManagementEmployees },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries, EnumRoleTypes.ManagementAgents, EnumRoleTypes.ManagementEmployees },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries, EnumRoleTypes.ManagementAgents, EnumRoleTypes.ManagementEmployees },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries, EnumRoleTypes.ManagementAgents, EnumRoleTypes.ManagementEmployees }
                 );
 
             AddPermission(1500, Modules.Auditlog, Features.Info, c: false, u: false, d: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.Auditlog }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.Auditlog }
                 );
 
             AddPermission(1600, Modules.Auth, Features.Info, c: false, d: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementAuth, Roles.ManagementDepartments },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementAuth, Roles.ManagementDepartments }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAuth, EnumRoleTypes.ManagementDepartments },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementAuth, EnumRoleTypes.ManagementDepartments }
                 );
             AddPermission(1610, Modules.Settings, Features.Info, c: false, d: false,
-                readRoles: new List<Roles> { Roles.Admin },
-                updateRoles: new List<Roles> { Roles.Admin }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin }
                 );
             AddPermission(1620, Modules.CustomDictionaries, Features.Info,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries }
                 );
             AddPermission(1630, Modules.CustomDictionaries, Features.Contents,
-                readRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                createRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.ManagementDocumDictionaries }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.ManagementDocumDictionaries }
                 );
 
             AddPermission(1700, Modules.Tools, Features.Info, r: false, u: false, d: false,
-                createRoles: new List<Roles> { Roles.Admin }
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin }
                 );
 
             AddPermission(2000, Modules.Documents, Features.Info,
-                readRoles: new List<Roles> { Roles.Admin, Roles.User, Roles.Viewer },
-                createRoles: new List<Roles> { Roles.Admin, Roles.User },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.User },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.User }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User, EnumRoleTypes.Viewer },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User }
                 );
             AddPermission(2010, Modules.Documents, Features.Files,
-                readRoles: new List<Roles> { Roles.Admin, Roles.User, Roles.Viewer },
-                createRoles: new List<Roles> { Roles.Admin, Roles.User },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.User },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.User }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User, EnumRoleTypes.Viewer },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User }
                 );
             AddPermission(2020, Modules.Documents, Features.Papers,
-                readRoles: new List<Roles> { Roles.Admin, Roles.DocumPapers, Roles.User, Roles.Viewer },
-                createRoles: new List<Roles> { Roles.Admin, Roles.DocumPapers, Roles.User },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.DocumPapers, Roles.User },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.DocumPapers, Roles.User }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.DocumPapers, EnumRoleTypes.User, EnumRoleTypes.Viewer },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.DocumPapers, EnumRoleTypes.User },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.DocumPapers, EnumRoleTypes.User },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.DocumPapers, EnumRoleTypes.User }
                 );
 
             AddPermission(2040, Modules.Documents, Features.Tasks,
-                readRoles: new List<Roles> { Roles.Admin, Roles.User, Roles.Viewer },
-                createRoles: new List<Roles> { Roles.Admin, Roles.User },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.User },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.User }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User, EnumRoleTypes.Viewer },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User }
                 );
             AddPermission(2050, Modules.Documents, Features.AccessList, u: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.User, Roles.Viewer },
-                createRoles: new List<Roles> { Roles.Admin, Roles.User },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.User },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.User }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User, EnumRoleTypes.Viewer },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User }
                 );
             AddPermission(2060, Modules.Documents, Features.Plan,
-                readRoles: new List<Roles> { Roles.Admin, Roles.User, Roles.Viewer },
-                createRoles: new List<Roles> { Roles.Admin, Roles.User },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.User },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.User }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User, EnumRoleTypes.Viewer },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User }
                 );
             AddPermission(2070, Modules.Documents, Features.Tags, u: false, d: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.User, Roles.Viewer },
-                createRoles: new List<Roles> { Roles.Admin, Roles.User }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User, EnumRoleTypes.Viewer },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User }
                 );
             AddPermission(2080, Modules.Documents, Features.Links, u: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.User, Roles.Viewer },
-                createRoles: new List<Roles> { Roles.Admin, Roles.User },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.User }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User, EnumRoleTypes.Viewer },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User }
                 );
             AddPermission(2090, Modules.Documents, Features.Favourite, r: false, c: false, d: false,
-                updateRoles: new List<Roles> { Roles.Admin, Roles.User, Roles.Viewer }
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User, EnumRoleTypes.Viewer }
                 );
 
             AddPermission(2110, Modules.Documents, Features.Events, d: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.DocumActions, Roles.User, Roles.Viewer },
-                createRoles: new List<Roles> { Roles.Admin, Roles.DocumActions, Roles.User },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.DocumActions, Roles.User }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.DocumActions, EnumRoleTypes.User, EnumRoleTypes.Viewer },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.DocumActions, EnumRoleTypes.User },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.DocumActions, EnumRoleTypes.User }
                 );
             AddPermission(2120, Modules.Documents, Features.Waits, d: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.DocumWaits, Roles.User, Roles.Viewer },
-                createRoles: new List<Roles> { Roles.Admin, Roles.DocumWaits, Roles.User },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.DocumWaits, Roles.User }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.DocumWaits, EnumRoleTypes.User, EnumRoleTypes.Viewer },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.DocumWaits, EnumRoleTypes.User },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.DocumWaits, EnumRoleTypes.User }
                 );
             AddPermission(2130, Modules.Documents, Features.Signs, d: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.DocumWaits, Roles.User, Roles.Viewer },
-                createRoles: new List<Roles> { Roles.Admin, Roles.DocumWaits, Roles.User },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.DocumWaits, Roles.User }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.DocumWaits, EnumRoleTypes.User, EnumRoleTypes.Viewer },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.DocumWaits, EnumRoleTypes.User },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.DocumWaits, EnumRoleTypes.User }
                 );
             AddPermission(2150, Modules.Documents, Features.WorkGroups, c: false, u: false, d: false,
-                readRoles: new List<Roles> { Roles.Admin, Roles.User, Roles.Viewer }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User, EnumRoleTypes.Viewer }
                 );
             AddPermission(2190, Modules.Documents, Features.SavedFilters,
-                readRoles: new List<Roles> { Roles.Admin, Roles.User, Roles.Viewer },
-                createRoles: new List<Roles> { Roles.Admin, Roles.User },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.User },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.User }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User, EnumRoleTypes.Viewer },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.User }
                 );
 
             AddPermission(2200, Modules.PaperList, Features.Info,
-                readRoles: new List<Roles> { Roles.Admin, Roles.DocumPapers, Roles.User, Roles.Viewer },
-                createRoles: new List<Roles> { Roles.Admin, Roles.DocumPapers, Roles.User },
-                updateRoles: new List<Roles> { Roles.Admin, Roles.DocumPapers, Roles.User },
-                deleteRoles: new List<Roles> { Roles.Admin, Roles.DocumPapers, Roles.User }
+                readRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.DocumPapers, EnumRoleTypes.User, EnumRoleTypes.Viewer },
+                createRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.DocumPapers, EnumRoleTypes.User },
+                updateRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.DocumPapers, EnumRoleTypes.User },
+                deleteRoles: new List<EnumRoleTypes> { EnumRoleTypes.Admin, EnumRoleTypes.DocumPapers, EnumRoleTypes.User }
                 );
 
 
@@ -1073,35 +1073,34 @@ namespace BL.Database.DatabaseContext
         {
             var items = new List<AdminRoleTypes>();
 
-            items.Add(GetAdminRoleType(Roles.Admin));
-            items.Add(GetAdminRoleType(Roles.User));
-            items.Add(GetAdminRoleType(Roles.Viewer));
-            items.Add(GetAdminRoleType(Roles.Auditlog));
-            items.Add(GetAdminRoleType(Roles.DocumAccess));
-            items.Add(GetAdminRoleType(Roles.DocumActions));
-            items.Add(GetAdminRoleType(Roles.DocumPapers));
-            items.Add(GetAdminRoleType(Roles.DocumSign));
-            items.Add(GetAdminRoleType(Roles.DocumWaits));
-            items.Add(GetAdminRoleType(Roles.ManagementAgents));
-            items.Add(GetAdminRoleType(Roles.ManagementAuth));
-            items.Add(GetAdminRoleType(Roles.ManagementContactPersons));
-            items.Add(GetAdminRoleType(Roles.ManagementDocumDictionaries));
-            items.Add(GetAdminRoleType(Roles.ManagementEmployees));
-            items.Add(GetAdminRoleType(Roles.ManagementJournals));
-            items.Add(GetAdminRoleType(Roles.ManagementOrg));
-            items.Add(GetAdminRoleType(Roles.ManagementDepartments));
+            items.Add(GetAdminRoleType(EnumRoleTypes.Admin));
+            items.Add(GetAdminRoleType(EnumRoleTypes.User));
+            items.Add(GetAdminRoleType(EnumRoleTypes.Viewer));
+            items.Add(GetAdminRoleType(EnumRoleTypes.Auditlog));
+            items.Add(GetAdminRoleType(EnumRoleTypes.DocumAccess));
+            items.Add(GetAdminRoleType(EnumRoleTypes.DocumActions));
+            items.Add(GetAdminRoleType(EnumRoleTypes.DocumPapers));
+            items.Add(GetAdminRoleType(EnumRoleTypes.DocumSign));
+            items.Add(GetAdminRoleType(EnumRoleTypes.DocumWaits));
+            items.Add(GetAdminRoleType(EnumRoleTypes.ManagementAgents));
+            items.Add(GetAdminRoleType(EnumRoleTypes.ManagementAuth));
+            items.Add(GetAdminRoleType(EnumRoleTypes.ManagementContactPersons));
+            items.Add(GetAdminRoleType(EnumRoleTypes.ManagementDocumDictionaries));
+            items.Add(GetAdminRoleType(EnumRoleTypes.ManagementEmployees));
+            items.Add(GetAdminRoleType(EnumRoleTypes.ManagementJournals));
+            items.Add(GetAdminRoleType(EnumRoleTypes.ManagementOrg));
+            items.Add(GetAdminRoleType(EnumRoleTypes.ManagementDepartments));
 
             return items;
         }
 
-        private static AdminRoleTypes GetAdminRoleType(Roles id)
+        private static AdminRoleTypes GetAdminRoleType(EnumRoleTypes id)
         {
             string name = Labels.Get("Roles", id.ToString());
             return new AdminRoleTypes()
             {
                 Id = (int)id,
                 Code = id.ToString(),
-                Name = name,
             };
         }
 
@@ -1309,7 +1308,6 @@ namespace BL.Database.DatabaseContext
             {
                 Id = (int)id,
                 Code = id.ToString(),
-//                Name = name,
                 SourceDescription = null,
                 TargetDescription = null,
                 ImportanceEventTypeId = (int)importanceEventTypeId,
@@ -1364,7 +1362,7 @@ namespace BL.Database.DatabaseContext
             return new DictionaryResultTypes()
             {
                 Id = (int)id,
-                //Name = name,
+                Code = id.ToString(),
                 IsExecute = IsExecute,
             };
         }
@@ -1537,7 +1535,7 @@ namespace BL.Database.DatabaseContext
             return new DictionaryLinkTypes()
             {
                 Id = (int)id,
-                //Name = name,
+                Code = id.ToString(),
                 IsImportant = IsImportant,
             };
         }

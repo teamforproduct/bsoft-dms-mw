@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.CrossCutting.Interfaces;
+using BL.Model.Enums;
 using BL.Model.SystemCore;
 using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
@@ -25,7 +26,7 @@ namespace DMS_WebAPI.ControllersV3.User
             var user = webService.GetUserById(ctx.User.Id);
             var res = new JsonResult(new FrontAspNetUserControlQuestion
             {
-                Question = user.ControlQuestion?.Name,
+                Question = ((EnumControlQuestions)user.ControlQuestionId).ToString(),
                 QuestionId = user.ControlQuestionId ?? -1,
                 Answer = user.ControlAnswer
             }, this);

@@ -3991,19 +3991,19 @@ namespace BL.Database.Dictionaries
                 //}
 
                 // Условие по Code
-                if (!string.IsNullOrEmpty(filter.Code))
-                {
-                    var filterContains = PredicateBuilder.New<DictionaryDocumentDirections>(false);
-                    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
-                        (current, value) => current.Or(e => e.Code.Contains(value)).Expand());
+                //if (!string.IsNullOrEmpty(filter.Code))
+                //{
+                //    var filterContains = PredicateBuilder.New<DictionaryDocumentDirections>(false);
+                //    filterContains = CommonFilterUtilites.GetWhereExpressions(filter.Code).Aggregate(filterContains,
+                //        (current, value) => current.Or(e => e.Code.Contains(value)).Expand());
 
-                    qry = qry.Where(filterContains);
-                }
+                //    qry = qry.Where(filterContains);
+                //}
 
-                if (!string.IsNullOrEmpty(filter.CodeExact))
-                {
-                    qry = qry.Where(x => x.Code == filter.CodeExact);
-                }
+                //if (!string.IsNullOrEmpty(filter.CodeExact))
+                //{
+                //    qry = qry.Where(x => x.Code == filter.CodeExact);
+                //}
             }
             return qry;
         }

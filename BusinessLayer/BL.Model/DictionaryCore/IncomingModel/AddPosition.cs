@@ -50,7 +50,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         public int Order { get; set; }
 
         [IgnoreDataMember]
-        public Roles? Role { get; set; }
+        public EnumRoleTypes? Role { get; set; }
 
     }
 }

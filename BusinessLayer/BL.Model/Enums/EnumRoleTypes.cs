@@ -1,6 +1,6 @@
 ﻿namespace BL.Model.Enums
 {
-    public enum Roles
+    public enum EnumRoleTypes
     {
 
         /// <summary>

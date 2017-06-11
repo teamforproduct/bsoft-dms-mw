@@ -55,7 +55,7 @@ namespace BL.Model.DictionaryCore.IncomingModel
         public int LanguageId { get; set; }
 
         [IgnoreDataMember]
-        public Roles? Role { get; set; }
+        public EnumRoleTypes? Role { get; set; }
 
         /// <summary>
         /// Тип исполнения

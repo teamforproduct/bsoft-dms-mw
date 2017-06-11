@@ -37,15 +37,15 @@ namespace DMS_WebAPI.DatabaseContext
         {
             var items = new List<SystemControlQuestions>();
 
-            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.FavoriteMusician, Name = Labels.Get("ControlQuestions", EnumControlQuestion.FavoriteMusician.ToString()) });
-            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.StreetWhereGrewUp, Name = Labels.Get("ControlQuestions", EnumControlQuestion.StreetWhereGrewUp.ToString()) });
-            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.FavoriteHero, Name = Labels.Get("ControlQuestions", EnumControlQuestion.FavoriteHero.ToString()) });
-            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.GrandmaBirthday, Name = Labels.Get("ControlQuestions", EnumControlQuestion.GrandmaBirthday.ToString()) });
-            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.ParentsIndex, Name = Labels.Get("ControlQuestions", EnumControlQuestion.ParentsIndex.ToString()) });
-            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.FirstCar, Name = Labels.Get("ControlQuestions", EnumControlQuestion.FirstCar.ToString()) });
-            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.FavoriteTeacher, Name = Labels.Get("ControlQuestions", EnumControlQuestion.FavoriteTeacher.ToString()) });
-            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.FavoriteBook, Name = Labels.Get("ControlQuestions", EnumControlQuestion.FavoriteBook.ToString()) });
-            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestion.FavoriteGame, Name = Labels.Get("ControlQuestions", EnumControlQuestion.FavoriteGame.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestions.FavoriteMusician, Code = Labels.Get("ControlQuestions", EnumControlQuestions.FavoriteMusician.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestions.StreetWhereGrewUp, Code = Labels.Get("ControlQuestions", EnumControlQuestions.StreetWhereGrewUp.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestions.FavoriteHero, Code = Labels.Get("ControlQuestions", EnumControlQuestions.FavoriteHero.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestions.GrandmaBirthday, Code = Labels.Get("ControlQuestions", EnumControlQuestions.GrandmaBirthday.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestions.ParentsIndex, Code = Labels.Get("ControlQuestions", EnumControlQuestions.ParentsIndex.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestions.FirstCar, Code = Labels.Get("ControlQuestions", EnumControlQuestions.FirstCar.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestions.FavoriteTeacher, Code = Labels.Get("ControlQuestions", EnumControlQuestions.FavoriteTeacher.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestions.FavoriteBook, Code = Labels.Get("ControlQuestions", EnumControlQuestions.FavoriteBook.ToString()) });
+            items.Add(new SystemControlQuestions { Id = (int)EnumControlQuestions.FavoriteGame, Code = Labels.Get("ControlQuestions", EnumControlQuestions.FavoriteGame.ToString()) });
 
             return items;
         }

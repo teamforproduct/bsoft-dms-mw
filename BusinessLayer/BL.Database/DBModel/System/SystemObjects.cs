@@ -18,11 +18,7 @@ namespace BL.Database.DBModel.System
         public int Id { get; set; }
 
         [MaxLength(400)]
-        [Index("IX_Code", 1, IsUnique = true)]
-        public string Code { get; set; }    //TODO DEL!!!
-
-        [MaxLength(2000)]
-        public string Description { get; set; } //TODO DEL!!
+        public string Code { get; set; }   
 
         public virtual ICollection<SystemFields> Fields { get; set; }
 

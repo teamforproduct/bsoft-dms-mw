@@ -242,6 +242,7 @@
     <Compile Include="DBModel\Dictionary\DictionarySubordinationTypes.cs" />
     <Compile Include="DBModel\Document\DocumentFiles.cs" />
     <Compile Include="DBModel\Document\Documents.cs" />
+    <Compile Include="DBModel\System\SystemMenus.cs" />
     <Compile Include="DBModel\System\SystemUIElements.cs" />
     <Compile Include="DBModel\System\SystemPatterns.cs" />
     <Compile Include="DBModel\System\SystemValueTypes.cs" />
@@ -339,6 +340,10 @@
     <Compile Include="Migrations\201705261136145_DeleteLangStructInClient.cs" />
     <Compile Include="Migrations\201705261136145_DeleteLangStructInClient.Designer.cs">
       <DependentUpon>201705261136145_DeleteLangStructInClient.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201706111613564_RemoveLangLabels.cs" />
+    <Compile Include="Migrations\201706111613564_RemoveLangLabels.Designer.cs">
+      <DependentUpon>201706111613564_RemoveLangLabels.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -460,6 +465,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705261136145_DeleteLangStructInClient.resx">
       <DependentUpon>201705261136145_DeleteLangStructInClient.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706111613564_RemoveLangLabels.resx">
+      <DependentUpon>201706111613564_RemoveLangLabels.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

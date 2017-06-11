@@ -197,6 +197,7 @@ namespace BL.Database.DatabaseContext
         public virtual DbSet<SystemObjects> SystemObjectsSet { get; set; }
         public virtual DbSet<SystemValueTypes> SystemValueTypesSet { get; set; }
         public virtual DbSet<SystemUIElements> SystemUIElementsSet { get; set; }
+        public virtual DbSet<SystemMenus> SystemMenusSet { get; set; }
 
         public virtual DbSet<SystemPatterns> SystemPatternsSet { get; set; }
         public virtual DbSet<SystemFormulas> SystemFormulasSet { get; set; }

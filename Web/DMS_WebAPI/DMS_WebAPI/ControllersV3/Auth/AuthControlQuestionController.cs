@@ -1,5 +1,6 @@
 ﻿using BL.CrossCutting.DependencyInjection;
 using BL.Logic.AdminCore.Interfaces;
+using BL.Model.Enums;
 using BL.Model.Exception;
 using BL.Model.SystemCore;
 using BL.Model.WebAPI.IncomingModel;
@@ -61,7 +62,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
             if (user == null) throw new UserNameOrPasswordIsIncorrect();
 
             var tmpService = DmsResolver.Current.Get<ILanguages>();
-            var qst = tmpService.GetTranslation(user.LanguageId, user.ControlQuestion.Name);
+            var qst = tmpService.GetTranslation(user.LanguageId, ((EnumControlQuestions)user.ControlQuestionId).ToString());
 
             var res = new JsonResult(new { ControlQuestion = qst }, this);
             res.SpentTime = stopWatch;

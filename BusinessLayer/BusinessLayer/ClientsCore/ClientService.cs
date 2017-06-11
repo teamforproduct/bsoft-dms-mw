@@ -204,9 +204,9 @@ namespace BL.Logic.ClientCore
         public void AddClientRoles(IContext context)
         {
 
-            foreach (var role in Enum.GetValues(typeof(Roles)))
+            foreach (var role in Enum.GetValues(typeof(EnumRoleTypes)))
             {
-                _AdminService.AddNamedRole(context, (Roles)role);
+                _AdminService.AddNamedRole(context, (EnumRoleTypes)role);
             }
 
         }

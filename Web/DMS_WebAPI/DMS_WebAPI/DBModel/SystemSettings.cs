@@ -11,12 +11,6 @@ namespace DMS_WebAPI.DBModel
         [Index("IX_Key", IsUnique = true)]
         public string Key { get; set; }
 
-        [MaxLength(400)]
-        public string Name { get; set; }    //TODO DELL!!!
-
-        [MaxLength(2000)]
-        public string Description { get; set; } //TODO DELL!!!
-
         [MaxLength(2000)]
         public string Value { get; set; }
         public int ValueTypeId { get; set; }

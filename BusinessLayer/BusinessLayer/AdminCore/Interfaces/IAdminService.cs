@@ -38,7 +38,7 @@ namespace BL.Logic.AdminCore.Interfaces
 
         #region [+] Roles ...
         //FrontAdminRole GetAdminRole(IContext context, int id);
-        int AddNamedRole(IContext context, Roles role);
+        int AddNamedRole(IContext context, EnumRoleTypes role);
         FrontAdminRole GetAdminRole(IContext context, int id);
         IEnumerable<ListItem> GetListRoles(IContext context, FilterAdminRole filter, UIPaging paging);
         IEnumerable<FrontAdminRole> GetAdminRoles(IContext context, FilterAdminRole filter);

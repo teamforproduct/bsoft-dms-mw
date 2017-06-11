@@ -145,7 +145,7 @@ namespace BL.Logic.AdminCore
             return _adminDb.GetRoles(context, filter);
         }
 
-        public int AddNamedRole(IContext context, Roles roleTypeId)
+        public int AddNamedRole(IContext context, EnumRoleTypes roleTypeId)
         {
             int roleId = 0;
 

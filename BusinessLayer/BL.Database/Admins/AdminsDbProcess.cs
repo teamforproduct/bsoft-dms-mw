@@ -545,13 +545,13 @@ namespace BL.Database.Admins
                     Where(x => x.Id == id).
                     AsQueryable();
 
-                var res = qry.Select(x => x.RoleType.Code).FirstOrDefault();
+                var res = qry.Select(x => x.RoleTypeId).FirstOrDefault();
                 transaction.Complete();
-                return res;
+                return ((EnumRoleTypes)res).ToString();
             }
         }
 
-        public int GetRoleByCode(IContext ctx, Roles item)
+        public int GetRoleByCode(IContext ctx, EnumRoleTypes item)
         {
             var dbContext = ctx.DbContext as DmsContext;
             using (var transaction = Transactions.GetTransaction())
@@ -559,7 +559,7 @@ namespace BL.Database.Admins
                 // Для заводских ролей отношение к типам ролей 1:1
                 var qry = dbContext.AdminRolesSet.
                     Where(x => x.ClientId == ctx.Client.Id).
-                    Where(x => x.RoleType.Code == item.ToString()).
+                    Where(x => x.RoleTypeId == (int)item).
                     AsQueryable();
 
                 var res = qry.Select(x => x.Id).FirstOrDefault();
@@ -1303,7 +1303,7 @@ namespace BL.Database.Admins
                     TargetPositionId = x.TargetPositionId,
                     TargetPositionName = x.TargetPosition.Name,
                     SubordinationTypeId = (EnumSubordinationTypes)x.SubordinationTypeId,
-                    SubordinationTypeName = "##l@SubordinationTypes:" + ((EnumSubordinationTypes)x.SubordinationTypeId).ToString() + "@l##"
+                    SubordinationTypeName = "##l@SubordinationTypes." + ((EnumSubordinationTypes)x.SubordinationTypeId).ToString() + "@l##"
                 }).ToList();
 
                 transaction.Complete();
@@ -1763,7 +1763,7 @@ namespace BL.Database.Admins
                     {
                         Id = x.Id,
                         Code = ((EnumActions)x.Id).ToString(),
-                        Description = "##l@Actions:" + ((EnumActions)x.Id).ToString() + "@l##",
+                        Description = "##l@Actions." + ((EnumActions)x.Id).ToString() + "@l##",
                         PermissionId = x.PermissionId,
                         Category = (EnumActionCategories?)x.CategoryId,
                         ObjectId = (EnumObjects)x.ObjectId

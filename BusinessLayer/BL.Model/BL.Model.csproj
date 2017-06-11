@@ -186,6 +186,7 @@
     <Compile Include="Enums\EnumEventAccessGroupsTypes.cs" />
     <Compile Include="Enums\EnumEventAccessTypes.cs" />
     <Compile Include="Enums\EnumEntityTypes.cs" />
+    <Compile Include="Enums\EnumMenuTypes.cs" />
     <Compile Include="Enums\EnumSettingTypes.cs" />
     <Compile Include="Enums\EnumGeneralSettings.cs" />
     <Compile Include="Enums\EnumUIElements.cs" />
@@ -216,9 +217,9 @@
     <Compile Include="DocumentCore\FrontModel\FrontTemplateAccess.cs" />
     <Compile Include="DocumentCore\IncomingModel\AddTemplateAccess.cs" />
     <Compile Include="DocumentCore\InternalModel\InternalTemplateAccess.cs" />
-    <Compile Include="Enums\EnumControlQuestion.cs" />
+    <Compile Include="Enums\EnumControlQuestions.cs" />
     <Compile Include="Enums\EnumGroupCountType.cs" />
-    <Compile Include="Enums\EnumDefaultRoles.cs" />
+    <Compile Include="Enums\EnumRoleTypes.cs" />
     <Compile Include="FullTextSearch\EnamFilterType.cs" />
     <Compile Include="FullTextSearch\FullTextDeepUpdateItemQuery.cs" />
     <Compile Include="FullTextSearch\FullTextQuery.cs" />

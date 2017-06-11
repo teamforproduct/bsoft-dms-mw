@@ -8,9 +8,8 @@ namespace DMS_WebAPI.DBModel
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
         
-        [MaxLength(200)]
-        [Index("IX_FileName", 1, IsUnique = true)]
-        public string Name { get; set; }
+        [MaxLength(400)]
+        public string Code { get; set; }
 
     }
 }

@@ -8,13 +8,8 @@ namespace BL.Database.DBModel.Dictionary
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
-        [MaxLength(2000)]
+        [MaxLength(400)]
         public string Code { get; set; }
-
-        [MaxLength(2000)]
-        [Index("IX_Name", 1, IsUnique = true)]
-        public string Name { get; set; }    //TODO DEL!!!
-
         public int Order { get; set; }
         public bool IsImportant { get; set; }
         public int SubordinationTypeId { get; set; }

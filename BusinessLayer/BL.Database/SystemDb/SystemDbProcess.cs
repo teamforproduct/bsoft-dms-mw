@@ -67,10 +67,10 @@ namespace BL.Database.SystemDb
                         (current, value) => current.Or(e => e.Action.ObjectId == value).Expand());
                     qry = qry.Where(filterContains);
                 }
-                if (!string.IsNullOrEmpty(filter.Code))
-                {
-                    qry = qry.Where(x => x.Code.Contains(filter.Code));
-                }
+                //if (!string.IsNullOrEmpty(filter.Code))
+                //{
+                //    qry = qry.Where(x => x.Code.Contains(filter.Code));
+                //}
                 //if (!string.IsNullOrEmpty(filter.ObjectCode))
                 //{
                 //    qry = qry.Where(x => x.Action.Object.Code.Contains(filter.ObjectCode));
@@ -87,9 +87,9 @@ namespace BL.Database.SystemDb
                     ActionCode = ((EnumActions)x.Id).ToString(),
                     Code = x.Code,
                     TypeCode = x.TypeCode,
-                    Label = "##l@UIElements:" + x.Code + "@l##",
-                    Hint = "##l@UIElements:" + x.Code + ".Hint@l##",
-                    Description = "##l@UIElements:" + x.Code + ".Description@l##",
+                    Label = "##l@UIElements." + x.Code + "@l##",
+                    Hint = "##l@UIElements." + x.Code + ".Hint@l##",
+                    Description = "##l@UIElements." + x.Code + ".Description@l##",
                     ValueType = (EnumValueTypes)x.ValueTypeId,
                     ValueTypeCode = ((EnumValueTypes)x.ValueTypeId).ToString(),
                     IsMandatory = x.IsMandatory,
@@ -118,7 +118,7 @@ namespace BL.Database.SystemDb
                 var res = qry.Select(x => new FrontSystemFormat
                 {
                     Id = x.Id,
-                    Code = x.Code,
+                    Code = ((EnumSystemFormats)x.Id).ToString(),
                     Name = "##l@SystemFormats:" + ((EnumSystemFormats)x.Id).ToString() + "@l##",
                     Description = "##l@SystemFormats:" + ((EnumSystemFormats)x.Id).ToString() + ".Description@l##",
                 }).ToList();
@@ -139,7 +139,7 @@ namespace BL.Database.SystemDb
                 var res = qry.Select(x => new FrontSystemFormula
                 {
                     Id = x.Id,
-                    Code = x.Code,
+                    Code = ((EnumSystemFormulas)x.Id).ToString(),
                     Name = "##l@SystemFormulas:" + ((EnumSystemFormulas)x.Id).ToString() + "@l##",
                     Description = "##l@SystemFormulas:" + ((EnumSystemFormulas)x.Id).ToString() + ".Description@l##",
                     Example = x.Example

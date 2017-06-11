@@ -9,24 +9,13 @@ namespace BL.Database.DBModel.System
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int Id { get; set; }
 
-        [Index("IX_ActionCode", 1, IsUnique = true)]
         public int ActionId { get; set; }
 
         [MaxLength(400)]
-        [Index("IX_ActionCode", 2, IsUnique = true)]
         public string Code { get; set; }
 
         [MaxLength(400)]
         public string TypeCode { get; set; }
-
-        [MaxLength(2000)]
-        public string Description { get; set; } //TODO DEL!!
-
-        [MaxLength(2000)]
-        public string Label { get; set; }   //TODO DEL!!
-
-        [MaxLength(2000)]
-        public string Hint { get; set; }    //TODO DEL!!
 
         public int ValueTypeId { get; set; }
         public bool IsMandatory { get; set; }

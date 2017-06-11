@@ -2,6 +2,7 @@
 using BL.CrossCutting.Helpers;
 using BL.Logic.AdminCore.Interfaces;
 using BL.Model.Common;
+using BL.Model.Enums;
 using BL.Model.WebAPI.Filters;
 using BL.Model.WebAPI.FrontModel;
 using BL.Model.WebAPI.IncomingModel;
@@ -416,8 +417,7 @@ namespace DMS_WebAPI.Utilities
                 var items = qry.Select(x => new ListItem
                 {
                     Id = x.Id,
-                    Name = x.Name,
-
+                    Name = ((EnumControlQuestions)x.Id).ToString(),
                 }).ToList();
                 transaction.Complete();
 

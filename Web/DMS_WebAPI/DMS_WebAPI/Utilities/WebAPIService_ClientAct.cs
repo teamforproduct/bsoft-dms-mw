@@ -269,7 +269,7 @@ namespace DMS_WebAPI.Utilities
                     LanguageId = ctx.User.LanguageId,
                     Phone = model.PhoneNumber,
                     Login = model.Email,
-                    Role = Roles.Admin,
+                    Role = EnumRoleTypes.Admin,
                     Password = model.Password,
                     // Создание клиента происходит по факту клика по ссылке в письме, поэтому при создании пользователя подтверждать емаил не нужно
                     EmailConfirmed = true,
