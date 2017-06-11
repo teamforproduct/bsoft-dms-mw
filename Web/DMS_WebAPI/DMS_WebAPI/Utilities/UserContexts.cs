@@ -42,17 +42,14 @@ namespace DMS_WebAPI.Utilities
 
             if (host.Contains("localhost")) return "docum";
 
-            var uri = new Uri(host);
-
             // TODO определить доменное имя 3 уровня
-            return uri.Host.Substring(0, host.IndexOf('.'));
+            return host.Substring(0, host.IndexOf('.'));
         }
 
         /// <summary>
         /// Gets setting value by its name.
         /// </summary>
         /// <param name="currentPositionId"></param>
-        /// <param name="isThrowExeception"></param>
         /// <param name="AsIs"></param>
         /// <returns>Typed setting value.</returns>
         public IContext Get(int? currentPositionId = null, bool AsIs = false)
