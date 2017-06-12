@@ -345,6 +345,10 @@
     <Compile Include="Migrations\201706111613564_RemoveLangLabels.Designer.cs">
       <DependentUpon>201706111613564_RemoveLangLabels.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201706121532185_CategoryIdInMenu.cs" />
+    <Compile Include="Migrations\201706121532185_CategoryIdInMenu.Designer.cs">
+      <DependentUpon>201706121532185_CategoryIdInMenu.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\DataSetCrystalReports.Designer.cs">
@@ -468,6 +472,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201706111613564_RemoveLangLabels.resx">
       <DependentUpon>201706111613564_RemoveLangLabels.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706121532185_CategoryIdInMenu.resx">
+      <DependentUpon>201706121532185_CategoryIdInMenu.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\ReportRegistrationCardIncomingDocument.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

@@ -9,7 +9,8 @@ namespace BL.Database.DBModel.System
         public int Id { get; set; }
         public int MenuTypeId { get; set; }
         public int ActionId { get; set; }
-        public int Order { get; set; }
+        public int? CategoryId { get; set; }
+        public int? Order { get; set; }
         [ForeignKey("ActionId")]
         public virtual SystemActions Action { get; set; }
 
