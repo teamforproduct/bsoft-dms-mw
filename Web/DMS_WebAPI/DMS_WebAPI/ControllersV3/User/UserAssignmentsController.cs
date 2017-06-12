@@ -90,22 +90,20 @@ namespace DMS_WebAPI.ControllersV3.User
         /// <returns></returns>
         [HttpPost]
         [Route(Features.Assignments)]
-        public async Task<IHttpActionResult> Assignments([FromBody]List<int> positionsIdList)
+        public IHttpActionResult Assignments([FromBody]List<int> positionsIdList)
         {
-            if (positionsIdList == null || !positionsIdList.Any()) throw new NobodyIsChosen();
 
-            return await SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                var userContexts = (UserContexts)param;
-                var tmpService = DmsResolver.Current.Get<IAdminService>();
-                tmpService.VerifyAccess(context, new VerifyAccess() { PositionsIdList = positionsIdList });
+            var userContexts = DmsResolver.Current.Get<UserContexts>();
+            var context = userContexts.Get();
 
-                userContexts.SetUserPositions(positionsIdList);
-                //context.CurrentPositionsIdList = positionsIdList;
-                //ctx.CurrentPositions = new List<CurrentPosition>() { new CurrentPosition { CurrentPositionId = positionId } };
+            var tmpService = DmsResolver.Current.Get<IAdminService>();
+            tmpService.VerifyAccess(context, new VerifyAccess() { PositionsIdList = positionsIdList });
 
-                return new JsonResult(null, this);
-            }, DmsResolver.Current.Get<UserContexts>());
+            userContexts.SetUserPositions(positionsIdList);
+            //context.CurrentPositionsIdList = positionsIdList;
+            //ctx.CurrentPositions = new List<CurrentPosition>() { new CurrentPosition { CurrentPositionId = positionId } };
+
+            return new JsonResult(null, this);
         }
 
 

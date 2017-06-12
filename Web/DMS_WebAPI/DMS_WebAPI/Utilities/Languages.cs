@@ -281,11 +281,11 @@ namespace DMS_WebAPI.Utilities
 
             InternalAdminLanguage res = null;
 
-            IContext defContext = null;
+            IAuthContext defContext = null;
 
             try
             {
-                defContext = DmsResolver.Current.Get<UserContexts>().Get(AsIs: true);
+                defContext = DmsResolver.Current.Get<UserContexts>().GetAuthContext(AsIs: true);
             }
             catch { }
 

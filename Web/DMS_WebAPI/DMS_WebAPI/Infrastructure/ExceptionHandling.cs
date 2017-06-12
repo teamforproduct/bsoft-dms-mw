@@ -138,7 +138,7 @@ namespace DMS_WebAPI.Infrastructure
         public static void ReturnExceptionResponse(Exception exception, HttpActionExecutedContext context = null)
         {
             var user = string.Empty;
-            var client = string.Empty;
+            var host = string.Empty;
             var browser = string.Empty;
             var method = string.Empty;
             var body = string.Empty;
@@ -166,6 +166,11 @@ namespace DMS_WebAPI.Infrastructure
             {
                 httpContext.Request.InputStream.Position = 0;
                 body = new System.IO.StreamReader(httpContext.Request.InputStream).ReadToEnd();
+            }
+            catch { }
+            try
+            {
+                host = httpContext.Request.Headers["Host"];
             }
             catch { }
             #endregion
@@ -199,9 +204,8 @@ namespace DMS_WebAPI.Infrastructure
             #region [+] Получение параметров текущего UserContext ...
             try
             {
-                var uCont = DmsResolver.Current.Get<Utilities.UserContexts>().Get(AsIs: true);
+                var uCont = DmsResolver.Current.Get<Utilities.UserContexts>().GetAuthContext(AsIs: true);
                 user = uCont.User.Name;
-                client = uCont.Client.Code;
             }
             catch { }
             #endregion
@@ -214,7 +218,7 @@ namespace DMS_WebAPI.Infrastructure
                 errorMessage += "ERROR!!! - " + DateTime.UtcNow.ToString("dd.MM.yyyy HH:mm:ss") + " UTC\r\n";
 
                 // TODO - USER 
-                errorMessage += $"User: {user}\r\nClient: {client}\r\nMethod: {method}\r\nRequest Body: {body}\r\n{logExpression}Browser: {browser}\r\n";
+                errorMessage += $"User: {user}\r\nHost: {host}\r\nMethod: {method}\r\nRequest Body: {body}\r\n{logExpression}Browser: {browser}\r\n";
 
                 FileLogger.AppendTextToFile(errorMessage, Properties.Settings.Default.ServerPath + "SiteErrors.txt");
             }

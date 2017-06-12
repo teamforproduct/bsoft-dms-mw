@@ -160,10 +160,7 @@ namespace DMS_WebAPI.Utilities
         /// Добавляет к существующему пользовательскому контексту доступные лицензии, указанную базу, профиль пользователя
         /// Добавляет к существующему пользовательскому контексту информации по логу
         /// </summary>
-        /// <param name="key"></param>
         /// <param name="user">Id Web-пользователя</param>
-        /// <param name="clientCode">доменное имя клиента</param>
-        /// <param name="db">new server parameters</param>
         /// <param name="model">SessionEnviroment</param>
         /// <returns></returns>
         /// <exception cref="TokenAlreadyExists"></exception>
@@ -174,9 +171,6 @@ namespace DMS_WebAPI.Utilities
             if (Contains(key)) throw new TokenAlreadyExists();
 
             var intContext = FormContextInternal(key, user);
-
-            // TODO вернуть, когда перейдем к лицензиям
-            //VerifyNumberOfConnectionsByNew(intContext, new List<DatabaseModelForAdminContext> { db });
 
             Add(intContext);
 
