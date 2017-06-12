@@ -28,7 +28,7 @@ namespace DMS_WebAPI.Utilities
 
             var model = new AspNetUserContexts
             {
-                Key = context.Key,
+                Key = context.Session.Key,
                 ClientId = context.Client.Id,
                 CurrentPositionsIdList = list,
                 UserId = context.User.Id,

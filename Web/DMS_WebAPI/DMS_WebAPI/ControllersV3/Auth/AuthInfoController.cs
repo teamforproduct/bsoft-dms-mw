@@ -100,7 +100,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
         //}
 
         /// <summary>
-        /// Высылает письмо для подтверждения email
+        /// Администратор высылает письмо для подтверждения email
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
@@ -146,7 +146,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
         //}
 
         /// <summary>
-        /// Управляет блокировкой пользователя (управляет возможностью войти в систему)
+        /// Управляет блокировкой сотрудника (управляет возможностью войти в систему)
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>

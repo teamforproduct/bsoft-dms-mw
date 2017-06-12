@@ -78,6 +78,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Context\AdminContext.cs" />
+    <Compile Include="Context\AuthContext.cs" />
+    <Compile Include="Context\ClientContext.cs" />
     <Compile Include="CryptographicWorker\CryptoService.cs" />
     <Compile Include="CryptographicWorker\ICryptoService.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
@@ -87,6 +89,9 @@
     <Compile Include="Helpers\CashService\CasheBase.cs" />
     <Compile Include="Helpers\CashService\ICacheService.cs" />
     <Compile Include="Helpers\Labels.cs" />
+    <Compile Include="Interfaces\IClientContext.cs" />
+    <Compile Include="Interfaces\IContextItem.cs" />
+    <Compile Include="Interfaces\IAuthContext.cs" />
     <Compile Include="Interfaces\IConvertToDataSet.cs" />
     <Compile Include="Helpers\ConvertToDataSet.cs" />
     <Compile Include="Helpers\Logger.cs" />
@@ -98,7 +103,7 @@
     <Compile Include="Interfaces\ISettingValue.cs" />
     <Compile Include="Interfaces\ISystemCommand.cs" />
     <Compile Include="Interfaces\ICommand.cs" />
-    <Compile Include="Context\UserContext.cs" />
+    <Compile Include="Context\DefaultContext.cs" />
     <Compile Include="DependencyInjection\CrossCuttingModule.cs" />
     <Compile Include="DependencyInjection\IResolver.cs" />
     <Compile Include="DependencyInjection\NinjectResolver.cs" />

@@ -23,7 +23,7 @@ namespace DMS_WebAPI.Utilities
     /// </summary>
     public class UserContexts //: ICollection<UserContext>
     {
-        private readonly List<UserContext> _cacheContexts = new List<UserContext>();
+        private readonly List<DefaultContext> _cacheContexts = new List<DefaultContext>();
         private const string _TOKEN_KEY = "Authorization";
         private const string _HOST = "Host";
         private const int _TIME_OUT_MIN = 15;
@@ -81,20 +81,51 @@ namespace DMS_WebAPI.Utilities
 
             //VerifyNumberOfConnections(ctx, ctx.Client.Id);
 
-            var ctx = new UserContext(intContext);
+            var ctx = new DefaultContext(intContext);
 
             if (!AsIs) ctx.SetCurrentPosition(currentPositionId);
             if (!AsIs && ctx.User.IsChangePasswordRequired) throw new UserMustChangePassword();
 
             // KeepAlive: Продление жизни пользовательского контекста
-            if (!AsIs) KeepAlive(key);
+            KeepAlive(key);
 
             return ctx;
         }
 
-        private UserContext GetContextInternal(string key)
+
+        /// <summary>
+        /// Gets setting value by its name.
+        /// </summary>
+        /// <param name="AsIs"></param>
+        /// <returns>Typed setting value.</returns>
+        public IAuthContext GetAuthContext( bool AsIs = false)
         {
-            UserContext res = null;
+            string key = CurrentKey;
+
+            // пробую восстановить контекст из базы
+            if (!AsIs && !Contains(key))
+            {
+                Restore(key);
+            }
+
+            if (!Contains(key)) throw new UserUnauthorized();
+
+            var intContext = GetContextInternal(key);
+
+            var ctx = new AuthContext(intContext);
+
+            if (!AsIs && ctx.User.IsChangePasswordRequired) throw new UserMustChangePassword();
+
+            // KeepAlive: Продление жизни пользовательского контекста
+            KeepAlive(key);
+
+            return ctx;
+        }
+
+
+        private DefaultContext GetContextInternal(string key)
+        {
+            DefaultContext res = null;
             locker.EnterReadLock();
             try
             {
@@ -107,7 +138,7 @@ namespace DMS_WebAPI.Utilities
             return res;
         }
 
-        private void Add(UserContext context, bool withLocker = true)
+        private void Add(DefaultContext context, bool withLocker = true)
         {
             if (withLocker) locker.EnterWriteLock();
             try
@@ -136,7 +167,7 @@ namespace DMS_WebAPI.Utilities
         /// <param name="model">SessionEnviroment</param>
         /// <returns></returns>
         /// <exception cref="TokenAlreadyExists"></exception>
-        public UserContext Add(AspNetUsers user, SessionEnviroment model)
+        public DefaultContext Add(AspNetUsers user, SessionEnviroment model)
         {
             var key = model.Session;
 
@@ -156,11 +187,11 @@ namespace DMS_WebAPI.Utilities
 
         }
 
-        private UserContext FormContextInternal(string key, AspNetUsers user)
+        private DefaultContext FormContextInternal(string key, AspNetUsers user)
         {
             var webService = DmsResolver.Current.Get<WebAPIService>();
 
-            var intContext = new UserContext
+            var intContext = new DefaultContext
             {
                 Key = key,
                 User = new User
@@ -410,7 +441,7 @@ namespace DMS_WebAPI.Utilities
             //}
         }
 
-        private void SetClientParms(UserContext intContext, string clientCode)
+        private void SetClientParms(DefaultContext intContext, string clientCode)
         {
             var webService = DmsResolver.Current.Get<WebAPIService>();
 
@@ -435,7 +466,7 @@ namespace DMS_WebAPI.Utilities
             intContext.ClientLicence = webService.GetClientLicenceActive(clientId);
 
 
-            var context = new UserContext(intContext);
+            var context = new DefaultContext(intContext);
             var employee = DmsResolver.Current.Get<IAdminService>().GetEmployeeForContext(context, intContext.User.Id);
 
             if (employee != null)
@@ -526,25 +557,26 @@ namespace DMS_WebAPI.Utilities
         /// Этап №2
         /// Добавляет к существующему пользовательскому контексту список занимаемых должностей и AccessLevel
         /// </summary>
-        /// <param name="token"></param>
         /// <param name="positionsIdList"></param>
-        public void SetUserPositions(string token, List<int> positionsIdList)
+        public void SetUserPositions(List<int> positionsIdList)
         {
-            var intContext = GetContextInternal(token);
+            var key = CurrentKey;
+
+            var intContext = GetContextInternal(key);
             if (intContext == null) throw new UserUnauthorized();
 
             SetUserPositions(intContext, positionsIdList);
 
             SaveInBase(intContext);
 
-            KeepAlive(token);
+            KeepAlive(key);
         }
 
         private void SetUserPositions(IContext intContext, List<int> positionsIdList)
         {
             intContext.CurrentPositionsIdList = positionsIdList;
 
-            var context = new UserContext(intContext);// это необходимо т.к. если несколько сервисов одновременно попытаются установить позиции для одного контекста, то возникнет ошибка. 
+            var context = new DefaultContext(intContext);// это необходимо т.к. если несколько сервисов одновременно попытаются установить позиции для одного контекста, то возникнет ошибка. 
 
             intContext.CurrentPositionsAccessLevel = DmsResolver.Current.Get<IAdminService>().GetCurrentPositionsAccessLevel(context);
             context.CurrentPositionsAccessLevel = intContext.CurrentPositionsAccessLevel;
@@ -582,7 +614,7 @@ namespace DMS_WebAPI.Utilities
             }
         }
 
-        private void WriteSessionLog(UserContext context, SessionEnviroment model, bool SessionRestore = false)
+        private void WriteSessionLog(DefaultContext context, SessionEnviroment model, bool SessionRestore = false)
         {
             var webService = DmsResolver.Current.Get<WebAPIService>();
 
@@ -765,7 +797,7 @@ namespace DMS_WebAPI.Utilities
 
         public void UpdateLanguageId(string userId, int languageId)
         {
-            List<UserContext> contexts;
+            List<DefaultContext> contexts;
             locker.EnterReadLock();
             try
             {
@@ -785,7 +817,7 @@ namespace DMS_WebAPI.Utilities
         /// </summary>
         public void SaveLogContextsLastUsage()
         {
-            List<UserContext> contexts;
+            List<DefaultContext> contexts;
             locker.EnterReadLock();
             try
             {

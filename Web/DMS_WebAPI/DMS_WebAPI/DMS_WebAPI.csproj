@@ -490,6 +490,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="Utilities\CommonTaskInitializer.cs" />
     <Compile Include="Utilities\CommonUtilities.cs" />
+    <Compile Include="Utilities\UserContextsItem.cs" />
     <Compile Include="Utilities\GeneralSettings.cs" />
     <Compile Include="Utilities\GoogleRecapcha.cs" />
     <Compile Include="Utilities\WebAPIDbProcess_Licences.cs" />

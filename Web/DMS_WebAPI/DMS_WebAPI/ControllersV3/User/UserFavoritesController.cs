@@ -104,8 +104,8 @@ namespace DMS_WebAPI.ControllersV3.User
         {
             return await SafeExecuteAsync(ModelState, (context, param) =>
             {
-                var webService = DmsResolver.Current.Get<WebAPIService>();
-                webService.DeleteUserFingerprint(Id);
+                var tmpService = DmsResolver.Current.Get<IDictionaryService>();
+                //tmpService.DeleteUserFav(Id);
                 var tmpItem = new FrontDeleteModel(Id);
                 var res = new JsonResult(tmpItem, this);
                 return res;

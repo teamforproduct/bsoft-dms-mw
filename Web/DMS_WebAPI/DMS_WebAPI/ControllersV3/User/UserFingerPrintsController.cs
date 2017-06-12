@@ -41,7 +41,7 @@ namespace DMS_WebAPI.ControllersV3.User
         public IHttpActionResult Get([FromUri] FilterAspNetUserFingerprint filter)
         {
             //!ASYNC
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().GetAuthContext();
             var webService = DmsResolver.Current.Get<WebAPIService>();
             var user = webService.GetUserById(ctx.User.Id);
 
@@ -78,7 +78,7 @@ namespace DMS_WebAPI.ControllersV3.User
         {
             //!ASYNC
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().GetAuthContext();
             var user = webService.GetUserById(ctx.User.Id);
             model.UserId = user.Id;
             var tmpItem = webService.AddUserFingerprint(model);
@@ -96,7 +96,7 @@ namespace DMS_WebAPI.ControllersV3.User
         {
             //!ASYNC
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().GetAuthContext();
             var user = webService.GetUserById(ctx.User.Id);
             model.UserId = user.Id;
             webService.UpdateUserFingerprint(model);
@@ -113,8 +113,9 @@ namespace DMS_WebAPI.ControllersV3.User
         public IHttpActionResult Delete([FromUri] int Id)
         {
             //!ASYNC
+            var ctx = DmsResolver.Current.Get<UserContexts>().GetAuthContext();
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            webService.DeleteUserFingerprint(Id);
+            webService.DeleteUserFingerprint(Id, ctx.User.Id);
             var tmpItem = new FrontDeleteModel(Id);
             var res = new JsonResult(tmpItem, this);
             return res;
@@ -132,7 +133,7 @@ namespace DMS_WebAPI.ControllersV3.User
         {
             //!ASYNC
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().GetAuthContext();
             var user = webService.GetUserById(ctx.User.Id);
             var res = new JsonResult(user.IsFingerprintEnabled, this);
             return res;
@@ -149,7 +150,7 @@ namespace DMS_WebAPI.ControllersV3.User
         {
             //!ASYNC
             var webService = DmsResolver.Current.Get<WebAPIService>();
-            var ctx = DmsResolver.Current.Get<UserContexts>().Get();
+            var ctx = DmsResolver.Current.Get<UserContexts>().GetAuthContext();
             await webService.ChangeFingerprintEnabled(ctx.User.Id, model.Enabled);
             return new JsonResult(null, this);
         }

@@ -14,7 +14,7 @@ namespace BL.CrossCutting.Context
     /// <summary>
     /// Контекст пользователя - информационный класс, который НЕ должен содержать логику. Просто набор параметров, которые доступны на всех уровнях
     /// </summary>
-    public class UserContext : IContext
+    public class ClientContext : IClientContext
     {
         private bool _isFormed;
         private int? _currentPositionId;
@@ -22,15 +22,15 @@ namespace BL.CrossCutting.Context
         private Dictionary<int, int> _currentPositionsAccessLevel;
 
 
-        public UserContext() { }
+        public ClientContext() { }
         
         /// <summary>
         /// Создает новый контекст пользователя и новое ПОДКЛЮЧЕНИЕ к базе
         /// </summary>
         /// <param name="ctx"></param>
-        public UserContext(IContext ctx)
+        public ClientContext(IClientContext ctx)
         {
-            var def = ctx as UserContext;
+            var def = ctx as ClientContext;
             if (def != null)
             {
                 try
@@ -54,15 +54,7 @@ namespace BL.CrossCutting.Context
                 {
                     CurrentDB = null;
                 }
-                Key = ctx.Key;
                 DbContext = ctx.DbContext;
-                User = new User
-                {
-                   Id = ctx.User.Id,
-                   Name = ctx.User.Name,
-                   IsChangePasswordRequired = ctx.User.IsChangePasswordRequired,
-                   LanguageId = ctx.User.LanguageId,
-                };
                 Employee = new Employee
                 {
                     Id = ctx.Employee.Id,
@@ -74,12 +66,6 @@ namespace BL.CrossCutting.Context
                 {
                     Id = ctx.Client.Id,
                     Code = ctx.Client.Code,
-                };
-                Session = new Session
-                {
-                    Key = ctx.Session.Key,
-                    SignInId = ctx.Session.SignInId,
-                    LastUsage = ctx.Session.LastUsage,
                 };
 
                 ClientLicence = ctx.ClientLicence;
@@ -103,19 +89,10 @@ namespace BL.CrossCutting.Context
             }
         }
 
-        /// <summary>
-        /// Ключ
-        /// </summary>
-        public string Key { get; set; }
-
 
         public Employee Employee { get; set; }
 
         public Client Client { get; set; }
-
-        public User User { get; set; }
-
-        public Session Session { get; set; }
 
         /// <summary>
         ///  Флаг TRUE если контекст сформирован и готов к работе
@@ -223,18 +200,6 @@ namespace BL.CrossCutting.Context
         private DatabaseModel _currentDb;
 
         public IDmsDatabaseContext DbContext { get; set; }
-
-
-        public override int GetHashCode()
-        {
-            return Key.GetHashCode();
-        }
-
-        public override bool Equals(object obj)
-        {
-            UserContext ctx = obj as UserContext;
-            return ctx != null && string.Equals(this.Key, ctx.Key);
-        }
 
     }
 }

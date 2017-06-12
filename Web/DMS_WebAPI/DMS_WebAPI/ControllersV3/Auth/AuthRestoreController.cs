@@ -45,7 +45,7 @@ namespace DMS_WebAPI.ControllersV3.Auth
         }
 
         /// <summary>
-        ///
+        /// Высылает письмо пользователя, который нажал "Забыл пароль"
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>

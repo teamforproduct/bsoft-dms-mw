@@ -71,9 +71,9 @@ namespace DMS_WebAPI.Utilities
             _webDb.UpdateUserFingerprint(model);
         }
 
-        public void DeleteUserFingerprint(int id)
+        public void DeleteUserFingerprint(int id, string userId)
         {
-            _webDb.DeleteUserFingerprints(new FilterAspNetUserFingerprint { IDs = new List<int> { id } });
+            _webDb.DeleteUserFingerprints(new FilterAspNetUserFingerprint { IDs = new List<int> { id } , UserIDs = new List<string> { userId } });
         }
 
         

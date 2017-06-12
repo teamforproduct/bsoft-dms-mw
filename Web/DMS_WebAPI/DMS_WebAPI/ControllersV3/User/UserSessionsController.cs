@@ -28,17 +28,15 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Sessions)]
         [ResponseType(typeof(FrontSystemSession))]
-        public async Task<IHttpActionResult> Get([FromUri]FilterSessionsLog filter, [FromUri]UIPaging paging)
+        public IHttpActionResult Get([FromUri]FilterSessionsLog filter, [FromUri]UIPaging paging)
         {
-            return await SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                if (filter == null) filter = new FilterSessionsLog();
-                filter.UserId = context.User.Id;
-                var webService = DmsResolver.Current.Get<WebAPIService>();
-                var tmpItems = webService.GetSessionLogs(filter, paging);
-                var res = new JsonResult(tmpItems, this);
-                return res;
-            });
+            var ctx = DmsResolver.Current.Get<UserContexts>().GetAuthContext();
+            if (filter == null) filter = new FilterSessionsLog();
+            filter.UserId = ctx.User.Id;
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            var tmpItems = webService.GetSessionLogs(filter, paging);
+            var res = new JsonResult(tmpItems, this);
+            return res;
         }
 
         /// <summary>
@@ -50,18 +48,16 @@ namespace DMS_WebAPI.ControllersV3.User
         [HttpGet]
         [Route(Features.Sessions + "/Current")]
         [ResponseType(typeof(FrontSystemSession))]
-        public async Task<IHttpActionResult> GetCurrent([FromUri]FilterSessionsLog filter, [FromUri]UIPaging paging)
+        public IHttpActionResult GetCurrent([FromUri]FilterSessionsLog filter, [FromUri]UIPaging paging)
         {
-            return await SafeExecuteAsync(ModelState, (context, param) =>
-            {
-                if (filter == null) filter = new FilterSessionsLog();
-                filter.UserId = context.User.Id;
-                filter.IsActive = true;
-                var webService = DmsResolver.Current.Get<WebAPIService>();
-                var tmpItems = webService.GetSessionLogs(filter, paging);
-                var res = new JsonResult(tmpItems, this);
-                return res;
-            });
+            var ctx = DmsResolver.Current.Get<UserContexts>().GetAuthContext();
+            if (filter == null) filter = new FilterSessionsLog();
+            filter.UserId = ctx.User.Id;
+            filter.IsActive = true;
+            var webService = DmsResolver.Current.Get<WebAPIService>();
+            var tmpItems = webService.GetSessionLogs(filter, paging);
+            var res = new JsonResult(tmpItems, this);
+            return res;
         }
 
         /// <summary>
@@ -73,7 +69,7 @@ namespace DMS_WebAPI.ControllersV3.User
         public async Task<IHttpActionResult> KillAll()
         {
             var ctxs = DmsResolver.Current.Get<UserContexts>();
-            var ctx = ctxs.Get();
+            var ctx = ctxs.GetAuthContext();
             ctxs.RemoveByUserId(ctx.User.Id);
             return new JsonResult(null, this);
         }
@@ -87,7 +83,7 @@ namespace DMS_WebAPI.ControllersV3.User
         public async Task<IHttpActionResult> KillAllButThis()
         {
             var ctxs = DmsResolver.Current.Get<UserContexts>();
-            var ctx = ctxs.Get();
+            var ctx = ctxs.GetAuthContext();
             ctxs.RemoveByUserId(ctx.User.Id, true);
             return new JsonResult(null, this);
         }

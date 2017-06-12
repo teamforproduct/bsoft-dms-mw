@@ -215,12 +215,12 @@
             <con:method name="User/Assignments/Available" id="8b982796-c99e-448a-9319-17d7c93fa298" method="GET">
               <con:settings/>
               <con:parameters/>
-              <con:request name="Get User/Assignments/Available" id="f2e938a3-0599-4255-9bfb-77fe665d1214" mediaType="application/json">
-                <con:settings/>
-                <con:endpoint>http://10.88.12.22:80/</con:endpoint>
+              <con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>401</con:status><con:params/><con:element xmlns:ava="http://localhost/api/v3/User/Assignments/Available">ava:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:ava="http://localhost/api/v3/User/Assignments/Available">ava:Response</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Get User/Assignments/Available" id="f2e938a3-0599-4255-9bfb-77fe665d1214" mediaType="application/json">
+                <con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings>
+                <con:endpoint>http://localhost:21182/</con:endpoint>
                 <con:request/>
-                <con:credentials>
-                  <con:authType>No Authorization</con:authType>
+                <con:originalUri>http://localhost/api/v3/User/Assignments/Available</con:originalUri><con:credentials>
+                  <con:selectedAuthProfile>lh docum t@t.t</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType>
                 </con:credentials>
                 <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
                 <con:jmsPropertyConfig/>
@@ -231,14 +231,14 @@
           <con:method name="User/Assignments" id="a00e49a4-0117-46c4-a0c5-adf353ecc14b" method="GET">
             <con:settings/>
             <con:parameters/>
-            <con:request name="Get User/Assignments" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json">
+            <con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>500 401</con:status><con:params/></con:representation><con:request name="Get User/Assignments" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
-              <con:endpoint>http://10.88.12.22:80/</con:endpoint>
+              <con:endpoint>http://localhost:21182/</con:endpoint>
               <con:request/>
-              <con:credentials>
-                <con:authType>No Authorization</con:authType>
+              <con:originalUri>http://localhost/api/v3/User/Assignments</con:originalUri><con:credentials>
+                <con:selectedAuthProfile>lh docum t@t.t</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType>
               </con:credentials>
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
               <con:jmsPropertyConfig/>
@@ -1060,15 +1060,15 @@
               <con:params/>
               <con:element xmlns:add="http://10.88.12.22/api/v3/User/Addresses">add:Response</con:element>
             </con:representation>
-            <con:request name="Get User/Fingerprints" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json">
+            <con:representation type="FAULT"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>401</con:status><con:params/><con:element xmlns:add="http://10.88.12.22/api/v3/User/Addresses">add:Fault</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Get User/Fingerprints" id="7c96d11d-5a28-4eab-83a7-b2e0d4c15de2" mediaType="application/json">
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
-              <con:endpoint>http://10.88.12.22:80/</con:endpoint>
+              <con:endpoint>http://localhost:21182/</con:endpoint>
               <con:request/>
               <con:originalUri>http://10.88.12.22/api/v3/User/Addresses</con:originalUri>
               <con:credentials>
-                <con:selectedAuthProfile>pr docum t@t.t</con:selectedAuthProfile>
+                <con:selectedAuthProfile>lh docum t@t.t</con:selectedAuthProfile>
                 <con:authType>OAuth 2.0</con:authType>
               </con:credentials>
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
@@ -2183,7 +2183,11 @@
             </con:request>
           </con:method>
         </con:resource>
-      </con:resource>
+      <con:resource name="FileBin" path="Files" id="1c183c33-54fd-428d-acb3-098f460a6410">
+          <con:settings/>
+          <con:parameters/>
+          <con:resource name="{Id}" path="{Id}" id="84994be4-955a-47d6-a99e-e9a76337afff"><con:settings/><con:parameters><con:parameter><con:name>Id</con:name><con:value>Id</con:value><con:style>TEMPLATE</con:style><con:default>Id</con:default></con:parameter></con:parameters><con:resource name="File" path="File" id="6e0cdb3d-5ee8-42d6-90d5-9500fd2b5673"><con:settings/><con:parameters/><con:method name="Method 1" id="2e4f91ed-919e-40af-9fc0-a0fdd6a1128d" method="GET"><con:settings/><con:parameters/><con:request name="Request 1" id="3bc69c45-0aff-48a5-8b19-4cb5204e1657" mediaType="application/json"><con:settings/><con:endpoint>http://10.88.12.22:80/</con:endpoint><con:request/><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource><con:resource name="Pdf" path="Pdf" id="6e0cdb3d-5ee8-42d6-90d5-9500fd2b5673"><con:settings/><con:parameters/><con:method name="Method 1" id="2e4f91ed-919e-40af-9fc0-a0fdd6a1128d" method="GET"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType>text/html; charset=utf-8</con:mediaType><con:status>401</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element xmlns:pdf="http://localhost/api/v3/Documents/Files/1246152/Pdf">pdf:Response</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/pdf</con:mediaType><con:status>200</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType xsi:nil="true"/><con:status>0</con:status><con:params/><con:element>data</con:element></con:representation><con:request name="Request 1" id="3bc69c45-0aff-48a5-8b19-4cb5204e1657" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>http://localhost:21182/</con:endpoint><con:request/><con:originalUri>http://localhost/api/v3/Documents/Files/1246152/Pdf</con:originalUri><con:credentials><con:selectedAuthProfile>lh docum t@t.t</con:selectedAuthProfile><con:authType>OAuth 2.0</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="Id" value="1246152" xmlns="http://eviware.com/soapui/config"/></con:parameters></con:request></con:method></con:resource></con:resource>
+        </con:resource></con:resource>
       <con:resource name="List" path="List" id="a0406e14-366e-4235-b9ca-e14211b77afb">
         <con:settings/>
         <con:parameters>
@@ -2242,11 +2246,11 @@
               <con:settings>
                 <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
               </con:settings>
-              <con:endpoint>http://10.88.12.22:80/</con:endpoint>
+              <con:endpoint>http://localhost:21182/</con:endpoint>
               <con:request/>
               <con:originalUri>http://10.88.12.22/api/v3/List/AddressTypes</con:originalUri>
               <con:credentials>
-                <con:selectedAuthProfile>pr docum t@t.t</con:selectedAuthProfile>
+                <con:selectedAuthProfile>lh docum t@t.t</con:selectedAuthProfile>
                 <con:authType>OAuth 2.0</con:authType>
               </con:credentials>
               <con:jmsConfig JMSDeliveryMode="PERSISTENT"/>
@@ -11864,15 +11868,15 @@
       <con:clientID>docum</con:clientID>
       <con:clientSecret>-</con:clientSecret>
       <con:accessTokenURI>http://localhost:21182/api/v3/token</con:accessTokenURI>
-      <con:accessToken>7aVjT7SVfU4yIwt-S9R8EVa98NFDRC-jQXDhoQonwY-34WRkv77DIVa9Hc5HQr7wMXaKAbD8dOjPZEEwu5j0jqruTjlK3mdGOyzROIlGCDf3jWNdPrZo_YcbTYERrF5SF9euEd_-lBfpBTZMR36ZjR4ACkxsl4KkxkR8F4_gllv8e93FDN1am1KhExP8vOEFXUv_X72b23bhwmKhgvh69oXXJszfhzUQv9qcqgkTGxqN-kSuxhWQF9po2ObSGqMqXE0SP5rkyHpreJ_3mlBLAf-o_i1yAanlss-pWutMqbLJ1W3eK3kVDTzT_bWKnZV0fILOlUpSTh_nulNlD2C-8sQBb_mHmCnsnqfg_UG1QvLkOruhUEK81suCrcvDtGTBBqfYyq5M11yhBvxFfJsId31gV_odh8qL9wmMzenZPbv7QN2z2jC0y42qlfVAsch8orkHOOI9sKnJRFw23yq4FPT_J2GwWyzphdWZQ3v66pg</con:accessToken>
+      <con:accessToken>mq34VVByaAh5o-LrY7aIrt7Wo_N9UYDBvQmnQjN4V0hoAwLMRi_sznFr9iCCacXclPb-VnMh3IeEABoWdrVnZ2cY4sm6WpTDfVPn7dklGsTSuDm4F9oRo1JjexvUaSxfSFMn4u1-x4RbQuxkIhCt7cjz6EPsEttAFvn0aJeOHQFfdsGbgLYutgEgsQ-7IbDGkNpM5ZkNH5i1BRMbArpif98fYK50wP791oYGdtuH_qBnkhBZB3nzv490wfAOdydxz_sAgG0g3PWY87QGv4iB1RaEzVnbvs1JTtSg905UT25qoLwZOp7O-YbZIqvXcU551SRmBlPZjh5RaY7szHyhesW-a-7bpboo13TXor2k6C8CtgQcWzMP_MiwjoJqiWLpBlhk1gseQ-7CfX0jnxlHH-SHcuJyQake7P0IoXfJB7mOsvf2vadGhgOzmSTLL9Svrotb61s4kMVQz3AI3jLg_2eIqKV22Lzs6ffPQWoVrxM</con:accessToken>
       <con:accessTokenPosition>HEADER</con:accessTokenPosition>
       <con:oAuth2Flow>RESOURCE_OWNER_PASSWORD_CREDENTIALS</con:oAuth2Flow>
       <con:refreshAccessTokenMethod>AUTOMATIC</con:refreshAccessTokenMethod>
       <con:scope>fingerprint</con:scope>
-      <con:accessTokenStatus>UNKNOWN</con:accessTokenStatus>
+      <con:accessTokenStatus>RETRIEVED_FROM_SERVER</con:accessTokenStatus>
       <con:accessTokenStartingStatus>RETRIEVED_FROM_SERVER</con:accessTokenStartingStatus>
       <con:accessTokenExpirationTime>1209599</con:accessTokenExpirationTime>
-      <con:accessTokenIssuedTime>1494364846</con:accessTokenIssuedTime>
+      <con:accessTokenIssuedTime>1497248953</con:accessTokenIssuedTime>
       <con:resourceOwnerName>t@t.t</con:resourceOwnerName>
       <con:resourceOwnerPassword>P@ssw0rd</con:resourceOwnerPassword>
     </con:oAuth2Profile>
